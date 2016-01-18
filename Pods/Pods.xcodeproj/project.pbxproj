@@ -16,6 +16,12 @@
 		24E021C71FB01EBDD19F2E20DF2A0310 /* BKRNSURLSessionConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = D5D577D66D9F4EC42CB1694BDDD92810 /* BKRNSURLSessionConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2E636D2F7769ADB7EB85BC38085897D5 /* BKRNSURLSessionConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA690E6BF38A2CF42B3F3DF61EF45D2 /* BKRNSURLSessionConnection.m */; };
 		4B9B192C2BB5A63914F32F9BA08D6FA7 /* NSURLSessionTask+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 61585C8A274B15AA68884040219078FF /* NSURLSessionTask+BKRAdditions.m */; };
+		51CEB9B41C4DA0AA0030A02D /* BKRData.h in Headers */ = {isa = PBXBuildFile; fileRef = 51CEB9B21C4DA0AA0030A02D /* BKRData.h */; };
+		51CEB9B51C4DA0AA0030A02D /* BKRData.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9B31C4DA0AA0030A02D /* BKRData.m */; };
+		51CEB9B81C4DA0B80030A02D /* BKRRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 51CEB9B61C4DA0B80030A02D /* BKRRequest.h */; };
+		51CEB9B91C4DA0B80030A02D /* BKRRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9B71C4DA0B80030A02D /* BKRRequest.m */; };
+		51CEB9BC1C4DA0C50030A02D /* BKRResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 51CEB9BA1C4DA0C50030A02D /* BKRResponse.h */; };
+		51CEB9BD1C4DA0C50030A02D /* BKRResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9BB1C4DA0C50030A02D /* BKRResponse.m */; };
 		5435E4643060B7893BE8C491F581C22E /* VCR.m in Sources */ = {isa = PBXBuildFile; fileRef = 93D10B68913D793AFCFB2F1E4D22F205 /* VCR.m */; };
 		543A0F6582701881A5D2EA5366B13FA2 /* BKRCassette.h in Headers */ = {isa = PBXBuildFile; fileRef = 9163CCCEEADDD63F143B5D3E3AE52288 /* BKRCassette.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5FF48B4240E0156894253E13A5634D85 /* OHHTTPStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = 541BC8E79538F4A23088FE1902C54CEF /* OHHTTPStubs.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
@@ -81,6 +87,12 @@
 		2D39C53D0B03007C6E3D1A79F1D363FC /* Pods-BKR-Tests-iOS-ObjC.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-BKR-Tests-iOS-ObjC.modulemap"; sourceTree = "<group>"; };
 		36C5CA819411161DB27C45E69176CFB6 /* OHHTTPStubs.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = OHHTTPStubs.modulemap; sourceTree = "<group>"; };
 		44ADE97C6ABC42A9071DEA39E16178B3 /* Pods-BKR-Tests-iOS-ObjC-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BKR-Tests-iOS-ObjC-dummy.m"; sourceTree = "<group>"; };
+		51CEB9B21C4DA0AA0030A02D /* BKRData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKRData.h; sourceTree = "<group>"; };
+		51CEB9B31C4DA0AA0030A02D /* BKRData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRData.m; sourceTree = "<group>"; };
+		51CEB9B61C4DA0B80030A02D /* BKRRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKRRequest.h; sourceTree = "<group>"; };
+		51CEB9B71C4DA0B80030A02D /* BKRRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRequest.m; sourceTree = "<group>"; };
+		51CEB9BA1C4DA0C50030A02D /* BKRResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKRResponse.h; sourceTree = "<group>"; };
+		51CEB9BB1C4DA0C50030A02D /* BKRResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRResponse.m; sourceTree = "<group>"; };
 		541BC8E79538F4A23088FE1902C54CEF /* OHHTTPStubs.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = OHHTTPStubs.m; path = OHHTTPStubs/Sources/OHHTTPStubs.m; sourceTree = "<group>"; };
 		5BFA0B86851EC59B7A5C610B526506E1 /* OHHTTPStubs-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "OHHTTPStubs-dummy.m"; sourceTree = "<group>"; };
 		61585C8A274B15AA68884040219078FF /* NSURLSessionTask+BKRAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSURLSessionTask+BKRAdditions.m"; sourceTree = "<group>"; };
@@ -227,6 +239,19 @@
 			name = Core;
 			sourceTree = "<group>";
 		};
+		51CEB9B11C4DA09F0030A02D /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				51CEB9B21C4DA0AA0030A02D /* BKRData.h */,
+				51CEB9B31C4DA0AA0030A02D /* BKRData.m */,
+				51CEB9B61C4DA0B80030A02D /* BKRRequest.h */,
+				51CEB9B71C4DA0B80030A02D /* BKRRequest.m */,
+				51CEB9BA1C4DA0C50030A02D /* BKRResponse.h */,
+				51CEB9BB1C4DA0C50030A02D /* BKRResponse.m */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		593B85E453FA07A6E3AC8177DF00BCE4 /* NSURLSession */ = {
 			isa = PBXGroup;
 			children = (
@@ -301,6 +326,7 @@
 			children = (
 				E738DD22A98C7AF16C29AB0DD09F8911 /* BKRScene.h */,
 				B5EBAF3F10745CC6248A9BEEA2C492A5 /* BKRScene.m */,
+				51CEB9B11C4DA09F0030A02D /* Components */,
 			);
 			path = Scene;
 			sourceTree = "<group>";
@@ -419,13 +445,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51CEB9B41C4DA0AA0030A02D /* BKRData.h in Headers */,
 				0AB8B03546197C5B3EDF06BC26979AE8 /* BeKindRewind-umbrella.h in Headers */,
 				543A0F6582701881A5D2EA5366B13FA2 /* BKRCassette.h in Headers */,
 				24E021C71FB01EBDD19F2E20DF2A0310 /* BKRNSURLSessionConnection.h in Headers */,
 				6EA91D88F0DB16A4D9227B6E97EA48B7 /* BKRRecorder.h in Headers */,
+				51CEB9B81C4DA0B80030A02D /* BKRRequest.h in Headers */,
 				079352BE0113B4539E773FC26C1FEF14 /* BKRScene.h in Headers */,
 				E5A38266BB578CA2C3916559FD6D1889 /* NSURLSessionTask+BKRAdditions.h in Headers */,
 				A89F4767A15A32A4C75308924065C1AF /* VCR.h in Headers */,
+				51CEB9BC1C4DA0C50030A02D /* BKRResponse.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,7 +573,10 @@
 				8F05844EDFB626D3784C7133449A0463 /* BKRCassette.m in Sources */,
 				2E636D2F7769ADB7EB85BC38085897D5 /* BKRNSURLSessionConnection.m in Sources */,
 				84DB7F3F24C35E0629A6DB4C238280E9 /* BKRRecorder.m in Sources */,
+				51CEB9BD1C4DA0C50030A02D /* BKRResponse.m in Sources */,
 				C41F954D30680A5F45146F2005ABF672 /* BKRScene.m in Sources */,
+				51CEB9B51C4DA0AA0030A02D /* BKRData.m in Sources */,
+				51CEB9B91C4DA0B80030A02D /* BKRRequest.m in Sources */,
 				4B9B192C2BB5A63914F32F9BA08D6FA7 /* NSURLSessionTask+BKRAdditions.m in Sources */,
 				5435E4643060B7893BE8C491F581C22E /* VCR.m in Sources */,
 			);
