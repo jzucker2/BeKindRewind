@@ -1,0 +1,6 @@
+framework module Pods_BKR_Tests_iOS_ObjC {
+  umbrella header "Pods-BKR-Tests-iOS-ObjC-umbrella.h"
+
+  export *
+  module * { export * }
+}
