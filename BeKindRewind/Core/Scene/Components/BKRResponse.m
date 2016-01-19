@@ -30,4 +30,22 @@
     self.response = response;
 }
 
+- (NSInteger)statusCode {
+    if ([self.response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)self.response;
+        return castedResponse.statusCode;
+    } else {
+        return -1;
+    }
+}
+
+- (NSDictionary *)headers {
+    if ([self.response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)self.response;
+        return castedResponse.allHeaderFields;
+    } else {
+        return nil;
+    }
+}
+
 @end

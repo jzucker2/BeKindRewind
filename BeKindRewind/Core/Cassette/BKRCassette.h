@@ -16,6 +16,7 @@
 
 //- (void)addScene:(BKRScene *)scene;
 - (void)addFrame:(BKRFrame *)frame;
+- (NSArray *)allScenes;
 
 //- (NSArray *)allScenes;
 //- (NSArray *)allScenesForPlist;

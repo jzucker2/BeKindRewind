@@ -12,4 +12,8 @@
 
 - (void)addData:(NSData *)data;
 
+- (NSData *)rawData;
+
+- (id)JSONConvertedObject;
+
 @end

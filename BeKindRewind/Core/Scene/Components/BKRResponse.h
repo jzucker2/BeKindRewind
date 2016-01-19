@@ -13,5 +13,7 @@
 //- (instancetype)initWithResponse:(NSURLResponse *)response;
 //+ (instancetype)frameWithResponse:(NSURLResponse *)response;
 - (void)addResponse:(NSURLResponse *)response;
+- (NSInteger)statusCode;
+- (NSDictionary *)headers;
 
 @end

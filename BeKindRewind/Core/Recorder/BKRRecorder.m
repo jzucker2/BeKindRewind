@@ -64,7 +64,6 @@
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
         BKRData *frame = [BKRData frameWithTask:task];
-//        [scene addData:data];
         [frame addData:data];
         [sself.currentCassette addFrame:frame];
     });
@@ -90,13 +89,11 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
-//        JSZVCRRecording *recording = [sself storedRecordingFromTask:task];
-//        if (error) {
-//            recording.error = [JSZVCRError errorWithError:error];
-//        }
-        BKRError *frame = [BKRError frameWithTask:task];
-        [frame addError:error];
-        [sself.currentCassette addFrame:frame];
+        if (error) {
+            BKRError *frame = [BKRError frameWithTask:task];
+            [frame addError:error];
+            [sself.currentCassette addFrame:frame];
+        }
     });
 }
 

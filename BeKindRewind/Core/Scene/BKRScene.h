@@ -12,6 +12,10 @@
 //@class BKRRequest;
 //@class BKRResponse;
 @class BKRFrame;
+@class BKRData;
+@class BKRError;
+@class BKRRequest;
+@class BKRResponse;
 @interface BKRScene : NSObject
 
 //- (instancetype)initWithTask:(NSURLSessionTask *)task;
@@ -23,6 +27,11 @@
 - (instancetype)initFromFrame:(BKRFrame *)frame;
 + (instancetype)sceneFromFrame:(BKRFrame *)frame;
 - (void)addFrame:(BKRFrame *)frame;
+- (NSArray<BKRFrame *> *)allFrames;
+- (NSArray<BKRData *> *)allDataFrames;
+- (NSArray<BKRResponse *> *)allResponseFrames;
+- (NSArray<BKRRequest *> *)allRequestFrames;
+
 //- (void)addData:(NSData *)data;
 //- (void)addRequest:(NSURLRequest *)request;
 //- (void)addResponse:(NSURLResponse *)response;

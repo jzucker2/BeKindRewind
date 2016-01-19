@@ -31,4 +31,18 @@
     self.data = data;
 }
 
+- (NSData *)rawData {
+    return self.data;
+}
+
+- (id)JSONConvertedObject {
+    NSError *jsonSerializingError = nil;
+    id jsonData = [NSJSONSerialization JSONObjectWithData:self.data options:kNilOptions error:&jsonSerializingError];
+    if (jsonSerializingError) {
+        return nil;
+    } else {
+        return jsonData;
+    }
+}
+
 @end

@@ -41,6 +41,7 @@
     if (self) {
         [self _init];
         _uniqueIdentifier = frame.uniqueIdentifier;
+        [self addFrame:frame];
     }
     return self;
 }
@@ -54,6 +55,34 @@
         NSLog(@"Why is the same frame being added twice????????????");
     }
     [self.frames addObject:frame];
+}
+
+- (NSArray<BKRFrame *> *)allFrames {
+    return self.frames.copy;
+}
+
+- (NSArray<BKRRequest *> *)allRequestFrames {
+    return [self _framesOnlyOfType:[BKRRequest class]];
+}
+
+- (NSArray<BKRResponse *> *)allResponseFrames {
+    return [self _framesOnlyOfType:[BKRResponse class]];
+}
+
+- (NSArray<BKRData *> *)allDataFrames {
+    return [self _framesOnlyOfType:[BKRData class]];
+}
+
+- (NSArray *)_framesOnlyOfType:(Class)frameClass {
+    NSMutableArray *restrictedFrames = [NSMutableArray array];
+    for (BKRFrame *frame in self.allFrames) {
+        if ([frame isKindOfClass:frameClass]) {
+            [restrictedFrames addObject:frame];
+        } else {
+            continue;
+        }
+    }
+    return restrictedFrames.copy;
 }
 
 @end

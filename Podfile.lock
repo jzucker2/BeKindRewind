@@ -1,11 +1,5 @@
 PODS:
-  - BeKindRewind (0.1.0):
-    - BeKindRewind/Testing (= 0.1.0)
-    - OHHTTPStubs (~> 4.7.0)
   - BeKindRewind/Core (0.1.0):
-    - OHHTTPStubs (~> 4.7.0)
-  - BeKindRewind/Testing (0.1.0):
-    - BeKindRewind/Core
     - OHHTTPStubs (~> 4.7.0)
   - OHHTTPStubs (4.7.0):
     - OHHTTPStubs/Default (= 4.7.0)
@@ -22,7 +16,7 @@ PODS:
   - OHHTTPStubs/OHPathHelpers (4.7.0)
 
 DEPENDENCIES:
-  - BeKindRewind (from `.`)
+  - BeKindRewind/Core (from `.`)
 
 EXTERNAL SOURCES:
   BeKindRewind:
