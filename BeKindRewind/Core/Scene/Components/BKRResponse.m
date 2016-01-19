@@ -10,4 +10,8 @@
 
 @implementation BKRResponse
 
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary {
+    
+}
+
 @end

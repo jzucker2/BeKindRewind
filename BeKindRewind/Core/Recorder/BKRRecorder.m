@@ -8,6 +8,7 @@
 
 #import "BKRRecorder.h"
 #import "BKRCassette.h"
+#import "BKRScene.h"
 
 @interface BKRRecorder ()
 @property (nonatomic) dispatch_queue_t recordingQueue;
@@ -34,7 +35,12 @@
 }
 
 - (void)reset {
-    
+    _recordingQueue = dispatch_queue_create("com.BKR.recorderQueue", DISPATCH_QUEUE_SERIAL);
+}
+
+- (void)setCurrentCassette:(BKRCassette *)currentCassette {
+    _currentCassette = currentCassette;
+    [self reset];
 }
 
 #pragma mark - NSURLSession recording
@@ -53,11 +59,9 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
-//        JSZVCRRecording *recording = [sself storedRecordingFromTask:task];
-//        if (recording.data) {
-//            NSLog(@"already had data: %@", recording.data);
-//        }
-//        recording.data = [JSZVCRData dataWithData:data];
+        BKRScene *scene = [BKRScene sceneWithTask:task];
+        [scene addData:data];
+        [sself.currentCassette addScene:scene];
     });
 }
 
@@ -68,11 +72,9 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
-//        JSZVCRRecording *recording = [sself storedRecordingFromTask:task];
-//        if (recording.response) {
-//            NSLog(@"already had response: %@", recording.response);
-//        }
-//        recording.response = [JSZVCRResponse responseWithResponse:response];
+        BKRScene *scene = [BKRScene sceneWithTask:task];
+        [scene addResponse:response];
+        [sself.currentCassette addScene:scene];
     });
 }
 
@@ -87,19 +89,24 @@
 //        if (error) {
 //            recording.error = [JSZVCRError errorWithError:error];
 //        }
+        BKRScene *scene = [BKRScene sceneWithTask:task];
+        [scene addError:error];
+        [sself.currentCassette addScene:scene];
     });
 }
 
-- (void)recordTaskCancellation:(NSURLSessionTask *)task {
-    if (!self.enabled) {
-        return;
-    }
-    __typeof (self) wself = self;
-    dispatch_async(self.recordingQueue, ^{
-        __typeof (wself) sself = wself;
-//        JSZVCRRecording *recording = [sself storedRecordingFromTask:task];
-//        recording.cancelled = YES;
-    });
-}
+//- (void)recordTaskCancellation:(NSURLSessionTask *)task {
+//    if (!self.enabled) {
+//        return;
+//    }
+//    __typeof (self) wself = self;
+//    dispatch_async(self.recordingQueue, ^{
+//        __typeof (wself) sself = wself;
+////        JSZVCRRecording *recording = [sself storedRecordingFromTask:task];
+////        recording.cancelled = YES;
+//        BKRScene *scene = [BKRScene sceneWithTask:task];
+//        
+//    });
+//}
 
 @end

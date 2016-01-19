@@ -90,11 +90,11 @@
     }
 }
 
-- (void)BKR_cancel {
-    [self.task uniqueify];
-    [[BKRRecorder sharedInstance] recordTaskCancellation:self.task];
-    [self BKR_cancel];
-}
+//- (void)BKR_cancel {
+//    [self.task uniqueify];
+//    [[BKRRecorder sharedInstance] recordTaskCancellation:self.task];
+//    [self BKR_cancel];
+//}
 
 - (instancetype)BKR_initWithTask:(NSURLSessionTask *)task delegate:(id <NSURLSessionDelegate>)delegate delegateQueue:(NSOperationQueue *)queue {
     [task uniqueify];

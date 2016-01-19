@@ -1,5 +1,5 @@
 //
-//  BKRData.h
+//  BKRFrame.m
 //  Pods
 //
 //  Created by Jordan Zucker on 1/18/16.
@@ -8,8 +8,6 @@
 
 #import "BKRFrame.h"
 
-@interface BKRData : BKRFrame
-
-- (instancetype)initWithData:(NSData *)data;
+@implementation BKRFrame
 
 @end

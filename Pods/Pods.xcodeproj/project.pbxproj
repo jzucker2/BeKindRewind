@@ -7,45 +7,49 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A2AF86BC732DC5A628AB43B03601C0D /* NSURLSessionTask+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FF15996C903871FA0160AF248D44AE7 /* NSURLSessionTask+BKRAdditions.m */; };
-		1FF9BAF10C9FB83181A0C17E55855F30 /* OHHTTPStubsResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 9132F032ECDC8B2AFE74B167654E3AFF /* OHHTTPStubsResponse.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
-		21AD66F155FB4C831C4E1BF190D4485F /* BKRData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8AA4519FFD43E0B8651284A340935B /* BKRData.m */; };
-		22B369AE8EBB3BC21ED714D62AB6EDAD /* OHPathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BB99126A27E571938E706B8973E67F /* OHPathHelpers.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
-		2A87B2A67E3E8508C2090A9D9CEB4830 /* BKRScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 025A912C058A770C7C5EB87A7E78FB50 /* BKRScene.m */; };
-		35C71CC43CF10C05CD54536EC736E66A /* OHHTTPStubsResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = C1A84FA43FDEB54C8EB42070C23D9D6A /* OHHTTPStubsResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4C0DFC3080A5746E7E3AB25460B96FDE /* BKRRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 2314687C728471737171B2BA918BDD0B /* BKRRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4F2229B58DE5743B09360B30ADBC7F89 /* BKRCassette.h in Headers */ = {isa = PBXBuildFile; fileRef = AD59FC5C17F57192DB255863F6FFCB97 /* BKRCassette.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5055BE721073ABD8F2F79EF4178348A7 /* OHHTTPStubsResponse+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = DE4D11C30B220839808704CA347D3DA4 /* OHHTTPStubsResponse+JSON.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
-		59CD2C17722D83A7E99848300389CF46 /* BKRRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = D8326FB5C594A520F9DF1F15FCBCC01F /* BKRRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6B44DB7F7A4BEDFE35AC5369B5EA4646 /* BKRResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = DE30F1A9AFB2CF0DD5D38F72100A0E40 /* BKRResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		787DB365B4FCFD89B1FA15ACE9FC3BFA /* OHHTTPStubs+NSURLSessionConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDAACA97AF5C7DD47C2772B912ED414 /* OHHTTPStubs+NSURLSessionConfiguration.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		0DAFE2E28FD2084E0D205C805CC4A131 /* OHPathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BB99126A27E571938E706B8973E67F /* OHPathHelpers.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		12C8E0CE258F1A149E17C3D1662F8892 /* BKRRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 805D944A01B0A22F396E482AF9E35FEF /* BKRRecorder.m */; };
+		1509F6AD707F4C16E33DAF016739D592 /* BeKindRewind-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D8D74E9EDCB5BD64A47437773B856648 /* BeKindRewind-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		16437A9C250F09A8D9AD6AD7D0EC5B41 /* BeKindRewind-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A83D626F486429EC47C75E218F6378 /* BeKindRewind-dummy.m */; };
+		1B0124038D6AAEF8A5D753785BA14F55 /* BKRFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = D640C6DF31271DDA6597AF5C61DAEB64 /* BKRFrame.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		20324F731C738ADB551B7DB6087520F4 /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27420E7DA6A4B9261212A972B8F2A8B /* OHHTTPStubs.framework */; };
+		2188F812CDB1AB5C763F26B3F30219BA /* OHHTTPStubsResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = C1A84FA43FDEB54C8EB42070C23D9D6A /* OHHTTPStubsResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2547BF031BFE9E05F01073239A443169 /* BKRSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8D6BA90F50AF9804B1B6B2B882CBCD42 /* BKRSerializer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2837F9B4BDFB0775EA84048F31EA4466 /* OHPathHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 1210BB66EF76FF2657F187685CC13007 /* OHPathHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		296CD7B323F8A4B7801876A7CB9DA690 /* BKRRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B22AF148096244F3CAD84D216F6174AA /* BKRRequest.m */; };
+		29D74D756D3E92DF44B2D787BB5824AB /* OHHTTPStubsResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 9132F032ECDC8B2AFE74B167654E3AFF /* OHHTTPStubsResponse.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		2BFEE99F051DE1144C7ED817BFCC41A0 /* Compatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C55A5B7EAE5B9727BC1BF2BB7E5814F /* Compatibility.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2C6D4DBDF16745A62E3D67681A104193 /* BKRCassette.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CFF1BF41AE5605BE62DD84311B132EE /* BKRCassette.m */; };
+		2D5BC51D54F77D48260E9D3B6CA1DF0A /* VCR.m in Sources */ = {isa = PBXBuildFile; fileRef = 19B7596DF23880B91D96D580E0302A74 /* VCR.m */; };
+		2EAB4761F1A4BFFC5F2E8B932FBA3900 /* BKRData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EE9625998864915AF58D5E487B1D9A2 /* BKRData.m */; };
+		36FBAB310E39B9632463D5CD426EE467 /* NSURLSessionTask+BKRAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CB37EA07A52E88F1F65B87EAA4B44CC /* NSURLSessionTask+BKRAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		37728094125A345537EE3D1EFE30C24B /* BKRData.h in Headers */ = {isa = PBXBuildFile; fileRef = 86C15E8D2A813A9F8B075EAEA4B20441 /* BKRData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4520B4722BD66B9B9D35FF935FD1F6F3 /* VCR.h in Headers */ = {isa = PBXBuildFile; fileRef = CB1F11777BA6D7D46395057BB4390AB7 /* VCR.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		45C80BA38CAE57006EA19FDB401573C0 /* OHHTTPStubs-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BFA0B86851EC59B7A5C610B526506E1 /* OHHTTPStubs-dummy.m */; };
+		46582270BD11F34E05D5FF6099BDA23D /* BKRNSURLSessionConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = AF8CBFA3B3F1F99E65D3A36DE95F2064 /* BKRNSURLSessionConnection.m */; };
+		4E56B1D1D28506FE780AED70B6B92C45 /* BKRDeserializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A8169F92B8CF85434587DDF9EF9258E /* BKRDeserializer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6BF347D22471687E4A16B96E3F3796AF /* OHHTTPStubs.h in Headers */ = {isa = PBXBuildFile; fileRef = BE5F00BD7F87481AB941EED0EE9FD647 /* OHHTTPStubs.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6CEB1A5831F8E916D2AC5809E2D4E6FC /* NSURLSessionTask+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = B5464C57E9485479083293E7843DF4E4 /* NSURLSessionTask+BKRAdditions.m */; };
+		78BBD3C667EC4734573FCB5C8610819B /* BKRFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E10699301E054CDF8A21CFE5B69CC8 /* BKRFrame.m */; };
 		790FD8B437A7905816A4C9D9AF20420E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF2057E79C8E1D05F8D5D5212320A4F8 /* Foundation.framework */; };
-		7D1B3D855DD7AE58FC6C4F98A9092A44 /* OHHTTPStubsResponse+JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A0DB704ABD5B003AF3FC8B4C6578141 /* OHHTTPStubsResponse+JSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D31525FC43BFCD22A525EF5ADC06F3D /* BKRRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 717BD88EA0F9364A104A639F353F7DC3 /* BKRRequest.m */; };
-		7D71E4AB041DB6FF42B62264365B5431 /* OHHTTPStubs.h in Headers */ = {isa = PBXBuildFile; fileRef = BE5F00BD7F87481AB941EED0EE9FD647 /* OHHTTPStubs.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7FF18E1583C6C037719D60EA3FCE8E00 /* OHPathHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 1210BB66EF76FF2657F187685CC13007 /* OHPathHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8167BC4FB46257BF71F8176AFB0D807F /* OHHTTPStubs-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A297CA7E7DA509D3CE9DBC58E9596534 /* OHHTTPStubs-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		898067EE76352363ED5F8E41128BF1E1 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21477B2C63F9DE0AB9D4AC95AC0C838D /* CFNetwork.framework */; };
-		9AA63D2E725EBD501699FD5855B5D038 /* VCR.h in Headers */ = {isa = PBXBuildFile; fileRef = E02FE434FADFE59422F2DC2960B4CE9A /* VCR.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A0ED82A2C38C7796AF2F05027B67FC3C /* Compatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C55A5B7EAE5B9727BC1BF2BB7E5814F /* Compatibility.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A79D6893BA3850A5B606FF7A42BF868F /* BKRNSURLSessionConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 50BBFE2AE620D82E560882B5820350CF /* BKRNSURLSessionConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B5885D1309D8E93A7534DC9A1A387EC1 /* BKRResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C834889E25916DBA897FAE64116C96E /* BKRResponse.m */; };
-		B64BDC08F107B3A9314E1C1D1A9F71FD /* OHHTTPStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = 541BC8E79538F4A23088FE1902C54CEF /* OHHTTPStubs.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
-		BA70D997FAEB635CD3620FD2D3818875 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF2057E79C8E1D05F8D5D5212320A4F8 /* Foundation.framework */; };
-		BCCBEA96F4D82EC5D548C612CAAE806B /* OHHTTPStubs-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BFA0B86851EC59B7A5C610B526506E1 /* OHHTTPStubs-dummy.m */; };
+		828E99FB6B0A1B0E7C865E55C2AF11E5 /* BKRNSURLSessionConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 475BF6CAF09732992E5EA9738B0C87BB /* BKRNSURLSessionConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8834758CD90A9FEC1EB8F8586D929AE6 /* BKRResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 08408324E727EB452ACB337505384F32 /* BKRResponse.m */; };
+		9575307E5EA78568886A56306CEBF2C0 /* OHHTTPStubsResponse+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = DE4D11C30B220839808704CA347D3DA4 /* OHHTTPStubsResponse+JSON.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		A28412D7128D77B6C1677A859124084B /* OHHTTPStubsResponse+JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A0DB704ABD5B003AF3FC8B4C6578141 /* OHHTTPStubsResponse+JSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A56384BF7E7C360737F36997235894A2 /* OHHTTPStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = 541BC8E79538F4A23088FE1902C54CEF /* OHHTTPStubs.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		B8AEF3753F940E4526C73480C8424D7D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75E02A2C0B0A6D7BB90D97C9C64B5107 /* XCTest.framework */; };
+		B8BEF07013F4C45A8B10101B3FFA9B85 /* BKRCassette.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DC27413AE6F6C510280A5712E5650DB /* BKRCassette.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BDFC9E385402544471E4FF054DA4C562 /* Pods-BKR-Tests-iOS-ObjC-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8E3DAE39CE804DA6973301E8601DC42B /* Pods-BKR-Tests-iOS-ObjC-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CA09CD5BD053F2BD258AAE9F93AE54E4 /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27420E7DA6A4B9261212A972B8F2A8B /* OHHTTPStubs.framework */; };
-		D2A5E5E1415275B92772B17B5B4220FE /* BeKindRewind-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D8D74E9EDCB5BD64A47437773B856648 /* BeKindRewind-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D3BDB4E53147549737C6E97091068E09 /* BKRNSURLSessionConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = B03CCC6017FB8B67CD908E0308676474 /* BKRNSURLSessionConnection.m */; };
-		D4D589A8827A10CDC85C4CCC34BAD0E5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF2057E79C8E1D05F8D5D5212320A4F8 /* Foundation.framework */; };
-		D6D77B0F7B3476418C8C146B8CDCBBA5 /* VCR.m in Sources */ = {isa = PBXBuildFile; fileRef = 217C0353799AA23662F3D6C4D666B477 /* VCR.m */; };
-		D786FD2C213E8F39B83F53C817793992 /* BKRCassette.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E182E9081983F9095CBEA06FCBE899 /* BKRCassette.m */; };
-		D78A3EFD221F0B076A274CB43F7C1A9C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75E02A2C0B0A6D7BB90D97C9C64B5107 /* XCTest.framework */; };
-		DA384D92DB065B45809F9F2E654642B9 /* BKRScene.h in Headers */ = {isa = PBXBuildFile; fileRef = C92F724BFCC3F8A40FCECEDCEAC3B331 /* BKRScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DEB78521CEC8D19560E1A9F9A6BF3524 /* BKRData.h in Headers */ = {isa = PBXBuildFile; fileRef = 265D2CA8B9E0D16A3314B24E70568818 /* BKRData.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E4F8C9A7D791090BD1882527CC9042AA /* NSURLSessionTask+BKRAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 425A0A9AE5FBD9316630CB0B2F14A4E3 /* NSURLSessionTask+BKRAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F5F97E71EDAC04FA39C2F1FAC0D38DE3 /* BKRRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = C00291DBFD2AF2B620B2E21DCA686B9D /* BKRRecorder.m */; };
-		F9E3C5C54827BFCC79BB9AA8F6FEEAD9 /* BeKindRewind-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A83D626F486429EC47C75E218F6378 /* BeKindRewind-dummy.m */; };
+		C29A6C6782878141DA19A948E0087E71 /* OHHTTPStubs+NSURLSessionConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDAACA97AF5C7DD47C2772B912ED414 /* OHHTTPStubs+NSURLSessionConfiguration.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		C3F4176164F7FFCF4C540D21A03FCE0F /* BKRResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1610A595AD4F9BB75FD8328ED49A2B2E /* BKRResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C7CF5D2AF995AABDBE6BCB5B27B77397 /* BKRScene.m in Sources */ = {isa = PBXBuildFile; fileRef = B953721A54C6AB6824B3B494F354F832 /* BKRScene.m */; };
+		D25EFB580B9C2FD22D9739F7526C2014 /* BKRRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 98A6EA9B78D3E73B24DDD929E1B40943 /* BKRRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DCEFED89DAF6086809CA4BF57C5D00F1 /* BKRScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 398E2DA5F83AABC2E245C70F04CB2910 /* BKRScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DF3808207EAEED4420419F2D1F0C388B /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21477B2C63F9DE0AB9D4AC95AC0C838D /* CFNetwork.framework */; };
+		E6F6A2DD3F0707C5B7FB00C085D5C6B0 /* BKRRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = CC475DCCCF452697CCF11E9C680B5C23 /* BKRRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E7204DFA07A7F9362ACCE30AC3D3EB5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF2057E79C8E1D05F8D5D5212320A4F8 /* Foundation.framework */; };
+		F2688001F021FF1BD6C64C475FB695B2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF2057E79C8E1D05F8D5D5212320A4F8 /* Foundation.framework */; };
+		FB6EB357945AE7C02C9D4AC709468E62 /* OHHTTPStubs-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A297CA7E7DA509D3CE9DBC58E9596534 /* OHHTTPStubs-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FF8A121534B08EA232ABE6826D384DDA /* Pods-BKR-Tests-iOS-ObjC-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 44ADE97C6ABC42A9071DEA39E16178B3 /* Pods-BKR-Tests-iOS-ObjC-dummy.m */; };
 /* End PBXBuildFile section */
 
@@ -54,82 +58,86 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 94559F028E55C16F77C406479F7C221B;
+			remoteGlobalIDString = EF157257C4D1E98EF79EA7BC07F59C0E;
 			remoteInfo = OHHTTPStubs;
 		};
 		7DFB96DA7BFA8F5C4C63ABC2E9405F6D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = F5E431A5F0B39417F59056001C57E19C;
+			remoteGlobalIDString = 50B8D005F5417701C68869AFFBC86B6C;
 			remoteInfo = BeKindRewind;
 		};
-		F03B6F418E990707987F84B335C056F5 /* PBXContainerItemProxy */ = {
+		CE725D1DFA47F4D3E8C5E323D5F7941A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 94559F028E55C16F77C406479F7C221B;
+			remoteGlobalIDString = EF157257C4D1E98EF79EA7BC07F59C0E;
 			remoteInfo = OHHTTPStubs;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		025A912C058A770C7C5EB87A7E78FB50 /* BKRScene.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRScene.m; sourceTree = "<group>"; };
+		08408324E727EB452ACB337505384F32 /* BKRResponse.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRResponse.m; sourceTree = "<group>"; };
 		1210BB66EF76FF2657F187685CC13007 /* OHPathHelpers.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = OHPathHelpers.h; path = OHHTTPStubs/Sources/OHPathHelpers/OHPathHelpers.h; sourceTree = "<group>"; };
 		1399B52230A18C58474B8A009C78D643 /* BeKindRewind.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = BeKindRewind.modulemap; sourceTree = "<group>"; };
+		1610A595AD4F9BB75FD8328ED49A2B2E /* BKRResponse.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRResponse.h; sourceTree = "<group>"; };
 		18BB99126A27E571938E706B8973E67F /* OHPathHelpers.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = OHPathHelpers.m; path = OHHTTPStubs/Sources/OHPathHelpers/OHPathHelpers.m; sourceTree = "<group>"; };
 		1991F8B4F50A2C9C31D70657A97E7595 /* Pods-BKR-Tests-iOS-ObjC-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BKR-Tests-iOS-ObjC-frameworks.sh"; sourceTree = "<group>"; };
+		19B7596DF23880B91D96D580E0302A74 /* VCR.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = VCR.m; sourceTree = "<group>"; };
 		1CDAACA97AF5C7DD47C2772B912ED414 /* OHHTTPStubs+NSURLSessionConfiguration.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "OHHTTPStubs+NSURLSessionConfiguration.m"; path = "OHHTTPStubs/Sources/NSURLSession/OHHTTPStubs+NSURLSessionConfiguration.m"; sourceTree = "<group>"; };
 		21477B2C63F9DE0AB9D4AC95AC0C838D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.0.sdk/System/Library/Frameworks/CFNetwork.framework; sourceTree = DEVELOPER_DIR; };
-		217C0353799AA23662F3D6C4D666B477 /* VCR.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = VCR.m; sourceTree = "<group>"; };
 		225607112252279F4BC85723FC8383DE /* Pods-BKR-Tests-iOS-ObjC-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BKR-Tests-iOS-ObjC-acknowledgements.markdown"; sourceTree = "<group>"; };
-		2314687C728471737171B2BA918BDD0B /* BKRRecorder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRRecorder.h; sourceTree = "<group>"; };
-		265D2CA8B9E0D16A3314B24E70568818 /* BKRData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRData.h; sourceTree = "<group>"; };
+		22E10699301E054CDF8A21CFE5B69CC8 /* BKRFrame.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRFrame.m; sourceTree = "<group>"; };
 		2C96B218601CE6F3AB52AB5BB71AAE56 /* OHHTTPStubs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OHHTTPStubs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D39C53D0B03007C6E3D1A79F1D363FC /* Pods-BKR-Tests-iOS-ObjC.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-BKR-Tests-iOS-ObjC.modulemap"; sourceTree = "<group>"; };
-		2FF15996C903871FA0160AF248D44AE7 /* NSURLSessionTask+BKRAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSURLSessionTask+BKRAdditions.m"; sourceTree = "<group>"; };
+		2DC27413AE6F6C510280A5712E5650DB /* BKRCassette.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRCassette.h; sourceTree = "<group>"; };
 		36C5CA819411161DB27C45E69176CFB6 /* OHHTTPStubs.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = OHHTTPStubs.modulemap; sourceTree = "<group>"; };
-		425A0A9AE5FBD9316630CB0B2F14A4E3 /* NSURLSessionTask+BKRAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionTask+BKRAdditions.h"; sourceTree = "<group>"; };
+		398E2DA5F83AABC2E245C70F04CB2910 /* BKRScene.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRScene.h; sourceTree = "<group>"; };
+		3CFF1BF41AE5605BE62DD84311B132EE /* BKRCassette.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRCassette.m; sourceTree = "<group>"; };
 		44ADE97C6ABC42A9071DEA39E16178B3 /* Pods-BKR-Tests-iOS-ObjC-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BKR-Tests-iOS-ObjC-dummy.m"; sourceTree = "<group>"; };
-		4F8AA4519FFD43E0B8651284A340935B /* BKRData.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRData.m; sourceTree = "<group>"; };
-		50BBFE2AE620D82E560882B5820350CF /* BKRNSURLSessionConnection.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRNSURLSessionConnection.h; sourceTree = "<group>"; };
+		475BF6CAF09732992E5EA9738B0C87BB /* BKRNSURLSessionConnection.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRNSURLSessionConnection.h; sourceTree = "<group>"; };
 		541BC8E79538F4A23088FE1902C54CEF /* OHHTTPStubs.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = OHHTTPStubs.m; path = OHHTTPStubs/Sources/OHHTTPStubs.m; sourceTree = "<group>"; };
+		5A8169F92B8CF85434587DDF9EF9258E /* BKRDeserializer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRDeserializer.h; sourceTree = "<group>"; };
 		5BFA0B86851EC59B7A5C610B526506E1 /* OHHTTPStubs-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "OHHTTPStubs-dummy.m"; sourceTree = "<group>"; };
 		6A0DB704ABD5B003AF3FC8B4C6578141 /* OHHTTPStubsResponse+JSON.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "OHHTTPStubsResponse+JSON.h"; path = "OHHTTPStubs/Sources/JSON/OHHTTPStubsResponse+JSON.h"; sourceTree = "<group>"; };
 		6C55A5B7EAE5B9727BC1BF2BB7E5814F /* Compatibility.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Compatibility.h; path = OHHTTPStubs/Sources/Compatibility.h; sourceTree = "<group>"; };
-		717BD88EA0F9364A104A639F353F7DC3 /* BKRRequest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRRequest.m; sourceTree = "<group>"; };
 		7206BA94BBBBBF46E5E53F847071E1EB /* BeKindRewind-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BeKindRewind-prefix.pch"; sourceTree = "<group>"; };
-		72E182E9081983F9095CBEA06FCBE899 /* BKRCassette.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRCassette.m; sourceTree = "<group>"; };
 		75E02A2C0B0A6D7BB90D97C9C64B5107 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.0.sdk/System/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		775D2EF4240E99F3B1E8A93F9EC3C6AB /* OHHTTPStubs.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = OHHTTPStubs.xcconfig; sourceTree = "<group>"; };
 		79B14CEB56B6B78D5C7700D6AEB9A378 /* BeKindRewind.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BeKindRewind.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		805D944A01B0A22F396E482AF9E35FEF /* BKRRecorder.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRRecorder.m; sourceTree = "<group>"; };
 		808B5DF667BB15F0477E4AA8A6FF584C /* BeKindRewind.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = BeKindRewind.xcconfig; sourceTree = "<group>"; };
 		8321791D6F7113108C262D909CF56599 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		86C15E8D2A813A9F8B075EAEA4B20441 /* BKRData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRData.h; sourceTree = "<group>"; };
+		8D6BA90F50AF9804B1B6B2B882CBCD42 /* BKRSerializer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRSerializer.h; sourceTree = "<group>"; };
 		8E3DAE39CE804DA6973301E8601DC42B /* Pods-BKR-Tests-iOS-ObjC-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BKR-Tests-iOS-ObjC-umbrella.h"; sourceTree = "<group>"; };
 		9132F032ECDC8B2AFE74B167654E3AFF /* OHHTTPStubsResponse.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = OHHTTPStubsResponse.m; path = OHHTTPStubs/Sources/OHHTTPStubsResponse.m; sourceTree = "<group>"; };
+		98A6EA9B78D3E73B24DDD929E1B40943 /* BKRRecorder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRRecorder.h; sourceTree = "<group>"; };
 		9ABB77B5614EA90626B58D8BFF8443A1 /* Pods-BKR-Tests-iOS-ObjC-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BKR-Tests-iOS-ObjC-resources.sh"; sourceTree = "<group>"; };
-		9C834889E25916DBA897FAE64116C96E /* BKRResponse.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRResponse.m; sourceTree = "<group>"; };
+		9CB37EA07A52E88F1F65B87EAA4B44CC /* NSURLSessionTask+BKRAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionTask+BKRAdditions.h"; sourceTree = "<group>"; };
 		9E2F383A26B4BD1E05A66002C967CC2A /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		9EE9625998864915AF58D5E487B1D9A2 /* BKRData.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRData.m; sourceTree = "<group>"; };
 		A297CA7E7DA509D3CE9DBC58E9596534 /* OHHTTPStubs-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "OHHTTPStubs-umbrella.h"; sourceTree = "<group>"; };
 		A5144A9146744382009DC20DDFDD596B /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A83E6A03895F5426DEAF41E2B972E03F /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; sourceTree = "<group>"; };
-		AD59FC5C17F57192DB255863F6FFCB97 /* BKRCassette.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRCassette.h; sourceTree = "<group>"; };
-		B03CCC6017FB8B67CD908E0308676474 /* BKRNSURLSessionConnection.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRNSURLSessionConnection.m; sourceTree = "<group>"; };
+		AF8CBFA3B3F1F99E65D3A36DE95F2064 /* BKRNSURLSessionConnection.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRNSURLSessionConnection.m; sourceTree = "<group>"; };
+		B22AF148096244F3CAD84D216F6174AA /* BKRRequest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRRequest.m; sourceTree = "<group>"; };
+		B5464C57E9485479083293E7843DF4E4 /* NSURLSessionTask+BKRAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSURLSessionTask+BKRAdditions.m"; sourceTree = "<group>"; };
 		B6A83D626F486429EC47C75E218F6378 /* BeKindRewind-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "BeKindRewind-dummy.m"; sourceTree = "<group>"; };
+		B953721A54C6AB6824B3B494F354F832 /* BKRScene.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRScene.m; sourceTree = "<group>"; };
 		BA6428E9F66FD5A23C0A2E06ED26CD2F /* Podfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		BAD421A9B1D60812A944141E55A16278 /* OHHTTPStubs-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "OHHTTPStubs-prefix.pch"; sourceTree = "<group>"; };
 		BE5F00BD7F87481AB941EED0EE9FD647 /* OHHTTPStubs.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = OHHTTPStubs.h; path = OHHTTPStubs/Sources/OHHTTPStubs.h; sourceTree = "<group>"; };
-		C00291DBFD2AF2B620B2E21DCA686B9D /* BKRRecorder.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BKRRecorder.m; sourceTree = "<group>"; };
 		C1A84FA43FDEB54C8EB42070C23D9D6A /* OHHTTPStubsResponse.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = OHHTTPStubsResponse.h; path = OHHTTPStubs/Sources/OHHTTPStubsResponse.h; sourceTree = "<group>"; };
-		C92F724BFCC3F8A40FCECEDCEAC3B331 /* BKRScene.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRScene.h; sourceTree = "<group>"; };
+		CB1F11777BA6D7D46395057BB4390AB7 /* VCR.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = VCR.h; sourceTree = "<group>"; };
+		CC475DCCCF452697CCF11E9C680B5C23 /* BKRRequest.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRRequest.h; sourceTree = "<group>"; };
 		D27420E7DA6A4B9261212A972B8F2A8B /* OHHTTPStubs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OHHTTPStubs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8326FB5C594A520F9DF1F15FCBCC01F /* BKRRequest.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRRequest.h; sourceTree = "<group>"; };
+		D640C6DF31271DDA6597AF5C61DAEB64 /* BKRFrame.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRFrame.h; sourceTree = "<group>"; };
 		D8D74E9EDCB5BD64A47437773B856648 /* BeKindRewind-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BeKindRewind-umbrella.h"; sourceTree = "<group>"; };
-		DE30F1A9AFB2CF0DD5D38F72100A0E40 /* BKRResponse.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BKRResponse.h; sourceTree = "<group>"; };
 		DE4D11C30B220839808704CA347D3DA4 /* OHHTTPStubsResponse+JSON.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "OHHTTPStubsResponse+JSON.m"; path = "OHHTTPStubs/Sources/JSON/OHHTTPStubsResponse+JSON.m"; sourceTree = "<group>"; };
 		DF2057E79C8E1D05F8D5D5212320A4F8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E00C8740FC00541E2C6E985A4AF4AEE6 /* Pods_BKR_Tests_iOS_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_iOS_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E02FE434FADFE59422F2DC2960B4CE9A /* VCR.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = VCR.h; sourceTree = "<group>"; };
 		F0B6A4EC5AE9EE9E9A2F77F380D23B86 /* Pods-BKR-Tests-iOS-ObjC-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BKR-Tests-iOS-ObjC-acknowledgements.plist"; sourceTree = "<group>"; };
 		FE6F2126E56DFFE0109D52847CA110A4 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -143,22 +151,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		161C97AC26E7CF0C305FDBAACFAE469F /* Frameworks */ = {
+		92CB37B5C9928CA971CD2F1291CE2CAE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4D589A8827A10CDC85C4CCC34BAD0E5 /* Foundation.framework in Frameworks */,
-				CA09CD5BD053F2BD258AAE9F93AE54E4 /* OHHTTPStubs.framework in Frameworks */,
-				D78A3EFD221F0B076A274CB43F7C1A9C /* XCTest.framework in Frameworks */,
+				DF3808207EAEED4420419F2D1F0C388B /* CFNetwork.framework in Frameworks */,
+				E7204DFA07A7F9362ACCE30AC3D3EB5E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6E37EA219B91A6408AFA8112610B9713 /* Frameworks */ = {
+		97AFFFACC3FA37D616B93B488CF1A837 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				898067EE76352363ED5F8E41128BF1E1 /* CFNetwork.framework in Frameworks */,
-				BA70D997FAEB635CD3620FD2D3818875 /* Foundation.framework in Frameworks */,
+				F2688001F021FF1BD6C64C475FB695B2 /* Foundation.framework in Frameworks */,
+				20324F731C738ADB551B7DB6087520F4 /* OHHTTPStubs.framework in Frameworks */,
+				B8AEF3753F940E4526C73480C8424D7D /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,6 +183,15 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		1BFCBF13740F1602D3F4208675613612 /* Recorder */ = {
+			isa = PBXGroup;
+			children = (
+				98A6EA9B78D3E73B24DDD929E1B40943 /* BKRRecorder.h */,
+				805D944A01B0A22F396E482AF9E35FEF /* BKRRecorder.m */,
+			);
+			path = Recorder;
+			sourceTree = "<group>";
+		};
 		262F85EE9BD22A46868468B8A040F0D9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -182,6 +199,17 @@
 				6090A1CE9578B9DBAF98E4A2D56C5709 /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		377ADB036ECB0338EF51E9F63E2CCE22 /* NSURLSession */ = {
+			isa = PBXGroup;
+			children = (
+				475BF6CAF09732992E5EA9738B0C87BB /* BKRNSURLSessionConnection.h */,
+				AF8CBFA3B3F1F99E65D3A36DE95F2064 /* BKRNSURLSessionConnection.m */,
+				9CB37EA07A52E88F1F65B87EAA4B44CC /* NSURLSessionTask+BKRAdditions.h */,
+				B5464C57E9485479083293E7843DF4E4 /* NSURLSessionTask+BKRAdditions.m */,
+			);
+			path = NSURLSession;
 			sourceTree = "<group>";
 		};
 		3ACD61BDB55476D218DC43F4453F229C /* Pods */ = {
@@ -217,6 +245,28 @@
 			name = Core;
 			sourceTree = "<group>";
 		};
+		51CEB9C61C4DD5090030A02D /* Abstract Subclass */ = {
+			isa = PBXGroup;
+			children = (
+				D640C6DF31271DDA6597AF5C61DAEB64 /* BKRFrame.h */,
+				22E10699301E054CDF8A21CFE5B69CC8 /* BKRFrame.m */,
+			);
+			name = "Abstract Subclass";
+			sourceTree = "<group>";
+		};
+		54A1953C0F0C47B1FB00CC75BD8AA00B /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				CB1F11777BA6D7D46395057BB4390AB7 /* VCR.h */,
+				19B7596DF23880B91D96D580E0302A74 /* VCR.m */,
+				6BDD7DC177F2E4ED33496675211A33BC /* Cassette */,
+				377ADB036ECB0338EF51E9F63E2CCE22 /* NSURLSession */,
+				1BFCBF13740F1602D3F4208675613612 /* Recorder */,
+				8696DAD189462ED8D7D97EC6D967C194 /* Scene */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
 		6090A1CE9578B9DBAF98E4A2D56C5709 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -227,14 +277,13 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		6CAA717500AE057F91E9918A1F3DC88F /* Scene */ = {
+		6BDD7DC177F2E4ED33496675211A33BC /* Cassette */ = {
 			isa = PBXGroup;
 			children = (
-				C92F724BFCC3F8A40FCECEDCEAC3B331 /* BKRScene.h */,
-				025A912C058A770C7C5EB87A7E78FB50 /* BKRScene.m */,
-				D534369BA0CF4D008BF44713D9AB8875 /* Components */,
+				2DC27413AE6F6C510280A5712E5650DB /* BKRCassette.h */,
+				3CFF1BF41AE5605BE62DD84311B132EE /* BKRCassette.m */,
 			);
-			path = Scene;
+			path = Cassette;
 			sourceTree = "<group>";
 		};
 		6EDFA43EB0EDCCE76D92EE19173A824A /* Support Files */ = {
@@ -263,13 +312,16 @@
 			);
 			sourceTree = "<group>";
 		};
-		7E88B793F9CB6C6E774B24BDD87B26BF /* Recorder */ = {
+		8696DAD189462ED8D7D97EC6D967C194 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
-				2314687C728471737171B2BA918BDD0B /* BKRRecorder.h */,
-				C00291DBFD2AF2B620B2E21DCA686B9D /* BKRRecorder.m */,
+				5A8169F92B8CF85434587DDF9EF9258E /* BKRDeserializer.h */,
+				398E2DA5F83AABC2E245C70F04CB2910 /* BKRScene.h */,
+				B953721A54C6AB6824B3B494F354F832 /* BKRScene.m */,
+				8D6BA90F50AF9804B1B6B2B882CBCD42 /* BKRSerializer.h */,
+				9F335FE894F2BBE8AAAF9ABA09CFFE2D /* Components */,
 			);
-			path = Recorder;
+			path = Scene;
 			sourceTree = "<group>";
 		};
 		86C919997B5E21BAB45359D0B95EFC53 /* Development Pods */ = {
@@ -294,17 +346,18 @@
 			path = "Pods/Target Support Files/BeKindRewind";
 			sourceTree = "<group>";
 		};
-		94E4E9EA21692149BD6B3215493C5BC7 /* Core */ = {
+		9F335FE894F2BBE8AAAF9ABA09CFFE2D /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				E02FE434FADFE59422F2DC2960B4CE9A /* VCR.h */,
-				217C0353799AA23662F3D6C4D666B477 /* VCR.m */,
-				EF9771887EEFA25D56F6DC10ADAC67A3 /* Cassette */,
-				F09DAEE8A496FE16F3755306494D5C52 /* NSURLSession */,
-				7E88B793F9CB6C6E774B24BDD87B26BF /* Recorder */,
-				6CAA717500AE057F91E9918A1F3DC88F /* Scene */,
+				86C15E8D2A813A9F8B075EAEA4B20441 /* BKRData.h */,
+				9EE9625998864915AF58D5E487B1D9A2 /* BKRData.m */,
+				CC475DCCCF452697CCF11E9C680B5C23 /* BKRRequest.h */,
+				B22AF148096244F3CAD84D216F6174AA /* BKRRequest.m */,
+				1610A595AD4F9BB75FD8328ED49A2B2E /* BKRResponse.h */,
+				08408324E727EB452ACB337505384F32 /* BKRResponse.m */,
+				51CEB9C61C4DD5090030A02D /* Abstract Subclass */,
 			);
-			path = Core;
+			path = Components;
 			sourceTree = "<group>";
 		};
 		B002EA55D33A46D284F04677172DDA1F /* Products */ = {
@@ -368,19 +421,6 @@
 			path = OHHTTPStubs;
 			sourceTree = "<group>";
 		};
-		D534369BA0CF4D008BF44713D9AB8875 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				265D2CA8B9E0D16A3314B24E70568818 /* BKRData.h */,
-				4F8AA4519FFD43E0B8651284A340935B /* BKRData.m */,
-				D8326FB5C594A520F9DF1F15FCBCC01F /* BKRRequest.h */,
-				717BD88EA0F9364A104A639F353F7DC3 /* BKRRequest.m */,
-				DE30F1A9AFB2CF0DD5D38F72100A0E40 /* BKRResponse.h */,
-				9C834889E25916DBA897FAE64116C96E /* BKRResponse.m */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
 		D9210D929B32743A2AC292EA6EBBC126 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -392,69 +432,52 @@
 		DDE382C9DC58C59CECF43A4E7783E4C5 /* BeKindRewind */ = {
 			isa = PBXGroup;
 			children = (
-				94E4E9EA21692149BD6B3215493C5BC7 /* Core */,
+				54A1953C0F0C47B1FB00CC75BD8AA00B /* Core */,
 			);
 			path = BeKindRewind;
-			sourceTree = "<group>";
-		};
-		EF9771887EEFA25D56F6DC10ADAC67A3 /* Cassette */ = {
-			isa = PBXGroup;
-			children = (
-				AD59FC5C17F57192DB255863F6FFCB97 /* BKRCassette.h */,
-				72E182E9081983F9095CBEA06FCBE899 /* BKRCassette.m */,
-			);
-			path = Cassette;
-			sourceTree = "<group>";
-		};
-		F09DAEE8A496FE16F3755306494D5C52 /* NSURLSession */ = {
-			isa = PBXGroup;
-			children = (
-				50BBFE2AE620D82E560882B5820350CF /* BKRNSURLSessionConnection.h */,
-				B03CCC6017FB8B67CD908E0308676474 /* BKRNSURLSessionConnection.m */,
-				425A0A9AE5FBD9316630CB0B2F14A4E3 /* NSURLSessionTask+BKRAdditions.h */,
-				2FF15996C903871FA0160AF248D44AE7 /* NSURLSessionTask+BKRAdditions.m */,
-			);
-			path = NSURLSession;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		497E354507584C62BDA66846EE5AC07D /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D2A5E5E1415275B92772B17B5B4220FE /* BeKindRewind-umbrella.h in Headers */,
-				4F2229B58DE5743B09360B30ADBC7F89 /* BKRCassette.h in Headers */,
-				DEB78521CEC8D19560E1A9F9A6BF3524 /* BKRData.h in Headers */,
-				A79D6893BA3850A5B606FF7A42BF868F /* BKRNSURLSessionConnection.h in Headers */,
-				4C0DFC3080A5746E7E3AB25460B96FDE /* BKRRecorder.h in Headers */,
-				59CD2C17722D83A7E99848300389CF46 /* BKRRequest.h in Headers */,
-				6B44DB7F7A4BEDFE35AC5369B5EA4646 /* BKRResponse.h in Headers */,
-				DA384D92DB065B45809F9F2E654642B9 /* BKRScene.h in Headers */,
-				E4F8C9A7D791090BD1882527CC9042AA /* NSURLSessionTask+BKRAdditions.h in Headers */,
-				9AA63D2E725EBD501699FD5855B5D038 /* VCR.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4F0BF10F71392B98D0AC2A3C931D2BD8 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A0ED82A2C38C7796AF2F05027B67FC3C /* Compatibility.h in Headers */,
-				8167BC4FB46257BF71F8176AFB0D807F /* OHHTTPStubs-umbrella.h in Headers */,
-				7D71E4AB041DB6FF42B62264365B5431 /* OHHTTPStubs.h in Headers */,
-				7D1B3D855DD7AE58FC6C4F98A9092A44 /* OHHTTPStubsResponse+JSON.h in Headers */,
-				35C71CC43CF10C05CD54536EC736E66A /* OHHTTPStubsResponse.h in Headers */,
-				7FF18E1583C6C037719D60EA3FCE8E00 /* OHPathHelpers.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6F224E80296FB90EA4C84BE255AAD514 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				BDFC9E385402544471E4FF054DA4C562 /* Pods-BKR-Tests-iOS-ObjC-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		86D3EA0635063C32E7ECF2CBE7651D01 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2BFEE99F051DE1144C7ED817BFCC41A0 /* Compatibility.h in Headers */,
+				FB6EB357945AE7C02C9D4AC709468E62 /* OHHTTPStubs-umbrella.h in Headers */,
+				6BF347D22471687E4A16B96E3F3796AF /* OHHTTPStubs.h in Headers */,
+				A28412D7128D77B6C1677A859124084B /* OHHTTPStubsResponse+JSON.h in Headers */,
+				2188F812CDB1AB5C763F26B3F30219BA /* OHHTTPStubsResponse.h in Headers */,
+				2837F9B4BDFB0775EA84048F31EA4466 /* OHPathHelpers.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B48117522C52BACDE20DDE7DB70F4283 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1509F6AD707F4C16E33DAF016739D592 /* BeKindRewind-umbrella.h in Headers */,
+				B8BEF07013F4C45A8B10101B3FFA9B85 /* BKRCassette.h in Headers */,
+				37728094125A345537EE3D1EFE30C24B /* BKRData.h in Headers */,
+				4E56B1D1D28506FE780AED70B6B92C45 /* BKRDeserializer.h in Headers */,
+				1B0124038D6AAEF8A5D753785BA14F55 /* BKRFrame.h in Headers */,
+				828E99FB6B0A1B0E7C865E55C2AF11E5 /* BKRNSURLSessionConnection.h in Headers */,
+				D25EFB580B9C2FD22D9739F7526C2014 /* BKRRecorder.h in Headers */,
+				E6F6A2DD3F0707C5B7FB00C085D5C6B0 /* BKRRequest.h in Headers */,
+				C3F4176164F7FFCF4C540D21A03FCE0F /* BKRResponse.h in Headers */,
+				DCEFED89DAF6086809CA4BF57C5D00F1 /* BKRScene.h in Headers */,
+				2547BF031BFE9E05F01073239A443169 /* BKRSerializer.h in Headers */,
+				36FBAB310E39B9632463D5CD426EE467 /* NSURLSessionTask+BKRAdditions.h in Headers */,
+				4520B4722BD66B9B9D35FF935FD1F6F3 /* VCR.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,13 +503,31 @@
 			productReference = E00C8740FC00541E2C6E985A4AF4AEE6 /* Pods_BKR_Tests_iOS_ObjC.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		94559F028E55C16F77C406479F7C221B /* OHHTTPStubs */ = {
+		50B8D005F5417701C68869AFFBC86B6C /* BeKindRewind */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 76B548071F1280C170B0D212AE8DAA4B /* Build configuration list for PBXNativeTarget "OHHTTPStubs" */;
+			buildConfigurationList = 6911D007F6A289D700AF60955BD9730B /* Build configuration list for PBXNativeTarget "BeKindRewind" */;
 			buildPhases = (
-				9CC491B5014FDD272ECF8C578E871088 /* Sources */,
-				6E37EA219B91A6408AFA8112610B9713 /* Frameworks */,
-				4F0BF10F71392B98D0AC2A3C931D2BD8 /* Headers */,
+				C6EEBBAEDCB71B5780F596B64EE7F22A /* Sources */,
+				97AFFFACC3FA37D616B93B488CF1A837 /* Frameworks */,
+				B48117522C52BACDE20DDE7DB70F4283 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C9F2E9E06F3D0DA39E3AACBF38313952 /* PBXTargetDependency */,
+			);
+			name = BeKindRewind;
+			productName = BeKindRewind;
+			productReference = 79B14CEB56B6B78D5C7700D6AEB9A378 /* BeKindRewind.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		EF157257C4D1E98EF79EA7BC07F59C0E /* OHHTTPStubs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD00FCDB6FA53AE4FD697C87538AC58D /* Build configuration list for PBXNativeTarget "OHHTTPStubs" */;
+			buildPhases = (
+				5045E7F7B1051A9596D0127386DB2958 /* Sources */,
+				92CB37B5C9928CA971CD2F1291CE2CAE /* Frameworks */,
+				86D3EA0635063C32E7ECF2CBE7651D01 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -497,24 +538,6 @@
 			productReference = 2C96B218601CE6F3AB52AB5BB71AAE56 /* OHHTTPStubs.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		F5E431A5F0B39417F59056001C57E19C /* BeKindRewind */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9C7E6FAB5DB9E92C54E15CF83FEFF877 /* Build configuration list for PBXNativeTarget "BeKindRewind" */;
-			buildPhases = (
-				C6EBDE674B5AB1910C0CAB1CFF2E1A31 /* Sources */,
-				161C97AC26E7CF0C305FDBAACFAE469F /* Frameworks */,
-				497E354507584C62BDA66846EE5AC07D /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B04387D7209560CED68FF4586CE20E28 /* PBXTargetDependency */,
-			);
-			name = BeKindRewind;
-			productName = BeKindRewind;
-			productReference = 79B14CEB56B6B78D5C7700D6AEB9A378 /* BeKindRewind.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -522,7 +545,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -536,14 +559,27 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F5E431A5F0B39417F59056001C57E19C /* BeKindRewind */,
-				94559F028E55C16F77C406479F7C221B /* OHHTTPStubs */,
+				50B8D005F5417701C68869AFFBC86B6C /* BeKindRewind */,
+				EF157257C4D1E98EF79EA7BC07F59C0E /* OHHTTPStubs */,
 				2BD7296156284B182DE1C1BAF872A04D /* Pods-BKR-Tests-iOS-ObjC */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5045E7F7B1051A9596D0127386DB2958 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C29A6C6782878141DA19A948E0087E71 /* OHHTTPStubs+NSURLSessionConfiguration.m in Sources */,
+				45C80BA38CAE57006EA19FDB401573C0 /* OHHTTPStubs-dummy.m in Sources */,
+				A56384BF7E7C360737F36997235894A2 /* OHHTTPStubs.m in Sources */,
+				9575307E5EA78568886A56306CEBF2C0 /* OHHTTPStubsResponse+JSON.m in Sources */,
+				29D74D756D3E92DF44B2D787BB5824AB /* OHHTTPStubsResponse.m in Sources */,
+				0DAFE2E28FD2084E0D205C805CC4A131 /* OHPathHelpers.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		96DAE241965C8EC0F9E8472FF922C2AF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -552,33 +588,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9CC491B5014FDD272ECF8C578E871088 /* Sources */ = {
+		C6EEBBAEDCB71B5780F596B64EE7F22A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				787DB365B4FCFD89B1FA15ACE9FC3BFA /* OHHTTPStubs+NSURLSessionConfiguration.m in Sources */,
-				BCCBEA96F4D82EC5D548C612CAAE806B /* OHHTTPStubs-dummy.m in Sources */,
-				B64BDC08F107B3A9314E1C1D1A9F71FD /* OHHTTPStubs.m in Sources */,
-				5055BE721073ABD8F2F79EF4178348A7 /* OHHTTPStubsResponse+JSON.m in Sources */,
-				1FF9BAF10C9FB83181A0C17E55855F30 /* OHHTTPStubsResponse.m in Sources */,
-				22B369AE8EBB3BC21ED714D62AB6EDAD /* OHPathHelpers.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C6EBDE674B5AB1910C0CAB1CFF2E1A31 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F9E3C5C54827BFCC79BB9AA8F6FEEAD9 /* BeKindRewind-dummy.m in Sources */,
-				D786FD2C213E8F39B83F53C817793992 /* BKRCassette.m in Sources */,
-				21AD66F155FB4C831C4E1BF190D4485F /* BKRData.m in Sources */,
-				D3BDB4E53147549737C6E97091068E09 /* BKRNSURLSessionConnection.m in Sources */,
-				F5F97E71EDAC04FA39C2F1FAC0D38DE3 /* BKRRecorder.m in Sources */,
-				7D31525FC43BFCD22A525EF5ADC06F3D /* BKRRequest.m in Sources */,
-				B5885D1309D8E93A7534DC9A1A387EC1 /* BKRResponse.m in Sources */,
-				2A87B2A67E3E8508C2090A9D9CEB4830 /* BKRScene.m in Sources */,
-				1A2AF86BC732DC5A628AB43B03601C0D /* NSURLSessionTask+BKRAdditions.m in Sources */,
-				D6D77B0F7B3476418C8C146B8CDCBBA5 /* VCR.m in Sources */,
+				16437A9C250F09A8D9AD6AD7D0EC5B41 /* BeKindRewind-dummy.m in Sources */,
+				2C6D4DBDF16745A62E3D67681A104193 /* BKRCassette.m in Sources */,
+				2EAB4761F1A4BFFC5F2E8B932FBA3900 /* BKRData.m in Sources */,
+				78BBD3C667EC4734573FCB5C8610819B /* BKRFrame.m in Sources */,
+				46582270BD11F34E05D5FF6099BDA23D /* BKRNSURLSessionConnection.m in Sources */,
+				12C8E0CE258F1A149E17C3D1662F8892 /* BKRRecorder.m in Sources */,
+				296CD7B323F8A4B7801876A7CB9DA690 /* BKRRequest.m in Sources */,
+				8834758CD90A9FEC1EB8F8586D929AE6 /* BKRResponse.m in Sources */,
+				C7CF5D2AF995AABDBE6BCB5B27B77397 /* BKRScene.m in Sources */,
+				6CEB1A5831F8E916D2AC5809E2D4E6FC /* NSURLSessionTask+BKRAdditions.m in Sources */,
+				2D5BC51D54F77D48260E9D3B6CA1DF0A /* VCR.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -588,25 +612,25 @@
 		61B9FA89BD4FC1E1D8E7923EC10349EA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = BeKindRewind;
-			target = F5E431A5F0B39417F59056001C57E19C /* BeKindRewind */;
+			target = 50B8D005F5417701C68869AFFBC86B6C /* BeKindRewind */;
 			targetProxy = 7DFB96DA7BFA8F5C4C63ABC2E9405F6D /* PBXContainerItemProxy */;
 		};
 		9CFEBFECE716AB050BEFC633D4B32E98 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = OHHTTPStubs;
-			target = 94559F028E55C16F77C406479F7C221B /* OHHTTPStubs */;
+			target = EF157257C4D1E98EF79EA7BC07F59C0E /* OHHTTPStubs */;
 			targetProxy = 486972318DD517730EBAF09423CBE622 /* PBXContainerItemProxy */;
 		};
-		B04387D7209560CED68FF4586CE20E28 /* PBXTargetDependency */ = {
+		C9F2E9E06F3D0DA39E3AACBF38313952 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = OHHTTPStubs;
-			target = 94559F028E55C16F77C406479F7C221B /* OHHTTPStubs */;
-			targetProxy = F03B6F418E990707987F84B335C056F5 /* PBXContainerItemProxy */;
+			target = EF157257C4D1E98EF79EA7BC07F59C0E /* OHHTTPStubs */;
+			targetProxy = CE725D1DFA47F4D3E8C5E323D5F7941A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		11436B89FF777E3F8B2D6EC74279E81A /* Debug */ = {
+		0300B57CE148B4F2755AC90A7CC6E41D /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 808B5DF667BB15F0477E4AA8A6FF584C /* BeKindRewind.xcconfig */;
 			buildSettings = {
@@ -623,8 +647,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/BeKindRewind/BeKindRewind.modulemap";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = BeKindRewind;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -632,7 +655,7 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
 		3C23C43890EF36906F4EC130B782751F /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -655,7 +678,6 @@
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Pods_BKR_Tests_iOS_ObjC;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -665,9 +687,9 @@
 			};
 			name = Release;
 		};
-		7C8D42FC1DBAF2B48276FDC0B6A95C21 /* Release */ = {
+		65A244C6600C7A22A4D9B51A59A71741 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 808B5DF667BB15F0477E4AA8A6FF584C /* BeKindRewind.xcconfig */;
+			baseConfigurationReference = 775D2EF4240E99F3B1E8A93F9EC3C6AB /* OHHTTPStubs.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
@@ -676,15 +698,14 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/BeKindRewind/BeKindRewind-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/BeKindRewind/Info.plist";
+				GCC_PREFIX_HEADER = "Target Support Files/OHHTTPStubs/OHHTTPStubs-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/OHHTTPStubs/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/BeKindRewind/BeKindRewind.modulemap";
+				MODULEMAP_FILE = "Target Support Files/OHHTTPStubs/OHHTTPStubs.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = BeKindRewind;
+				PRODUCT_NAME = OHHTTPStubs;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -714,7 +735,6 @@
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Pods_BKR_Tests_iOS_ObjC;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -742,7 +762,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -764,7 +783,7 @@
 			};
 			name = Debug;
 		};
-		DF8AE3360CF86ABF23314127B16832F6 /* Debug */ = {
+		B0F6AB8941768BD47E2EC16A0FC92DB4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 775D2EF4240E99F3B1E8A93F9EC3C6AB /* OHHTTPStubs.xcconfig */;
 			buildSettings = {
@@ -782,7 +801,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/OHHTTPStubs/OHHTTPStubs.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = OHHTTPStubs;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -792,9 +810,9 @@
 			};
 			name = Debug;
 		};
-		FA0AFFC59EF0A3313AACF7FBF2129F9C /* Release */ = {
+		DFA869D496E9533F42C430182FAB4D73 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 775D2EF4240E99F3B1E8A93F9EC3C6AB /* OHHTTPStubs.xcconfig */;
+			baseConfigurationReference = 808B5DF667BB15F0477E4AA8A6FF584C /* BeKindRewind.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
@@ -803,22 +821,21 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/OHHTTPStubs/OHHTTPStubs-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/OHHTTPStubs/Info.plist";
+				GCC_PREFIX_HEADER = "Target Support Files/BeKindRewind/BeKindRewind-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/BeKindRewind/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/OHHTTPStubs/OHHTTPStubs.modulemap";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = OHHTTPStubs;
+				MODULEMAP_FILE = "Target Support Files/BeKindRewind/BeKindRewind.modulemap";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = BeKindRewind;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
 		FB45FFD90572718D82AB9092B750F0CA /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -866,20 +883,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		76B548071F1280C170B0D212AE8DAA4B /* Build configuration list for PBXNativeTarget "OHHTTPStubs" */ = {
+		6911D007F6A289D700AF60955BD9730B /* Build configuration list for PBXNativeTarget "BeKindRewind" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DF8AE3360CF86ABF23314127B16832F6 /* Debug */,
-				FA0AFFC59EF0A3313AACF7FBF2129F9C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9C7E6FAB5DB9E92C54E15CF83FEFF877 /* Build configuration list for PBXNativeTarget "BeKindRewind" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				11436B89FF777E3F8B2D6EC74279E81A /* Debug */,
-				7C8D42FC1DBAF2B48276FDC0B6A95C21 /* Release */,
+				DFA869D496E9533F42C430182FAB4D73 /* Debug */,
+				0300B57CE148B4F2755AC90A7CC6E41D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -889,6 +897,15 @@
 			buildConfigurations = (
 				9692FFDFE5273D3CB65947D72524B130 /* Debug */,
 				3C23C43890EF36906F4EC130B782751F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD00FCDB6FA53AE4FD697C87538AC58D /* Build configuration list for PBXNativeTarget "OHHTTPStubs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0F6AB8941768BD47E2EC16A0FC92DB4 /* Debug */,
+				65A244C6600C7A22A4D9B51A59A71741 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

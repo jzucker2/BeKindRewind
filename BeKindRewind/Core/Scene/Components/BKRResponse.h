@@ -6,8 +6,10 @@
 //
 //
 
-#import <Foundation/Foundation.h>
+#import "BKRFrame.h"
 
-@interface BKRResponse : NSObject
+@interface BKRResponse : BKRFrame
+
+- (instancetype)initWithResponse:(NSURLResponse *)response;
 
 @end

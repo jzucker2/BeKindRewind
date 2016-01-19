@@ -69,7 +69,7 @@
  *
  *  @param task in flight network task
  */
-- (void)recordTaskCancellation:(NSURLSessionTask *)task;
+//- (void)recordTaskCancellation:(NSURLSessionTask *)task;
 
 ///**
 // *  All recordings from this instance
