@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@class BKRScene;
+//@class BKRScene;
+@class BKRFrame;
 @interface BKRCassette : NSObject
 
 @property (nonatomic, getter=isRecording) BOOL recording;
 
-- (void)addScene:(BKRScene *)scene;
+//- (void)addScene:(BKRScene *)scene;
+- (void)addFrame:(BKRFrame *)frame;
 
 //- (NSArray *)allScenes;
 //- (NSArray *)allScenesForPlist;

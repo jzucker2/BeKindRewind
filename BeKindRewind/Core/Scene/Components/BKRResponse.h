@@ -10,6 +10,8 @@
 
 @interface BKRResponse : BKRFrame
 
-- (instancetype)initWithResponse:(NSURLResponse *)response;
+//- (instancetype)initWithResponse:(NSURLResponse *)response;
+//+ (instancetype)frameWithResponse:(NSURLResponse *)response;
+- (void)addResponse:(NSURLResponse *)response;
 
 @end

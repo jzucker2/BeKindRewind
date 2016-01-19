@@ -8,7 +8,11 @@
 
 #import "BKRRecorder.h"
 #import "BKRCassette.h"
-#import "BKRScene.h"
+#import "BKRFrame.h"
+#import "BKRData.h"
+#import "BKRResponse.h"
+#import "BKRRequest.h"
+#import "BKRError.h"
 
 @interface BKRRecorder ()
 @property (nonatomic) dispatch_queue_t recordingQueue;
@@ -59,9 +63,10 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
-        BKRScene *scene = [BKRScene sceneWithTask:task];
-        [scene addData:data];
-        [sself.currentCassette addScene:scene];
+        BKRData *frame = [BKRData frameWithTask:task];
+//        [scene addData:data];
+        [frame addData:data];
+        [sself.currentCassette addFrame:frame];
     });
 }
 
@@ -72,9 +77,9 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
-        BKRScene *scene = [BKRScene sceneWithTask:task];
-        [scene addResponse:response];
-        [sself.currentCassette addScene:scene];
+        BKRResponse *frame = [BKRResponse frameWithTask:task];
+        [frame addResponse:response];
+        [sself.currentCassette addFrame:frame];
     });
 }
 
@@ -89,9 +94,9 @@
 //        if (error) {
 //            recording.error = [JSZVCRError errorWithError:error];
 //        }
-        BKRScene *scene = [BKRScene sceneWithTask:task];
-        [scene addError:error];
-        [sself.currentCassette addScene:scene];
+        BKRError *frame = [BKRError frameWithTask:task];
+        [frame addError:error];
+        [sself.currentCassette addFrame:frame];
     });
 }
 

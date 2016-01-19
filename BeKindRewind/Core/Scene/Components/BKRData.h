@@ -10,6 +10,6 @@
 
 @interface BKRData : BKRFrame
 
-- (instancetype)initWithData:(NSData *)data;
+- (void)addData:(NSData *)data;
 
 @end

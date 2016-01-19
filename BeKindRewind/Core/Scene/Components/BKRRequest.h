@@ -10,6 +10,8 @@
 
 @interface BKRRequest : BKRFrame
 
-- (instancetype)initWithRequest:(NSURLRequest *)request;
+//- (instancetype)initWithRequest:(NSURLRequest *)request;
+//+ (instancetype)frameWithRequest:(NSURLRequest *)request;
+- (void)addRequest:(NSURLRequest *)request;
 
 @end
