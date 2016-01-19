@@ -11,9 +11,11 @@
 @class BKRScene;
 @interface BKRCassette : NSObject
 
+@property (nonatomic, getter=isRecording) BOOL recording;
+
 - (void)addScene:(BKRScene *)scene;
 
-- (NSArray *)allScenes;
-- (NSArray *)allScenesForPlist;
+//- (NSArray *)allScenes;
+//- (NSArray *)allScenesForPlist;
 
 @end

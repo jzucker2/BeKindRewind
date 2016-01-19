@@ -71,18 +71,18 @@
  */
 - (void)recordTaskCancellation:(NSURLSessionTask *)task;
 
-/**
- *  All recordings from this instance
- *
- *  @return array of JSZVCRRecordings
- */
-- (NSArray *)allRecordings;
-/**
- *  All recordings from this instance as Foundation objects,
- *  similar to NSJSONSerialization
- *
- *  @return array of Foundation objects
- */
-- (NSArray *)allRecordingsForPlist;
+///**
+// *  All recordings from this instance
+// *
+// *  @return array of JSZVCRRecordings
+// */
+//- (NSArray *)allRecordings;
+///**
+// *  All recordings from this instance as Foundation objects,
+// *  similar to NSJSONSerialization
+// *
+// *  @return array of Foundation objects
+// */
+//- (NSArray *)allRecordingsForPlist;
 
 @end

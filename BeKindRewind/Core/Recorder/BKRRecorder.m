@@ -100,6 +100,6 @@
 //        JSZVCRRecording *recording = [sself storedRecordingFromTask:task];
 //        recording.cancelled = YES;
     });
-
+}
 
 @end

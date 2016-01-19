@@ -10,4 +10,9 @@
 
 @interface BKRScene : NSObject
 
+- (instancetype)initWithTask:(NSURLSessionTask *)task;
++ (instancetype)sceneWithTask:(NSURLSessionTask *)task;
+
+@property (nonatomic, copy) NSString *uniqueIdentifier;
+
 @end

@@ -10,4 +10,17 @@
 
 @implementation BKRCassette
 
+- (void)addScene:(BKRScene *)scene {
+    
+}
+
+- (void)setRecording:(BOOL)recording {
+    _recording = recording;
+    if (_recording) {
+        
+    } else {
+        
+    }
+}
+
 @end
