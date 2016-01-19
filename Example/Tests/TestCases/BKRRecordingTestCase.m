@@ -7,7 +7,6 @@
 //
 
 #import <XCTest/XCTest.h>
-#import <BeKindRewind/BKRVCR.h>
 #import <BeKindRewind/BKRRecorder.h>
 #import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRScene.h>
@@ -16,8 +15,6 @@
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
 
 @interface BKRRecordingTestCase : XCTestCase
-@property (nonatomic, strong) BKRVCR *vcr;
-//@property (nonatomic, strong) BKRRecorder *recorder;
 @end
 
 @implementation BKRRecordingTestCase
@@ -28,7 +25,6 @@
     [BKRNSURLSessionConnection swizzleNSURLSessionClasses];
     BKRCassette *cassette = [[BKRCassette alloc] init];
     cassette.recording = YES;
-//    self.vcr = [BKRVCR vcrWithCassette:cassette];
     [BKRRecorder sharedInstance].currentCassette = cassette;
     [BKRRecorder sharedInstance].enabled = YES;
 }
@@ -68,7 +64,7 @@
         BKRResponse *responseFrame = scene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
         NSHTTPURLResponse *castedDataTaskResponse = (NSHTTPURLResponse *)response;
-        XCTAssertEqualObjects(responseFrame.headers, castedDataTaskResponse.allHeaderFields);
+        XCTAssertEqualObjects(responseFrame.allHeaderFields, castedDataTaskResponse.allHeaderFields);
         XCTAssertEqual(responseFrame.statusCode, castedDataTaskResponse.statusCode);
         [basicGetExpectation fulfill];
     }];

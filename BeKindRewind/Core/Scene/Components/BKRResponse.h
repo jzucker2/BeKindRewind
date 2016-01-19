@@ -10,10 +10,11 @@
 
 @interface BKRResponse : BKRFrame
 
-//- (instancetype)initWithResponse:(NSURLResponse *)response;
-//+ (instancetype)frameWithResponse:(NSURLResponse *)response;
+@property (nonatomic, copy, readonly) NSURL *URL;
+@property (nonatomic, copy, readonly) NSString *MIMEType;
+@property (nonatomic, readonly) NSInteger statusCode;
+@property (nonatomic, copy, readonly) NSDictionary *allHeaderFields;
+
 - (void)addResponse:(NSURLResponse *)response;
-- (NSInteger)statusCode;
-- (NSDictionary *)headers;
 
 @end
