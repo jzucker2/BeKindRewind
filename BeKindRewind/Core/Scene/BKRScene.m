@@ -52,7 +52,9 @@
 
 - (void)addFrame:(BKRFrame *)frame {
     if ([self.frames containsObject:frame]) {
+        NSLog(@"******************************************");
         NSLog(@"Why is the same frame being added twice????????????");
+        NSLog(@"******************************************");
     }
     [self.frames addObject:frame];
 }
@@ -71,6 +73,18 @@
 
 - (NSArray<BKRData *> *)allDataFrames {
     return [self _framesOnlyOfType:[BKRData class]];
+}
+
+- (BKRRequest *)originalRequest {
+    for (BKRFrame *frame in self.allFrames) {
+        if ([frame isKindOfClass:[BKRRequest class]]) {
+            BKRRequest *request = (BKRRequest *)frame;
+            if (request.isOriginalRequest) {
+                return request;
+            }
+        }
+    }
+    return nil;
 }
 
 - (NSArray *)_framesOnlyOfType:(Class)frameClass {

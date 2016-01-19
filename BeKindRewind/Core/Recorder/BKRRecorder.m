@@ -56,6 +56,32 @@
     
 }
 
+- (void)initTask:(NSURLSessionTask *)task {
+    if (!self.enabled) {
+        return;
+    }
+    __typeof (self) wself = self;
+    dispatch_async(self.recordingQueue, ^{
+        __typeof (wself) sself = wself;
+        BKRRequest *frame = [BKRRequest frameWithTask:task];
+        [frame addRequest:task.originalRequest isOriginal:YES];
+        [sself.currentCassette addFrame:frame];
+    });
+}
+
+//- (void)recordTaskResumption:(NSURLSessionTask *)task {
+//    if (!self.enabled) {
+//        return;
+//    }
+//    __typeof (self) wself = self;
+//    dispatch_async(self.recordingQueue, ^{
+//        __typeof (wself) sself = wself;
+//        BKRRequest *frame = [BKRRequest frameWithTask:task];
+//        [frame addRequest:task.originalRequest isOriginal:YES];
+//        [sself.currentCassette addFrame:frame];
+//    });
+//}
+
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
     if (!self.enabled) {
         return;
@@ -76,6 +102,13 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
+        // after response from server, the currentRequest might not match the original request, let's record that
+        // just in case it's important
+        BKRRequest *currentRequest = [BKRRequest frameWithTask:task];
+        [currentRequest addRequest:task.currentRequest];
+        [sself.currentCassette addFrame:currentRequest];
+        
+        // now add response
         BKRResponse *frame = [BKRResponse frameWithTask:task];
         [frame addResponse:response];
         [sself.currentCassette addFrame:frame];

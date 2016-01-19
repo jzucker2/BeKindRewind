@@ -31,6 +31,10 @@
  */
 - (void)reset;
 
+//- (void)recordTaskResumption:(NSURLSessionTask *)task;
+
+- (void)initTask:(NSURLSessionTask *)task;
+
 /**
  *  Called by JSZVCRNSURLSessionConnection
  *

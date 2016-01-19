@@ -31,6 +31,7 @@
 - (NSArray<BKRData *> *)allDataFrames;
 - (NSArray<BKRResponse *> *)allResponseFrames;
 - (NSArray<BKRRequest *> *)allRequestFrames;
+- (BKRRequest *)originalRequest;
 
 //- (void)addData:(NSData *)data;
 //- (void)addRequest:(NSURLRequest *)request;

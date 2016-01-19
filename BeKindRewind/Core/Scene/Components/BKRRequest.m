@@ -9,25 +9,33 @@
 #import "BKRRequest.h"
 
 @interface BKRRequest ()
-@property (nonatomic, copy) NSURLRequest *request;
+@property (nonatomic, copy, readwrite) NSData *HTTPBody;
+@property (nonatomic, readwrite) BOOL HTTPShouldHandleCookies;
+@property (nonatomic, readwrite) BOOL HTTPShouldUsePipelining;
+@property (nonatomic, copy, readwrite) NSDictionary *allHTTPHeaderFields;
+@property (nonatomic, copy, readwrite) NSString *HTTPMethod;
+@property (nonatomic, copy, readwrite) NSURL *URL;
+@property (nonatomic, readwrite) NSTimeInterval timeoutInterval;
+@property (nonatomic, readwrite) BOOL allowsCellularAccess;
+@property (nonatomic, readwrite) BOOL isOriginalRequest;
 @end
 
 @implementation BKRRequest
 
-//- (instancetype)initWithRequest:(NSURLRequest *)request {
-//    self = [super init];
-//    if (self) {
-//        _request = request;
-//    }
-//    return self;
-//}
-//
-//+ (instancetype)frameWithRequest:(NSURLRequest *)request {
-//    return [[self alloc] initWithRequest:request];
-//}
+- (void)addRequest:(NSURLRequest *)request isOriginal:(BOOL)isOriginalRequest {
+    self.HTTPBody = request.HTTPBody;
+    self.HTTPShouldHandleCookies = request.HTTPShouldHandleCookies;
+    self.HTTPShouldUsePipelining = request.HTTPShouldUsePipelining;
+    self.allHTTPHeaderFields = request.allHTTPHeaderFields;
+    self.HTTPMethod = request.HTTPMethod;
+    self.URL = request.URL;
+    self.timeoutInterval = request.timeoutInterval;
+    self.allowsCellularAccess = request.allowsCellularAccess;
+    self.isOriginalRequest = isOriginalRequest;
+}
 
 - (void)addRequest:(NSURLRequest *)request {
-    self.request = request;
+    [self addRequest:request isOriginal:NO];
 }
 
 @end

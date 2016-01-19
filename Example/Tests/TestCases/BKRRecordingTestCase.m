@@ -12,6 +12,7 @@
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRData.h>
 #import <BeKindRewind/BKRResponse.h>
+#import <BeKindRewind/BKRRequest.h>
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
 
 @interface BKRRecordingTestCase : XCTestCase
@@ -40,6 +41,8 @@
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
     __block XCTestExpectation *basicGetExpectation = [self expectationWithDescription:@"basicGetExpectation"];
+//    __block BKRCassette *cassette = nil;
+    __block BKRScene *scene = nil;
     NSURL *basicGetURL = [NSURL URLWithString:@"https://httpbin.org/get?test=test"];
     NSURLRequest *basicGetRequest = [NSURLRequest requestWithURL:basicGetURL];
     NSURLSessionDataTask *basicGetTask = [[NSURLSession sharedSession] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -53,7 +56,7 @@
         BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 1);
-        BKRScene *scene = cassette.allScenes.firstObject;
+        scene = cassette.allScenes.firstObject;
         XCTAssertTrue(scene.allFrames.count > 0);
         XCTAssertEqual(scene.allDataFrames.count, 1);
         BKRData *dataFrame = scene.allDataFrames.firstObject;
@@ -74,6 +77,19 @@
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateCompleted);
+        XCTAssertEqual(scene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = basicGetTask.originalRequest;
+        XCTAssertNotNil(originalRequest);
+        BKRRequest *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        XCTAssertTrue(originalRequestFrame.isOriginalRequest);
+        XCTAssertEqual(originalRequestFrame.HTTPShouldHandleCookies, originalRequest.HTTPShouldHandleCookies);
+        XCTAssertEqual(originalRequestFrame.HTTPShouldUsePipelining, originalRequest.HTTPShouldUsePipelining);
+        XCTAssertEqualObjects(originalRequestFrame.allHTTPHeaderFields, originalRequest.allHTTPHeaderFields);
+        XCTAssertEqualObjects(originalRequestFrame.URL, originalRequest.URL);
+        XCTAssertEqual(originalRequestFrame.timeoutInterval, originalRequest.timeoutInterval);
+        XCTAssertEqualObjects(originalRequestFrame.HTTPMethod, originalRequest.HTTPMethod);
+        XCTAssertEqual(originalRequestFrame.allowsCellularAccess, originalRequest.allowsCellularAccess);
     }];
 }
 
