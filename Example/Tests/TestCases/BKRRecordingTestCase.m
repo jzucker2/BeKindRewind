@@ -38,10 +38,7 @@
 }
 
 - (void)testBasicRecordingForGETRequest {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
     __block XCTestExpectation *basicGetExpectation = [self expectationWithDescription:@"basicGetExpectation"];
-//    __block BKRCassette *cassette = nil;
     __block BKRScene *scene = nil;
     NSURL *basicGetURL = [NSURL URLWithString:@"https://httpbin.org/get?test=test"];
     NSURLRequest *basicGetRequest = [NSURLRequest requestWithURL:basicGetURL];
@@ -91,6 +88,10 @@
         XCTAssertEqualObjects(originalRequestFrame.HTTPMethod, originalRequest.HTTPMethod);
         XCTAssertEqual(originalRequestFrame.allowsCellularAccess, originalRequest.allowsCellularAccess);
     }];
+}
+
+- (void)testRecordingTwoGETRequests {
+    
 }
 
 //- (void)testPerformanceExample {
