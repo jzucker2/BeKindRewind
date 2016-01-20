@@ -9,7 +9,6 @@
 #import "BKRResponse.h"
 
 @interface BKRResponse ()
-//@property (nonatomic, copy) NSURLResponse *response;
 @property (nonatomic, copy, readwrite) NSURL *URL;
 @property (nonatomic, copy, readwrite) NSString *MIMEType;
 @property (nonatomic, readwrite) NSInteger statusCode;
@@ -17,18 +16,6 @@
 @end
 
 @implementation BKRResponse
-
-//- (instancetype)initWithResponse:(NSURLResponse *)response {
-//    self = [super init];
-//    if (self) {
-//        _response = response;
-//    }
-//    return self;
-//}
-//
-//+ (instancetype)frameWithResponse:(NSURLResponse *)response {
-//    return [[self alloc] initWithResponse:response];
-//}
 
 - (instancetype)initWithTask:(NSURLSessionTask *)task {
     self = [super initWithTask:task];
@@ -39,7 +26,6 @@
 }
 
 - (void)addResponse:(NSURLResponse *)response {
-//    self.response = response;
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         self.statusCode = httpResponse.statusCode;
@@ -54,11 +40,6 @@
                                    @"URL" : self.URL.absoluteString,
                                    @"MIMEType" : self.MIMEType,
                                    } mutableCopy];
-//    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-//        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-//        dict[@"statusCode"] = @(httpResponse.statusCode);
-//        dict[@"allHeaderFields"] = httpResponse.allHeaderFields;
-//    }
     if (self.statusCode >= 0) {
         dict[@"statusCode"] = @(self.statusCode);
         dict[@"allHeaderFields"] = self.allHeaderFields;

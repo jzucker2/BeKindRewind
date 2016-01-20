@@ -21,14 +21,6 @@
     _creationDate = [NSDate date];
 }
 
-//- (instancetype)init {
-//    self = [super init];
-//    if (self) {
-//        _creationDate = [NSDate date];
-//    }
-//    return self;
-//}
-
 - (instancetype)initWithTask:(NSURLSessionTask *)task {
     self = [super init];
     if (self) {
@@ -37,10 +29,6 @@
     }
     return self;
 }
-
-//- (void)_init {
-//    _creationDate = [NSDate date];
-//}
 
 + (instancetype)frameWithTask:(NSURLSessionTask *)task {
     return [[self alloc] initWithTask:task];

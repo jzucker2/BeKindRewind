@@ -15,11 +15,7 @@
 
 @property (nonatomic, getter=isRecording) BOOL recording;
 
-//- (void)addScene:(BKRScene *)scene;
 - (void)addFrame:(BKRFrame *)frame;
 - (NSArray *)allScenes;
-
-//- (NSArray *)allScenes;
-//- (NSArray *)allScenesForPlist;
 
 @end

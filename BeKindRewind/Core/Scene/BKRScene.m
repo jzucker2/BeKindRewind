@@ -22,14 +22,6 @@
 
 @implementation BKRScene
 
-//- (instancetype)initWithTask:(NSURLSessionTask *)task {
-//    self = [super initWithTask:task];
-//    if (self) {
-//        [self _init];
-//    }
-//    return self;
-//}
-
 - (void)_init {
     _frames = [NSMutableArray array];
 }

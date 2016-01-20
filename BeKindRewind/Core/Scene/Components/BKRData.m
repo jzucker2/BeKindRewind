@@ -15,18 +15,6 @@
 
 @implementation BKRData
 
-//- (instancetype)initWithData:(NSData *)data {
-//    self = [super init];
-//    if (self) {
-//        _data = data;
-//    }
-//    return self;
-//}
-//
-//+ (instancetype)frameWithData:(NSData *)data {
-//    return [[self alloc] initWithData:data];
-//}
-
 - (void)addData:(NSData *)data {
     self.data = data;
 }

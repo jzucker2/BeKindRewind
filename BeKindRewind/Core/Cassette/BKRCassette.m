@@ -13,17 +13,15 @@
 @interface BKRCassette ()
 @property (nonatomic, strong) NSMutableDictionary *scenes;
 @property (nonatomic) dispatch_queue_t addingQueue;
+@property (nonatomic) NSDate *creationDate;
 @end
 
 @implementation BKRCassette
 
-//- (void)addScene:(BKRScene *)scene {
-//    
-//}
-
 - (instancetype)init {
     self = [super init];
     if (self) {
+        _creationDate = [NSDate date];
         _scenes = [NSMutableDictionary dictionary];
         _addingQueue = dispatch_queue_create("com.BKR.cassetteAddingQueue", DISPATCH_QUEUE_SERIAL);
     }
@@ -54,13 +52,14 @@
 - (void)setRecording:(BOOL)recording {
     _recording = recording;
     if (_recording) {
-        
+        _creationDate = [NSDate date];
     } else {
         
     }
 }
 
 - (NSArray *)allScenes {
+// TODO: check if this orders properly, possibly with a test
     return [self.scenes.allValues sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
 }
 
@@ -72,6 +71,7 @@
     NSMutableDictionary *plistDict = [@{
                                         @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]
                                         } mutableCopy];
+    plistDict[@"creationDate"] = self.creationDate.copy;
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 

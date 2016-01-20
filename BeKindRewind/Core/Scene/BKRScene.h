@@ -9,18 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "BKRSerializer.h"
 
-//@class BKRData;
-//@class BKRRequest;
-//@class BKRResponse;
 @class BKRFrame;
 @class BKRData;
 @class BKRError;
 @class BKRRequest;
 @class BKRResponse;
 @interface BKRScene : NSObject <BKRSerializer>
-
-//- (instancetype)initWithTask:(NSURLSessionTask *)task;
-//+ (instancetype)sceneWithTask:(NSURLSessionTask *)task;
 
 @property (nonatomic, copy, readonly) NSString *uniqueIdentifier;
 @property (nonatomic, copy, readonly) BKRFrame *clapboardFrame;
