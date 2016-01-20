@@ -14,7 +14,7 @@
 @class BKRRawFrame;
 @class BKRError;
 @class BKRRequestFrame;
-@class BKRResponse;
+@class BKRResponseFrame;
 @interface BKRScene : NSObject <BKRSerializer>
 
 @property (nonatomic, copy, readonly) NSString *uniqueIdentifier;
@@ -25,7 +25,7 @@
 - (void)addFrame:(BKRRawFrame *)frame;
 - (NSArray<BKRFrame *> *)allFrames;
 - (NSArray<BKRDataFrame *> *)allDataFrames;
-- (NSArray<BKRResponse *> *)allResponseFrames;
+- (NSArray<BKRResponseFrame *> *)allResponseFrames;
 - (NSArray<BKRRequestFrame *> *)allRequestFrames;
 - (BKRRequestFrame *)originalRequest;
 - (BKRRequestFrame *)currentRequest;

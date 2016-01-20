@@ -11,7 +11,7 @@
 #import "BKRFrame.h"
 #import "BKRDataFrame.h"
 #import "BKRRequestFrame.h"
-#import "BKRResponse.h"
+#import "BKRResponseFrame.h"
 #import "BKRRawFrame.h"
 #import "BKRConstants.h"
 
@@ -59,7 +59,7 @@
         [dataFrame addData:frame.item];
         addingFrame = dataFrame;
     } else if ([frame.item isKindOfClass:[NSURLResponse class]]) {
-        BKRResponse *responseFrame = [BKRResponse frameFromFrame:frame];
+        BKRResponseFrame *responseFrame = [BKRResponseFrame frameFromFrame:frame];
         [responseFrame addResponse:frame.item];
         addingFrame = responseFrame;
     } else if ([frame.item isKindOfClass:[NSURLRequest class]]) {
@@ -80,8 +80,8 @@
     return [self _framesOnlyOfType:[BKRRequestFrame class]];
 }
 
-- (NSArray<BKRResponse *> *)allResponseFrames {
-    return [self _framesOnlyOfType:[BKRResponse class]];
+- (NSArray<BKRResponseFrame *> *)allResponseFrames {
+    return [self _framesOnlyOfType:[BKRResponseFrame class]];
 }
 
 - (NSArray<BKRDataFrame *> *)allDataFrames {

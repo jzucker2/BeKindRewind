@@ -1,21 +1,21 @@
 //
-//  BKRResponse.m
+//  BKRResponseFrame.m
 //  Pods
 //
-//  Created by Jordan Zucker on 1/18/16.
+//  Created by Jordan Zucker on 1/20/16.
 //
 //
 
-#import "BKRResponse.h"
+#import "BKRResponseFrame.h"
 
-@interface BKRResponse ()
+@interface BKRResponseFrame ()
 @property (nonatomic, copy, readwrite) NSURL *URL;
 @property (nonatomic, copy, readwrite) NSString *MIMEType;
 @property (nonatomic, readwrite) NSInteger statusCode;
 @property (nonatomic, copy, readwrite) NSDictionary *allHeaderFields;
 @end
 
-@implementation BKRResponse
+@implementation BKRResponseFrame
 
 - (instancetype)initWithTask:(NSURLSessionTask *)task {
     self = [super initWithTask:task];

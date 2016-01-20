@@ -11,7 +11,7 @@
 #import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRDataFrame.h>
-#import <BeKindRewind/BKRResponse.h>
+#import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
 
@@ -61,7 +61,7 @@
         XCTAssertEqualObjects(dataDict[@"args"], recordedDataObject[@"args"]);
         XCTAssertNotNil(response);
         XCTAssertEqual(scene.allResponseFrames.count, 1);
-        BKRResponse *responseFrame = scene.allResponseFrames.firstObject;
+        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
         NSHTTPURLResponse *castedDataTaskResponse = (NSHTTPURLResponse *)response;
         XCTAssertEqualObjects(responseFrame.allHeaderFields, castedDataTaskResponse.allHeaderFields);
