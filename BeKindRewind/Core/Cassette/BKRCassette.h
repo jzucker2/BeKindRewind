@@ -8,14 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "BKRSerializer.h"
+#import "BKRDeserializer.h"
 
-//@class BKRScene;
 @class BKRFrame;
-@interface BKRCassette : NSObject <BKRSerializer>
+@class BKRScene;
+@interface BKRCassette : NSObject <BKRSerializer, BKRDeserializer>
 
 @property (nonatomic, getter=isRecording) BOOL recording;
 
 - (void)addFrame:(BKRFrame *)frame;
-- (NSArray *)allScenes;
+- (NSArray<BKRScene *> *)allScenes;
 
 @end

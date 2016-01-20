@@ -11,7 +11,8 @@
 
 @protocol BKRDeserializer <NSObject>
 
-- (BKRScene *)sceneRepresentation;
+// a BKR class object
+- (id)bkrRepresentation;
 
 
 @end

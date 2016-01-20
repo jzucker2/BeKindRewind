@@ -58,7 +58,7 @@
     }
 }
 
-- (NSArray *)allScenes {
+- (NSArray<BKRScene *> *)allScenes {
 // TODO: check if this orders properly, possibly with a test
     return [self.scenes.allValues sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
 }
@@ -73,6 +73,10 @@
                                         } mutableCopy];
     plistDict[@"creationDate"] = self.creationDate.copy;
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
+}
+
+- (id)bkrRepresentation {
+    return nil;
 }
 
 @end

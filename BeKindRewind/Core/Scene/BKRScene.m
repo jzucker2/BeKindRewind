@@ -105,6 +105,10 @@
     return restrictedFrames.copy;
 }
 
+#pragma mark - BKRDeserializer
+
+
+
 #pragma mark - BKRSerializer
 
 - (NSDictionary *)plistRepresentation {
