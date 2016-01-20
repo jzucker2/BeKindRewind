@@ -91,7 +91,11 @@
 }
 
 - (void)testRecordingTwoGETRequests {
-    
+    NSDictionary *dictionary = nil;
+    NSMutableDictionary *secondDictionary = [NSMutableDictionary dictionaryWithDictionary:dictionary];
+    XCTAssertNotNil(secondDictionary);
+    secondDictionary[@"test"] = @2;
+    XCTAssertEqualObjects(secondDictionary[@"test"], @2);
 }
 
 //- (void)testPerformanceExample {

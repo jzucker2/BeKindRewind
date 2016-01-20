@@ -10,7 +10,7 @@
 #import "BKRFrame.h"
 
 @interface BKRFrame ()
-@property (nonatomic, strong) NSDate *creationDate;
+@property (nonatomic, strong, readwrite) NSDate *creationDate;
 @property (nonatomic, copy, readwrite) NSString *uniqueIdentifier;
 
 @end
@@ -44,6 +44,13 @@
 
 + (instancetype)frameWithTask:(NSURLSessionTask *)task {
     return [[self alloc] initWithTask:task];
+}
+
+- (NSDictionary *)plistRepresentation {
+    return @{
+             @"creationDate": self.creationDate.copy,
+             @"uniqueIdentifier": self.uniqueIdentifier.copy
+             };
 }
 
 @end

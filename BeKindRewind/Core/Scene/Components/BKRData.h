@@ -7,8 +7,9 @@
 //
 
 #import "BKRFrame.h"
+#import "BKRSerializer.h"
 
-@interface BKRData : BKRFrame
+@interface BKRData : BKRFrame <BKRSerializer>
 
 - (void)addData:(NSData *)data;
 

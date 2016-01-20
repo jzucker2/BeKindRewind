@@ -45,4 +45,15 @@
     }
 }
 
+- (NSDictionary *)plistRepresentation {
+    NSDictionary *superDict = [super plistRepresentation];
+    NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithDictionary:superDict];
+    plistDict[@"data"] = self.data.copy;
+    id JSON = [self JSONConvertedObject];
+    if (JSON) {
+        plistDict[@"JSON"] = JSON;
+    }
+    return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
+}
+
 @end

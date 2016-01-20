@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRSerializer.h"
 
 //@class BKRData;
 //@class BKRRequest;
@@ -16,14 +17,14 @@
 @class BKRError;
 @class BKRRequest;
 @class BKRResponse;
-@interface BKRScene : NSObject
+@interface BKRScene : NSObject <BKRSerializer>
 
 //- (instancetype)initWithTask:(NSURLSessionTask *)task;
 //+ (instancetype)sceneWithTask:(NSURLSessionTask *)task;
 
 @property (nonatomic, copy, readonly) NSString *uniqueIdentifier;
-//
-//@property (nonatomic, copy) NSString *uniqueIdentifier;
+@property (nonatomic, copy, readonly) BKRFrame *clapboardFrame;
+
 - (instancetype)initFromFrame:(BKRFrame *)frame;
 + (instancetype)sceneFromFrame:(BKRFrame *)frame;
 - (void)addFrame:(BKRFrame *)frame;
@@ -32,13 +33,7 @@
 - (NSArray<BKRResponse *> *)allResponseFrames;
 - (NSArray<BKRRequest *> *)allRequestFrames;
 - (BKRRequest *)originalRequest;
+- (BKRRequest *)currentRequest;
 
-//- (void)addData:(NSData *)data;
-//- (void)addRequest:(NSURLRequest *)request;
-//- (void)addResponse:(NSURLResponse *)response;
-//- (void)addError:(NSError *)error;
-//@property (nonatomic, strong) BKRData *data;
-//@property (nonatomic, strong) BKRRequest *request;
-//@property (nonatomic, strong) BKRResponse *response;
 
 @end

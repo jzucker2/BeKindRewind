@@ -38,4 +38,34 @@
     [self addRequest:request isOriginal:NO];
 }
 
+- (NSDictionary *)plistRepresentation {
+    NSDictionary *superDict = [super plistRepresentation];
+    NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithDictionary:superDict];
+    NSDictionary *dict =@{
+                          @"URL": self.URL.absoluteString,
+                          @"timeoutInterval": @(self.timeoutInterval),
+                          @"allowsCellularAccess": @(self.allowsCellularAccess)
+                          };
+    [plistDict addEntriesFromDictionary:dict];
+    if (self.HTTPMethod) {
+        plistDict[@"HTTPMethod"] = self.HTTPMethod;
+    }
+    if (self.HTTPBody) {
+        plistDict[@"HTTPBody"] = self.HTTPBody;
+    }
+    if (self.HTTPShouldHandleCookies) {
+        plistDict[@"HTTPShouldHandleCookies"] = @(self.HTTPShouldHandleCookies);
+    }
+    if (self.HTTPShouldUsePipelining) {
+        plistDict[@"HTTPShouldUsePipelining"] = @(self.HTTPShouldUsePipelining);
+    }
+    if (self.allHTTPHeaderFields) {
+        plistDict[@"allHTTPHeaderFields"] = self.allHTTPHeaderFields;
+    }
+    if (self.isOriginalRequest) {
+        plistDict[@"isOriginalRequest"] = @(self.isOriginalRequest);
+    }
+    return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
+}
+
 @end

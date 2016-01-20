@@ -17,7 +17,6 @@
 //@property (nonatomic) NSDate *creationDate;
 @property (nonatomic, copy, readwrite) NSString *uniqueIdentifier;
 @property (nonatomic, strong) NSMutableArray<BKRFrame *> *frames;
-@property (nonatomic, strong) NSDate *creationDate;
 @end
 
 
@@ -32,7 +31,6 @@
 //}
 
 - (void)_init {
-    _creationDate = [NSDate date];
     _frames = [NSMutableArray array];
 }
 
@@ -48,6 +46,10 @@
 
 + (instancetype)sceneFromFrame:(BKRFrame *)frame {
     return [[self alloc] initFromFrame:frame];
+}
+
+- (BKRFrame *)clapboardFrame {
+    return self.allFrames.firstObject;
 }
 
 - (void)addFrame:(BKRFrame *)frame {
@@ -87,6 +89,18 @@
     return nil;
 }
 
+- (BKRRequest *)currentRequest {
+    for (BKRFrame *frame in self.allFrames) {
+        if ([frame isKindOfClass:[BKRRequest class]]) {
+            BKRRequest *request = (BKRRequest *)frame;
+            if (!request.isOriginalRequest) {
+                return request;
+            }
+        }
+    }
+    return nil;
+}
+
 - (NSArray *)_framesOnlyOfType:(Class)frameClass {
     NSMutableArray *restrictedFrames = [NSMutableArray array];
     for (BKRFrame *frame in self.allFrames) {
@@ -97,6 +111,19 @@
         }
     }
     return restrictedFrames.copy;
+}
+
+#pragma mark - BKRSerializer
+
+- (NSDictionary *)plistRepresentation {
+    NSMutableDictionary *plistDict = [NSMutableDictionary dictionary];
+    plistDict[@"uniqueIdentifier"] = self.uniqueIdentifier;
+    NSMutableArray *plistFrames = [NSMutableArray array];
+    for (BKRFrame *frame in self.allFrames) {
+        [plistFrames addObject:frame.plistRepresentation];
+    }
+    plistDict[@"scenes"] = [[NSArray alloc] initWithArray:plistFrames copyItems:YES];
+    return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 
 @end

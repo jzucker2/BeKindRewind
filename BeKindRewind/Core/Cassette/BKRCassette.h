@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRSerializer.h"
 
 //@class BKRScene;
 @class BKRFrame;
-@interface BKRCassette : NSObject
+@interface BKRCassette : NSObject <BKRSerializer>
 
 @property (nonatomic, getter=isRecording) BOOL recording;
 

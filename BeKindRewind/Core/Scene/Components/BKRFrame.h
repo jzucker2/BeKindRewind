@@ -7,14 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRSerializer.h"
 
 // Abstract for a recordable element of a network call (response, data, request, etc...)
 
-@interface BKRFrame : NSObject
+@interface BKRFrame : NSObject <BKRSerializer>
 
 - (instancetype)initWithTask:(NSURLSessionTask *)task;
 + (instancetype)frameWithTask:(NSURLSessionTask *)task;
 
 @property (nonatomic, copy, readonly) NSString *uniqueIdentifier;
+@property (nonatomic, readonly) NSDate *creationDate;
 
 @end

@@ -7,8 +7,9 @@
 //
 
 #import "BKRFrame.h"
+#import "BKRSerializer.h"
 
-@interface BKRRequest : BKRFrame
+@interface BKRRequest : BKRFrame <BKRSerializer>
 
 @property (nonatomic, copy, readonly) NSData *HTTPBody;
 @property (nonatomic, readonly) BOOL HTTPShouldHandleCookies;

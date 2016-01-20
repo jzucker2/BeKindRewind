@@ -10,6 +10,7 @@
 
 @protocol BKRSerializer <NSObject>
 
-- (NSDictionary *)dictionaryRepresentation;
+// guaranteed to work in plist
+- (NSDictionary *)plistRepresentation;
 
 @end

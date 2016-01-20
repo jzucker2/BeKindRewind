@@ -61,7 +61,18 @@
 }
 
 - (NSArray *)allScenes {
-    return self.scenes.allValues;
+    return [self.scenes.allValues sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
+}
+
+- (NSDictionary *)plistRepresentation {
+    NSMutableArray *plistArray = [NSMutableArray array];
+    for (BKRScene *scene in self.allScenes) {
+        [plistArray addObject:scene.plistRepresentation];
+    }
+    NSMutableDictionary *plistDict = [@{
+                                        @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]
+                                        } mutableCopy];
+    return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 
 @end
