@@ -9,9 +9,10 @@
 //#import "NSURLSessionTask+BKRAdditions.h"
 #import "BKRScene.h"
 #import "BKRFrame.h"
-#import "BKRData.h"
+#import "BKRDataFrame.h"
 #import "BKRRequest.h"
 #import "BKRResponse.h"
+#import "BKRConstants.h"
 
 @interface BKRScene ()
 //@property (nonatomic) NSDate *creationDate;
@@ -65,8 +66,8 @@
     return [self _framesOnlyOfType:[BKRResponse class]];
 }
 
-- (NSArray<BKRData *> *)allDataFrames {
-    return [self _framesOnlyOfType:[BKRData class]];
+- (NSArray<BKRDataFrame *> *)allDataFrames {
+    return [self _framesOnlyOfType:[BKRDataFrame class]];
 }
 
 - (BKRRequest *)originalRequest {

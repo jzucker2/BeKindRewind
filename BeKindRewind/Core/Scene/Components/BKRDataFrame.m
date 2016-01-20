@@ -1,22 +1,35 @@
 //
-//  BKRData.m
+//  BKRDataFrame.m
 //  Pods
 //
-//  Created by Jordan Zucker on 1/18/16.
+//  Created by Jordan Zucker on 1/20/16.
 //
 //
 
-#import "BKRData.h"
+#import "BKRDataFrame.h"
 
-@interface BKRData ()
-@property (nonatomic, copy) NSData *data;
+@interface BKRDataFrame ()
+@property (nonatomic, copy)  NSData *data;
 
 @end
 
-@implementation BKRData
+@implementation BKRDataFrame
 
 - (void)addData:(NSData *)data {
     self.data = data;
+}
+
+- (instancetype)initWithData:(NSData *)data {
+//    self = [super initWithTask:<#(NSURLSessionTask *)#>];
+//    if (self) {
+//        <#statements#>
+//    }
+    return nil;
+}
+
++ (instancetype)frameWithData:(NSData *)data {
+//    return [[self alloc] initWithFrame:data];
+    return nil;
 }
 
 - (NSData *)rawData {

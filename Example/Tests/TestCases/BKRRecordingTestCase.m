@@ -10,7 +10,7 @@
 #import <BeKindRewind/BKRRecorder.h>
 #import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRScene.h>
-#import <BeKindRewind/BKRData.h>
+#import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponse.h>
 #import <BeKindRewind/BKRRequest.h>
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
@@ -56,7 +56,7 @@
         scene = cassette.allScenes.firstObject;
         XCTAssertTrue(scene.allFrames.count > 0);
         XCTAssertEqual(scene.allDataFrames.count, 1);
-        BKRData *dataFrame = scene.allDataFrames.firstObject;
+        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
         NSDictionary *recordedDataObject = dataFrame.JSONConvertedObject;
         XCTAssertEqualObjects(dataDict[@"args"], recordedDataObject[@"args"]);
         XCTAssertNotNil(response);

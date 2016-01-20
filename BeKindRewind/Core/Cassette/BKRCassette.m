@@ -7,8 +7,9 @@
 //
 
 #import "BKRCassette.h"
-#import "BKRFrame.h"
+#import "BKRRawFrame.h"
 #import "BKRScene.h"
+#import "BKRConstants.h"
 
 @interface BKRCassette ()
 @property (nonatomic, strong) NSMutableDictionary *scenes;
@@ -30,7 +31,7 @@
 
 // frames and scenes share unique identifiers, this comes from the recorded task
 // if the frame matches a scene unique identifier, then add it to the scene
-- (void)addFrame:(BKRFrame *)frame {
+- (void)addFrame:(BKRRawFrame *)frame {
     if (!self.isRecording) {
         // Can't add frames if you are not recording!
         return;
@@ -39,6 +40,8 @@
     __weak typeof (self) wself = self;
     dispatch_async(self.addingQueue, ^{
         __strong typeof(wself) sself = wself;
+//        Class expectedFrameClass = [frame expectedFrameClass];
+//        BKRDataFrame *normalizedFrame = [expectedFrameClass ]
         if (sself.scenes[frame.uniqueIdentifier]) {
             BKRScene *existingScene = sself.scenes[frame.uniqueIdentifier];
             [existingScene addFrame:frame];

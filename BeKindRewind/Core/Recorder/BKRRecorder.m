@@ -8,11 +8,11 @@
 
 #import "BKRRecorder.h"
 #import "BKRCassette.h"
-#import "BKRFrame.h"
-#import "BKRData.h"
-#import "BKRResponse.h"
-#import "BKRRequest.h"
-#import "BKRError.h"
+#import "BKRRawFrame.h"
+//#import "BKRData.h"
+//#import "BKRResponse.h"
+//#import "BKRRequest.h"
+//#import "BKRError.h"
 
 @interface BKRRecorder ()
 @property (nonatomic) dispatch_queue_t recordingQueue;
@@ -63,9 +63,12 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
-        BKRRequest *frame = [BKRRequest frameWithTask:task];
-        [frame addRequest:task.originalRequest isOriginal:YES];
-        [sself.currentCassette addFrame:frame];
+//        BKRRequest *frame = [BKRRequest frameWithTask:task];
+//        [frame addRequest:task.originalRequest isOriginal:YES];
+//        [sself.currentCassette addFrame:frame];
+        BKRRawFrame *requestFrame = [BKRRawFrame frameWithTask:task];
+        requestFrame.item = task.originalRequest;
+        [sself.currentCassette addFrame:requestFrame];
     });
 }
 
@@ -89,9 +92,12 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
-        BKRData *frame = [BKRData frameWithTask:task];
-        [frame addData:data];
-        [sself.currentCassette addFrame:frame];
+//        BKRData *frame = [BKRData frameWithTask:task];
+//        [frame addData:data];
+//        [sself.currentCassette addFrame:frame];
+        BKRRawFrame *dataFrame = [BKRRawFrame frameWithTask:task];
+        dataFrame.item = data.copy;
+        [sself.currentCassette addFrame:dataFrame];
     });
 }
 
@@ -104,13 +110,19 @@
         __typeof (wself) sself = wself;
         // after response from server, the currentRequest might not match the original request, let's record that
         // just in case it's important
-        BKRRequest *currentRequest = [BKRRequest frameWithTask:task];
-        [currentRequest addRequest:task.currentRequest];
-        [sself.currentCassette addFrame:currentRequest];
+//        BKRRequest *currentRequest = [BKRRequest frameWithTask:task];
+//        [currentRequest addRequest:task.currentRequest];
+//        [sself.currentCassette addFrame:currentRequest];
+        BKRRawFrame *currentRequestFrame = [BKRRawFrame frameWithTask:task];
+        currentRequestFrame.item = task.currentRequest;
+        [sself.currentCassette addFrame:currentRequestFrame];
         
         // now add response
-        BKRResponse *frame = [BKRResponse frameWithTask:task];
-        [frame addResponse:response];
+//        BKRResponse *frame = [BKRResponse frameWithTask:task];
+//        [frame addResponse:response];
+//        [sself.currentCassette addFrame:frame];
+        BKRRawFrame *frame = [BKRRawFrame frameWithTask:task];
+        frame.item = response;
         [sself.currentCassette addFrame:frame];
     });
 }
@@ -123,8 +135,11 @@
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
         if (error) {
-            BKRError *frame = [BKRError frameWithTask:task];
-            [frame addError:error];
+//            BKRError *frame = [BKRError frameWithTask:task];
+//            [frame addError:error];
+//            [sself.currentCassette addFrame:frame];
+            BKRRawFrame *frame = [BKRRawFrame frameWithTask:task];
+            frame.item = error;
             [sself.currentCassette addFrame:frame];
         }
     });

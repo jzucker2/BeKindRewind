@@ -10,7 +10,7 @@
 #import "BKRSerializer.h"
 
 @class BKRFrame;
-@class BKRData;
+@class BKRDataFrame;
 @class BKRError;
 @class BKRRequest;
 @class BKRResponse;
@@ -23,7 +23,7 @@
 + (instancetype)sceneFromFrame:(BKRFrame *)frame;
 - (void)addFrame:(BKRFrame *)frame;
 - (NSArray<BKRFrame *> *)allFrames;
-- (NSArray<BKRData *> *)allDataFrames;
+- (NSArray<BKRDataFrame *> *)allDataFrames;
 - (NSArray<BKRResponse *> *)allResponseFrames;
 - (NSArray<BKRRequest *> *)allRequestFrames;
 - (BKRRequest *)originalRequest;
