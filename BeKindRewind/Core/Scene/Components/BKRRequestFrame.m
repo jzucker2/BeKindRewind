@@ -17,12 +17,11 @@
 @property (nonatomic, copy, readwrite) NSURL *URL;
 @property (nonatomic, readwrite) NSTimeInterval timeoutInterval;
 @property (nonatomic, readwrite) BOOL allowsCellularAccess;
-@property (nonatomic, readwrite) BOOL isOriginalRequest;
 @end
 
 @implementation BKRRequestFrame
 
-- (void)addRequest:(NSURLRequest *)request isOriginal:(BOOL)isOriginalRequest {
+- (void)addRequest:(NSURLRequest *)request {
     self.HTTPBody = request.HTTPBody;
     self.HTTPShouldHandleCookies = request.HTTPShouldHandleCookies;
     self.HTTPShouldUsePipelining = request.HTTPShouldUsePipelining;
@@ -31,11 +30,6 @@
     self.URL = request.URL;
     self.timeoutInterval = request.timeoutInterval;
     self.allowsCellularAccess = request.allowsCellularAccess;
-    self.isOriginalRequest = isOriginalRequest;
-}
-
-- (void)addRequest:(NSURLRequest *)request {
-    [self addRequest:request isOriginal:NO];
 }
 
 - (NSDictionary *)plistRepresentation {
@@ -61,9 +55,6 @@
     }
     if (self.allHTTPHeaderFields) {
         plistDict[@"allHTTPHeaderFields"] = self.allHTTPHeaderFields;
-    }
-    if (self.isOriginalRequest) {
-        plistDict[@"isOriginalRequest"] = @(self.isOriginalRequest);
     }
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }

@@ -19,9 +19,7 @@
 @property (nonatomic, copy, readonly) NSURL *URL;
 @property (nonatomic, readonly) NSTimeInterval timeoutInterval;
 @property (nonatomic, readonly) BOOL allowsCellularAccess;
-@property (nonatomic, readonly) BOOL isOriginalRequest;
 
 - (void)addRequest:(NSURLRequest *)request;
-- (void)addRequest:(NSURLRequest *)request isOriginal:(BOOL)isOriginalRequest;
 
 @end

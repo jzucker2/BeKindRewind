@@ -79,7 +79,6 @@
         XCTAssertNotNil(originalRequest);
         BKRRequestFrame *originalRequestFrame = scene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
-        XCTAssertTrue(originalRequestFrame.isOriginalRequest);
         XCTAssertEqual(originalRequestFrame.HTTPShouldHandleCookies, originalRequest.HTTPShouldHandleCookies);
         XCTAssertEqual(originalRequestFrame.HTTPShouldUsePipelining, originalRequest.HTTPShouldUsePipelining);
         XCTAssertEqualObjects(originalRequestFrame.allHTTPHeaderFields, originalRequest.allHTTPHeaderFields);
