@@ -1,15 +1,15 @@
 //
-//  BKRRequest.h
+//  BKRRequestFrame.h
 //  Pods
 //
-//  Created by Jordan Zucker on 1/18/16.
+//  Created by Jordan Zucker on 1/20/16.
 //
 //
 
 #import "BKRFrame.h"
 #import "BKRSerializer.h"
 
-@interface BKRRequest : BKRFrame <BKRSerializer>
+@interface BKRRequestFrame : BKRFrame <BKRSerializer>
 
 @property (nonatomic, copy, readonly) NSData *HTTPBody;
 @property (nonatomic, readonly) BOOL HTTPShouldHandleCookies;

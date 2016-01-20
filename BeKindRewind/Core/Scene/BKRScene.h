@@ -13,7 +13,7 @@
 @class BKRDataFrame;
 @class BKRRawFrame;
 @class BKRError;
-@class BKRRequest;
+@class BKRRequestFrame;
 @class BKRResponse;
 @interface BKRScene : NSObject <BKRSerializer>
 
@@ -26,9 +26,9 @@
 - (NSArray<BKRFrame *> *)allFrames;
 - (NSArray<BKRDataFrame *> *)allDataFrames;
 - (NSArray<BKRResponse *> *)allResponseFrames;
-- (NSArray<BKRRequest *> *)allRequestFrames;
-- (BKRRequest *)originalRequest;
-- (BKRRequest *)currentRequest;
+- (NSArray<BKRRequestFrame *> *)allRequestFrames;
+- (BKRRequestFrame *)originalRequest;
+- (BKRRequestFrame *)currentRequest;
 
 
 @end

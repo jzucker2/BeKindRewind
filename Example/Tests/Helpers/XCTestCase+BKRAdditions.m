@@ -8,7 +8,7 @@
 
 #import "XCTestCase+BKRAdditions.h"
 #import <BeKindRewind/BKRDataFrame.h>
-#import <BeKindRewind/BKRRequest.h>
+#import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponse.h>
 
 @implementation XCTestCase (BKRAdditions)

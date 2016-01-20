@@ -1,14 +1,14 @@
 //
-//  BKRRequest.m
+//  BKRRequestFrame.m
 //  Pods
 //
-//  Created by Jordan Zucker on 1/18/16.
+//  Created by Jordan Zucker on 1/20/16.
 //
 //
 
-#import "BKRRequest.h"
+#import "BKRRequestFrame.h"
 
-@interface BKRRequest ()
+@interface BKRRequestFrame ()
 @property (nonatomic, copy, readwrite) NSData *HTTPBody;
 @property (nonatomic, readwrite) BOOL HTTPShouldHandleCookies;
 @property (nonatomic, readwrite) BOOL HTTPShouldUsePipelining;
@@ -20,7 +20,7 @@
 @property (nonatomic, readwrite) BOOL isOriginalRequest;
 @end
 
-@implementation BKRRequest
+@implementation BKRRequestFrame
 
 - (void)addRequest:(NSURLRequest *)request isOriginal:(BOOL)isOriginalRequest {
     self.HTTPBody = request.HTTPBody;

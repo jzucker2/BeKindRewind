@@ -10,11 +10,9 @@
 #import "BKRScene.h"
 #import "BKRFrame.h"
 #import "BKRDataFrame.h"
-#import "BKRRequest.h"
+#import "BKRRequestFrame.h"
 #import "BKRResponse.h"
 #import "BKRRawFrame.h"
-#import "BKRRequest.h"
-#import "BKRResponse.h"
 #import "BKRConstants.h"
 
 @interface BKRScene ()
@@ -49,7 +47,7 @@
 }
 
 - (void)addFrame:(BKRRawFrame *)frame {
-    // TODO: is this check worthwhile? It shouldn't be possible
+    
     if ([self.frames containsObject:frame]) {
         NSLog(@"******************************************");
         NSLog(@"Why is the same frame being added twice????????????");
@@ -65,7 +63,7 @@
         [responseFrame addResponse:frame.item];
         addingFrame = responseFrame;
     } else if ([frame.item isKindOfClass:[NSURLRequest class]]) {
-        BKRRequest *requestFrame = [BKRRequest frameFromFrame:frame];
+        BKRRequestFrame *requestFrame = [BKRRequestFrame frameFromFrame:frame];
         [requestFrame addRequest:frame.item];
         addingFrame = requestFrame;
     } else {
@@ -78,8 +76,8 @@
     return self.frames.copy;
 }
 
-- (NSArray<BKRRequest *> *)allRequestFrames {
-    return [self _framesOnlyOfType:[BKRRequest class]];
+- (NSArray<BKRRequestFrame *> *)allRequestFrames {
+    return [self _framesOnlyOfType:[BKRRequestFrame class]];
 }
 
 - (NSArray<BKRResponse *> *)allResponseFrames {
@@ -90,26 +88,13 @@
     return [self _framesOnlyOfType:[BKRDataFrame class]];
 }
 
-- (BKRRequest *)originalRequest {
-    for (BKRFrame *frame in self.allFrames) {
-        if ([frame isKindOfClass:[BKRRequest class]]) {
-            BKRRequest *request = (BKRRequest *)frame;
-            if (request.isOriginalRequest) {
-                return request;
-            }
-        }
-    }
-    return nil;
+- (BKRRequestFrame *)originalRequest {
+    return self.allRequestFrames.firstObject;
 }
 
-- (BKRRequest *)currentRequest {
-    for (BKRFrame *frame in self.allFrames) {
-        if ([frame isKindOfClass:[BKRRequest class]]) {
-            BKRRequest *request = (BKRRequest *)frame;
-            if (!request.isOriginalRequest) {
-                return request;
-            }
-        }
+- (BKRRequestFrame *)currentRequest {
+    if (self.allRequestFrames.count > 1) {
+        return [self.allRequestFrames objectAtIndex:1];
     }
     return nil;
 }

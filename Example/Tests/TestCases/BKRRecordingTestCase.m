@@ -12,7 +12,7 @@
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponse.h>
-#import <BeKindRewind/BKRRequest.h>
+#import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
 
 @interface BKRRecordingTestCase : XCTestCase
@@ -77,7 +77,7 @@
         XCTAssertEqual(scene.allRequestFrames.count, 2);
         NSURLRequest *originalRequest = basicGetTask.originalRequest;
         XCTAssertNotNil(originalRequest);
-        BKRRequest *originalRequestFrame = scene.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         XCTAssertTrue(originalRequestFrame.isOriginalRequest);
         XCTAssertEqual(originalRequestFrame.HTTPShouldHandleCookies, originalRequest.HTTPShouldHandleCookies);
