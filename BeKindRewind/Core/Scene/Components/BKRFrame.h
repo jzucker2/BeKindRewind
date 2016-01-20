@@ -16,7 +16,8 @@
 - (instancetype)initWithTask:(NSURLSessionTask *)task;
 + (instancetype)frameWithTask:(NSURLSessionTask *)task;
 
-- (instancetype)initWithFrame:(BKRFrame *)frame;
+- (instancetype)initFromFrame:(BKRFrame *)frame;
++ (instancetype)frameFromFrame:(BKRFrame *)frame;
 //+ (instancetype)frameWithFrame:(BKRFrame *)frame;
 
 @property (nonatomic, copy, readonly) NSString *uniqueIdentifier;

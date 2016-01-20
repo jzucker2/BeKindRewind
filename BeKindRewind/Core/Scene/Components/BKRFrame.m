@@ -34,13 +34,17 @@
     return [[self alloc] initWithTask:task];
 }
 
-- (instancetype)initWithFrame:(BKRFrame *)frame {
+- (instancetype)initFromFrame:(BKRFrame *)frame {
     self = [super init];
     if (self) {
         _creationDate = frame.creationDate;
         _uniqueIdentifier = frame.uniqueIdentifier;
     }
     return self;
+}
+
++ (instancetype)frameFromFrame:(BKRFrame *)frame {
+    return [[self alloc] initFromFrame:frame];
 }
 
 //+ (instancetype)frameWithFrame:(BKRFrame *)frame {

@@ -40,8 +40,6 @@
     __weak typeof (self) wself = self;
     dispatch_async(self.addingQueue, ^{
         __strong typeof(wself) sself = wself;
-//        Class expectedFrameClass = [frame expectedFrameClass];
-//        BKRDataFrame *normalizedFrame = [expectedFrameClass ]
         if (sself.scenes[frame.uniqueIdentifier]) {
             BKRScene *existingScene = sself.scenes[frame.uniqueIdentifier];
             [existingScene addFrame:frame];

@@ -11,6 +11,7 @@
 
 @class BKRFrame;
 @class BKRDataFrame;
+@class BKRRawFrame;
 @class BKRError;
 @class BKRRequest;
 @class BKRResponse;
@@ -19,9 +20,9 @@
 @property (nonatomic, copy, readonly) NSString *uniqueIdentifier;
 @property (nonatomic, copy, readonly) BKRFrame *clapboardFrame;
 
-- (instancetype)initFromFrame:(BKRFrame *)frame;
-+ (instancetype)sceneFromFrame:(BKRFrame *)frame;
-- (void)addFrame:(BKRFrame *)frame;
+- (instancetype)initFromFrame:(BKRRawFrame *)frame;
++ (instancetype)sceneFromFrame:(BKRRawFrame *)frame;
+- (void)addFrame:(BKRRawFrame *)frame;
 - (NSArray<BKRFrame *> *)allFrames;
 - (NSArray<BKRDataFrame *> *)allDataFrames;
 - (NSArray<BKRResponse *> *)allResponseFrames;

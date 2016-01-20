@@ -12,6 +12,9 @@
 #import "BKRDataFrame.h"
 #import "BKRRequest.h"
 #import "BKRResponse.h"
+#import "BKRRawFrame.h"
+#import "BKRRequest.h"
+#import "BKRResponse.h"
 #import "BKRConstants.h"
 
 @interface BKRScene ()
@@ -27,7 +30,7 @@
     _frames = [NSMutableArray array];
 }
 
-- (instancetype)initFromFrame:(BKRFrame *)frame {
+- (instancetype)initFromFrame:(BKRRawFrame *)frame {
     self = [super init];
     if (self) {
         [self _init];
@@ -37,7 +40,7 @@
     return self;
 }
 
-+ (instancetype)sceneFromFrame:(BKRFrame *)frame {
++ (instancetype)sceneFromFrame:(BKRRawFrame *)frame {
     return [[self alloc] initFromFrame:frame];
 }
 
@@ -45,13 +48,30 @@
     return self.allFrames.firstObject;
 }
 
-- (void)addFrame:(BKRFrame *)frame {
+- (void)addFrame:(BKRRawFrame *)frame {
+    // TODO: is this check worthwhile? It shouldn't be possible
     if ([self.frames containsObject:frame]) {
         NSLog(@"******************************************");
         NSLog(@"Why is the same frame being added twice????????????");
         NSLog(@"******************************************");
     }
-    [self.frames addObject:frame];
+    BKRFrame *addingFrame = nil;
+    if ([frame.item isKindOfClass:[NSData class]]) {
+        BKRDataFrame *dataFrame = [BKRDataFrame frameFromFrame:frame];
+        [dataFrame addData:frame.item];
+        addingFrame = dataFrame;
+    } else if ([frame.item isKindOfClass:[NSURLResponse class]]) {
+        BKRResponse *responseFrame = [BKRResponse frameFromFrame:frame];
+        [responseFrame addResponse:frame.item];
+        addingFrame = responseFrame;
+    } else if ([frame.item isKindOfClass:[NSURLRequest class]]) {
+        BKRRequest *requestFrame = [BKRRequest frameFromFrame:frame];
+        [requestFrame addRequest:frame.item];
+        addingFrame = requestFrame;
+    } else {
+        addingFrame = frame;
+    }
+    [self.frames addObject:addingFrame];
 }
 
 - (NSArray<BKRFrame *> *)allFrames {

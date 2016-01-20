@@ -19,16 +19,9 @@
     self.data = data;
 }
 
-- (instancetype)initWithData:(NSData *)data {
-//    self = [super initWithTask:<#(NSURLSessionTask *)#>];
-//    if (self) {
-//        <#statements#>
-//    }
-    return nil;
-}
-
 + (instancetype)frameWithData:(NSData *)data {
 //    return [[self alloc] initWithFrame:data];
+    
     return nil;
 }
 
