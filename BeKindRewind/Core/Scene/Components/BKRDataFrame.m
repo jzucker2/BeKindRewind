@@ -19,12 +19,6 @@
     self.data = data;
 }
 
-+ (instancetype)frameWithData:(NSData *)data {
-//    return [[self alloc] initWithFrame:data];
-    
-    return nil;
-}
-
 - (NSData *)rawData {
     return self.data;
 }

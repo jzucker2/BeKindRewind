@@ -12,8 +12,6 @@
 @interface BKRDataFrame : BKRFrame <BKRSerializer>
 
 - (void)addData:(NSData *)data;
-- (instancetype)initWithData:(NSData *)data;
-+ (instancetype)frameWithData:(NSData *)data;
 
 - (NSData *)rawData;
 
