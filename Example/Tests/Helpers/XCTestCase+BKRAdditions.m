@@ -89,8 +89,61 @@
     }
 }
 
-- (void)assertData:(NSData *)data response:(NSURLResponse *)response withScene:(BKRScene *)scene {
+- (void)assertRequest:(BKRRequestFrame *)request withRequestDict:(NSDictionary *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *request, NSDictionary *otherRequest))assertions {
+    [self _assertFrame:request withDict:otherRequest];
+    XCTAssertEqualObjects(request.URL.absoluteString, otherRequest[@"URL"]);
+    XCTAssertEqual(request.timeoutInterval, [otherRequest[@"timeoutInterval"] doubleValue]);
+    XCTAssertEqual(request.allowsCellularAccess, [otherRequest[@"allowsCellularAccess"] boolValue]);
+    XCTAssertEqual(request.HTTPShouldUsePipelining, [otherRequest[@"HTTPShouldUsePipelining"] boolValue]);
+    XCTAssertEqual(request.HTTPShouldHandleCookies, [otherRequest[@"HTTPShouldHandleCookies"] boolValue]);
+    if (request.HTTPMethod) {
+        XCTAssertEqualObjects(request.HTTPMethod, otherRequest[@"HTTPMethod"]);
+    } else {
+        XCTAssertNil(otherRequest[@"HTTPMethod"]);
+    }
+    if (request.HTTPBody) {
+        XCTAssertEqualObjects(request.HTTPBody, otherRequest[@"HTTPBody"]);
+    } else {
+        XCTAssertNil(otherRequest[@"HTTPBody"]);
+    }
+    if (request.allHTTPHeaderFields) {
+        XCTAssertEqualObjects(request.allHTTPHeaderFields, otherRequest[@"allHTTPHeaderFields"]);
+    } else {
+        XCTAssertNil(otherRequest[@"allHTTPHeaderFields"]);
+    }
+    if (assertions) {
+        assertions(request, otherRequest);
+    }
+}
+
+- (void)assertResponse:(BKRResponseFrame *)response withResponseDict:(NSDictionary *)otherResponse extraAssertions:(void (^)(BKRResponseFrame *response, NSDictionary *otherResponse))assertions {
+    [self _assertFrame:response withDict:otherResponse];
+    XCTAssertEqualObjects(response.URL.absoluteString, otherResponse[@"URL"]);
+    XCTAssertEqualObjects(response.MIMEType, otherResponse[@"MIMEType"]);
+    if (response.statusCode >= 0) {
+        XCTAssertEqual(response.statusCode, [otherResponse[@"statusCode"] integerValue]);
+        XCTAssertEqualObjects(response.allHeaderFields, otherResponse[@"allHeaderFields"]);
+    } else {
+        XCTAssertNil(otherResponse[@"statusCode"]);
+        XCTAssertNil(otherResponse[@"allHeaderFields"]);
+    }
+    if (assertions) {
+        assertions(response, otherResponse);
+    }
+}
+
+- (void)assertData:(BKRDataFrame *)data withDataDict:(NSDictionary *)otherData extraAssertions:(void (^)(BKRDataFrame *data, NSDictionary *otherData))assertions {
+    [self _assertFrame:data withDict:otherData];
+    XCTAssertEqualObjects(data.rawData, otherData[@"data"]);
     
+    if (assertions) {
+        assertions(data, otherData);
+    }
+}
+
+- (void)_assertFrame:(BKRFrame *)frame withDict:(NSDictionary *)frameDict {
+    XCTAssertEqualObjects(frame.creationDate, frameDict[@"creationDate"]);
+    XCTAssertEqualObjects(frame.uniqueIdentifier, frameDict[@"uniqueIdentifier"]);
 }
 
 @end

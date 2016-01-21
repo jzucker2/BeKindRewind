@@ -63,16 +63,46 @@
         
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         
-        
+        // Keep this assert here, it tests to make sure that count happens after raw frames are processed
         XCTAssertEqual(sself.cassette.allScenes.count, 1);
         BKRScene *scene = sself.cassette.allScenes.firstObject;
         XCTAssertEqual(scene.allFrames.count, 4);
         XCTAssertEqual(scene.allDataFrames.count, 1);
         XCTAssertEqual(scene.allRequestFrames.count, 2);
         XCTAssertEqual(scene.allResponseFrames.count, 1);
+        [self assertFramesOrder:scene extraAssertions:nil];
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-        
+        __strong typeof(wself) sself = wself;
+        XCTAssertEqual(sself.cassette.allScenes.count, 1, @"How did the count of scenes change?");
+        BKRScene *recordedScene = sself.cassette.allScenes.firstObject;
+        NSDictionary *cassetteDict = sself.cassette.plistDictionary;
+        XCTAssertNotNil(cassetteDict);
+        XCTAssertNotNil(cassetteDict[@"scenes"]);
+        XCTAssertNotNil(cassetteDict[@"creationDate"]);
+        XCTAssertTrue([cassetteDict[@"creationDate"] isKindOfClass:[NSDate class]]);
+        NSArray *scenes = cassetteDict[@"scenes"];
+        XCTAssertEqual(scenes.count, 1);
+        NSDictionary *sceneDict = scenes.firstObject;
+        NSArray *frames = sceneDict[@"frames"];
+        XCTAssertEqual(recordedScene.allFrames.count, frames.count);
+        XCTAssertEqualObjects(task.globallyUniqueIdentifier, sceneDict[@"uniqueIdentifier"]);
+        [self assertFramesOrder:recordedScene extraAssertions:nil];
+        for (NSInteger i = 0; i < frames.count; i++) {
+            BKRFrame *frame = [recordedScene.allFrames objectAtIndex:i];
+            NSDictionary *frameDict = [frames objectAtIndex:i];
+            XCTAssertEqual(frame.creationDate, frameDict[@"creationDate"]);
+            XCTAssertEqualObjects(sceneDict[@"uniqueIdentifier"], frameDict[@"uniqueIdentifier"]);
+            if ([frame isKindOfClass:[BKRDataFrame class]]) {
+                [self assertData:(BKRDataFrame *)frame withDataDict:frameDict extraAssertions:nil];
+            } else if ([frame isKindOfClass:[BKRResponseFrame class]]) {
+                [self assertResponse:(BKRResponseFrame *)frame withResponseDict:frameDict extraAssertions:nil];
+            } else if ([frame isKindOfClass:[BKRRequestFrame class]]) {
+                [self assertRequest:(BKRRequestFrame *)frame withRequestDict:frameDict extraAssertions:nil];
+            } else {
+                XCTFail(@"encountered unknown frame type: %@", frame);
+            }
+        }
     }];
 }
 
