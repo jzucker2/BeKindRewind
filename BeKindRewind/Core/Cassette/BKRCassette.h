@@ -7,10 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BKRPlistSerializing.h"
 
 @class BKRScene;
-@interface BKRCassette : NSObject <BKRPlistSerializing>
+@interface BKRCassette : NSObject
 
 
 // possibly make these private header properties

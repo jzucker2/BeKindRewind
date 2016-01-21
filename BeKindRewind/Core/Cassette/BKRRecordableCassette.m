@@ -54,4 +54,24 @@
     }
 }
 
+- (NSDictionary *)plistDictionary {
+    NSMutableArray *plistArray = [NSMutableArray array];
+    for (BKRScene *scene in self.allScenes) {
+        [plistArray addObject:scene.plistDictionary];
+    }
+    NSMutableDictionary *plistDict = [@{
+                                        @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]
+                                        } mutableCopy];
+    plistDict[@"creationDate"] = self.creationDate.copy;
+    return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
+}
+
+- (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
+    self = [super init];
+    if (self) {
+        
+    }
+    return self;
+}
+
 @end

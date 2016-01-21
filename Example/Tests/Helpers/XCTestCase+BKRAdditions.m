@@ -8,6 +8,7 @@
 
 #import "XCTestCase+BKRAdditions.h"
 #import <BeKindRewind/BKRDataFrame.h>
+#import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 
@@ -37,6 +38,17 @@
             taskTimeoutHandler(basicGetTask, error);
         }
     }];
+}
+
+- (void)assertFramesOrder:(BKRScene *)scene extraAssertions:(void (^)(BKRScene *))assertions {
+    NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:0];
+    for (BKRFrame *frame in scene.allFrames) {
+        XCTAssertEqual([lastDate compare:frame.creationDate], NSOrderedAscending);
+        lastDate = frame.creationDate;
+    }
+    if (assertions) {
+        assertions(scene);
+    }
 }
 
 - (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *, NSURLRequest *))assertions {

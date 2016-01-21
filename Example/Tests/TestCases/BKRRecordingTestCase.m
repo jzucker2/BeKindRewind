@@ -66,6 +66,7 @@
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
         XCTAssertNotNil(scene.currentRequest);
         [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
     }];
 }
 
@@ -97,6 +98,7 @@
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
         XCTAssertNotNil(firstScene.currentRequest);
         [self assertRequest:firstScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:firstScene extraAssertions:nil];
     }];
     
     __block BKRScene *secondScene = nil;
@@ -121,12 +123,14 @@
         [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
     } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
         XCTAssertEqual(secondScene.allRequestFrames.count, 2);
+        XCTAssertEqual([firstScene.clapboardFrame.creationDate compare:secondScene.clapboardFrame.creationDate], NSOrderedAscending);
         NSURLRequest *originalRequest = task.originalRequest;
         BKRRequestFrame *originalRequestFrame = secondScene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
         XCTAssertNotNil(secondScene.currentRequest);
         [self assertRequest:secondScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:secondScene extraAssertions:nil];
     }];
 }
 
