@@ -8,3 +8,8 @@ target 'BKR-Tests-iOS-ObjC', :exclusive => true do
   platform :ios, '8.0'
   pod "BeKindRewind/Core", :path => "."
 end
+
+#target 'BKR-Tests-OSX-ObjC', :exclusive => true do
+#    platform :osx, '10.9'
+#    pod "BeKindRewind/Core", :path => "."
+#end

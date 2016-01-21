@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		51B9B9421C50D70C006156C2 /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
+		51B9B9431C50D712006156C2 /* XCTestCase+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */; };
 		51CEB9D31C4EBF000030A02D /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
 		51CEB9D71C4F03650030A02D /* XCTestCase+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */; };
 		6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F5AF195388D20070C39A /* XCTest.framework */; };
 		6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
+		932A9B0ED138941B490572C9 /* Pods_BKR_Tests_OSX_ObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB34CEC2843B69968024933A /* Pods_BKR_Tests_OSX_ObjC.framework */; };
 		BE88A7BC19D0FF15F4CD5175 /* Pods_BKR_Tests_iOS_ObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D2A9743CBA46BB14A7BC2BF /* Pods_BKR_Tests_iOS_ObjC.framework */; };
 /* End PBXBuildFile section */
 
@@ -20,6 +23,8 @@
 		2ABA0ED2BAFDF50ADCC348D3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		46FDC6D62117BCC2DBD07745 /* BeKindRewind.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BeKindRewind.podspec; path = ../BeKindRewind.podspec; sourceTree = "<group>"; };
 		4D2A9743CBA46BB14A7BC2BF /* Pods_BKR_Tests_iOS_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_iOS_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		51B9B93A1C50D448006156C2 /* BKR-Tests-OSX-ObjC.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BKR-Tests-OSX-ObjC.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		51B9B93E1C50D448006156C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecordingTestCase.m; sourceTree = "<group>"; };
 		51CEB9D51C4F03650030A02D /* XCTestCase+BKRAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRAdditions.h"; sourceTree = "<group>"; };
 		51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRAdditions.m"; sourceTree = "<group>"; };
@@ -32,11 +37,22 @@
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		9E59074945C065BA79F2E126 /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		A24DD58E301A0EF31541A841 /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; sourceTree = "<group>"; };
 		B1C68C7F9CE15058CBF4F59A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		D6B2232B287AF1A483EE6486 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; sourceTree = "<group>"; };
+		EB34CEC2843B69968024933A /* Pods_BKR_Tests_OSX_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_OSX_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD80DB1E05BDFC0E519806C2 /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		51B9B9371C50D448006156C2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				932A9B0ED138941B490572C9 /* Pods_BKR_Tests_OSX_ObjC.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6003F5AB195388D20070C39A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -51,6 +67,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		51B9B93B1C50D448006156C2 /* BKR-Tests-OSX-ObjC */ = {
+			isa = PBXGroup;
+			children = (
+				51B9B93E1C50D448006156C2 /* Info.plist */,
+			);
+			path = "BKR-Tests-OSX-ObjC";
+			sourceTree = "<group>";
+		};
 		51CEB9D11C4EBF000030A02D /* TestCases */ = {
 			isa = PBXGroup;
 			children = (
@@ -73,6 +97,7 @@
 			children = (
 				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
 				6003F5B5195388D20070C39A /* Tests */,
+				51B9B93B1C50D448006156C2 /* BKR-Tests-OSX-ObjC */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
 				8DA139DAA742FC7E6914B9AF /* Pods */,
@@ -83,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				6003F5AE195388D20070C39A /* BKR-Tests-iOS-ObjC.xctest */,
+				51B9B93A1C50D448006156C2 /* BKR-Tests-OSX-ObjC.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,6 +121,7 @@
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
 				4D2A9743CBA46BB14A7BC2BF /* Pods_BKR_Tests_iOS_ObjC.framework */,
+				EB34CEC2843B69968024933A /* Pods_BKR_Tests_OSX_ObjC.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -134,6 +161,8 @@
 			children = (
 				9E59074945C065BA79F2E126 /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */,
 				D6B2232B287AF1A483EE6486 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */,
+				FD80DB1E05BDFC0E519806C2 /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */,
+				A24DD58E301A0EF31541A841 /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -141,6 +170,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		51B9B9391C50D448006156C2 /* BKR-Tests-OSX-ObjC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 51B9B9411C50D448006156C2 /* Build configuration list for PBXNativeTarget "BKR-Tests-OSX-ObjC" */;
+			buildPhases = (
+				F9824C150467B91D2DE9C94E /* Check Pods Manifest.lock */,
+				51B9B9361C50D448006156C2 /* Sources */,
+				51B9B9371C50D448006156C2 /* Frameworks */,
+				51B9B9381C50D448006156C2 /* Resources */,
+				AD56995300BE85B38547541B /* Embed Pods Frameworks */,
+				B7046997524CCC2D7C41AE0E /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BKR-Tests-OSX-ObjC";
+			productName = "BKR-Tests-OSX-ObjC";
+			productReference = 51B9B93A1C50D448006156C2 /* BKR-Tests-OSX-ObjC.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		6003F5AD195388D20070C39A /* BKR-Tests-iOS-ObjC */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6003F5C2195388D20070C39A /* Build configuration list for PBXNativeTarget "BKR-Tests-iOS-ObjC" */;
@@ -171,6 +220,9 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Jordan Zucker";
 				TargetAttributes = {
+					51B9B9391C50D448006156C2 = {
+						CreatedOnToolsVersion = 7.2;
+					};
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
 					};
@@ -190,11 +242,19 @@
 			projectRoot = "";
 			targets = (
 				6003F5AD195388D20070C39A /* BKR-Tests-iOS-ObjC */,
+				51B9B9391C50D448006156C2 /* BKR-Tests-OSX-ObjC */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		51B9B9381C50D448006156C2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6003F5AC195388D20070C39A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -236,6 +296,36 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		AD56995300BE85B38547541B /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B7046997524CCC2D7C41AE0E /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		D4284AC20D420F1BFCEF9819 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -251,9 +341,33 @@
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		F9824C150467B91D2DE9C94E /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		51B9B9361C50D448006156C2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51B9B9431C50D712006156C2 /* XCTestCase+BKRAdditions.m in Sources */,
+				51B9B9421C50D70C006156C2 /* BKRRecordingTestCase.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6003F5AA195388D20070C39A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -277,6 +391,47 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		51B9B93F1C50D448006156C2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FD80DB1E05BDFC0E519806C2 /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "BKR-Tests-OSX-ObjC/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "stanera.BKR-Tests-OSX-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		51B9B9401C50D448006156C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A24DD58E301A0EF31541A841 /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "BKR-Tests-OSX-ObjC/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "stanera.BKR-Tests-OSX-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		6003F5BD195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -387,6 +542,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		51B9B9411C50D448006156C2 /* Build configuration list for PBXNativeTarget "BKR-Tests-OSX-ObjC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				51B9B93F1C50D448006156C2 /* Debug */,
+				51B9B9401C50D448006156C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6003F585195388D10070C39A /* Build configuration list for PBXProject "BeKindRewind" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
