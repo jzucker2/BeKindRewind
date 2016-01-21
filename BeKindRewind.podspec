@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "BeKindRewind"
-  s.version          = "0.1.1"
+  s.version          = "0.1.2"
   s.summary          = "A simple way to record and replay network requests for testing."
   s.description      = <<-DESC
                         Provides an XCTestCase subclass for easily
@@ -47,13 +47,13 @@ Pod::Spec.new do |s|
     recorder.exclude_files = "BeKindRewind/Classes/XCTest/*"
   end
 
-  s.subspec 'Testing' do |testing|
-    testing.framework = 'XCTest'
-    testing.dependency 'BeKindRewind/Recorder'
-    testing.source_files = "BeKindRewind/Classes/XCTest/*"
-    testing.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'BKRTESTING=1'  }
-    testing.pod_target_xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'BKRTESTING=1'  }
-  end
+#  s.subspec 'Testing' do |testing|
+#    testing.framework = 'XCTest'
+#    testing.dependency 'BeKindRewind/Recorder'
+#    testing.source_files = "BeKindRewind/Classes/XCTest/*"
+#    testing.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'BKRTESTING=1'  }
+#    testing.pod_target_xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'BKRTESTING=1'  }
+#  end
 
-  s.default_subspec = 'Testing'
+  s.default_subspec = 'Recorder'
 end
