@@ -21,40 +21,9 @@
     if (self) {
         _creationDate = [NSDate date];
         _scenes = [NSMutableDictionary dictionary];
-//        _addingQueue = dispatch_queue_create("com.BKR.cassetteAddingQueue", DISPATCH_QUEUE_SERIAL);
     }
     return self;
 }
-
-//// frames and scenes share unique identifiers, this comes from the recorded task
-//// if the frame matches a scene unique identifier, then add it to the scene
-//- (void)addFrame:(BKRRawFrame *)frame {
-//    if (!self.isRecording) {
-//        // Can't add frames if you are not recording!
-//        return;
-//    }
-//    NSParameterAssert(frame);
-//    __weak typeof (self) wself = self;
-//    dispatch_async(self.addingQueue, ^{
-//        __strong typeof(wself) sself = wself;
-//        if (sself.scenes[frame.uniqueIdentifier]) {
-//            BKRScene *existingScene = sself.scenes[frame.uniqueIdentifier];
-//            [existingScene addFrame:frame];
-//        } else {
-//            BKRScene *newScene = [BKRScene sceneFromFrame:frame];
-//            sself.scenes[newScene.uniqueIdentifier] = newScene;
-//        }
-//    });
-//}
-
-//- (void)setRecording:(BOOL)recording {
-//    _recording = recording;
-//    if (_recording) {
-//        self.creationDate = [NSDate date];
-//    } else {
-//        
-//    }
-//}
 
 - (NSArray<BKRScene *> *)allScenes {
 // TODO: check if this orders properly, possibly with a test
