@@ -13,6 +13,32 @@
 
 @implementation XCTestCase (BKRAdditions)
 
+- (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
+    __block XCTestExpectation *basicGetExpectation = [self expectationWithDescription:@"basicGetExpectation"];
+    NSURL *basicGetURL = [NSURL URLWithString:URLString];
+    NSURLRequest *basicGetRequest = [NSURLRequest requestWithURL:basicGetURL];
+    NSURLSessionDataTask *basicGetTask = [[NSURLSession sharedSession] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        XCTAssertNil(error);
+        if (taskCompletionHandler) {
+            taskCompletionHandler(data, response, error);
+        }
+        [basicGetExpectation fulfill];
+        basicGetExpectation = nil;
+    }];
+    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateSuspended);
+    [basicGetTask resume];
+    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateRunning);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+        XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateCompleted);
+        NSURLRequest *originalRequest = basicGetTask.originalRequest;
+        XCTAssertNotNil(originalRequest);
+        if (taskTimeoutHandler) {
+            taskTimeoutHandler(basicGetTask, error);
+        }
+    }];
+}
+
 - (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *, NSURLRequest *))assertions {
     XCTAssertNotNil(request);
     XCTAssertNotNil(otherRequest);

@@ -39,12 +39,8 @@
 }
 
 - (void)testBasicRecordingForGETRequest {
-    __block XCTestExpectation *basicGetExpectation = [self expectationWithDescription:@"basicGetExpectation"];
     __block BKRScene *scene = nil;
-    NSURL *basicGetURL = [NSURL URLWithString:@"https://httpbin.org/get?test=test"];
-    NSURLRequest *basicGetRequest = [NSURLRequest requestWithURL:basicGetURL];
-    NSURLSessionDataTask *basicGetTask = [[NSURLSession sharedSession] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        XCTAssertNil(error);
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         XCTAssertNil(error);
         // ensure that result from network is as expected
@@ -62,21 +58,14 @@
         BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
         [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
-        [basicGetExpectation fulfill];
-    }];
-    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateSuspended);
-    [basicGetTask resume];
-    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateRunning);
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-        XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateCompleted);
+    } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
         XCTAssertEqual(scene.allRequestFrames.count, 2);
-        NSURLRequest *originalRequest = basicGetTask.originalRequest;
+        NSURLRequest *originalRequest = task.originalRequest;
         XCTAssertNotNil(originalRequest);
         BKRRequestFrame *originalRequestFrame = scene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
-        [self assertRequest:scene.currentRequest withRequest:basicGetTask.currentRequest extraAssertions:nil];
+        [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
     }];
 }
 
