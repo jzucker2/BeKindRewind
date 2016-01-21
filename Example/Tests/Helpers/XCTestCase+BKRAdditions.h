@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 
-typedef void (^taskCompletionHandler)(NSData *data, NSURLResponse *response, NSError *error);
+typedef void (^taskCompletionHandler)(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error);
 
 @interface BKRExpectedData : NSObject

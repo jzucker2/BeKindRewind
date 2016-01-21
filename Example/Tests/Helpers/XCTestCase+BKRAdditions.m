@@ -18,10 +18,10 @@
     __block XCTestExpectation *basicGetExpectation = [self expectationWithDescription:@"basicGetExpectation"];
     NSURL *basicGetURL = [NSURL URLWithString:URLString];
     NSURLRequest *basicGetRequest = [NSURLRequest requestWithURL:basicGetURL];
-    NSURLSessionDataTask *basicGetTask = [[NSURLSession sharedSession] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    __block NSURLSessionDataTask *basicGetTask = [[NSURLSession sharedSession] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         XCTAssertNil(error);
         if (taskCompletionHandler) {
-            taskCompletionHandler(data, response, error);
+            taskCompletionHandler(basicGetTask, data, response, error);
         }
         [basicGetExpectation fulfill];
         basicGetExpectation = nil;

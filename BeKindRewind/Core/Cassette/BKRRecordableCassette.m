@@ -11,18 +11,9 @@
 #import "BKRScene.h"
 
 @interface BKRRecordableCassette ()
-@property (nonatomic) dispatch_queue_t addingQueue;
 @end
 
 @implementation BKRRecordableCassette
-
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        _addingQueue = dispatch_queue_create("com.BKR.cassetteAddingQueue", DISPATCH_QUEUE_SERIAL);
-    }
-    return self;
-}
 
 // frames and scenes share unique identifiers, this comes from the recorded task
 // if the frame matches a scene unique identifier, then add it to the scene
@@ -33,7 +24,7 @@
     }
     NSParameterAssert(frame);
     __weak typeof (self) wself = self;
-    dispatch_async(self.addingQueue, ^{
+    dispatch_barrier_async(self.processingQueue, ^{
         __strong typeof(wself) sself = wself;
         if (sself.scenes[frame.uniqueIdentifier]) {
             BKRScene *existingScene = sself.scenes[frame.uniqueIdentifier];
@@ -46,7 +37,9 @@
 }
 
 - (void)setRecording:(BOOL)recording {
-    _recording = recording;
+    dispatch_barrier_sync(self.processingQueue, ^{
+        _recording = recording;
+    });
     if (_recording) {
         self.creationDate = [NSDate date];
     } else {
