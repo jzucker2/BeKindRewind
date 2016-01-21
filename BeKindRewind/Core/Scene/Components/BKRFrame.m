@@ -47,11 +47,7 @@
     return [[self alloc] initFromFrame:frame];
 }
 
-//+ (instancetype)frameWithFrame:(BKRFrame *)frame {
-//    return [[self alloc] initWithFrame:frame];
-//}
-
-- (NSDictionary *)plistRepresentation {
+- (NSDictionary *)plistDictionary {
     return @{
              @"creationDate": self.creationDate.copy,
              @"uniqueIdentifier": self.uniqueIdentifier.copy

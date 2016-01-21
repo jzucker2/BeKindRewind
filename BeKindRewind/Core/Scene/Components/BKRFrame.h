@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BKRSerializer.h"
+#import "BKRPlistSerializing.h"
 
 // Abstract for a recordable element of a network call (response, data, request, etc...)
 
-@interface BKRFrame : NSObject <BKRSerializer>
+@interface BKRFrame : NSObject <BKRPlistSerializing>
 
 - (instancetype)initWithTask:(NSURLSessionTask *)task;
 + (instancetype)frameWithTask:(NSURLSessionTask *)task;

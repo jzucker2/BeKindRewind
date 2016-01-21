@@ -47,8 +47,8 @@
     return [[NSDictionary alloc] initWithDictionary:dict copyItems:YES];
 }
 
-- (NSDictionary *)plistRepresentation {
-    NSDictionary *superDict = [super plistRepresentation];
+- (NSDictionary *)plistDictionary {
+    NSDictionary *superDict = [super plistDictionary];
     NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithDictionary:superDict];
     NSDictionary *dict = @{
                            @"URL": self.URL.absoluteString,

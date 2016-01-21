@@ -64,10 +64,10 @@
     return [self.scenes.allValues sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
 }
 
-- (NSDictionary *)plistRepresentation {
+- (NSDictionary *)plistDictionary {
     NSMutableArray *plistArray = [NSMutableArray array];
     for (BKRScene *scene in self.allScenes) {
-        [plistArray addObject:scene.plistRepresentation];
+        [plistArray addObject:scene.plistDictionary];
     }
     NSMutableDictionary *plistDict = [@{
                                         @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]

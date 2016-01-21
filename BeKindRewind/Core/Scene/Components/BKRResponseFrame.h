@@ -7,9 +7,9 @@
 //
 
 #import "BKRFrame.h"
-#import "BKRSerializer.h"
+#import "BKRPlistSerializing.h"
 
-@interface BKRResponseFrame : BKRFrame <BKRSerializer>
+@interface BKRResponseFrame : BKRFrame <BKRPlistSerializing>
 
 @property (nonatomic, copy, readonly) NSURL *URL;
 @property (nonatomic, copy, readonly) NSString *MIMEType;

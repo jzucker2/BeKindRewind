@@ -117,12 +117,12 @@
 
 #pragma mark - BKRSerializer
 
-- (NSDictionary *)plistRepresentation {
+- (NSDictionary *)plistDictionary {
     NSMutableDictionary *plistDict = [NSMutableDictionary dictionary];
     plistDict[@"uniqueIdentifier"] = self.uniqueIdentifier;
     NSMutableArray *plistFrames = [NSMutableArray array];
     for (BKRFrame *frame in self.allFrames) {
-        [plistFrames addObject:frame.plistRepresentation];
+        [plistFrames addObject:frame.plistDictionary];
     }
     plistDict[@"scenes"] = [[NSArray alloc] initWithArray:plistFrames copyItems:YES];
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
