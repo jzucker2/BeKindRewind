@@ -54,4 +54,13 @@
              };
 }
 
+- (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
+    self = [super init];
+    if (self) {
+        _creationDate = dictionary[@"creationDate"];
+        _uniqueIdentifier = dictionary[@"uniqueIdentifier"];
+    }
+    return self;
+}
+
 @end

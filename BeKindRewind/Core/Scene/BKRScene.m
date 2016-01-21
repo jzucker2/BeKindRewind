@@ -128,4 +128,14 @@
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 
+- (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
+    self = [super init];
+    if (self) {
+        [self _init];
+        _uniqueIdentifier = dictionary[@"uniqueIdentifier"];
+        
+    }
+    return self;
+}
+
 @end
