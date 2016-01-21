@@ -31,8 +31,8 @@
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateCompleted);
-        NSURLRequest *originalRequest = basicGetTask.originalRequest;
-        XCTAssertNotNil(originalRequest);
+        XCTAssertNotNil(basicGetTask.originalRequest);
+        XCTAssertNotNil(basicGetTask.currentRequest);
         if (taskTimeoutHandler) {
             taskTimeoutHandler(basicGetTask, error);
         }

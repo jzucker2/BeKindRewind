@@ -61,10 +61,10 @@
     } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
         XCTAssertEqual(scene.allRequestFrames.count, 2);
         NSURLRequest *originalRequest = task.originalRequest;
-        XCTAssertNotNil(originalRequest);
         BKRRequestFrame *originalRequestFrame = scene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
         [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
     }];
 }
@@ -92,10 +92,10 @@
     } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
         XCTAssertEqual(firstScene.allRequestFrames.count, 2);
         NSURLRequest *originalRequest = task.originalRequest;
-        XCTAssertNotNil(originalRequest);
         BKRRequestFrame *originalRequestFrame = firstScene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(firstScene.currentRequest);
         [self assertRequest:firstScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
     }];
     
@@ -122,10 +122,10 @@
     } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
         XCTAssertEqual(secondScene.allRequestFrames.count, 2);
         NSURLRequest *originalRequest = task.originalRequest;
-        XCTAssertNotNil(originalRequest);
         BKRRequestFrame *originalRequestFrame = secondScene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(secondScene.currentRequest);
         [self assertRequest:secondScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
     }];
 }
