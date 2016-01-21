@@ -38,7 +38,9 @@
     NSDictionary *dict =@{
                           @"URL": self.URL.absoluteString,
                           @"timeoutInterval": @(self.timeoutInterval),
-                          @"allowsCellularAccess": @(self.allowsCellularAccess)
+                          @"allowsCellularAccess": @(self.allowsCellularAccess),
+                          @"HTTPShouldHandleCookies": @(self.HTTPShouldHandleCookies),
+                          @"HTTPShouldUsePipelining": @(self.HTTPShouldUsePipelining)
                           };
     [plistDict addEntriesFromDictionary:dict];
     if (self.HTTPMethod) {
@@ -46,12 +48,6 @@
     }
     if (self.HTTPBody) {
         plistDict[@"HTTPBody"] = self.HTTPBody;
-    }
-    if (self.HTTPShouldHandleCookies) {
-        plistDict[@"HTTPShouldHandleCookies"] = @(self.HTTPShouldHandleCookies);
-    }
-    if (self.HTTPShouldUsePipelining) {
-        plistDict[@"HTTPShouldUsePipelining"] = @(self.HTTPShouldUsePipelining);
     }
     if (self.allHTTPHeaderFields) {
         plistDict[@"allHTTPHeaderFields"] = self.allHTTPHeaderFields;

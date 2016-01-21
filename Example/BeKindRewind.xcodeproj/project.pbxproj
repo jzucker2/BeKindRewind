@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		51B9B9421C50D70C006156C2 /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
 		51B9B9431C50D712006156C2 /* XCTestCase+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */; };
+		51B9B9451C516A71006156C2 /* BKRPlistSerializingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9441C516A71006156C2 /* BKRPlistSerializingTestCase.m */; };
 		51CEB9D31C4EBF000030A02D /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
 		51CEB9D71C4F03650030A02D /* XCTestCase+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */; };
 		6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F5AF195388D20070C39A /* XCTest.framework */; };
@@ -25,6 +26,7 @@
 		4D2A9743CBA46BB14A7BC2BF /* Pods_BKR_Tests_iOS_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_iOS_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B9B93A1C50D448006156C2 /* BKR-Tests-OSX-ObjC.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BKR-Tests-OSX-ObjC.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B9B93E1C50D448006156C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51B9B9441C516A71006156C2 /* BKRPlistSerializingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRPlistSerializingTestCase.m; sourceTree = "<group>"; };
 		51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecordingTestCase.m; sourceTree = "<group>"; };
 		51CEB9D51C4F03650030A02D /* XCTestCase+BKRAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRAdditions.h"; sourceTree = "<group>"; };
 		51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRAdditions.m"; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */,
+				51B9B9441C516A71006156C2 /* BKRPlistSerializingTestCase.m */,
 			);
 			path = TestCases;
 			sourceTree = "<group>";
@@ -374,6 +377,7 @@
 			files = (
 				51CEB9D71C4F03650030A02D /* XCTestCase+BKRAdditions.m in Sources */,
 				51CEB9D31C4EBF000030A02D /* BKRRecordingTestCase.m in Sources */,
+				51B9B9451C516A71006156C2 /* BKRPlistSerializingTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

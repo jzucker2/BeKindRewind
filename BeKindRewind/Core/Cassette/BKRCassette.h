@@ -7,15 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BKRPlistSerializing.h"
 
 @class BKRScene;
-@interface BKRCassette : NSObject <BKRPlistSerializing>
+@interface BKRCassette : NSObject
 
 
 // possibly make these private header properties
 @property (nonatomic, strong) NSMutableDictionary *scenes;
 @property (nonatomic) NSDate *creationDate;
+@property (nonatomic) dispatch_queue_t processingQueue;
 
 // this is definitely public
 - (NSArray<BKRScene *> *)allScenes;

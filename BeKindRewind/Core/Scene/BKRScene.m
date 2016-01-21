@@ -124,7 +124,7 @@
     for (BKRFrame *frame in self.allFrames) {
         [plistFrames addObject:frame.plistDictionary];
     }
-    plistDict[@"scenes"] = [[NSArray alloc] initWithArray:plistFrames copyItems:YES];
+    plistDict[@"frames"] = [[NSArray alloc] initWithArray:plistFrames copyItems:YES];
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 

@@ -40,7 +40,7 @@
 
 - (void)testRecordingOneGETRequest {
     __block BKRScene *scene = nil;
-    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         XCTAssertNil(error);
         // ensure that result from network is as expected
@@ -58,20 +58,21 @@
         BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
         [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
-    } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual(scene.allRequestFrames.count, 2);
         NSURLRequest *originalRequest = task.originalRequest;
-        XCTAssertNotNil(originalRequest);
         BKRRequestFrame *originalRequestFrame = scene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
         [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
     }];
 }
 
 - (void)testRecordingMultipleGETRequests {
     __block BKRScene *firstScene = nil;
-    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         XCTAssertNil(error);
         // ensure that result from network is as expected
@@ -89,18 +90,19 @@
         BKRResponseFrame *responseFrame = firstScene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
         [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
-    } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual(firstScene.allRequestFrames.count, 2);
         NSURLRequest *originalRequest = task.originalRequest;
-        XCTAssertNotNil(originalRequest);
         BKRRequestFrame *originalRequestFrame = firstScene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(firstScene.currentRequest);
         [self assertRequest:firstScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:firstScene extraAssertions:nil];
     }];
     
     __block BKRScene *secondScene = nil;
-    [self getTaskWithURLString:@"https://httpbin.org/get?test=test2" taskCompletionAssertions:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test2" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         XCTAssertNil(error);
         // ensure that result from network is as expected
@@ -119,14 +121,16 @@
         BKRResponseFrame *responseFrame = secondScene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
         [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
-    } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual(secondScene.allRequestFrames.count, 2);
+        XCTAssertEqual([firstScene.clapboardFrame.creationDate compare:secondScene.clapboardFrame.creationDate], NSOrderedAscending);
         NSURLRequest *originalRequest = task.originalRequest;
-        XCTAssertNotNil(originalRequest);
         BKRRequestFrame *originalRequestFrame = secondScene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(secondScene.currentRequest);
         [self assertRequest:secondScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:secondScene extraAssertions:nil];
     }];
 }
 
