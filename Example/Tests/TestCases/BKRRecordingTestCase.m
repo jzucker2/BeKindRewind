@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import <BeKindRewind/BKRRecorder.h>
-#import <BeKindRewind/BKRCassette.h>
+#import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
@@ -25,7 +25,7 @@
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     [BKRNSURLSessionConnection swizzleNSURLSessionClasses];
-    BKRCassette *cassette = [[BKRCassette alloc] init];
+    BKRRecordableCassette *cassette = [[BKRRecordableCassette alloc] init];
     cassette.recording = YES;
     [BKRRecorder sharedInstance].currentCassette = cassette;
     [BKRRecorder sharedInstance].enabled = YES;
@@ -34,7 +34,7 @@
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [[BKRRecorder sharedInstance] reset];
-    [BKRRecorder sharedInstance].currentCassette = nil;
+//    [BKRRecorder sharedInstance].currentCassette = nil; // this causes an assert to fire
     [super tearDown];
 }
 

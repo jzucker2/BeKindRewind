@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class BKRCassette;
+@class BKRRecordableCassette;
 @interface BKRRecorder : NSObject
 
 /**
@@ -16,7 +16,7 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
-@property (nonatomic, strong) BKRCassette *currentCassette;
+@property (nonatomic, strong) BKRRecordableCassette *currentCassette;
 
 /**
  *  Singleton instance is used so we don't have to pass in a

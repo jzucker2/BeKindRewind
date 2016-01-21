@@ -9,13 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "BKRPlistSerializing.h"
 
-@class BKRRawFrame;
 @class BKRScene;
 @interface BKRCassette : NSObject <BKRPlistSerializing>
 
-@property (nonatomic, getter=isRecording) BOOL recording;
 
-- (void)addFrame:(BKRRawFrame *)frame;
+// possibly make these private header properties
+@property (nonatomic, strong) NSMutableDictionary *scenes;
+@property (nonatomic) NSDate *creationDate;
+
+// this is definitely public
 - (NSArray<BKRScene *> *)allScenes;
 
 @end

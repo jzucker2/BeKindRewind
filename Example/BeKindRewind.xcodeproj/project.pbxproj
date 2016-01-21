@@ -102,8 +102,8 @@
 		6003F5B5195388D20070C39A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				51CEB9D41C4F034D0030A02D /* Helpers */,
 				51CEB9D11C4EBF000030A02D /* TestCases */,
+				51CEB9D41C4F034D0030A02D /* Helpers */,
 				6003F5B6195388D20070C39A /* Supporting Files */,
 			);
 			path = Tests;

@@ -7,7 +7,7 @@
 //
 
 #import "BKRRecorder.h"
-#import "BKRCassette.h"
+#import "BKRRecordableCassette.h"
 #import "BKRRawFrame.h"
 //#import "BKRData.h"
 //#import "BKRResponse.h"
@@ -42,7 +42,11 @@
     _recordingQueue = dispatch_queue_create("com.BKR.recorderQueue", DISPATCH_QUEUE_SERIAL);
 }
 
-- (void)setCurrentCassette:(BKRCassette *)currentCassette {
+- (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
+    if (currentCassette) {
+        // This is for debugging purposes
+        NSAssert([currentCassette isKindOfClass:[BKRRecordableCassette class]], @"Must be a recordable class, not just a regular BKRCassette, you tried to use: %@", NSStringFromClass(currentCassette.class));
+    }
     _currentCassette = currentCassette;
     [self reset];
 }
