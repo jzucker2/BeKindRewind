@@ -13,30 +13,39 @@
 
 @implementation XCTestCase (BKRAdditions)
 
-- (void)assertRequest:(BKRRequest *)request withRequest:(NSURLRequest *)otherRequest extraAssertions:(void (^)(BKRRequest *, NSURLRequest *))assertions {
+- (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *, NSURLRequest *))assertions {
     XCTAssertNotNil(request);
     XCTAssertNotNil(otherRequest);
-    
+    XCTAssertEqual(request.HTTPShouldHandleCookies, otherRequest.HTTPShouldHandleCookies);
+    XCTAssertEqual(request.HTTPShouldUsePipelining, otherRequest.HTTPShouldUsePipelining);
+    XCTAssertEqualObjects(request.allHTTPHeaderFields, otherRequest.allHTTPHeaderFields);
+    XCTAssertEqualObjects(request.URL, otherRequest.URL);
+    XCTAssertEqual(request.timeoutInterval, otherRequest.timeoutInterval);
+    XCTAssertEqualObjects(request.HTTPMethod, otherRequest.HTTPMethod);
+    XCTAssertEqual(request.allowsCellularAccess, otherRequest.allowsCellularAccess);
     if (assertions) {
         assertions(request, otherRequest);
     }
 }
 
-- (void)assertResponse:(BKRResponse *)response withResponse:(NSURLResponse *)otherResponse extraAssertions:(void (^)(BKRResponse *, NSURLResponse *))assertions {
+- (void)assertResponse:(BKRResponseFrame *)response withResponse:(NSURLResponse *)otherResponse extraAssertions:(void (^)(BKRResponseFrame *, NSURLResponse *))assertions {
     XCTAssertNotNil(response);
     XCTAssertNotNil(otherResponse);
-//    XCTAssertEqual(response.statusCode, 200);
-//    NSHTTPURLResponse *castedDataTaskResponse = (NSHTTPURLResponse *)response;
-//    XCTAssertEqualObjects(responseFrame.allHeaderFields, castedDataTaskResponse.allHeaderFields);
-//    XCTAssertEqual(responseFrame.statusCode, castedDataTaskResponse.statusCode);
+    if ([otherResponse isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSHTTPURLResponse *castedDataTaskResponse = (NSHTTPURLResponse *)otherResponse;
+        XCTAssertEqualObjects(response.allHeaderFields, castedDataTaskResponse.allHeaderFields);
+        XCTAssertEqual(response.statusCode, castedDataTaskResponse.statusCode);
+    }
     if (assertions) {
         assertions(response, otherResponse);
     }
 }
 
-- (void)assertData:(BKRData *)data withData:(NSData *)otherData extraAssertions:(void (^)(BKRData *, NSData *))assertions {
+- (void)assertData:(BKRDataFrame *)data withData:(NSData *)otherData extraAssertions:(void (^)(BKRDataFrame *, NSData *))assertions {
     XCTAssertNotNil(data);
     XCTAssertNotNil(otherData);
+    XCTAssertNotNil(data.rawData);
+    XCTAssertEqualObjects(data.rawData, otherData);
     if (assertions) {
         assertions(data, otherData);
     }

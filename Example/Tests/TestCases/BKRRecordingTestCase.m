@@ -14,6 +14,7 @@
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
+#import "XCTestCase+BKRAdditions.h"
 
 @interface BKRRecordingTestCase : XCTestCase
 @end
@@ -43,7 +44,6 @@
     NSURL *basicGetURL = [NSURL URLWithString:@"https://httpbin.org/get?test=test"];
     NSURLRequest *basicGetRequest = [NSURLRequest requestWithURL:basicGetURL];
     NSURLSessionDataTask *basicGetTask = [[NSURLSession sharedSession] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        XCTAssertNotNil(data);
         XCTAssertNil(error);
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         XCTAssertNil(error);
@@ -57,15 +57,11 @@
         XCTAssertTrue(scene.allFrames.count > 0);
         XCTAssertEqual(scene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
-        NSDictionary *recordedDataObject = dataFrame.JSONConvertedObject;
-        XCTAssertEqualObjects(dataDict[@"args"], recordedDataObject[@"args"]);
-        XCTAssertNotNil(response);
+        [self assertData:dataFrame withData:data extraAssertions:nil];
         XCTAssertEqual(scene.allResponseFrames.count, 1);
         BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
-        NSHTTPURLResponse *castedDataTaskResponse = (NSHTTPURLResponse *)response;
-        XCTAssertEqualObjects(responseFrame.allHeaderFields, castedDataTaskResponse.allHeaderFields);
-        XCTAssertEqual(responseFrame.statusCode, castedDataTaskResponse.statusCode);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
         [basicGetExpectation fulfill];
     }];
     XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateSuspended);
@@ -79,13 +75,8 @@
         XCTAssertNotNil(originalRequest);
         BKRRequestFrame *originalRequestFrame = scene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
-        XCTAssertEqual(originalRequestFrame.HTTPShouldHandleCookies, originalRequest.HTTPShouldHandleCookies);
-        XCTAssertEqual(originalRequestFrame.HTTPShouldUsePipelining, originalRequest.HTTPShouldUsePipelining);
-        XCTAssertEqualObjects(originalRequestFrame.allHTTPHeaderFields, originalRequest.allHTTPHeaderFields);
-        XCTAssertEqualObjects(originalRequestFrame.URL, originalRequest.URL);
-        XCTAssertEqual(originalRequestFrame.timeoutInterval, originalRequest.timeoutInterval);
-        XCTAssertEqualObjects(originalRequestFrame.HTTPMethod, originalRequest.HTTPMethod);
-        XCTAssertEqual(originalRequestFrame.allowsCellularAccess, originalRequest.allowsCellularAccess);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        [self assertRequest:scene.currentRequest withRequest:basicGetTask.currentRequest extraAssertions:nil];
     }];
 }
 
