@@ -34,7 +34,7 @@ matrix:
 #     # - env: FASTLANE_ENV=ios83_iPhone4S
 #     - env: FASTLANE_ENV=ios83_iPhone5
     - env: FASTLANE_ENV=ios83_iPhone5S
-      osx_image: xcode7.1
+      # osx_image: xcode7.1
     # - env: FASTLANE_ENV=ios83_iPhone6 // this seems to stall on the same test
 #     # - env: FASTLANE_ENV=ios83_iPhone6Plus
     # iOS 8.4
