@@ -38,7 +38,7 @@
     [super tearDown];
 }
 
-- (void)testBasicRecordingForGETRequest {
+- (void)testRecordingOneGETRequest {
     __block BKRScene *scene = nil;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
@@ -69,19 +69,65 @@
     }];
 }
 
-- (void)testRecordingTwoGETRequests {
-    NSDictionary *dictionary = nil;
-    NSMutableDictionary *secondDictionary = [NSMutableDictionary dictionaryWithDictionary:dictionary];
-    XCTAssertNotNil(secondDictionary);
-    secondDictionary[@"test"] = @2;
-    XCTAssertEqualObjects(secondDictionary[@"test"], @2);
+- (void)testRecordingMultipleGETRequests {
+    __block BKRScene *firstScene = nil;
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        XCTAssertNil(error);
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        // now current cassette in recoder should have one scene with data matching this
+        BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
+        XCTAssertNotNil(cassette);
+        XCTAssertEqual(cassette.allScenes.count, 1);
+        firstScene = cassette.allScenes.firstObject;
+        XCTAssertTrue(firstScene.allFrames.count > 0);
+        XCTAssertEqual(firstScene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = firstScene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqual(firstScene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = firstScene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
+        XCTAssertEqual(firstScene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        XCTAssertNotNil(originalRequest);
+        BKRRequestFrame *originalRequestFrame = firstScene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        [self assertRequest:firstScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+    }];
+    
+    __block BKRScene *secondScene = nil;
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test2" taskCompletionAssertions:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        XCTAssertNil(error);
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test2"});
+        // now current cassette in recoder should have one scene with data matching this
+        BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
+        XCTAssertNotNil(cassette);
+        XCTAssertEqual(cassette.allScenes.count, 2);
+        secondScene = cassette.allScenes.lastObject;
+        XCTAssertNotEqualObjects(firstScene.uniqueIdentifier, secondScene.uniqueIdentifier, @"The two scenes should not be identical");
+        XCTAssertTrue(secondScene.allFrames.count > 0);
+        XCTAssertEqual(secondScene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = secondScene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqual(secondScene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = secondScene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask * _Nullable task, NSError * _Nullable error) {
+        XCTAssertEqual(secondScene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        XCTAssertNotNil(originalRequest);
+        BKRRequestFrame *originalRequestFrame = secondScene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        [self assertRequest:secondScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+    }];
 }
-
-//- (void)testPerformanceExample {
-//    // This is an example of a performance test case.
-//    [self measureBlock:^{
-//        // Put the code you want to measure the time of here.
-//    }];
-//}
 
 @end

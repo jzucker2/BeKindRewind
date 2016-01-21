@@ -77,4 +77,8 @@
     }
 }
 
+- (void)assertData:(NSData *)data response:(NSURLResponse *)response withScene:(BKRScene *)scene {
+    
+}
+
 @end

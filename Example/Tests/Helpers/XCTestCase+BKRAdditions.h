@@ -11,7 +11,12 @@
 typedef void (^taskCompletionHandler)(NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error);
 
-@class BKRRequestFrame, BKRResponseFrame, BKRDataFrame;
+@interface BKRExpectedData : NSObject
+@property (nonatomic, copy) NSData *data;
+@property (nonatomic, copy) NSURLResponse *response;
+@end
+
+@class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene;
 @interface XCTestCase (BKRAdditions)
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
