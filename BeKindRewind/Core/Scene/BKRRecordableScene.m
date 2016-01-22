@@ -42,23 +42,7 @@
         NSLog(@"Why is the same frame being added twice????????????");
         NSLog(@"******************************************");
     }
-    BKRFrame *addingFrame = nil;
-    if ([frame.item isKindOfClass:[NSData class]]) {
-        BKRDataFrame *dataFrame = [BKRDataFrame frameFromFrame:frame];
-        [dataFrame addData:frame.item];
-        addingFrame = dataFrame;
-    } else if ([frame.item isKindOfClass:[NSURLResponse class]]) {
-        BKRResponseFrame *responseFrame = [BKRResponseFrame frameFromFrame:frame];
-        [responseFrame addResponse:frame.item];
-        addingFrame = responseFrame;
-    } else if ([frame.item isKindOfClass:[NSURLRequest class]]) {
-        BKRRequestFrame *requestFrame = [BKRRequestFrame frameFromFrame:frame];
-        [requestFrame addRequest:frame.item];
-        addingFrame = requestFrame;
-    } else {
-        addingFrame = frame;
-    }
-    [self.frames addObject:addingFrame];
+    [self.frames addObject:frame.editedFrame];
 }
 
 - (NSDictionary *)plistDictionary {

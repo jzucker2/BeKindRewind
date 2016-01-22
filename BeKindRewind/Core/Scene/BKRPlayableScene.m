@@ -10,4 +10,8 @@
 
 @implementation BKRPlayableScene
 
+- (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
+    return nil;
+}
+
 @end

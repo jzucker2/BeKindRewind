@@ -8,25 +8,27 @@
 
 #import "BKRRawFrame.h"
 #import "BKRDataFrame.h"
+#import "BKRResponseFrame.h"
+#import "BKRRequestFrame.h"
 
 @implementation BKRRawFrame
 
-//- (Class)expectedFrameClass {
-//    if (!self.item) {
-//        return nil;
-//    }
-//    if ([self.item isKindOfClass:[NSData class]]) {
-//        return [BKRDataFrame class];
-//    }
-//    return nil;
-//}
-//
-//- (BKRFrame *)normalizedFrame {
-//    if (!self.item) {
-//        return nil;
-//    } else if ([self.item isKindOfClass:[NSData class]]) {
-//        return [BKRDataFrame ]
-//    }
-//}
+- (BKRFrame *)editedFrame {
+    if ([self.item isKindOfClass:[NSData class]]) {
+        BKRDataFrame *dataFrame = [BKRDataFrame frameFromFrame:self];
+        [dataFrame addData:self.item];
+        return dataFrame;
+    } else if ([self.item isKindOfClass:[NSURLResponse class]]) {
+        BKRResponseFrame *responseFrame = [BKRResponseFrame frameFromFrame:self];
+        [responseFrame addResponse:self.item];
+        return responseFrame;
+    } else if ([self.item isKindOfClass:[NSURLRequest class]]) {
+        BKRRequestFrame *requestFrame = [BKRRequestFrame frameFromFrame:self];
+        [requestFrame addRequest:self.item];
+        return requestFrame;
+    } else {
+        return nil;
+    }
+}
 
 @end
