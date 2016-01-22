@@ -59,12 +59,4 @@
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 
-- (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
-    self = [super init];
-    if (self) {
-        
-    }
-    return self;
-}
-
 @end
