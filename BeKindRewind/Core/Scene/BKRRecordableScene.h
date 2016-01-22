@@ -10,7 +10,7 @@
 #import "BKRScene.h"
 
 @class BKRRawFrame;
-@interface BKRRecordableScene : BKRScene <BKRPlistSerializing>
+@interface BKRRecordableScene : BKRScene <BKRPlistSerializer>
 
 - (instancetype)initFromFrame:(BKRRawFrame *)frame;
 + (instancetype)sceneFromFrame:(BKRRawFrame *)frame;

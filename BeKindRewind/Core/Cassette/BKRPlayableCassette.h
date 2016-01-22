@@ -9,6 +9,6 @@
 #import "BKRCassette.h"
 #import "BKRPlistSerializing.h"
 
-@interface BKRPlayableCassette : BKRCassette <BKRPlistSerializing>
+@interface BKRPlayableCassette : BKRCassette <BKRPlistDeserializer>
 
 @end

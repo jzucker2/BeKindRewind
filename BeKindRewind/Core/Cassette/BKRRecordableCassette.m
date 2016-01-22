@@ -49,7 +49,7 @@
 
 - (NSDictionary *)plistDictionary {
     NSMutableArray *plistArray = [NSMutableArray array];
-    for (BKRScene *scene in self.allScenes) {
+    for (BKRRecordableScene *scene in self.allScenes) {
         [plistArray addObject:scene.plistDictionary];
     }
     NSMutableDictionary *plistDict = [@{

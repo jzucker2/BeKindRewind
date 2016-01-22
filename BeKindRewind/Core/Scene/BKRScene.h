@@ -7,21 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BKRPlistSerializing.h"
 
 @class BKRFrame;
 @class BKRDataFrame;
 @class BKRError;
 @class BKRRequestFrame;
 @class BKRResponseFrame;
-@interface BKRScene : NSObject <BKRPlistSerializing>
+@interface BKRScene : NSObject
 
 @property (nonatomic, strong) NSArray<BKRFrame *> *frames;
 @property (nonatomic, copy) NSString *uniqueIdentifier;
 @property (nonatomic, copy, readonly) BKRFrame *clapboardFrame;
 
-//- (instancetype)initFromFrame:(BKRRawFrame *)frame;
-//+ (instancetype)sceneFromFrame:(BKRRawFrame *)frame;
 - (NSArray<BKRFrame *> *)allFrames;
 - (NSArray<BKRDataFrame *> *)allDataFrames;
 - (NSArray<BKRResponseFrame *> *)allResponseFrames;

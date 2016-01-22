@@ -6,7 +6,6 @@
 //
 //
 
-//#import "NSURLSessionTask+BKRAdditions.h"
 #import "BKRScene.h"
 #import "BKRFrame.h"
 #import "BKRDataFrame.h"
@@ -16,21 +15,10 @@
 #import "BKRConstants.h"
 
 @interface BKRScene ()
-//@property (nonatomic) NSDate *creationDate;
-//@property (nonatomic, copy, readwrite) NSString *uniqueIdentifier;
-//@property (nonatomic, strong) NSMutableArray<BKRFrame *> *frames;
 @end
 
 
 @implementation BKRScene
-
-//- (instancetype)init {
-//    self = [super init];
-//    if (self) {
-//        _frames = [NSMutableArray array];
-//    }
-//    return self;
-//}
 
 - (BKRFrame *)clapboardFrame {
     return self.allFrames.firstObject;
@@ -74,42 +62,5 @@
     }
     return restrictedFrames.copy;
 }
-
-#pragma mark - BKRDeserializer
-
-
-
-#pragma mark - BKRSerializer
-
-- (NSDictionary *)plistDictionary {
-    return nil;
-}
-
-- (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
-    return nil;
-}
-
-//- (NSDictionary *)plistDictionary {
-//    NSMutableDictionary *plistDict = [NSMutableDictionary dictionary];
-//    plistDict[@"uniqueIdentifier"] = self.uniqueIdentifier;
-//    NSMutableArray *plistFrames = [NSMutableArray array];
-//    for (BKRFrame *frame in self.allFrames) {
-//        [plistFrames addObject:frame.plistDictionary];
-//    }
-//    plistDict[@"frames"] = [[NSArray alloc] initWithArray:plistFrames copyItems:YES];
-//    return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
-//}
-
-//- (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
-//    self = [super init];
-//    if (self) {
-//        self.uniqueIdentifier = dictionary[@"uniqueIdentifier"];
-//        for (NSDictionary *frameDict in dictionary[@"frames"]) {
-//            BKRRawFrame *rawFrame = [[BKRRawFrame alloc] initFromPlistDictionary:frameDict];
-//            [self addFrame:rawFrame];
-//        }
-//    }
-//    return self;
-//}
 
 @end
