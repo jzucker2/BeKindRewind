@@ -8,11 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol BKRPlistSerializing <NSObject>
+@protocol BKRPlistSerializer <NSObject>
 
 // guaranteed to work in plist
 - (NSDictionary *)plistDictionary;
 
+@end
+
+@protocol BKRPlistDeserializer <NSObject>
+
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary;
+
+@end
+
+@protocol BKRPlistSerializing <BKRPlistSerializer, BKRPlistDeserializer>
 
 @end
