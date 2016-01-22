@@ -20,6 +20,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @interface XCTestCase (BKRAdditions)
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
+- (void)post:(NSData *)postData withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 
 - (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toCassette:(BKRRecordableCassette *)cassette;
 

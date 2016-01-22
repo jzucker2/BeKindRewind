@@ -70,6 +70,48 @@
     }];
 }
 
+- (void)testRecordingOnePOSTRequest {
+    __block BKRScene *scene = nil;
+    NSDictionary *rawPostDictionary = @{@"foo": @"bar"};
+    NSData *postData = [NSJSONSerialization dataWithJSONObject:rawPostDictionary options:NSJSONWritingPrettyPrinted error:nil];
+    [self post:postData withURLString:@"https://httpbin.org/post" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNil(error);
+        // ensure that data returned is same as data posted
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        NSDictionary *formDict = dataDict[@"form"];
+        // for this service, need to fish out the data sent
+        NSArray *formKeys = formDict.allKeys;
+        NSString *rawReceivedDataString = formKeys.firstObject;
+        NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(rawPostDictionary, receivedDataDictionary);
+        // now current cassette in recoder should have one scene with data matching this
+        BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
+        XCTAssertNotNil(cassette);
+        XCTAssertEqual(cassette.allScenes.count, 1);
+        scene = cassette.allScenes.firstObject;
+        XCTAssertTrue(scene.allFrames.count > 0);
+        XCTAssertEqual(scene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqual(scene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(scene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
+        [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
+    }];
+}
+
+
+
 - (void)testRecordingMultipleGETRequests {
     __block BKRScene *firstScene = nil;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {

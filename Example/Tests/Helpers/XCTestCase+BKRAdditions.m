@@ -42,6 +42,34 @@
     }];
 }
 
+- (void)post:(NSData *)postData withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
+    __block XCTestExpectation *basicPostExpectation = [self expectationWithDescription:@"basicPostExpectation"];
+    NSURL *basicPostURL = [NSURL URLWithString:URLString];
+    NSMutableURLRequest *basicPostRequest = [NSMutableURLRequest requestWithURL:basicPostURL];
+    basicPostRequest.HTTPMethod = @"POST";
+    basicPostRequest.HTTPBody = postData;
+    __block NSURLSessionDataTask *basicPostTask = [[NSURLSession sharedSession] dataTaskWithRequest:basicPostRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        XCTAssertNil(error);
+        if (taskCompletionHandler) {
+            taskCompletionHandler(basicPostTask, data, response, error);
+        }
+        [basicPostExpectation fulfill];
+        basicPostExpectation = nil;
+    }];
+    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateSuspended);
+    [basicPostTask resume];
+    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateRunning);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+        XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateCompleted);
+        XCTAssertNotNil(basicPostTask.originalRequest);
+        XCTAssertNotNil(basicPostTask.currentRequest);
+        if (taskTimeoutHandler) {
+            taskTimeoutHandler(basicPostTask, error);
+        }
+    }];
+}
+
 - (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toCassette:(BKRRecordableCassette *)cassette {
     BKRRawFrame *dataRawFrame = [BKRRawFrame frameWithTask:task];
     dataRawFrame.item = data;
