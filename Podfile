@@ -6,7 +6,7 @@ use_frameworks!
 
 target 'BKR-Tests-iOS-ObjC', :exclusive => true do
   platform :ios, '8.0'
-  pod "BeKindRewind/Recorder", :path => "."
+  pod "BeKindRewind", :path => "."
 end
 
 #target 'BKR-Tests-OSX-ObjC', :exclusive => true do
