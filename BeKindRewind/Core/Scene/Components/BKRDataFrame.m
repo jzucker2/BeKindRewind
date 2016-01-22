@@ -44,4 +44,12 @@
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 
+- (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
+    self = [super initFromPlistDictionary:dictionary];
+    if (self) {
+        _data = dictionary[@"data"];
+    }
+    return self;
+}
+
 @end

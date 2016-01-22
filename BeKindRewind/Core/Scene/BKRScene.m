@@ -133,7 +133,10 @@
     if (self) {
         [self _init];
         _uniqueIdentifier = dictionary[@"uniqueIdentifier"];
-        
+        for (NSDictionary *frameDict in dictionary[@"frames"]) {
+            BKRRawFrame *rawFrame = [[BKRRawFrame alloc] initFromPlistDictionary:frameDict];
+            [self addFrame:rawFrame];
+        }
     }
     return self;
 }

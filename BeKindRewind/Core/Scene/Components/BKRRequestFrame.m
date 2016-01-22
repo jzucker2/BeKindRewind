@@ -55,4 +55,25 @@
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 
+- (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
+    self = [super initFromPlistDictionary:dictionary];
+    if (self) {
+        _URL = [NSURL URLWithString:dictionary[@"URL"]];
+        _timeoutInterval = [dictionary[@"timeoutInterval"] doubleValue];
+        _allowsCellularAccess = [dictionary[@"allowsCellularAccess"] boolValue];
+        _HTTPShouldHandleCookies = [dictionary[@"HTTPShouldHandleCookies"] boolValue];
+        _HTTPShouldUsePipelining = [dictionary[@"HTTPShouldUsePipelining"] boolValue];
+        if (dictionary[@"HTTPMethod"]) {
+            _HTTPMethod = dictionary[@"HTTPMethod"];
+        }
+        if (dictionary[@"HTTPBody"]) {
+            _HTTPBody = dictionary[@"HTTPBody"];
+        }
+        if (dictionary[@"allHTTPHeaderFields"]) {
+            _allHTTPHeaderFields = [[NSDictionary alloc] initWithDictionary:dictionary[@"allHTTPHeaderFields"] copyItems:YES];
+        }
+    }
+    return self;
+}
+
 @end
