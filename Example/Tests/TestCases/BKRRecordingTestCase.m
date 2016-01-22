@@ -120,7 +120,7 @@
         XCTAssertNil(error);
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-        // now current cassette in recoder should have one scene with data matching this
+        // now current cassette in recorder should have one scene with data matching this
         BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 1);
