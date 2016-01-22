@@ -8,10 +8,6 @@
 
 #import "BKRRecordableScene.h"
 #import "BKRRecordableRawFrame.h"
-#import "BKRDataFrame.h"
-#import "BKRResponseFrame.h"
-#import "BKRRequestFrame.h"
-#import "BKRError.h"
 
 @interface BKRRecordableScene ()
 @property (nonatomic, strong) NSMutableArray<BKRFrame *> *frames;

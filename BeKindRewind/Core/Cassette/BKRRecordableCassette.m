@@ -11,9 +11,20 @@
 #import "BKRRecordableScene.h"
 
 @interface BKRRecordableCassette ()
+@property (nonatomic, strong) NSMutableDictionary<NSString *, BKRRecordableScene*> *scenes;
 @end
 
 @implementation BKRRecordableCassette
+
+@synthesize scenes = _scenes;
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _scenes = [NSMutableDictionary dictionary];
+    }
+    return self;
+}
 
 // frames and scenes share unique identifiers, this comes from the recorded task
 // if the frame matches a scene unique identifier, then add it to the scene

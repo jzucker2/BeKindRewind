@@ -190,6 +190,7 @@
 }
 
 - (void)_assertFrame:(BKRFrame *)frame withDict:(NSDictionary *)frameDict {
+    XCTAssertEqualObjects(NSStringFromClass(frame.class), frameDict[@"class"]);
     XCTAssertEqualObjects(frame.creationDate, frameDict[@"creationDate"]);
     XCTAssertEqualObjects(frame.uniqueIdentifier, frameDict[@"uniqueIdentifier"]);
 }

@@ -50,7 +50,8 @@
 - (NSDictionary *)plistDictionary {
     return @{
              @"creationDate": self.creationDate.copy,
-             @"uniqueIdentifier": self.uniqueIdentifier.copy
+             @"uniqueIdentifier": self.uniqueIdentifier.copy,
+             @"class": NSStringFromClass(self.class)
              };
 }
 

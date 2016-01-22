@@ -20,7 +20,7 @@
     self = [super init];
     if (self) {
         _creationDate = [NSDate date];
-        _scenes = [NSMutableDictionary dictionary];
+        _scenes = [NSDictionary dictionary];
         _processingQueue = dispatch_queue_create("com.BKR.cassetteAddingQueue", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;

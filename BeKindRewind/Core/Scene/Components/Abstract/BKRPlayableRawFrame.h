@@ -8,6 +8,8 @@
 
 #import "BKRRawFrame.h"
 
-@interface BKRPlayableRawFrame : BKRRawFrame
+@interface BKRPlayableRawFrame : BKRRawFrame <BKRPlistDeserializer>
+
+- (BKRFrame *)editedFrame;
 
 @end

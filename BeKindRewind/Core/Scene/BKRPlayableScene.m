@@ -7,7 +7,10 @@
 //
 
 #import "BKRPlayableScene.h"
-#import "BKRRawFrame.h"
+#import "BKRPlayableRawFrame.h"
+
+@interface BKRPlayableScene ()
+@end
 
 @implementation BKRPlayableScene
 
@@ -24,8 +27,10 @@
 - (NSArray<BKRFrame *> *)_editedFrames:(NSArray *)rawFrames {
     NSMutableArray <BKRFrame *> *editedFrames = [NSMutableArray array];
     for (NSDictionary *rawFrameDict in rawFrames) {
+        BKRPlayableRawFrame *rawFrame = [[BKRPlayableRawFrame alloc] initFromPlistDictionary:rawFrameDict];
+        [editedFrames addObject:rawFrame.editedFrame];
     }
-    return editedFrames;
+    return editedFrames.copy;
 }
 
 @end

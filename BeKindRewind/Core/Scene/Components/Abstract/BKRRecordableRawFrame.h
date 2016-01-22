@@ -10,7 +10,7 @@
 
 @interface BKRRecordableRawFrame : BKRRawFrame
 
-// returns serializable version for saving or restoring
+// returns specialized, serializable version for saving or restoring
 - (BKRFrame *)editedFrame;
 
 @end
