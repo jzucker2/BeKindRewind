@@ -13,7 +13,7 @@
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
     self = [[[self class] alloc] init];
     if (self) {
-        
+        self.creationDate = dictionary[@"creationDate"];
     }
     return self;
 }
