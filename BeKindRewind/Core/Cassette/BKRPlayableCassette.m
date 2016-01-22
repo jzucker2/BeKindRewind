@@ -14,8 +14,17 @@
     self = [[[self class] alloc] init];
     if (self) {
         self.creationDate = dictionary[@"creationDate"];
+        [self _editedScenes:dictionary[@"scenes"]];
     }
     return self;
+}
+
+- (NSMutableDictionary *)_editedScenes:(NSArray *)rawScenesArray {
+    NSMutableDictionary *editedScenes = [NSMutableDictionary dictionary];
+    for (NSDictionary *sceneDict in rawScenesArray) {
+        
+    }
+    return editedScenes;
 }
 
 @end
