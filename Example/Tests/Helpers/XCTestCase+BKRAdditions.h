@@ -16,13 +16,24 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @property (nonatomic, copy) NSURLResponse *response;
 @end
 
-@class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRRecordableCassette;
+@class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRRecordableCassette, BKRPlayableCassette;
 @interface XCTestCase (BKRAdditions)
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 - (void)post:(NSData *)postData withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 
-- (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toCassette:(BKRRecordableCassette *)cassette;
+- (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordableCassette:(BKRRecordableCassette *)cassette;
+- (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error;
+
+// used for building
+- (NSMutableDictionary *)standardRequestDictionary;
+- (NSMutableDictionary *)standardResponseDictionary;
+- (NSMutableDictionary *)standardDataDictionary;
+
+
+- (NSDictionary *)dictionaryWithRequest:(NSURLRequest *)request forTask:(NSURLSessionTask *)task;
+- (NSDictionary *)dictionaryWithData:(NSData *)data forTask:(NSURLSessionTask *)task;
+- (NSDictionary *)dictionaryWithResponse:(NSURLResponse *)response forTask:(NSURLSessionTask *)task;
 
 - (void)assertFramesOrder:(BKRScene *)scene extraAssertions:(void (^)(BKRScene *scene))assertions;
 

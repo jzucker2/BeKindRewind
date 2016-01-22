@@ -12,7 +12,9 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRecordableRawFrame.h>
+#import <BeKindRewind/BKRPlayableRawFrame.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
+#import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 
 @implementation XCTestCase (BKRAdditions)
 
@@ -70,11 +72,75 @@
     }];
 }
 
-- (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toCassette:(BKRRecordableCassette *)cassette {
-    BKRRecordableRawFrame *dataRawFrame = [BKRRecordableRawFrame frameWithTask:task];
-    dataRawFrame.item = data;
-    [cassette addFrame:dataRawFrame];
-    
+- (NSMutableDictionary *)standardDataDictionary {
+    return [@{
+              @"class": @"BKRDataFrame",
+              @"creationDate": [NSDate date],
+              } mutableCopy];
+}
+
+- (NSMutableDictionary *)standardRequestDictionary {
+    return [@{
+              @"class": @"BKRRequestFrame",
+              @"creationDate": [NSDate date],
+              @"timeoutInterval": @(60),
+              @"HTTPShouldUsePipelining": @(NO),
+              @"HTTPShouldHandleCookies": @(YES),
+              @"allowsCellularAccess": @(YES),
+              @"HTTPMethod": @"GET"
+              } mutableCopy];
+}
+
+- (NSMutableDictionary *)standardResponseDictionary {
+    return [@{
+              @"class": @"BKRResponseFrame",
+              @"creationDate": [NSDate date],
+              @"MIMEType": @"application/json",
+              @"statusCode": @(200)
+              } mutableCopy];
+}
+
+- (NSDictionary *)dictionaryWithRequest:(NSURLRequest *)request forTask:(NSURLSessionTask *)task {
+    NSMutableDictionary *requestFrameDict = [self standardRequestDictionary];
+    requestFrameDict[@"URL"] = request.URL.absoluteString;
+    requestFrameDict[@"uniqueIdentifier"] = task.globallyUniqueIdentifier;
+    requestFrameDict[@"timeoutInterval"] = @(request.timeoutInterval);
+    requestFrameDict[@"allowsCellularAccess"] = @(request.allowsCellularAccess);
+    requestFrameDict[@"HTTPShouldHandleCookies"] = @(request.HTTPShouldHandleCookies);
+    requestFrameDict[@"HTTPShouldUsePipelining"] = @(request.HTTPShouldUsePipelining);
+    if (request.HTTPBody) {
+        requestFrameDict[@"HTTPBody"] = request.HTTPBody;
+    }
+    if (request.HTTPMethod) {
+        requestFrameDict[@"HTTPMethod"] = request.HTTPMethod;
+    }
+    if (request.allHTTPHeaderFields) {
+        requestFrameDict[@"allHTTPHeaderFields"] = request.allHTTPHeaderFields.copy;
+    }
+    return requestFrameDict.copy;
+}
+
+- (NSDictionary *)dictionaryWithResponse:(NSURLResponse *)response forTask:(NSURLSessionTask *)task {
+    NSMutableDictionary *responseFrameDict = [self standardResponseDictionary];
+    NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+    responseFrameDict[@"uniqueIdentifier"] = task.globallyUniqueIdentifier;
+    responseFrameDict[@"URL"] = castedResponse.URL;
+    responseFrameDict[@"MIMEType"] = castedResponse.MIMEType;
+    responseFrameDict[@"statusCode"] = @(castedResponse.statusCode);
+    if (castedResponse.allHeaderFields) {
+        responseFrameDict[@"allHeaderFields"] = castedResponse.allHeaderFields.copy;
+    }
+    return responseFrameDict.copy;
+}
+
+- (NSDictionary *)dictionaryWithData:(NSData *)data forTask:(NSURLSessionTask *)task {
+    NSMutableDictionary *dataFrameDict = [self standardDataDictionary];
+    dataFrameDict[@"uniqueIdentifier"] = task.globallyUniqueIdentifier;
+    dataFrameDict[@"data"] = data.copy;
+    return dataFrameDict.copy;
+}
+
+- (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordableCassette:(BKRRecordableCassette *)cassette {
     BKRRecordableRawFrame *originalRequestRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     originalRequestRawFrame.item = task.originalRequest;
     [cassette addFrame:originalRequestRawFrame];
@@ -86,6 +152,32 @@
     BKRRecordableRawFrame *responseRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     responseRawFrame.item = response;
     [cassette addFrame:responseRawFrame];
+    
+    BKRRecordableRawFrame *dataRawFrame = [BKRRecordableRawFrame frameWithTask:task];
+    dataRawFrame.item = data;
+    [cassette addFrame:dataRawFrame];
+}
+
+- (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error {
+    NSMutableArray *frames = [NSMutableArray array];
+    
+    BKRPlayableRawFrame *originalRequestFrame = [BKRPlayableRawFrame frameWithTask:task];
+    originalRequestFrame.item = task.originalRequest;
+    [frames addObject:originalRequestFrame.editedFrame];
+    
+    BKRPlayableRawFrame *currentRequestFrame = [BKRPlayableRawFrame frameWithTask:task];
+    currentRequestFrame.item = task.currentRequest;
+    [frames addObject:currentRequestFrame.editedFrame];
+    
+    BKRPlayableRawFrame *responseFrame = [BKRPlayableRawFrame frameWithTask:task];
+    responseFrame.item = response;
+    [frames addObject:responseFrame.editedFrame];
+    
+    BKRPlayableRawFrame *dataFrame = [BKRPlayableRawFrame frameWithTask:task];
+    dataFrame.item = data;
+    [frames addObject:dataFrame.editedFrame];
+    
+    return frames.copy;
 }
 
 - (void)assertFramesOrder:(BKRScene *)scene extraAssertions:(void (^)(BKRScene *))assertions {
