@@ -8,7 +8,7 @@
 
 #import "BKRRecordableCassette.h"
 #import "BKRRawFrame.h"
-#import "BKRScene.h"
+#import "BKRRecordableScene.h"
 
 @interface BKRRecordableCassette ()
 @end
@@ -27,10 +27,10 @@
     dispatch_barrier_async(self.processingQueue, ^{
         __strong typeof(wself) sself = wself;
         if (sself.scenes[frame.uniqueIdentifier]) {
-            BKRScene *existingScene = sself.scenes[frame.uniqueIdentifier];
+            BKRRecordableScene *existingScene = sself.scenes[frame.uniqueIdentifier];
             [existingScene addFrame:frame];
         } else {
-            BKRScene *newScene = [BKRScene sceneFromFrame:frame];
+            BKRRecordableScene *newScene = [BKRRecordableScene sceneFromFrame:frame];
             sself.scenes[newScene.uniqueIdentifier] = newScene;
         }
     });
