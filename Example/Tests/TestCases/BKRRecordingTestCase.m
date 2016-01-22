@@ -103,6 +103,7 @@
         NSURLRequest *originalRequest = task.originalRequest;
         BKRRequestFrame *originalRequestFrame = scene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
+        XCTAssertEqualObjects(originalRequestFrame.HTTPMethod, @"POST");
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
         XCTAssertNotNil(scene.currentRequest);
         [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
