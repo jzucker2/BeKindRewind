@@ -10,10 +10,6 @@
 
 @implementation BKRPlayableCassette
 
-- (NSDictionary *)plistDictionary {
-    return nil;
-}
-
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
     self = [[[self class] alloc] init];
     if (self) {
