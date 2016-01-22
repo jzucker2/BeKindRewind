@@ -26,12 +26,12 @@
     return self;
 }
 
-- (NSMutableDictionary *)_editedScenes:(NSArray *)rawScenesArray {
+- (NSMutableDictionary *)_editedScenes:(NSDictionary *)rawScenesDict {
     NSMutableDictionary *editedScenes = [NSMutableDictionary dictionary];
-    for (NSDictionary *sceneDict in rawScenesArray) {
-        BKRPlayableScene *scene = [[BKRPlayableScene alloc] initFromPlistDictionary:sceneDict];
+    [rawScenesDict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        BKRPlayableScene *scene = [[BKRPlayableScene alloc] initFromPlistDictionary:obj];
         editedScenes[scene.uniqueIdentifier] = scene;
-    }
+    }];
     return editedScenes;
 }
 

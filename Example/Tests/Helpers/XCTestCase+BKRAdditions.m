@@ -124,7 +124,7 @@
     NSMutableDictionary *responseFrameDict = [self standardResponseDictionary];
     NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
     responseFrameDict[@"uniqueIdentifier"] = task.globallyUniqueIdentifier;
-    responseFrameDict[@"URL"] = castedResponse.URL;
+    responseFrameDict[@"URL"] = castedResponse.URL.absoluteString;
     responseFrameDict[@"MIMEType"] = castedResponse.MIMEType;
     responseFrameDict[@"statusCode"] = @(castedResponse.statusCode);
     if (castedResponse.allHeaderFields) {

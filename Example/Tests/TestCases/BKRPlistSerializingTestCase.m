@@ -87,8 +87,6 @@
 }
 
 - (void)testPlistDeserializing {
-//    __block BKRPlayableCassette *cassette = nil;
-//    __block NSDictionary *cassetteDict = nil;
     NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
     NSDate *cassetteCreationDate = [NSDate date];
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -97,16 +95,6 @@
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
-//        NSDictionary *sceneDict = @{
-//                                    @"frames": [self framesArrayWithTask:task data:data response:response error:error],
-//                                    @"uniqueIdentifier": task.globallyUniqueIdentifier
-//                                    };
-//        NSDictionary *cassetteDict = @{
-//                                       @"creationDate": cassetteCreationDate,
-//                                       @"scenes": @[
-//                                               sceneDict
-//                                               ]
-//                                       };
         NSDictionary *originalRequestFrameDict = [self dictionaryWithRequest:task.originalRequest forTask:task];
         NSDictionary *currentRequestFrameDict = [self dictionaryWithRequest:task.currentRequest forTask:task];
         NSDictionary *responseFrameDict = [self dictionaryWithResponse:response forTask:task];
@@ -133,17 +121,25 @@
         XCTAssertEqualObjects(cassette.creationDate, cassetteCreationDate);
         BKRScene *scene = cassette.allScenes.firstObject;
         [self assertFramesOrder:scene extraAssertions:nil];
+        BOOL firstRequest = YES;
         for (NSInteger i= 0; i < scene.frames.count; i++) {
             BKRFrame *frame = [scene.allFrames objectAtIndex:i];
             NSDictionary *frameDict = [frames objectAtIndex:i];
             XCTAssertEqual(frame.creationDate, frameDict[@"creationDate"]);
             XCTAssertEqualObjects(sceneDict[@"uniqueIdentifier"], frameDict[@"uniqueIdentifier"]);
             if ([frame isKindOfClass:[BKRDataFrame class]]) {
-                [self assertData:(BKRDataFrame *)frame withDataDict:frameDict extraAssertions:nil];
+                [self assertData:(BKRDataFrame *)frame withData:data extraAssertions:nil];
             } else if ([frame isKindOfClass:[BKRResponseFrame class]]) {
-                [self assertResponse:(BKRResponseFrame *)frame withResponseDict:frameDict extraAssertions:nil];
+                [self assertResponse:(BKRResponseFrame *)frame withResponse:response extraAssertions:nil];
             } else if ([frame isKindOfClass:[BKRRequestFrame class]]) {
-                [self assertRequest:(BKRRequestFrame *)frame withRequestDict:frameDict extraAssertions:nil];
+                NSURLRequest *matcherRequest;
+                if (firstRequest) {
+                    matcherRequest = task.originalRequest;
+                    firstRequest = NO;
+                } else {
+                    matcherRequest = task.currentRequest;
+                }
+                [self assertRequest:(BKRRequestFrame *)frame withRequest:matcherRequest extraAssertions:nil];
             } else {
                 XCTFail(@"encountered unknown frame type: %@", frame);
             }
