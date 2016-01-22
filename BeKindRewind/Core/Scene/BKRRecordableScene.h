@@ -9,11 +9,11 @@
 #import "BKRPlistSerializing.h"
 #import "BKRScene.h"
 
-@class BKRRawFrame;
+@class BKRRecordableRawFrame;
 @interface BKRRecordableScene : BKRScene <BKRPlistSerializer>
 
-- (instancetype)initFromFrame:(BKRRawFrame *)frame;
-+ (instancetype)sceneFromFrame:(BKRRawFrame *)frame;
-- (void)addFrame:(BKRRawFrame *)frame;
+- (instancetype)initFromFrame:(BKRRecordableRawFrame *)frame;
++ (instancetype)sceneFromFrame:(BKRRecordableRawFrame *)frame;
+- (void)addFrame:(BKRRecordableRawFrame *)frame;
 
 @end

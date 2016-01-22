@@ -9,7 +9,6 @@
 #import <XCTest/XCTest.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/BKRScene.h>
-#import <BeKindRewind/BKRRawFrame.h>
 #import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>

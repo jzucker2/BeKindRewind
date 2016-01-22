@@ -7,7 +7,7 @@
 //
 
 #import "BKRRecordableScene.h"
-#import "BKRRawFrame.h"
+#import "BKRRecordableRawFrame.h"
 #import "BKRDataFrame.h"
 #import "BKRResponseFrame.h"
 #import "BKRRequestFrame.h"
@@ -21,7 +21,7 @@
 
 @synthesize frames = _frames;
 
-- (instancetype)initFromFrame:(BKRRawFrame *)frame {
+- (instancetype)initFromFrame:(BKRRecordableRawFrame *)frame {
     self = [super init];
     if (self) {
         self.uniqueIdentifier = frame.uniqueIdentifier;
@@ -31,11 +31,11 @@
     return self;
 }
 
-+ (instancetype)sceneFromFrame:(BKRRawFrame *)frame {
++ (instancetype)sceneFromFrame:(BKRRecordableRawFrame *)frame {
     return [[self alloc] initFromFrame:frame];
 }
 
-- (void)addFrame:(BKRRawFrame *)frame {
+- (void)addFrame:(BKRRecordableRawFrame *)frame {
     
     if ([self.frames containsObject:frame]) {
         NSLog(@"******************************************");

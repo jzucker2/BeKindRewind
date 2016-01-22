@@ -8,7 +8,7 @@
 
 #import "BKRRecorder.h"
 #import "BKRRecordableCassette.h"
-#import "BKRRawFrame.h"
+#import "BKRRecordableRawFrame.h"
 
 @interface BKRRecorder ()
 @property (nonatomic) dispatch_queue_t recordingQueue;
@@ -63,7 +63,7 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
-        BKRRawFrame *requestFrame = [BKRRawFrame frameWithTask:task];
+        BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
         requestFrame.item = task.originalRequest;
         [sself.currentCassette addFrame:requestFrame];
     });
@@ -89,7 +89,7 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
-        BKRRawFrame *dataFrame = [BKRRawFrame frameWithTask:task];
+        BKRRecordableRawFrame *dataFrame = [BKRRecordableRawFrame frameWithTask:task];
         dataFrame.item = data.copy;
         [sself.currentCassette addFrame:dataFrame];
     });
@@ -104,12 +104,12 @@
         __typeof (wself) sself = wself;
         // after response from server, the currentRequest might not match the original request, let's record that
         // just in case it's important
-        BKRRawFrame *currentRequestFrame = [BKRRawFrame frameWithTask:task];
+        BKRRecordableRawFrame *currentRequestFrame = [BKRRecordableRawFrame frameWithTask:task];
         currentRequestFrame.item = task.currentRequest;
         [sself.currentCassette addFrame:currentRequestFrame];
         
         // now add response
-        BKRRawFrame *frame = [BKRRawFrame frameWithTask:task];
+        BKRRecordableRawFrame *frame = [BKRRecordableRawFrame frameWithTask:task];
         frame.item = response;
         [sself.currentCassette addFrame:frame];
     });
@@ -123,7 +123,7 @@
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
         if (error) {
-            BKRRawFrame *frame = [BKRRawFrame frameWithTask:task];
+            BKRRecordableRawFrame *frame = [BKRRecordableRawFrame frameWithTask:task];
             frame.item = error;
             [sself.currentCassette addFrame:frame];
         }

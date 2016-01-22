@@ -12,7 +12,4 @@
 
 @property (nonatomic, copy) id item;
 
-// returns serializable version for saving or restoring
-- (BKRFrame *)editedFrame;
-
 @end

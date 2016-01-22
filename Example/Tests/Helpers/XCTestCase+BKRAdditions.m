@@ -11,7 +11,7 @@
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
-#import <BeKindRewind/BKRRawFrame.h>
+#import <BeKindRewind/BKRRecordableRawFrame.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
 
 @implementation XCTestCase (BKRAdditions)
@@ -71,19 +71,19 @@
 }
 
 - (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toCassette:(BKRRecordableCassette *)cassette {
-    BKRRawFrame *dataRawFrame = [BKRRawFrame frameWithTask:task];
+    BKRRecordableRawFrame *dataRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     dataRawFrame.item = data;
     [cassette addFrame:dataRawFrame];
     
-    BKRRawFrame *originalRequestRawFrame = [BKRRawFrame frameWithTask:task];
+    BKRRecordableRawFrame *originalRequestRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     originalRequestRawFrame.item = task.originalRequest;
     [cassette addFrame:originalRequestRawFrame];
     
-    BKRRawFrame *currentRequestRawFrame = [BKRRawFrame frameWithTask:task];
+    BKRRecordableRawFrame *currentRequestRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     currentRequestRawFrame.item = task.currentRequest;
     [cassette addFrame:currentRequestRawFrame];
     
-    BKRRawFrame *responseRawFrame = [BKRRawFrame frameWithTask:task];
+    BKRRecordableRawFrame *responseRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     responseRawFrame.item = response;
     [cassette addFrame:responseRawFrame];
 }

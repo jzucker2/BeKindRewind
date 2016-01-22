@@ -7,7 +7,7 @@
 //
 
 #import "BKRRecordableCassette.h"
-#import "BKRRawFrame.h"
+#import "BKRRecordableRawFrame.h"
 #import "BKRRecordableScene.h"
 
 @interface BKRRecordableCassette ()
@@ -17,7 +17,7 @@
 
 // frames and scenes share unique identifiers, this comes from the recorded task
 // if the frame matches a scene unique identifier, then add it to the scene
-- (void)addFrame:(BKRRawFrame *)frame {
+- (void)addFrame:(BKRRecordableRawFrame *)frame {
     if (!self.isRecording) {
         // Can't add frames if you are not recording!
         return;

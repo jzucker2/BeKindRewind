@@ -9,11 +9,11 @@
 #import "BKRCassette.h"
 #import "BKRPlistSerializing.h"
 
-@class BKRRawFrame;
+@class BKRRecordableRawFrame;
 @interface BKRRecordableCassette : BKRCassette <BKRPlistSerializer>
 
 @property (nonatomic, getter=isRecording) BOOL recording;
 
-- (void)addFrame:(BKRRawFrame *)frame;
+- (void)addFrame:(BKRRecordableRawFrame *)frame;
 
 @end
