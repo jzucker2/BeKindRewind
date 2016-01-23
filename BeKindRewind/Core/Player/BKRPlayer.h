@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class BKRPlayableCassette;
+
 @interface BKRPlayer : NSObject
 
 /**

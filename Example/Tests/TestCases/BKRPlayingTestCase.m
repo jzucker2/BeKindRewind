@@ -32,15 +32,35 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-}
-
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
+- (void)testPlayingOneGETRequest {
+    __block BKRScene *scene = nil;
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        XCTAssertNil(error);
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        // now current cassette in recoder should have one scene with data matching this
+        BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
+        XCTAssertNotNil(cassette);
+        XCTAssertEqual(cassette.allScenes.count, 1);
+        scene = cassette.allScenes.firstObject;
+        XCTAssertTrue(scene.allFrames.count > 0);
+        XCTAssertEqual(scene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqual(scene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(scene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
+        [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
     }];
 }
 
