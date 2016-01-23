@@ -12,6 +12,7 @@
 
 @interface BKRRecorder ()
 @property (nonatomic) dispatch_queue_t recordingQueue;
+@property (nonatomic) NSDate *currentRecordingStartTime;
 
 @end
 
@@ -20,7 +21,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _recordingQueue = dispatch_queue_create("com.BKR.recorderQueue", DISPATCH_QUEUE_SERIAL);
+        _recordingQueue = dispatch_queue_create("com.BKR.recorderQueue", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
@@ -34,16 +35,30 @@
     return sharedInstance;
 }
 
+// maybe set a date flag and ignore things after that flag??
 - (void)reset {
-    _recordingQueue = dispatch_queue_create("com.BKR.recorderQueue", DISPATCH_QUEUE_SERIAL);
+    if (_enabled) {
+        self.currentRecordingStartTime = [NSDate date];
+    } else {
+        self.currentRecordingStartTime = nil;
+    }
 }
 
 - (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
     if (currentCassette) {
         // This is for debugging purposes
-        NSAssert([currentCassette isKindOfClass:[BKRRecordableCassette class]], @"Must be a recordable class, not just a regular BKRCassette, you tried to use: %@", NSStringFromClass(currentCassette.class));
+        NSParameterAssert([currentCassette isKindOfClass:[BKRRecordableCassette class]]);
     }
-    _currentCassette = currentCassette;
+    dispatch_barrier_sync(self.recordingQueue, ^{
+        _currentCassette = currentCassette;
+    });
+    [self reset];
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    dispatch_barrier_sync(self.recordingQueue, ^{
+        _enabled = enabled;
+    });
     [self reset];
 }
 
@@ -63,6 +78,9 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
+        if (!sself.currentRecordingStartTime) {
+            return;
+        }
         BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
         requestFrame.item = task.originalRequest;
         [sself.currentCassette addFrame:requestFrame];
@@ -89,6 +107,9 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
+        if (!sself.currentRecordingStartTime) {
+            return;
+        }
         BKRRecordableRawFrame *dataFrame = [BKRRecordableRawFrame frameWithTask:task];
         dataFrame.item = data.copy;
         [sself.currentCassette addFrame:dataFrame];
@@ -102,6 +123,9 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
+        if (!sself.currentRecordingStartTime) {
+            return;
+        }
         // after response from server, the currentRequest might not match the original request, let's record that
         // just in case it's important
         BKRRecordableRawFrame *currentRequestFrame = [BKRRecordableRawFrame frameWithTask:task];
@@ -122,6 +146,9 @@
     __typeof (self) wself = self;
     dispatch_async(self.recordingQueue, ^{
         __typeof (wself) sself = wself;
+        if (!sself.currentRecordingStartTime) {
+            return;
+        }
         if (error) {
             BKRRecordableRawFrame *frame = [BKRRecordableRawFrame frameWithTask:task];
             frame.item = error;

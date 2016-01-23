@@ -7,10 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRRequestMatching.h"
 
 @class BKRPlayableCassette;
+@class BKRPlayableScene;
 
-@interface BKRPlayer : NSObject
+@interface BKRPlayer : NSObject <BKRRequestMatching>
 
 /**
  *  Whether or not network activity should be recorded
@@ -18,5 +20,11 @@
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
 @property (nonatomic, strong) BKRPlayableCassette *currentCassette;
+
+@property (nonatomic, strong) id<BKRRequestMatching>matcher;
+
+- (BKRPlayableScene *)playhead;
+
+- (void)reset;
 
 @end
