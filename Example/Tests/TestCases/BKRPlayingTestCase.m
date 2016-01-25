@@ -264,6 +264,7 @@
     __block BKRScene *firstScene = nil;
     __block BKRScene *secondScene = nil;
     __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(cassette.allScenes.count, 2);
     BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
     player.currentCassette = cassette;
     player.enabled = YES;
@@ -277,7 +278,7 @@
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
         XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 1);
+        XCTAssertEqual(cassette.allScenes.count, 2);
         firstScene = cassette.allScenes.firstObject;
         XCTAssertTrue(firstScene.allFrames.count > 0);
         XCTAssertEqual(firstScene.allDataFrames.count, 1);

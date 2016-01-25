@@ -78,7 +78,9 @@
     } withStubResponse:^BKRPlayableScene *(NSURLRequest * _Nonnull request) {
         NSLog(@"************************************************************");
         __strong typeof(wself) sself = wself;
-        return [sself _matchedPlayableSceneForRequest:request];
+        BKRPlayableScene *matchedScene = [sself _matchedPlayableSceneForRequest:request];
+        [sself _incrementPlayheadIndex];
+        return matchedScene;
     }];
 }
 
