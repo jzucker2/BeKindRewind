@@ -16,6 +16,14 @@
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 
+@implementation BKRExpectedPlistDictionaryBuilder
+
++ (instancetype)builder {
+    return [[self alloc] init];
+}
+
+@end
+
 @implementation XCTestCase (BKRAdditions)
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
@@ -98,6 +106,42 @@
               @"MIMEType": @"application/json",
               @"statusCode": @(200)
               } mutableCopy];
+}
+
+- (NSDictionary *)expectedCassetteDictionary:(BKRExpectedPlistDictionaryBuilder *)expectedPlistBuilder {
+    NSMutableDictionary *expectedCassetteDict = [@{
+                                                   @"creationDate": [NSDate date]
+                                                   } mutableCopy];
+    NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
+    expectedOriginalRequestDict[@"URL"] = expectedPlistBuilder.URLString;
+    expectedOriginalRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+    
+    NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
+    expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
+    expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+    
+    NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
+    expectedResponseDict[@"URL"] = expectedPlistBuilder.URLString;
+    expectedResponseDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+    
+    NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
+    expectedDataDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+    expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedPlistBuilder.receivedJSON options:kNilOptions error:nil];
+    
+    NSArray *framesArray = @[
+                             expectedOriginalRequestDict.copy,
+                             expectedCurrentRequestDict.copy,
+                             expectedResponseDict.copy,
+                             expectedDataDict.copy
+                             ];
+    NSDictionary *sceneDict = @{
+                                @"uniqueIdentifier": expectedPlistBuilder.taskUniqueIdentifier,
+                                @"frames": framesArray
+                                };
+    expectedCassetteDict[@"scenes"] = @{
+                                        expectedPlistBuilder.taskUniqueIdentifier : sceneDict
+                                        };
+    return expectedCassetteDict.copy;
 }
 
 - (NSDictionary *)dictionaryWithRequest:(NSURLRequest *)request forTask:(NSURLSessionTask *)task {

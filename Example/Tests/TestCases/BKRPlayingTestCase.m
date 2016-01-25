@@ -33,68 +33,99 @@
 }
 
 - (void)testPlayingOneGETRequest {
-    __block NSMutableDictionary *expectedCassetteDict = [@{
-                                                           @"creationDate": [NSDate date]
-                                                           } mutableCopy];
     NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
-    
-    NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
-    expectedOriginalRequestDict[@"URL"] = @"https://httpbin.org/get?test=test";
-    expectedOriginalRequestDict[@"uniqueIdentifier"] = taskUniqueIdentifier;
-    
-    NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
-    expectedCurrentRequestDict[@"URL"] = @"https://httpbin.org/get?test=test";
-    expectedCurrentRequestDict[@"uniqueIdentifier"] = taskUniqueIdentifier;
-    expectedCurrentRequestDict[@"allHTTPHeaderFields"] = @{
-                                                           @"Accept": @"*/*",
-                                                           @"Accept-Encoding": @"gzip, deflate",
-                                                           @"Accept-Language": @"en-us"
-                                                           };
-    
-    NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
-    expectedResponseDict[@"URL"] = @"https://httpbin.org/get?test=test";
-    expectedResponseDict[@"uniqueIdentifier"] = taskUniqueIdentifier;
-    // from actual response
-    expectedResponseDict[@"allHeaderFields"] = @{
-                                                 @"Access-Control-Allow-Origin": @"*",
-                                                 @"Content-Length": @"338",
-                                                 @"Content-Type": @"application/json",
-                                                 @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
-                                                 @"Server": @"nginx",
-                                                 @"access-control-alllow-credentials": @"true"
-                                                 };
-    
-    NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
-    expectedDataDict[@"uniqueIdentifier"] = taskUniqueIdentifier;
-    NSDictionary *expectedData = @{
-                                   @"args": @{
-                                           @"test": @"test"
-                                           },
-                                   @"headers": @{
-                                           @"Accept": @"*/*",
-                                           @"Accept-Encoding": @"gzip, deflate",
-                                           @"Accept-Language": @"en-us",
-                                           @"Host": @"httpbin.org",
-                                           @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
-                                           },
-                                   @"origin": @"198.0.209.238",
-                                   @"url": @"https://httpbin.org/get?test=test"
-                                   };
-    expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedData options:kNilOptions error:nil];
-    
-    NSArray *framesArray = @[
-                             expectedOriginalRequestDict,
-                             expectedCurrentRequestDict,
-                             expectedResponseDict,
-                             expectedDataDict
-                             ];
-    NSDictionary *sceneDict = @{
-                                @"uniqueIdentifier": taskUniqueIdentifier,
-                                @"frames": framesArray
-                                };
-    expectedCassetteDict[@"scenes"] = @[
-                                        sceneDict
-                                        ];
+    BKRExpectedPlistDictionaryBuilder *plistBuilder = [BKRExpectedPlistDictionaryBuilder builder];
+    plistBuilder.URLString = @"https://httpbin.org/get?test=test";
+    plistBuilder.taskUniqueIdentifier = taskUniqueIdentifier;
+    plistBuilder.currentRequestAllHTTPHeaderFields = @{
+                                                       @"Accept": @"*/*",
+                                                       @"Accept-Encoding": @"gzip, deflate",
+                                                       @"Accept-Language": @"en-us"
+                                                       };
+    plistBuilder.receivedJSON = @{
+                                  @"args": @{
+                                          @"test": @"test"
+                                          },
+                                  @"headers": @{
+                                          @"Accept": @"*/*",
+                                          @"Accept-Encoding": @"gzip, deflate",
+                                          @"Accept-Language": @"en-us",
+                                          @"Host": @"httpbin.org",
+                                          @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
+                                          },
+                                  @"origin": @"198.0.209.238",
+                                  @"url": @"https://httpbin.org/get?test=test"
+                                  };
+    plistBuilder.responseAllHeaderFields = @{
+                                             @"Access-Control-Allow-Origin": @"*",
+                                             @"Content-Length": @"338",
+                                             @"Content-Type": @"application/json",
+                                             @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
+                                             @"Server": @"nginx",
+                                             @"access-control-alllow-credentials": @"true"
+                                             };
+    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionary:plistBuilder];
+//    __block NSMutableDictionary *expectedCassetteDict = [@{
+//                                                           @"creationDate": [NSDate date]
+//                                                           } mutableCopy];
+//    
+//    NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
+//    expectedOriginalRequestDict[@"URL"] = @"https://httpbin.org/get?test=test";
+//    expectedOriginalRequestDict[@"uniqueIdentifier"] = taskUniqueIdentifier;
+//    
+//    NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
+//    expectedCurrentRequestDict[@"URL"] = @"https://httpbin.org/get?test=test";
+//    expectedCurrentRequestDict[@"uniqueIdentifier"] = taskUniqueIdentifier;
+//    expectedCurrentRequestDict[@"allHTTPHeaderFields"] = @{
+//                                                           @"Accept": @"*/*",
+//                                                           @"Accept-Encoding": @"gzip, deflate",
+//                                                           @"Accept-Language": @"en-us"
+//                                                           };
+//    
+//    NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
+//    expectedResponseDict[@"URL"] = @"https://httpbin.org/get?test=test";
+//    expectedResponseDict[@"uniqueIdentifier"] = taskUniqueIdentifier;
+//    // from actual response
+//    expectedResponseDict[@"allHeaderFields"] = @{
+//                                                 @"Access-Control-Allow-Origin": @"*",
+//                                                 @"Content-Length": @"338",
+//                                                 @"Content-Type": @"application/json",
+//                                                 @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
+//                                                 @"Server": @"nginx",
+//                                                 @"access-control-alllow-credentials": @"true"
+//                                                 };
+//    
+//    NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
+//    expectedDataDict[@"uniqueIdentifier"] = taskUniqueIdentifier;
+//    NSDictionary *expectedData = @{
+//                                   @"args": @{
+//                                           @"test": @"test"
+//                                           },
+//                                   @"headers": @{
+//                                           @"Accept": @"*/*",
+//                                           @"Accept-Encoding": @"gzip, deflate",
+//                                           @"Accept-Language": @"en-us",
+//                                           @"Host": @"httpbin.org",
+//                                           @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
+//                                           },
+//                                   @"origin": @"198.0.209.238",
+//                                   @"url": @"https://httpbin.org/get?test=test"
+//                                   };
+//    expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedData options:kNilOptions error:nil];
+//    
+//    NSArray *framesArray = @[
+//                             expectedOriginalRequestDict,
+//                             expectedCurrentRequestDict,
+//                             expectedResponseDict,
+//                             expectedDataDict
+//                             ];
+//    NSDictionary *sceneDict = @{
+//                                @"uniqueIdentifier": taskUniqueIdentifier,
+//                                @"frames": framesArray
+//                                };
+//    expectedCassetteDict[@"scenes"] = @[
+//                                        sceneDict
+//                                        ];
     __block BKRScene *scene = nil;
     BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     BKRPlayer *player = [[BKRPlayer alloc] init];

@@ -41,9 +41,9 @@
 - (void)reset {
     if (_enabled) {
         [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-            <#code#>
+            return NO;
         } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-            <#code#>
+            return nil;
         }];
     } else {
         [OHHTTPStubs removeAllStubs];

@@ -11,9 +11,15 @@
 typedef void (^taskCompletionHandler)(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error);
 
-@interface BKRExpectedData : NSObject
-@property (nonatomic, copy) NSData *data;
-@property (nonatomic, copy) NSURLResponse *response;
+@interface BKRExpectedPlistDictionaryBuilder : NSObject
+@property (nonatomic, copy) NSString *URLString;
+@property (nonatomic, copy) NSString *taskUniqueIdentifier;
+@property (nonatomic, copy) NSString *HTTPMethod;
+@property (nonatomic, strong) id sentJSON;
+@property (nonatomic, strong) id receivedJSON;
+@property (nonatomic, strong) NSDictionary *currentRequestAllHTTPHeaderFields;
+@property (nonatomic, strong) NSDictionary *responseAllHeaderFields;
++ (instancetype)builder;
 @end
 
 @class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRRecordableCassette, BKRPlayableCassette;
@@ -26,6 +32,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 - (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error;
 
 // used for building
+- (NSDictionary *)expectedCassetteDictionary:(BKRExpectedPlistDictionaryBuilder *)expectedPlistBuilder;
 - (NSMutableDictionary *)standardRequestDictionary;
 - (NSMutableDictionary *)standardResponseDictionary;
 - (NSMutableDictionary *)standardDataDictionary;
