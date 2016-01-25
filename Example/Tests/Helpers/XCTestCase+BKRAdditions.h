@@ -17,6 +17,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @property (nonatomic, copy) NSString *HTTPMethod;
 @property (nonatomic, strong) id sentJSON;
 @property (nonatomic, strong) id receivedJSON;
+@property (nonatomic, strong) NSDictionary *originalRequestAllHTTPHeaderFields;
 @property (nonatomic, strong) NSDictionary *currentRequestAllHTTPHeaderFields;
 @property (nonatomic, strong) NSDictionary *responseAllHeaderFields;
 + (instancetype)builder;
@@ -27,6 +28,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 - (void)post:(NSData *)postData withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
+- (void)postJSON:(id)JSON withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 
 - (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordableCassette:(BKRRecordableCassette *)cassette;
 - (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error;

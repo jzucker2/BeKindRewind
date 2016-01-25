@@ -80,6 +80,35 @@
     }];
 }
 
+- (void)postJSON:(id)JSON withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
+    NSData *postData = [NSJSONSerialization dataWithJSONObject:JSON options:NSJSONWritingPrettyPrinted error:nil];
+    __block XCTestExpectation *basicPostExpectation = [self expectationWithDescription:@"basicPostExpectation"];
+    NSURL *basicPostURL = [NSURL URLWithString:URLString];
+    NSMutableURLRequest *basicPostRequest = [NSMutableURLRequest requestWithURL:basicPostURL];
+    basicPostRequest.HTTPMethod = @"POST";
+    basicPostRequest.HTTPBody = postData;
+    __block NSURLSessionDataTask *basicPostTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:basicPostRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        XCTAssertNil(error);
+        if (taskCompletionHandler) {
+            taskCompletionHandler(basicPostTask, data, response, error);
+        }
+        [basicPostExpectation fulfill];
+        basicPostExpectation = nil;
+    }];
+    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateSuspended);
+    [basicPostTask resume];
+    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateRunning);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+        XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateCompleted);
+        XCTAssertNotNil(basicPostTask.originalRequest);
+        XCTAssertNotNil(basicPostTask.currentRequest);
+        if (taskTimeoutHandler) {
+            taskTimeoutHandler(basicPostTask, error);
+        }
+    }];
+}
+
 - (NSMutableDictionary *)standardDataDictionary {
     return [@{
               @"class": @"BKRDataFrame",
@@ -115,11 +144,21 @@
         NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
         expectedOriginalRequestDict[@"URL"] = expectedPlistBuilder.URLString;
         expectedOriginalRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+        if (expectedPlistBuilder.originalRequestAllHTTPHeaderFields) {
+            expectedOriginalRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.originalRequestAllHTTPHeaderFields;
+        }
         
         NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
         expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
         expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-        expectedCurrentRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.currentRequestAllHTTPHeaderFields;
+        if (expectedPlistBuilder.currentRequestAllHTTPHeaderFields) {
+            expectedCurrentRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.currentRequestAllHTTPHeaderFields;
+        }
+        
+        if (expectedPlistBuilder.HTTPMethod) {
+            expectedOriginalRequestDict[@"HTTPMethod"] = expectedPlistBuilder.HTTPMethod;
+            expectedCurrentRequestDict[@"HTTPMethod"] = expectedPlistBuilder.HTTPMethod;
+        }
         
         NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
         expectedResponseDict[@"URL"] = expectedPlistBuilder.URLString;
@@ -147,13 +186,6 @@
 }
 
 - (NSDictionary *)expectedCassetteDictionaryWithCreationDate:(NSDate *)creationDate sceneDictionaries:(NSArray<NSDictionary *> *)sceneDictionaries {
-//    NSMutableDictionary *cassetteDict = [@{
-//                                           @"creationDate": creationDate
-//                                           } mutableCopy];
-//    for (NSDictionary *sceneDict in sceneDictionaries) {
-//        cassetteDict[sceneDict[@"uniqueIdentifier"]] = sceneDict;
-//    }
-//    return cassetteDict.copy;
     return @{
              @"creationDate": creationDate,
              @"scenes": sceneDictionaries
@@ -256,9 +288,13 @@
     XCTAssertNotNil(otherRequest);
     XCTAssertEqual(request.HTTPShouldHandleCookies, otherRequest.HTTPShouldHandleCookies);
     XCTAssertEqual(request.HTTPShouldUsePipelining, otherRequest.HTTPShouldUsePipelining);
-    NSLog(@"request: %@", request.allHTTPHeaderFields);
-    NSLog(@"otherRequest: %@", otherRequest.allHTTPHeaderFields);
+//    NSLog(@"request: %@", request.allHTTPHeaderFields);
+//    NSLog(@"otherRequest: %@", otherRequest.allHTTPHeaderFields);
     XCTAssertEqualObjects(request.allHTTPHeaderFields, otherRequest.allHTTPHeaderFields);
+//    if (request.allHTTPHeaderFields.allKeys.count) {
+//        NSLog(@"%d", [request.allHTTPHeaderFields.allKeys.firstObject isEqual:otherRequest.allHTTPHeaderFields.allKeys.firstObject]);
+//        NSLog(@"%d", [request.allHTTPHeaderFields.allValues.firstObject isEqual:otherRequest.allHTTPHeaderFields.allValues.firstObject]);
+//    }
     XCTAssertEqualObjects(request.URL, otherRequest.URL);
     XCTAssertEqual(request.timeoutInterval, otherRequest.timeoutInterval);
     XCTAssertEqualObjects(request.HTTPMethod, otherRequest.HTTPMethod);

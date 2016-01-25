@@ -82,6 +82,10 @@
     }];
 }
 
+- (void)dealloc {
+    [self _removeStubs];
+}
+
 - (BKRPlayableScene *)_matchedPlayableSceneForRequest:(NSURLRequest *)request {
     return [self.matcher matchForRequest:request withPlayhead:self.playheadScene inPlayableScenes:self.scenes];
 }
