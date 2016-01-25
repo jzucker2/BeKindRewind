@@ -30,7 +30,7 @@
     __block XCTestExpectation *basicGetExpectation = [self expectationWithDescription:@"basicGetExpectation"];
     NSURL *basicGetURL = [NSURL URLWithString:URLString];
     NSURLRequest *basicGetRequest = [NSURLRequest requestWithURL:basicGetURL];
-    __block NSURLSessionDataTask *basicGetTask = [[NSURLSession sharedSession] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    __block NSURLSessionDataTask *basicGetTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         XCTAssertNil(error);
         if (taskCompletionHandler) {
             taskCompletionHandler(basicGetTask, data, response, error);
@@ -58,7 +58,7 @@
     NSMutableURLRequest *basicPostRequest = [NSMutableURLRequest requestWithURL:basicPostURL];
     basicPostRequest.HTTPMethod = @"POST";
     basicPostRequest.HTTPBody = postData;
-    __block NSURLSessionDataTask *basicPostTask = [[NSURLSession sharedSession] dataTaskWithRequest:basicPostRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    __block NSURLSessionDataTask *basicPostTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:basicPostRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         XCTAssertNil(error);
         if (taskCompletionHandler) {
             taskCompletionHandler(basicPostTask, data, response, error);

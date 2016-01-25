@@ -14,6 +14,9 @@
 
 @interface BKRPlayer : NSObject
 
+- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
++ (instancetype)playerWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
+
 /**
  *  Whether or not network activity should be recorded
  */
@@ -21,10 +24,10 @@
 
 @property (nonatomic, strong) BKRPlayableCassette *currentCassette;
 
-@property (nonatomic, strong) id<BKRRequestMatching>matcher;
+@property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
 
 - (BKRPlayableScene *)playhead;
 
-- (void)reset;
+- (void)resetPlayhead;
 
 @end

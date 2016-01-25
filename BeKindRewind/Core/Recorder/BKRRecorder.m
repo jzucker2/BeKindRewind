@@ -9,6 +9,7 @@
 #import "BKRRecorder.h"
 #import "BKRRecordableCassette.h"
 #import "BKRRecordableRawFrame.h"
+#import "BKROHHTTPStubsWrapper.h"
 
 @interface BKRRecorder ()
 @property (nonatomic) dispatch_queue_t recordingQueue;
@@ -60,6 +61,9 @@
         _enabled = enabled;
     });
     [self reset];
+    if (_enabled) {
+        [BKROHHTTPStubsWrapper removeAllStubs];
+    }
 }
 
 #pragma mark - NSURLSession recording

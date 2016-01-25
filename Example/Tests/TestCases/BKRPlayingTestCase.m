@@ -14,6 +14,8 @@
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
+#import <BeKindRewind/BKRPlayheadMatcher.h>
+#import <BeKindRewind/BKROHHTTPStubsWrapper.h>
 #import "XCTestCase+BKRAdditions.h"
 
 @interface BKRPlayingTestCase : XCTestCase
@@ -29,6 +31,7 @@
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    [BKROHHTTPStubsWrapper removeAllStubs];
     [super tearDown];
 }
 
@@ -128,7 +131,7 @@
 //                                        ];
     __block BKRScene *scene = nil;
     __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
-    BKRPlayer *player = [[BKRPlayer alloc] init];
+    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
     player.currentCassette = cassette;
     player.enabled = YES;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -136,6 +139,7 @@
         XCTAssertNil(error);
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 1);
