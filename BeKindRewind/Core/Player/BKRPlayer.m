@@ -44,18 +44,13 @@
 }
 
 - (void)setEnabled:(BOOL)enabled {
-//    dispatch_barrier_sync(self.playingQueue, ^{
-//        if (enabled) {
-//            [self _addStubs];
-//        } else {
-//            [self _removeStubs];
-//        }
-//    });
-    if (enabled) {
-        [self _addStubs];
-    } else {
-        [self _removeStubs];
-    }
+    dispatch_barrier_sync(self.playingQueue, ^{
+        if (enabled) {
+            [self _addStubs];
+        } else {
+            [self _removeStubs];
+        }
+    });
     _enabled = enabled;
 }
 
@@ -68,47 +63,40 @@
 }
 
 - (NSArray<BKRPlayableScene *> *)scenes {
-    return (NSArray<BKRPlayableScene *> *)self.currentCassette.allScenes;
+    __block NSArray<BKRPlayableScene *> *playableScenes;
+    dispatch_barrier_sync(self.playingQueue, ^{
+        playableScenes = (NSArray<BKRPlayableScene *> *)self.currentCassette.allScenes;
+    });
+    return playableScenes;
 }
 
 - (void)_addStubs {
     __weak typeof(self) wself = self;
-    __block BKRPlayableScene *matchedScene;
-//    [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-//        __strong typeof(wself) sself = wself;
-//
-//        matchedScene = [self.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
-//        // what happens if this increments past array? failure? handled in matching strictness enum?
-//        sself.playheadIndex++;
-//        return (matchedScene ? YES : NO);
-//    } withStubResponse:^BKRPlayableScene *(NSURLRequest * _Nonnull request) {
-//        NSLog(@"************************************************************");
-//        return matchedScene;
-//    }];
-//    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-//        __strong typeof(wself) sself = wself;
-//        
-//        matchedScene = [sself.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
-//        // what happens if this increments past array? failure? handled in matching strictness enum?
-//        sself.playheadIndex++;
-//        return (matchedScene ? YES : NO);
-//    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-//        NSLog(@"************************************************************");
-//        return [OHHTTPStubsResponse responseWithData:matchedScene.responseData statusCode:(int)matchedScene.responseStatusCode headers:matchedScene.responseHeaders];
-//    }];
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        return YES;
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         __strong typeof(wself) sself = wself;
-        matchedScene = [sself.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
-        return [OHHTTPStubsResponse responseWithData:matchedScene.responseData statusCode:(int)matchedScene.responseStatusCode headers:matchedScene.responseHeaders];
+        return [sself _hasMatchForRequest:request];
+    } withStubResponse:^BKRPlayableScene *(NSURLRequest * _Nonnull request) {
+        NSLog(@"************************************************************");
+        __strong typeof(wself) sself = wself;
+        return [sself _matchedPlayableSceneForRequest:request];
     }];
 }
 
-- (void)_removeStubs {
-    [BKROHHTTPStubsWrapper removeAllStubs];
+- (BKRPlayableScene *)_matchedPlayableSceneForRequest:(NSURLRequest *)request {
+    return [self.matcher matchForRequest:request withPlayhead:self.playheadScene inPlayableScenes:self.scenes];
 }
 
+- (BOOL)_hasMatchForRequest:(NSURLRequest *)request {
+    return YES;
+}
+
+- (void)_removeStubs {
+    dispatch_barrier_async(self.playingQueue, ^{
+        [BKROHHTTPStubsWrapper removeAllStubs];
+    });
+}
+
+// does this need a dispatch barrier?
 - (BKRPlayableScene *)playheadScene {
     if (self.playheadIndex >= self.scenes.count) {
         return nil;
@@ -116,14 +104,23 @@
     return [self.scenes objectAtIndex:self.playheadIndex];
 }
 
+- (void)_incrementPlayheadIndex {
+    __weak typeof(self) wself = self;
+    dispatch_barrier_async(self.playingQueue, ^{
+        __strong typeof(wself) sself = wself;
+        sself.playheadIndex++;
+    });
+}
+
 - (void)setCurrentCassette:(BKRPlayableCassette *)currentCassette {
     if (currentCassette) {
         // This is for debugging purposes
         NSParameterAssert([currentCassette isKindOfClass:[BKRPlayableCassette class]]);
     }
-    dispatch_barrier_async(self.playingQueue, ^{
+    dispatch_barrier_sync(self.playingQueue, ^{
         _currentCassette = currentCassette;
     });
+    [self resetPlayhead];
 }
 
 @end

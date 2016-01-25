@@ -108,7 +108,7 @@
               } mutableCopy];
 }
 
-- (NSDictionary *)expectedCassetteDictionary:(NSArray<BKRExpectedScenePlistDictionaryBuilder *> *)expectedPlistBuilders {
+- (NSDictionary *)expectedCassetteDictionaryWithSceneBuilders:(NSArray<BKRExpectedScenePlistDictionaryBuilder *> *)expectedPlistBuilders {
     NSDate *expectedCassetteDictCreationDate = [NSDate date];
     NSMutableArray *expectedPlistSceneDicts = [NSMutableArray array];
     for (BKRExpectedScenePlistDictionaryBuilder *expectedPlistBuilder in expectedPlistBuilders) {
@@ -119,10 +119,12 @@
         NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
         expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
         expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+        expectedCurrentRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.currentRequestAllHTTPHeaderFields;
         
         NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
         expectedResponseDict[@"URL"] = expectedPlistBuilder.URLString;
         expectedResponseDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+        expectedResponseDict[@"allHeaderFields"] = expectedPlistBuilder.responseAllHeaderFields;
         
         NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
         expectedDataDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
@@ -254,6 +256,8 @@
     XCTAssertNotNil(otherRequest);
     XCTAssertEqual(request.HTTPShouldHandleCookies, otherRequest.HTTPShouldHandleCookies);
     XCTAssertEqual(request.HTTPShouldUsePipelining, otherRequest.HTTPShouldUsePipelining);
+    NSLog(@"request: %@", request.allHTTPHeaderFields);
+    NSLog(@"otherRequest: %@", otherRequest.allHTTPHeaderFields);
     XCTAssertEqualObjects(request.allHTTPHeaderFields, otherRequest.allHTTPHeaderFields);
     XCTAssertEqualObjects(request.URL, otherRequest.URL);
     XCTAssertEqual(request.timeoutInterval, otherRequest.timeoutInterval);

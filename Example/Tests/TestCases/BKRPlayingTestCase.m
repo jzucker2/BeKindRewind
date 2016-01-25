@@ -40,11 +40,12 @@
     BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
     sceneBuilder.URLString = @"https://httpbin.org/get?test=test";
     sceneBuilder.taskUniqueIdentifier = taskUniqueIdentifier;
-    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
-                                                       @"Accept": @"*/*",
-                                                       @"Accept-Encoding": @"gzip, deflate",
-                                                       @"Accept-Language": @"en-us"
-                                                       };
+//    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
+//                                                       @"Accept": @"*/*",
+//                                                       @"Accept-Encoding": @"gzip, deflate",
+//                                                       @"Accept-Language": @"en-us"
+//                                                       };
+    sceneBuilder.currentRequestAllHTTPHeaderFields = @{};
     sceneBuilder.receivedJSON = @{
                                   @"args": @{
                                           @"test": @"test"
@@ -65,9 +66,9 @@
                                              @"Content-Type": @"application/json",
                                              @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
                                              @"Server": @"nginx",
-                                             @"access-control-alllow-credentials": @"true"
+                                             @"access-control-allow-credentials": @"true"
                                              };
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionary:@[sceneBuilder]];
+    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
 //    __block NSMutableDictionary *expectedCassetteDict = [@{
 //                                                           @"creationDate": [NSDate date]
 //                                                           } mutableCopy];
@@ -97,7 +98,7 @@
 //                                                 @"Server": @"nginx",
 //                                                 @"access-control-alllow-credentials": @"true"
 //                                                 };
-//    
+//
 //    NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
 //    expectedDataDict[@"uniqueIdentifier"] = taskUniqueIdentifier;
 //    NSDictionary *expectedData = @{
