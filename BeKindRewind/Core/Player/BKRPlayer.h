@@ -26,7 +26,7 @@
 
 @property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
 
-- (BKRPlayableScene *)playhead;
+- (BKRPlayableScene *)playheadScene;
 
 - (void)resetPlayhead;
 

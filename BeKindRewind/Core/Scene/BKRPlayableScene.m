@@ -8,6 +8,8 @@
 
 #import "BKRPlayableScene.h"
 #import "BKRPlayableRawFrame.h"
+#import "BKRResponseFrame.h"
+#import "BKRDataFrame.h"
 
 @interface BKRPlayableScene ()
 @end
@@ -31,6 +33,25 @@
         [editedFrames addObject:rawFrame.editedFrame];
     }
     return editedFrames.copy;
+}
+
+- (NSData *)responseData {
+    BKRDataFrame *dataFrame = self.allDataFrames.firstObject;
+    return dataFrame.rawData;
+}
+
+- (NSInteger)responseStatusCode {
+    BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
+    return responseFrame.statusCode;
+}
+
+- (NSDictionary *)responseHeaders {
+    BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
+    return responseFrame.allHeaderFields;
+}
+
+- (NSError *)responseError {
+    return nil;
 }
 
 @end

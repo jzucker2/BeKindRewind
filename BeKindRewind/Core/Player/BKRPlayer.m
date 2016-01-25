@@ -16,7 +16,7 @@
 @interface BKRPlayer ()
 @property (nonatomic) dispatch_queue_t playingQueue;
 @property (nonatomic, copy) NSString *playheadUniqueIdentifier;
-@property (nonatomic, strong) NSArray <BKRPlayableScene *> *scenes;
+@property (nonatomic, weak, readonly) NSArray <BKRPlayableScene *> *scenes;
 @property (nonatomic) NSUInteger playheadIndex;
 @property (nonatomic, strong, readwrite) id<BKRRequestMatching>matcher;
 @end
@@ -29,6 +29,7 @@
 }
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
+    NSParameterAssert(matcherClass);
     self = [super init];
     if (self) {
         [self _init];
@@ -60,11 +61,22 @@
     });
 }
 
+- (NSArray<BKRPlayableScene *> *)scenes {
+    return (NSArray<BKRPlayableScene *> *)self.currentCassette.allScenes;
+}
+
 - (void)_addStubs {
+    __weak typeof(self) wself = self;
+    __block BKRPlayableScene *matchedScene;
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        return YES;
+        __strong typeof(wself) sself = wself;
+        
+        matchedScene = [self.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+        // what happens if this increments past array? failure? handled in matching strictness enum?
+        sself.playheadIndex++;
+        return (matchedScene != nil);
     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        return nil;
+        return [BKROHHTTPStubsWrapper responseForScene:matchedScene];
     }];
 }
 
@@ -72,8 +84,11 @@
     [BKROHHTTPStubsWrapper removeAllStubs];
 }
 
-- (BKRPlayableScene *)playhead {
-    return (BKRPlayableScene *)self.currentCassette.scenes[self.playheadUniqueIdentifier];
+- (BKRPlayableScene *)playheadScene {
+    if (self.playheadIndex >= self.scenes.count) {
+        return nil;
+    }
+    return [self.scenes objectAtIndex:self.playheadIndex];
 }
 
 - (void)setCurrentCassette:(BKRPlayableCassette *)currentCassette {
@@ -81,10 +96,9 @@
         // This is for debugging purposes
         NSParameterAssert([currentCassette isKindOfClass:[BKRPlayableCassette class]]);
     }
-    dispatch_barrier_sync(self.playingQueue, ^{
+    dispatch_barrier_async(self.playingQueue, ^{
         _currentCassette = currentCassette;
     });
-    self.scenes = (NSArray<BKRPlayableScene *> *)_currentCassette.allScenes;
 }
 
 @end

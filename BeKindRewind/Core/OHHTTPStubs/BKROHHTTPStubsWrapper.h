@@ -8,8 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+@class BKRPlayableScene;
+@class OHHTTPStubsResponse;
+
+typedef BOOL (^BKRStubsTestBlock)(NSURLRequest* _Nonnull request);
+typedef void (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
+
 @interface BKROHHTTPStubsWrapper : NSObject
 
 + (void)removeAllStubs;
+
++ (OHHTTPStubsResponse *)responseForScene:(BKRPlayableScene *)scene;
+
++ (void)stubRequest;
 
 @end

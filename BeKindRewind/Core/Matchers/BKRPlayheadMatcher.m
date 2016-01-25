@@ -7,6 +7,8 @@
 //
 
 #import "BKRPlayheadMatcher.h"
+#import "BKRPlayableScene.h"
+#import "BKRRequestFrame.h"
 
 @implementation BKRPlayheadMatcher
 
@@ -14,12 +16,19 @@
     return [[self alloc] init];
 }
 
-- (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayheadIdentifier:(NSString *)playheadIdentifier inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
-    return YES;
-}
-
-- (BKRPlayableScene *)matchForRequest:(NSURLRequest *)request withPlayheadIdentifier:(NSString *)playheadIdentifier inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
+- (BKRPlayableScene *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
+    if ([playhead.originalRequest.URL.absoluteString isEqualToString:request.URL.absoluteString]) {
+        return playhead;
+    }
     return nil;
 }
+
+//- (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayheadIdentifier:(NSString *)playheadIdentifier inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
+//    return YES;
+//}
+//
+//- (BKRPlayableScene *)matchForRequest:(NSURLRequest *)request withPlayheadIdentifier:(NSString *)playheadIdentifier inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
+//    return nil;
+//}
 
 @end
