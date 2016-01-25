@@ -11,7 +11,6 @@
 #import "BKRPlayableRawFrame.h"
 #import "BKRPlayableScene.h"
 #import "BKROHHTTPStubsWrapper.h"
-#import <OHHTTPStubs/OHHTTPStubs.h>
 
 @interface BKRPlayer ()
 @property (nonatomic) dispatch_queue_t playingQueue;
