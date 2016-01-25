@@ -144,6 +144,7 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)error {
+    NSLog(@"^^^^^^^^^^^^^^^^^^^^^ enter finish method");
     if (!self.enabled) {
         return;
     }
@@ -154,6 +155,7 @@
             return;
         }
         if (error) {
+            NSLog(@"^^^^^^^^^^^^^^^^^^^^^ recording error");
             BKRRecordableRawFrame *frame = [BKRRecordableRawFrame frameWithTask:task];
             frame.item = error;
             [sself.currentCassette addFrame:frame];

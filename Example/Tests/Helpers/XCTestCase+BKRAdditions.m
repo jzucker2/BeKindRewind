@@ -11,6 +11,7 @@
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
+#import <BeKindRewind/BKRErrorFrame.h>
 #import <BeKindRewind/BKRRecordableRawFrame.h>
 #import <BeKindRewind/BKRPlayableRawFrame.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
@@ -27,7 +28,6 @@
 @implementation XCTestCase (BKRAdditions)
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
-//    __block XCTestExpectation *basicGetExpectation = [self expectationWithDescription:@"basicGetExpectation"];
     NSURL *basicGetURL = [NSURL URLWithString:URLString];
     NSURLRequest *basicGetRequest = [NSURLRequest requestWithURL:basicGetURL];
     [self _executeRequest:basicGetRequest withExpectationString:@"basicGetExpectation" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -40,25 +40,20 @@
             taskTimeoutHandler(task, error);
         }
     }];
-//    __block NSURLSessionDataTask *basicGetTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//        if (taskCompletionHandler) {
-//            taskCompletionHandler(basicGetTask, data, response, error);
-//        }
-//        [basicGetExpectation fulfill];
-//        basicGetExpectation = nil;
-//    }];
-//    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateSuspended);
-//    [basicGetTask resume];
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//        XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateCompleted);
-//        XCTAssertNotNil(basicGetTask.originalRequest);
-//        XCTAssertNotNil(basicGetTask.currentRequest);
-//        if (taskTimeoutHandler) {
-//            taskTimeoutHandler(basicGetTask, error);
-//        }
-//    }];
+}
+
+- (void)cancellingGetTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
+    NSURL *basicCancellingURL = [NSURL URLWithString:URLString];
+    NSURLRequest *basicCancellingRequest = [NSURLRequest requestWithURL:basicCancellingURL];
+    [self _executeCancellingRequest:basicCancellingRequest withExpectationString:@"cancelTask" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        if (taskCompletionHandler) {
+            taskCompletionHandler(task, data, response, error);
+        }
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        if (taskTimeoutHandler) {
+            taskTimeoutHandler(task, error);
+        }
+    }];
 }
 
 - (void)post:(NSData *)postData withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
@@ -97,6 +92,35 @@
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         XCTAssertEqual(task.state, NSURLSessionTaskStateCompleted);
+        XCTAssertNotNil(task.originalRequest);
+        XCTAssertNotNil(task.currentRequest);
+        if (taskTimeoutHandler) {
+            taskTimeoutHandler(task, error);
+        }
+    }];
+}
+
+- (void)_executeCancellingRequest:(NSURLRequest *)request withExpectationString:(NSString *)expectationString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
+    __block XCTestExpectation *expectation = [self expectationWithDescription:expectationString];
+    __block NSURLSessionDataTask *task = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        XCTAssertNotNil(error);
+        if (taskCompletionHandler) {
+            taskCompletionHandler(task, data, response, error);
+        }
+        [expectation fulfill];
+        expectation = nil;
+    }];
+    XCTAssertEqual(task.state, NSURLSessionTaskStateSuspended);
+    [task resume];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [task cancel];
+        XCTAssertNotEqual(task.state, NSURLSessionTaskStateRunning);
+        XCTAssertNotEqual(task.state, NSURLSessionTaskStateSuspended);
+    });
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+        XCTAssertNotEqual(task.state, NSURLSessionTaskStateRunning);
+        XCTAssertNotEqual(task.state, NSURLSessionTaskStateSuspended);
         XCTAssertNotNil(task.originalRequest);
         XCTAssertNotNil(task.currentRequest);
         if (taskTimeoutHandler) {
@@ -320,6 +344,16 @@
     XCTAssertEqualObjects(data.rawData, otherData);
     if (assertions) {
         assertions(data, otherData);
+    }
+}
+
+- (void)assertErrorFrame:(BKRErrorFrame *)errorFrame withError:(NSError *)otherError extraAssertions:(void (^)(BKRErrorFrame *, NSError *))assertions {
+    XCTAssertNotNil(errorFrame);
+    XCTAssertNotNil(otherError);
+    XCTAssertEqual(errorFrame.code, otherError.code);
+    XCTAssertEqualObjects(errorFrame.domain, otherError.domain);
+    if (errorFrame.userInfo || otherError.userInfo) {
+        XCTAssertEqualObjects(errorFrame.userInfo, otherError.userInfo);
     }
 }
 

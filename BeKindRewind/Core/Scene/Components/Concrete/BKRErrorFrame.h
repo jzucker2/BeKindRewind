@@ -12,6 +12,13 @@
 @interface BKRErrorFrame : BKRFrame <BKRPlistSerializing>
 
 - (void)addError:(NSError *)error;
-- (NSError *)error;
+//- (NSError *)error;
+//- (NSInteger)code;
+//- (NSString *)domain;
+//- (NSDictionary *)userInfo;
+@property (nonatomic, readonly) NSError *error;
+@property (nonatomic, readonly) NSInteger code;
+@property (nonatomic, copy, readonly) NSString *domain;
+@property (nonatomic, readonly) NSDictionary *userInfo;
 
 @end

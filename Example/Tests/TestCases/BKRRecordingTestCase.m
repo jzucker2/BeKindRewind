@@ -42,7 +42,6 @@
     __block BKRScene *scene = nil;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-        XCTAssertNil(error);
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
         // now current cassette in recoder should have one scene with data matching this
@@ -70,12 +69,56 @@
     }];
 }
 
+- (void)testRecordingOneCancelledGETRequest {
+    __block BKRScene *scene = nil;
+    __block NSError *taskError = nil;
+    [self cancellingGetTaskWithURLString:@"https://httpbin.org/delay/10" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        // ensure that result from network is as expected
+        // now current cassette in recoder should have one scene with data matching this
+        BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
+        XCTAssertNotNil(cassette);
+        XCTAssertEqual(cassette.allScenes.count, 1);
+        scene = cassette.allScenes.firstObject;
+        XCTAssertNotNil(scene);
+        XCTAssertNotNil(error);
+        taskError = error;
+        XCTAssertEqual(error.code, -999);
+        XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
+        NSDictionary *expectedErrorUserInfo = @{
+                                                NSURLErrorFailingURLErrorKey: [NSURL URLWithString:@"https://httpbin.org/delay/10"],
+                                                NSURLErrorFailingURLStringErrorKey: @"https://httpbin.org/delay/10",
+                                                NSLocalizedDescriptionKey: @"cancelled"
+                                                };
+        for (id object in error.userInfo.allValues) {
+            NSLog(@"class: %@", [object class]);
+        }
+        XCTAssertEqualObjects(error.userInfo, expectedErrorUserInfo);
+        XCTAssertTrue(scene.allFrames.count > 0);
+        XCTAssertEqual(scene.allDataFrames.count, 0);
+        XCTAssertEqual(scene.allResponseFrames.count, 0);
+//        XCTAssertEqual(scene.allErrorFrames.count, 0); // need to fix timing, this should have already been recorded
+        XCTAssertEqual(scene.allRequestFrames.count, 1);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(scene.allFrames.count, 2);
+        XCTAssertEqual(scene.allRequestFrames.count, 1);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        
+        XCTAssertEqual(scene.allErrorFrames.count, 1);
+        BKRErrorFrame *errorFrame = scene.allErrorFrames.firstObject;
+        [self assertErrorFrame:errorFrame withError:taskError extraAssertions:nil];
+        
+        [self assertFramesOrder:scene extraAssertions:nil];
+    }];
+}
+
 - (void)testRecordingOnePOSTRequest {
     __block BKRScene *scene = nil;
     NSDictionary *rawPostDictionary = @{@"foo": @"bar"};
     NSData *postData = [NSJSONSerialization dataWithJSONObject:rawPostDictionary options:NSJSONWritingPrettyPrinted error:nil];
     [self post:postData withURLString:@"https://httpbin.org/post" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-        XCTAssertNil(error);
         // ensure that data returned is same as data posted
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         NSDictionary *formDict = dataDict[@"form"];
@@ -117,7 +160,6 @@
     __block BKRScene *firstScene = nil;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-        XCTAssertNil(error);
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
         // now current cassette in recorder should have one scene with data matching this
@@ -147,7 +189,6 @@
     __block BKRScene *secondScene = nil;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test2" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-        XCTAssertNil(error);
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test2"});
         // now current cassette in recoder should have one scene with data matching this
