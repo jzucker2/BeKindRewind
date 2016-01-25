@@ -27,55 +27,53 @@
 @implementation XCTestCase (BKRAdditions)
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
-    __block XCTestExpectation *basicGetExpectation = [self expectationWithDescription:@"basicGetExpectation"];
+//    __block XCTestExpectation *basicGetExpectation = [self expectationWithDescription:@"basicGetExpectation"];
     NSURL *basicGetURL = [NSURL URLWithString:URLString];
     NSURLRequest *basicGetRequest = [NSURLRequest requestWithURL:basicGetURL];
-    __block NSURLSessionDataTask *basicGetTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self _executeRequest:basicGetRequest withExpectationString:@"basicGetExpectation" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
         if (taskCompletionHandler) {
-            taskCompletionHandler(basicGetTask, data, response, error);
+            taskCompletionHandler(task, data, response, error);
         }
-        [basicGetExpectation fulfill];
-        basicGetExpectation = nil;
-    }];
-    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateSuspended);
-    [basicGetTask resume];
-//    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateRunning); // not useful for mocked tests, this is a race condition when mocking
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-        XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateCompleted);
-        XCTAssertNotNil(basicGetTask.originalRequest);
-        XCTAssertNotNil(basicGetTask.currentRequest);
+    } tastTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         if (taskTimeoutHandler) {
-            taskTimeoutHandler(basicGetTask, error);
+            taskTimeoutHandler(task, error);
         }
     }];
+//    __block NSURLSessionDataTask *basicGetTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:basicGetRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//        XCTAssertNil(error);
+//        if (taskCompletionHandler) {
+//            taskCompletionHandler(basicGetTask, data, response, error);
+//        }
+//        [basicGetExpectation fulfill];
+//        basicGetExpectation = nil;
+//    }];
+//    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateSuspended);
+//    [basicGetTask resume];
+//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+//        XCTAssertNil(error);
+//        XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateCompleted);
+//        XCTAssertNotNil(basicGetTask.originalRequest);
+//        XCTAssertNotNil(basicGetTask.currentRequest);
+//        if (taskTimeoutHandler) {
+//            taskTimeoutHandler(basicGetTask, error);
+//        }
+//    }];
 }
 
 - (void)post:(NSData *)postData withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
-    __block XCTestExpectation *basicPostExpectation = [self expectationWithDescription:@"basicPostExpectation"];
     NSURL *basicPostURL = [NSURL URLWithString:URLString];
     NSMutableURLRequest *basicPostRequest = [NSMutableURLRequest requestWithURL:basicPostURL];
     basicPostRequest.HTTPMethod = @"POST";
     basicPostRequest.HTTPBody = postData;
-    __block NSURLSessionDataTask *basicPostTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:basicPostRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self _executeRequest:basicPostRequest withExpectationString:@"basicPostExpectation" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
         if (taskCompletionHandler) {
-            taskCompletionHandler(basicPostTask, data, response, error);
+            taskCompletionHandler(task, data, response, error);
         }
-        [basicPostExpectation fulfill];
-        basicPostExpectation = nil;
-    }];
-    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateSuspended);
-    [basicPostTask resume];
-//    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateRunning); essentially a race condition
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-        XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateCompleted);
-        XCTAssertNotNil(basicPostTask.originalRequest);
-        XCTAssertNotNil(basicPostTask.currentRequest);
+    } tastTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         if (taskTimeoutHandler) {
-            taskTimeoutHandler(basicPostTask, error);
+            taskTimeoutHandler(task, error);
         }
     }];
 }
@@ -83,6 +81,28 @@
 - (void)postJSON:(id)JSON withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
     NSData *postData = [NSJSONSerialization dataWithJSONObject:JSON options:NSJSONWritingPrettyPrinted error:nil];
     [self post:postData withURLString:URLString taskCompletionAssertions:taskCompletionHandler taskTimeoutAssertions:taskTimeoutHandler];
+}
+
+- (void)_executeRequest:(NSURLRequest *)request withExpectationString:(NSString *)expectationString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler tastTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
+    __block XCTestExpectation *expectation = [self expectationWithDescription:expectationString];
+    __block NSURLSessionDataTask *task = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (taskCompletionHandler) {
+            taskCompletionHandler(task, data, response, error);
+        }
+        [expectation fulfill];
+        expectation = nil;
+    }];
+    XCTAssertEqual(task.state, NSURLSessionTaskStateSuspended);
+    [task resume];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+        XCTAssertEqual(task.state, NSURLSessionTaskStateCompleted);
+        XCTAssertNotNil(task.originalRequest);
+        XCTAssertNotNil(task.currentRequest);
+        if (taskTimeoutHandler) {
+            taskTimeoutHandler(task, error);
+        }
+    }];
 }
 
 - (NSMutableDictionary *)standardDataDictionary {

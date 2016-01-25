@@ -53,7 +53,11 @@
 }
 
 - (NSString *)requestPath {
-    return self.requestComponents.fragment;
+    return self.requestComponents.path;
+}
+
+- (NSString *)requestScheme {
+    return self.requestComponents.scheme;
 }
 
 - (NSDictionary *)plistDictionary {

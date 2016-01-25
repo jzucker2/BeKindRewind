@@ -28,7 +28,7 @@
 }
 
 - (BOOL)hasMatchForRequestHost:(NSString *)host withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
-    return [host isEqualToString:playhead.currentRequest.requestPath];
+    return [host isEqualToString:playhead.currentRequest.requestHost];
 }
 
 - (BOOL)hasMatchForRequestScheme:(NSString *)scheme withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
