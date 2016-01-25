@@ -40,7 +40,7 @@
     }];
     XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateSuspended);
     [basicGetTask resume];
-    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateRunning);
+//    XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateRunning); // not useful for mocked tests, this is a race condition when mocking
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         XCTAssertEqual(basicGetTask.state, NSURLSessionTaskStateCompleted);
