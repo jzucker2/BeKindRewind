@@ -9,17 +9,17 @@
 #import <Foundation/Foundation.h>
 
 @class BKRPlayableScene;
-@class OHHTTPStubsResponse;
+//@class OHHTTPStubsResponse;
 
 typedef BOOL (^BKRStubsTestBlock)(NSURLRequest* _Nonnull request);
-typedef void (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
+typedef BKRPlayableScene* (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
 
 @interface BKROHHTTPStubsWrapper : NSObject
 
 + (void)removeAllStubs;
 
-+ (OHHTTPStubsResponse *)responseForScene:(BKRPlayableScene *)scene;
+//+ (OHHTTPStubsResponse *)responseForScene:(BKRPlayableScene *)scene;
 
-+ (void)stubRequest;
++ (void)stubRequestPassingTest:(BKRStubsTestBlock)testBlock withStubResponse:(BKRStubsResponseBlock)responseBlock;
 
 @end

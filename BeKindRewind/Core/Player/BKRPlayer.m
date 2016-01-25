@@ -6,12 +6,12 @@
 //
 //
 
-#import <OHHTTPStubs/OHHTTPStubs.h>
 #import "BKRPlayer.h"
 #import "BKRPlayableCassette.h"
 #import "BKRPlayableRawFrame.h"
 #import "BKRPlayableScene.h"
 #import "BKROHHTTPStubsWrapper.h"
+#import <OHHTTPStubs/OHHTTPStubs.h>
 
 @interface BKRPlayer ()
 @property (nonatomic) dispatch_queue_t playingQueue;
@@ -26,6 +26,7 @@
 - (void)_init {
     _playingQueue = dispatch_queue_create("com.BKR.playing", DISPATCH_QUEUE_SERIAL);
     _playheadIndex = 0;
+    _enabled = NO;
 }
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
@@ -43,13 +44,18 @@
 }
 
 - (void)setEnabled:(BOOL)enabled {
-    dispatch_barrier_sync(self.playingQueue, ^{
-        if (enabled) {
-            [self _addStubs];
-        } else {
-            [self _removeStubs];
-        }
-    });
+//    dispatch_barrier_sync(self.playingQueue, ^{
+//        if (enabled) {
+//            [self _addStubs];
+//        } else {
+//            [self _removeStubs];
+//        }
+//    });
+    if (enabled) {
+        [self _addStubs];
+    } else {
+        [self _removeStubs];
+    }
     _enabled = enabled;
 }
 
@@ -68,15 +74,34 @@
 - (void)_addStubs {
     __weak typeof(self) wself = self;
     __block BKRPlayableScene *matchedScene;
+//    [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+//        __strong typeof(wself) sself = wself;
+//
+//        matchedScene = [self.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+//        // what happens if this increments past array? failure? handled in matching strictness enum?
+//        sself.playheadIndex++;
+//        return (matchedScene ? YES : NO);
+//    } withStubResponse:^BKRPlayableScene *(NSURLRequest * _Nonnull request) {
+//        NSLog(@"************************************************************");
+//        return matchedScene;
+//    }];
+//    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+//        __strong typeof(wself) sself = wself;
+//        
+//        matchedScene = [sself.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+//        // what happens if this increments past array? failure? handled in matching strictness enum?
+//        sself.playheadIndex++;
+//        return (matchedScene ? YES : NO);
+//    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+//        NSLog(@"************************************************************");
+//        return [OHHTTPStubsResponse responseWithData:matchedScene.responseData statusCode:(int)matchedScene.responseStatusCode headers:matchedScene.responseHeaders];
+//    }];
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        __strong typeof(wself) sself = wself;
-        
-        matchedScene = [self.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
-        // what happens if this increments past array? failure? handled in matching strictness enum?
-        sself.playheadIndex++;
-        return (matchedScene != nil);
+        return YES;
     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        return [BKROHHTTPStubsWrapper responseForScene:matchedScene];
+        __strong typeof(wself) sself = wself;
+        matchedScene = [sself.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+        return [OHHTTPStubsResponse responseWithData:matchedScene.responseData statusCode:(int)matchedScene.responseStatusCode headers:matchedScene.responseHeaders];
     }];
 }
 
