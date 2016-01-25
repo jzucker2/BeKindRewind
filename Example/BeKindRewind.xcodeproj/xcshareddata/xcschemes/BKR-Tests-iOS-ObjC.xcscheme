@@ -37,6 +37,11 @@
                BlueprintName = "BKR-Tests-iOS-ObjC"
                ReferencedContainer = "container:BeKindRewind.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "BKRBaseTestCase">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

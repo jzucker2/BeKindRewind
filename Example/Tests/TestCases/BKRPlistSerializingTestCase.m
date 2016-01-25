@@ -6,7 +6,6 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/BKRPlayableCassette.h>
 #import <BeKindRewind/BKRScene.h>
@@ -16,8 +15,9 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import "XCTestCase+BKRAdditions.h"
+#import "BKRBaseTestCase.h"
 
-@interface BKRPlistSerializingTestCase : XCTestCase
+@interface BKRPlistSerializingTestCase : BKRBaseTestCase
 @end
 
 @implementation BKRPlistSerializingTestCase
@@ -109,12 +109,13 @@
                                     @"uniqueIdentifier": task.globallyUniqueIdentifier,
                                     @"frames": frames
                                     };
-        NSDictionary  *cassetteDict = @{
-                                        @"creationDate": cassetteCreationDate,
-                                        @"scenes": @{
-                                                task.globallyUniqueIdentifier: sceneDict
-                                                }
-                                        };
+//        NSDictionary  *cassetteDict = @{
+//                                        @"creationDate": cassetteCreationDate,
+//                                        @"scenes": @{
+//                                                task.globallyUniqueIdentifier: sceneDict
+//                                                }
+//                                        };
+        NSDictionary *cassetteDict = [self expectedCassetteDictionaryWithCreationDate:cassetteCreationDate sceneDictionaries:@[sceneDict]];
         BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:cassetteDict];
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 1);

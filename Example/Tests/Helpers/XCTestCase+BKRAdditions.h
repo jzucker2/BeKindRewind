@@ -11,9 +11,16 @@
 typedef void (^taskCompletionHandler)(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error);
 
-@interface BKRExpectedData : NSObject
-@property (nonatomic, copy) NSData *data;
-@property (nonatomic, copy) NSURLResponse *response;
+@interface BKRExpectedScenePlistDictionaryBuilder : NSObject
+@property (nonatomic, copy) NSString *URLString;
+@property (nonatomic, copy) NSString *taskUniqueIdentifier;
+@property (nonatomic, copy) NSString *HTTPMethod;
+@property (nonatomic, strong) id sentJSON;
+@property (nonatomic, strong) id receivedJSON;
+@property (nonatomic, strong) NSDictionary *originalRequestAllHTTPHeaderFields;
+@property (nonatomic, strong) NSDictionary *currentRequestAllHTTPHeaderFields;
+@property (nonatomic, strong) NSDictionary *responseAllHeaderFields;
++ (instancetype)builder;
 @end
 
 @class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRRecordableCassette, BKRPlayableCassette;
@@ -21,11 +28,14 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 - (void)post:(NSData *)postData withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
+- (void)postJSON:(id)JSON withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 
 - (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordableCassette:(BKRRecordableCassette *)cassette;
 - (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error;
 
 // used for building
+- (NSDictionary *)expectedCassetteDictionaryWithSceneBuilders:(NSArray<BKRExpectedScenePlistDictionaryBuilder *> *)expectedPlistBuilders;
+- (NSDictionary *)expectedCassetteDictionaryWithCreationDate:(NSDate *)creationDate sceneDictionaries:(NSArray<NSDictionary *> *)sceneDictionaries; // use this because scenes have a weird format for storage
 - (NSMutableDictionary *)standardRequestDictionary;
 - (NSMutableDictionary *)standardResponseDictionary;
 - (NSMutableDictionary *)standardDataDictionary;

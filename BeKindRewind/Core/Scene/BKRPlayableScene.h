@@ -11,4 +11,9 @@
 
 @interface BKRPlayableScene : BKRScene <BKRPlistDeserializer>
 
+- (NSData *)responseData;
+- (NSInteger)responseStatusCode;
+- (NSDictionary *)responseHeaders;
+- (NSError *)responseError;
+
 @end

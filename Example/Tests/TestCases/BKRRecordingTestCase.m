@@ -6,7 +6,6 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
 #import <BeKindRewind/BKRRecorder.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/BKRScene.h>
@@ -15,8 +14,9 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
 #import "XCTestCase+BKRAdditions.h"
+#import "BKRBaseTestCase.h"
 
-@interface BKRRecordingTestCase : XCTestCase
+@interface BKRRecordingTestCase : BKRBaseTestCase
 @end
 
 @implementation BKRRecordingTestCase
