@@ -11,7 +11,7 @@
 typedef void (^taskCompletionHandler)(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error);
 
-@interface BKRExpectedPlistDictionaryBuilder : NSObject
+@interface BKRExpectedScenePlistDictionaryBuilder : NSObject
 @property (nonatomic, copy) NSString *URLString;
 @property (nonatomic, copy) NSString *taskUniqueIdentifier;
 @property (nonatomic, copy) NSString *HTTPMethod;
@@ -32,7 +32,8 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 - (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error;
 
 // used for building
-- (NSDictionary *)expectedCassetteDictionary:(BKRExpectedPlistDictionaryBuilder *)expectedPlistBuilder;
+- (NSDictionary *)expectedCassetteDictionary:(NSArray<BKRExpectedScenePlistDictionaryBuilder *> *)expectedPlistBuilders;
+- (NSDictionary *)expectedCassetteDictionaryWithCreationDate:(NSDate *)creationDate sceneDictionaries:(NSArray<NSDictionary *> *)sceneDictionaries; // use this because scenes have a weird format for storage
 - (NSMutableDictionary *)standardRequestDictionary;
 - (NSMutableDictionary *)standardResponseDictionary;
 - (NSMutableDictionary *)standardDataDictionary;

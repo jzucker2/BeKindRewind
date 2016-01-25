@@ -34,15 +34,15 @@
 
 - (void)testPlayingOneGETRequest {
     NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
-    BKRExpectedPlistDictionaryBuilder *plistBuilder = [BKRExpectedPlistDictionaryBuilder builder];
-    plistBuilder.URLString = @"https://httpbin.org/get?test=test";
-    plistBuilder.taskUniqueIdentifier = taskUniqueIdentifier;
-    plistBuilder.currentRequestAllHTTPHeaderFields = @{
+    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
+    sceneBuilder.URLString = @"https://httpbin.org/get?test=test";
+    sceneBuilder.taskUniqueIdentifier = taskUniqueIdentifier;
+    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
                                                        @"Accept": @"*/*",
                                                        @"Accept-Encoding": @"gzip, deflate",
                                                        @"Accept-Language": @"en-us"
                                                        };
-    plistBuilder.receivedJSON = @{
+    sceneBuilder.receivedJSON = @{
                                   @"args": @{
                                           @"test": @"test"
                                           },
@@ -56,7 +56,7 @@
                                   @"origin": @"198.0.209.238",
                                   @"url": @"https://httpbin.org/get?test=test"
                                   };
-    plistBuilder.responseAllHeaderFields = @{
+    sceneBuilder.responseAllHeaderFields = @{
                                              @"Access-Control-Allow-Origin": @"*",
                                              @"Content-Length": @"338",
                                              @"Content-Type": @"application/json",
@@ -64,7 +64,7 @@
                                              @"Server": @"nginx",
                                              @"access-control-alllow-credentials": @"true"
                                              };
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionary:plistBuilder];
+    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionary:@[sceneBuilder]];
 //    __block NSMutableDictionary *expectedCassetteDict = [@{
 //                                                           @"creationDate": [NSDate date]
 //                                                           } mutableCopy];
@@ -127,7 +127,7 @@
 //                                        sceneDict
 //                                        ];
     __block BKRScene *scene = nil;
-    BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     BKRPlayer *player = [[BKRPlayer alloc] init];
     player.currentCassette = cassette;
     player.enabled = YES;

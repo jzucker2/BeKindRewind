@@ -12,7 +12,7 @@
 @class BKRPlayableCassette;
 @class BKRPlayableScene;
 
-@interface BKRPlayer : NSObject <BKRRequestMatching>
+@interface BKRPlayer : NSObject
 
 /**
  *  Whether or not network activity should be recorded

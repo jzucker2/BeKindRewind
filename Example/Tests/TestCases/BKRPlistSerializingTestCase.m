@@ -109,12 +109,13 @@
                                     @"uniqueIdentifier": task.globallyUniqueIdentifier,
                                     @"frames": frames
                                     };
-        NSDictionary  *cassetteDict = @{
-                                        @"creationDate": cassetteCreationDate,
-                                        @"scenes": @{
-                                                task.globallyUniqueIdentifier: sceneDict
-                                                }
-                                        };
+//        NSDictionary  *cassetteDict = @{
+//                                        @"creationDate": cassetteCreationDate,
+//                                        @"scenes": @{
+//                                                task.globallyUniqueIdentifier: sceneDict
+//                                                }
+//                                        };
+        NSDictionary *cassetteDict = [self expectedCassetteDictionaryWithCreationDate:cassetteCreationDate sceneDictionaries:@[sceneDict]];
         BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:cassetteDict];
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 1);

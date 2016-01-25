@@ -16,7 +16,7 @@
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 
-@implementation BKRExpectedPlistDictionaryBuilder
+@implementation BKRExpectedScenePlistDictionaryBuilder
 
 + (instancetype)builder {
     return [[self alloc] init];
@@ -108,40 +108,54 @@
               } mutableCopy];
 }
 
-- (NSDictionary *)expectedCassetteDictionary:(BKRExpectedPlistDictionaryBuilder *)expectedPlistBuilder {
-    NSMutableDictionary *expectedCassetteDict = [@{
-                                                   @"creationDate": [NSDate date]
-                                                   } mutableCopy];
-    NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
-    expectedOriginalRequestDict[@"URL"] = expectedPlistBuilder.URLString;
-    expectedOriginalRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+- (NSDictionary *)expectedCassetteDictionary:(NSArray<BKRExpectedScenePlistDictionaryBuilder *> *)expectedPlistBuilders {
+    NSDate *expectedCassetteDictCreationDate = [NSDate date];
+    NSMutableArray *expectedPlistSceneDicts = [NSMutableArray array];
+    for (BKRExpectedScenePlistDictionaryBuilder *expectedPlistBuilder in expectedPlistBuilders) {
+        NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
+        expectedOriginalRequestDict[@"URL"] = expectedPlistBuilder.URLString;
+        expectedOriginalRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+        
+        NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
+        expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
+        expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+        
+        NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
+        expectedResponseDict[@"URL"] = expectedPlistBuilder.URLString;
+        expectedResponseDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+        
+        NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
+        expectedDataDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+        expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedPlistBuilder.receivedJSON options:kNilOptions error:nil];
+        
+        NSArray *framesArray = @[
+                                 expectedOriginalRequestDict.copy,
+                                 expectedCurrentRequestDict.copy,
+                                 expectedResponseDict.copy,
+                                 expectedDataDict.copy
+                                 ];
+        NSDictionary *sceneDict = @{
+                                    @"uniqueIdentifier": expectedPlistBuilder.taskUniqueIdentifier,
+                                    @"frames": framesArray
+                                    };
+        [expectedPlistSceneDicts addObject:sceneDict];
+    }
     
-    NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
-    expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
-    expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-    
-    NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
-    expectedResponseDict[@"URL"] = expectedPlistBuilder.URLString;
-    expectedResponseDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-    
-    NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
-    expectedDataDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-    expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedPlistBuilder.receivedJSON options:kNilOptions error:nil];
-    
-    NSArray *framesArray = @[
-                             expectedOriginalRequestDict.copy,
-                             expectedCurrentRequestDict.copy,
-                             expectedResponseDict.copy,
-                             expectedDataDict.copy
-                             ];
-    NSDictionary *sceneDict = @{
-                                @"uniqueIdentifier": expectedPlistBuilder.taskUniqueIdentifier,
-                                @"frames": framesArray
-                                };
-    expectedCassetteDict[@"scenes"] = @{
-                                        expectedPlistBuilder.taskUniqueIdentifier : sceneDict
-                                        };
-    return expectedCassetteDict.copy;
+    return [self expectedCassetteDictionaryWithCreationDate:expectedCassetteDictCreationDate sceneDictionaries:expectedPlistSceneDicts];
+}
+
+- (NSDictionary *)expectedCassetteDictionaryWithCreationDate:(NSDate *)creationDate sceneDictionaries:(NSArray<NSDictionary *> *)sceneDictionaries {
+//    NSMutableDictionary *cassetteDict = [@{
+//                                           @"creationDate": creationDate
+//                                           } mutableCopy];
+//    for (NSDictionary *sceneDict in sceneDictionaries) {
+//        cassetteDict[sceneDict[@"uniqueIdentifier"]] = sceneDict;
+//    }
+//    return cassetteDict.copy;
+    return @{
+             @"creationDate": creationDate,
+             @"scenes": sceneDictionaries
+             };
 }
 
 - (NSDictionary *)dictionaryWithRequest:(NSURLRequest *)request forTask:(NSURLSessionTask *)task {
