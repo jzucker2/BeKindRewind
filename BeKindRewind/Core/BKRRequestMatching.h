@@ -20,10 +20,13 @@
 // we could offer options, like fail, let go live, or provide a mock response
 - (BKRPlayableScene *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes;
 
-@optional
-
 // optional values can override this (or should I make it work the opposite of that?)
+// @note: implement below optionals for more control, return YES for them to be called
+// if YES is returned, then other overrides are called, if NO, then no overrides are returned
+// you can implement your own checker instead of using overrides
 - (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes;
+
+@optional
 
 // all of these override the one above
 - (BOOL)hasMatchForRequestScheme:(NSString *)scheme withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes;

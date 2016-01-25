@@ -12,6 +12,7 @@
 #import "BKRRequestFrame.h"
 #import "BKRResponseFrame.h"
 #import "BKRRawFrame.h"
+#import "BKRErrorFrame.h"
 #import "BKRConstants.h"
 
 @interface BKRScene ()
@@ -38,6 +39,10 @@
 
 - (NSArray<BKRDataFrame *> *)allDataFrames {
     return [self _framesOnlyOfType:[BKRDataFrame class]];
+}
+
+- (NSArray<BKRErrorFrame *> *)allErrorFrames {
+    return [self _framesOnlyOfType:[BKRErrorFrame class]];
 }
 
 - (BKRRequestFrame *)originalRequest {

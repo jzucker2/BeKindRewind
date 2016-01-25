@@ -19,6 +19,12 @@
 @property (nonatomic, copy, readonly) NSURL *URL;
 @property (nonatomic, readonly) NSTimeInterval timeoutInterval;
 @property (nonatomic, readonly) BOOL allowsCellularAccess;
+@property (nonatomic, readonly) NSURLComponents *requestComponents;
+@property (nonatomic, readonly) NSString *requestPath;
+@property (nonatomic, readonly) NSString *requestHost;
+@property (nonatomic, readonly) NSString *requestScheme;
+@property (nonatomic, readonly) NSString *requestFragment;
+@property (nonatomic, readonly) NSArray<NSURLQueryItem *> *requestQueryItems;
 
 - (void)addRequest:(NSURLRequest *)request;
 

@@ -10,6 +10,7 @@
 #import "BKRDataFrame.h"
 #import "BKRResponseFrame.h"
 #import "BKRRequestFrame.h"
+#import "BKRErrorFrame.h"
 
 @implementation BKRRecordableRawFrame
 
@@ -26,6 +27,10 @@
         BKRRequestFrame *requestFrame = [BKRRequestFrame frameFromFrame:self];
         [requestFrame addRequest:self.item];
         return requestFrame;
+    } else if ([self.item isKindOfClass:[NSError class]]) {
+        BKRErrorFrame *errorFrame = [BKRErrorFrame frameFromFrame:self];
+        [errorFrame addError:self.item];
+        return errorFrame;
     } else {
         return nil;
     }

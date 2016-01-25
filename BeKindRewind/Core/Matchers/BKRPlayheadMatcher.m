@@ -23,12 +23,26 @@
     return nil;
 }
 
-//- (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayheadIdentifier:(NSString *)playheadIdentifier inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
-//    return YES;
-//}
-//
-//- (BKRPlayableScene *)matchForRequest:(NSURLRequest *)request withPlayheadIdentifier:(NSString *)playheadIdentifier inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
-//    return nil;
-//}
+- (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
+    return YES;
+}
+
+- (BOOL)hasMatchForRequestHost:(NSString *)host withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
+    return [host isEqualToString:playhead.currentRequest.requestPath];
+}
+
+- (BOOL)hasMatchForRequestScheme:(NSString *)scheme withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
+    return [scheme isEqualToString:playhead.currentRequest.requestScheme];
+}
+
+- (BOOL)hasMatchForRequestPath:(NSString *)path withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
+    return [path isEqualToString:playhead.currentRequest.requestPath];
+}
+
+- (BOOL)hasMatchForRequestQueryItems:(NSArray<NSURLQueryItem *> *)queryItems withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
+    NSSet *requestQueryItemsSet = [NSSet setWithArray:queryItems];
+    NSSet *playheadQueryItemsSet = [NSSet setWithArray:playhead.currentRequest.requestQueryItems];
+    return [requestQueryItemsSet isEqualToSet:playheadQueryItemsSet];
+}
 
 @end

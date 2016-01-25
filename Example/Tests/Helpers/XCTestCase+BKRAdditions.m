@@ -82,31 +82,7 @@
 
 - (void)postJSON:(id)JSON withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
     NSData *postData = [NSJSONSerialization dataWithJSONObject:JSON options:NSJSONWritingPrettyPrinted error:nil];
-    __block XCTestExpectation *basicPostExpectation = [self expectationWithDescription:@"basicPostExpectation"];
-    NSURL *basicPostURL = [NSURL URLWithString:URLString];
-    NSMutableURLRequest *basicPostRequest = [NSMutableURLRequest requestWithURL:basicPostURL];
-    basicPostRequest.HTTPMethod = @"POST";
-    basicPostRequest.HTTPBody = postData;
-    __block NSURLSessionDataTask *basicPostTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:basicPostRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        XCTAssertNil(error);
-        if (taskCompletionHandler) {
-            taskCompletionHandler(basicPostTask, data, response, error);
-        }
-        [basicPostExpectation fulfill];
-        basicPostExpectation = nil;
-    }];
-    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateSuspended);
-    [basicPostTask resume];
-//    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateRunning); essentially a race condition
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-        XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateCompleted);
-        XCTAssertNotNil(basicPostTask.originalRequest);
-        XCTAssertNotNil(basicPostTask.currentRequest);
-        if (taskTimeoutHandler) {
-            taskTimeoutHandler(basicPostTask, error);
-        }
-    }];
+    [self post:postData withURLString:URLString taskCompletionAssertions:taskCompletionHandler taskTimeoutAssertions:taskTimeoutHandler];
 }
 
 - (NSMutableDictionary *)standardDataDictionary {

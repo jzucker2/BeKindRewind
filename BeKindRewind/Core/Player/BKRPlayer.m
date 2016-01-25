@@ -18,9 +18,13 @@
 @property (nonatomic, weak, readonly) NSArray <BKRPlayableScene *> *scenes;
 @property (nonatomic) NSUInteger playheadIndex;
 @property (nonatomic, strong, readwrite) id<BKRRequestMatching>matcher;
+@property (nonatomic, strong, readonly) BKRStubsTestBlock testBlock;
+@property (nonatomic, strong, readonly) BKRStubsResponseBlock responseBlock;
 @end
 
 @implementation BKRPlayer
+@synthesize testBlock = _testBlock;
+@synthesize responseBlock = _responseBlock;
 
 - (void)_init {
     _playingQueue = dispatch_queue_create("com.BKR.playing", DISPATCH_QUEUE_SERIAL);
@@ -53,6 +57,59 @@
     _enabled = enabled;
 }
 
+- (BKRStubsTestBlock)testBlock {
+    if (!_testBlock) {
+        __strong typeof(self) wself = self;
+        _testBlock = ^BOOL(NSURLRequest *request){
+            __weak typeof(wself) sself = wself;
+            BOOL finalTestResult = [sself.matcher hasMatchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+            if (!finalTestResult) {
+                return finalTestResult;
+            }
+            NSURLComponents *requestComponents = [NSURLComponents componentsWithString:request.URL.absoluteString];
+            if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestScheme:withPlayhead:inPlayableScenes:)]) {
+                finalTestResult = [sself.matcher hasMatchForRequestScheme:requestComponents.scheme withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+                if (!finalTestResult) {
+                    return finalTestResult;
+                }
+            }
+            if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestHost:withPlayhead:inPlayableScenes:)]) {
+                finalTestResult = [sself.matcher hasMatchForRequestHost:requestComponents.host withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+                if (!finalTestResult) {
+                    return finalTestResult;
+                }
+            }
+            if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestPath:withPlayhead:inPlayableScenes:)]) {
+                finalTestResult = [sself.matcher hasMatchForRequestPath:requestComponents.path withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+                if (!finalTestResult) {
+                    return finalTestResult;
+                }
+            }
+            if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestQueryItems:withPlayhead:inPlayableScenes:)]) {
+                finalTestResult = [sself.matcher hasMatchForRequestQueryItems:requestComponents.queryItems withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+                if (!finalTestResult) {
+                    return finalTestResult;
+                }
+            }
+            return finalTestResult;
+        };
+    }
+    return _testBlock;
+}
+
+- (BKRStubsResponseBlock)responseBlock {
+    if (!_responseBlock) {
+        __strong typeof(self) wself = self;
+        _responseBlock = ^BKRPlayableScene*(NSURLRequest *request){
+            __weak typeof(wself) sself = wself;
+            BKRPlayableScene *matchedScene = [sself.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.scenes];
+            [sself _incrementPlayheadIndex];
+            return matchedScene;
+        };
+    }
+    return _responseBlock;
+}
+
 - (void)resetPlayhead {
     __weak typeof(self) wself = self;
     dispatch_barrier_async(self.playingQueue, ^{
@@ -70,29 +127,11 @@
 }
 
 - (void)_addStubs {
-    __weak typeof(self) wself = self;
-    [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        __strong typeof(wself) sself = wself;
-        return [sself _hasMatchForRequest:request];
-    } withStubResponse:^BKRPlayableScene *(NSURLRequest * _Nonnull request) {
-        NSLog(@"************************************************************");
-        __strong typeof(wself) sself = wself;
-        BKRPlayableScene *matchedScene = [sself _matchedPlayableSceneForRequest:request];
-        [sself _incrementPlayheadIndex];
-        return matchedScene;
-    }];
+    [BKROHHTTPStubsWrapper stubRequestPassingTest:self.testBlock withStubResponse:self.responseBlock];
 }
 
 - (void)dealloc {
     [self _removeStubs];
-}
-
-- (BKRPlayableScene *)_matchedPlayableSceneForRequest:(NSURLRequest *)request {
-    return [self.matcher matchForRequest:request withPlayhead:self.playheadScene inPlayableScenes:self.scenes];
-}
-
-- (BOOL)_hasMatchForRequest:(NSURLRequest *)request {
-    return YES;
 }
 
 - (void)_removeStubs {
