@@ -68,7 +68,7 @@
     }];
     XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateSuspended);
     [basicPostTask resume];
-    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateRunning);
+//    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateRunning); essentially a race condition
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateCompleted);
@@ -97,7 +97,7 @@
     }];
     XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateSuspended);
     [basicPostTask resume];
-    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateRunning);
+//    XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateRunning); essentially a race condition
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         XCTAssertEqual(basicPostTask.state, NSURLSessionTaskStateCompleted);
