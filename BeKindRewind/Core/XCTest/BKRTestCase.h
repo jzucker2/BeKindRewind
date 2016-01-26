@@ -7,7 +7,11 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "BKRRequestMatching.h"
 
 @interface BKRTestCase : XCTestCase
+
+- (BOOL)isRecording;
+- (Class<BKRRequestMatching>)matcherClass;
 
 @end
