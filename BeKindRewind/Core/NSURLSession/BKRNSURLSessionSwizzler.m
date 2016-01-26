@@ -30,16 +30,16 @@
     NSString *overrideSessionConnectionClassString = nil;
 #if TARGET_OS_IOS
     if ([[[UIDevice currentDevice] systemVersion] hasPrefix:@"8"]) {
-        overrideSessionConnectionClassString = @"NSURLSession";
+        overrideSessionConnectionClassString = @"NSURLSessionTask";
     } else {
-        overrideSessionConnectionClassString = @"NSURLSession";
+        overrideSessionConnectionClassString = @"__NSCFURLSessionTask";
     }
 #else
     overrideSessionConnectionClassString = @"NSURLSession";
 #endif
     Class cfURLSessionConnectionClass = NSClassFromString(overrideSessionConnectionClassString);
     if (!cfURLSessionConnectionClass) {
-        NSLog(@"Could not find NSURLSession. It is possible that BeKindRewind cannot yet record in this configuration. Please try another platform, system version, or device type.");
+        NSLog(@"Could not find __NSCFURLSessionTask. It is possible that BeKindRewind cannot yet record in this configuration. Please try another platform, system version, or device type.");
         return;
     }
     
@@ -73,6 +73,13 @@
     if (methods) {
         free(methods);
     }
+}
+
+- (void)BKR_setError:(id)arg1 {
+//    NSLog(@"error: %@", arg1);
+    [[BKRRecorder sharedInstance] recordTask:[(NSURLSessionTask *)self globallyUniqueIdentifier] setError:arg1];
+//    [[BKRRecorder sharedInstance] recordTask:(NSURLSessionTask *)self didFinishWithError:arg1];
+    [self BKR_setError:arg1];
 }
 
 

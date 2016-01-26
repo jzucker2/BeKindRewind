@@ -19,6 +19,9 @@
 - (instancetype)initFromFrame:(BKRFrame *)frame;
 + (instancetype)frameFromFrame:(BKRFrame *)frame;
 
+- (instancetype)initWithIdentifier:(NSString *)identifier;
++ (instancetype)frameWithIdentifier:(NSString *)identifier;
+
 @property (nonatomic, copy, readonly) NSString *uniqueIdentifier;
 @property (nonatomic, readonly) NSDate *creationDate;
 

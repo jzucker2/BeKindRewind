@@ -13,6 +13,7 @@
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
+#import <BeKindRewind/BKRNSURLSessionSwizzler.h>
 #import "XCTestCase+BKRAdditions.h"
 #import "BKRBaseTestCase.h"
 
@@ -25,6 +26,7 @@
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     [BKRNSURLSessionConnection swizzleNSURLSessionClasses];
+    [BKRNSURLSessionSwizzler swizzleNSURLSession];
     BKRRecordableCassette *cassette = [[BKRRecordableCassette alloc] init];
     cassette.recording = YES;
     [BKRRecorder sharedInstance].currentCassette = cassette;
@@ -80,6 +82,7 @@
         XCTAssertEqual(cassette.allScenes.count, 1);
         scene = cassette.allScenes.firstObject;
         XCTAssertNotNil(scene);
+        XCTAssertEqual(scene.allErrorFrames.count, 1); // because timing was previously an issue, put this check at the top
         XCTAssertNotNil(error);
         taskError = error;
         XCTAssertEqual(error.code, -999);
@@ -93,8 +96,10 @@
         XCTAssertTrue(scene.allFrames.count > 0);
         XCTAssertEqual(scene.allDataFrames.count, 0);
         XCTAssertEqual(scene.allResponseFrames.count, 0);
-//        XCTAssertEqual(scene.allErrorFrames.count, 0); // need to fix timing, this should have already been recorded
+//        XCTAssertEqual(scene.allErrorFrames.count, 1); // need to fix timing, this should have already been recorded
         XCTAssertEqual(scene.allRequestFrames.count, 1);
+        BKRErrorFrame *errorFrame = scene.allErrorFrames.firstObject;
+        [self assertErrorFrame:errorFrame withError:taskError extraAssertions:nil];
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual(scene.allFrames.count, 2);
         XCTAssertEqual(scene.allRequestFrames.count, 1);
@@ -102,11 +107,6 @@
         BKRRequestFrame *originalRequestFrame = scene.originalRequest;
         XCTAssertNotNil(originalRequestFrame);
         [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
-        
-        XCTAssertEqual(scene.allErrorFrames.count, 1);
-        BKRErrorFrame *errorFrame = scene.allErrorFrames.firstObject;
-        [self assertErrorFrame:errorFrame withError:taskError extraAssertions:nil];
-        
         [self assertFramesOrder:scene extraAssertions:nil];
     }];
 }
