@@ -29,9 +29,11 @@
 - (NSDictionary *)_editedScenes:(NSArray<NSDictionary *> *)rawScenes {
     __block NSMutableDictionary *editedScenes = [NSMutableDictionary dictionary];
     dispatch_apply(rawScenes.count, self.processingQueue, ^(size_t iteration) {
+        NSLog(@"adding edited scene: %zu", iteration);
         BKRPlayableScene *scene = [[BKRPlayableScene alloc] initFromPlistDictionary:rawScenes[iteration]];
         editedScenes[scene.uniqueIdentifier] = scene;
     });
+    NSLog(@"finished adding edited scenes");
     return editedScenes.copy;
 }
 

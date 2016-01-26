@@ -28,10 +28,14 @@
 
 - (NSArray<BKRScene *> *)allScenes {
 // TODO: check if this orders properly, possibly with a test
+    NSLog(@"begin returning allScenes");
     __block NSArray<BKRScene *> *allScenesArray = nil;
+    __weak typeof(self) wself = self;
     dispatch_barrier_sync(self.processingQueue, ^{
-        allScenesArray = [self.scenes.allValues sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
+        __strong typeof(wself) sself = wself;
+        allScenesArray = [sself.scenes.allValues sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
     });
+    NSLog(@"return allScenes");
     return allScenesArray;
 }
 
