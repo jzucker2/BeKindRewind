@@ -29,7 +29,7 @@
 }
 
 - (void)swizzleNetworkCallsForRecording {
-    [BKRNSURLSessionConnection swizzleNSURLSessionClasses];
+    [BKRNSURLSessionConnection swizzleNSURLSessionConnection];
 }
 
 @end

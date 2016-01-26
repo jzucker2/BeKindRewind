@@ -12,7 +12,6 @@
 #import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
-#import <BeKindRewind/BKRNSURLSessionConnection.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
 #import <BeKindRewind/BKROHHTTPStubsWrapper.h>
 #import "XCTestCase+BKRAdditions.h"

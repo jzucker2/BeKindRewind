@@ -1,8 +1,8 @@
 //
-//  BKRNSURLSessionSwizzler.m
+//  BKRNSURLSessionTask.m
 //  Pods
 //
-//  Created by Jordan Zucker on 1/25/16.
+//  Created by Jordan Zucker on 1/26/16.
 //
 //
 
@@ -11,22 +11,20 @@
 #endif
 
 #import <objc/runtime.h>
-#import "BKRNSURLSessionSwizzler.h"
 #import "BKRRecorder.h"
 #import "NSURLSessionTask+BKRAdditions.h"
+#import "BKRNSURLSessionTask.h"
 
-// -(id)dataTaskWithRequest:(id)arg1 completionHandler:(/*^block*/id)arg2 ;
+@implementation BKRNSURLSessionTask
 
-@implementation BKRNSURLSessionSwizzler
-
-+ (void)swizzleNSURLSession {
++ (void)swizzleNSURLSessionTask {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [self _swizzleNSURLSession];
+        [self _swizzleNSURLSessionTask];
     });
 }
 
-+ (void)_swizzleNSURLSession {
++ (void)_swizzleNSURLSessionTask {
     NSString *overrideSessionConnectionClassString = nil;
 #if TARGET_OS_IOS
     if ([[[UIDevice currentDevice] systemVersion] hasPrefix:@"8"]) {
@@ -52,7 +50,7 @@
         SEL sourceMethod = method_getName(m);
         const char *encoding = method_getTypeEncoding(m);
         NSString *sourceMethodName = NSStringFromSelector(sourceMethod);
-        //        NSLog(@"%@", sourceMethodName);
+//        NSLog(@"%@", sourceMethodName);
         NSAssert([sourceMethodName hasPrefix:@"BKR_"], @"Expecting swizzle methods only");
         NSString *originalMethodName = [sourceMethodName substringFromIndex:4];
         SEL originalMethod = NSSelectorFromString(originalMethodName);
@@ -76,9 +74,9 @@
 }
 
 - (void)BKR_setError:(id)arg1 {
-//    NSLog(@"error: %@", arg1);
+    //    NSLog(@"error: %@", arg1);
     [[BKRRecorder sharedInstance] recordTask:[(NSURLSessionTask *)self globallyUniqueIdentifier] setError:arg1];
-//    [[BKRRecorder sharedInstance] recordTask:(NSURLSessionTask *)self didFinishWithError:arg1];
+    //    [[BKRRecorder sharedInstance] recordTask:(NSURLSessionTask *)self didFinishWithError:arg1];
     [self BKR_setError:arg1];
 }
 
@@ -86,7 +84,5 @@
 //-(id)BKR_dataTaskWithRequest:(id)arg1 completionHandler:(/*^block*/id)arg2 {
 //    NSURLSessionTask *task = [self BKR_dataTaskWithRequest:arg1 completionHandler:arg2];
 //}
-
-
 
 @end

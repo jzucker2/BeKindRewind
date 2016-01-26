@@ -32,15 +32,15 @@
 @implementation BKRNSURLSessionConnection
 @dynamic task;
 
-+ (void)swizzleNSURLSessionClasses
++ (void)swizzleNSURLSessionConnection
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [self _swizzleNSURLSessionClasses];
+        [self _swizzleNSURLSessionConnection];
     });
 }
 
-+ (void)_swizzleNSURLSessionClasses;
++ (void)_swizzleNSURLSessionConnection;
 {
     NSString *overrideSessionConnectionClassString = nil;
 #if TARGET_OS_IOS
@@ -67,7 +67,7 @@
         SEL sourceMethod = method_getName(m);
         const char *encoding = method_getTypeEncoding(m);
         NSString *sourceMethodName = NSStringFromSelector(sourceMethod);
-        NSLog(@"%@", sourceMethodName);
+//        NSLog(@"%@", sourceMethodName);
         NSAssert([sourceMethodName hasPrefix:@"BKR_"], @"Expecting swizzle methods only");
         NSString *originalMethodName = [sourceMethodName substringFromIndex:4];
         SEL originalMethod = NSSelectorFromString(originalMethodName);
