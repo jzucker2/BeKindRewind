@@ -26,9 +26,22 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)testReturnsDictionaryFromMatchingPlistForThisTestCase {
+    NSDictionary *dictionary = [BKRTestCaseFilePathHelper dictionaryForTestCase:self];
+    XCTAssertNotNil(dictionary);
+    NSDictionary *expectedDictionary = @{
+                                         @"foo": @"bar",
+                                         @"baz": @"qux"
+                                         };
+    XCTAssertEqualObjects(dictionary, expectedDictionary);
+}
+
+- (void)testThrowsExceptionForExistentPlistWithRootArrayMatchingThisTestCase {
+    XCTAssertThrowsSpecificNamed([BKRTestCaseFilePathHelper dictionaryForTestCase:self], NSException, NSInternalInconsistencyException);
+}
+
+- (void)testThrowsExceptionForReturningDictionaryFromNonexistentPlist {
+    XCTAssertThrowsSpecificNamed([BKRTestCaseFilePathHelper dictionaryForTestCase:self], NSException, NSInternalInconsistencyException);
 }
 
 @end

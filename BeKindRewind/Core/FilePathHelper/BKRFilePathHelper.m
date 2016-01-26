@@ -12,30 +12,38 @@
 
 + (NSString *)findPathForFile:(NSString *)fileName inBundleForClass:(Class)classInBundle {
     NSBundle *bundle = [NSBundle bundleForClass:classInBundle];
-    return [self _findPathForFile:fileName inBundle:bundle];
+    return [self findPathForFile:fileName inBundle:bundle];
 }
 
-+ (NSString *)_findPathForFile:(NSString *)fileName inBundle:(NSBundle *)bundle {
++ (NSString *)findPathForFile:(NSString *)fileName inBundle:(NSBundle *)bundle {
     return [bundle pathForResource:fileName.stringByDeletingPathExtension ofType:fileName.pathExtension];
 }
 
-+ (NSDictionary *)_dictionaryForPlistFilePath:(NSString *)filePath {
-    NSParameterAssert(filePath);
-    NSParameterAssert([filePath.pathExtension isEqualToString:@"plist"]);
-    return [[NSDictionary alloc] initWithContentsOfFile:filePath];
++ (NSBundle *)findBundle:(NSString *)bundleName containingClass:(Class)classInBundle {
+    NSBundle *classBundle = [NSBundle bundleForClass:classInBundle];
+    return [NSBundle bundleWithPath:[classBundle pathForResource:bundleName ofType:@"bundle"]];
 }
 
-+ (NSDictionary *)dictionaryForPlistFile:(NSString *)fileName inBundleForClass:(Class)classInBundle {
-    NSString *filePath = [self findPathForFile:fileName inBundleForClass:classInBundle];
-//    if (filePath) {
-//        NSDictionary *dictionary = [self _dictionaryForPlistFilePath:filePath];
-//        NSAssert([dictionary isKindOfClass:[NSDictionary class]], @"Plist root object must be a dictionary, not %@", dictionary.class);
-//        return dictionary;
-//    }
-//    return nil;
-    NSDictionary *dictionary = [self _dictionaryForPlistFilePath:filePath];
++ (NSDictionary *)dictionaryForPlistFilePath:(NSString *)filePath {
+    NSParameterAssert(filePath);
+    NSParameterAssert([filePath.pathExtension isEqualToString:@"plist"]);
+    NSDictionary *dictionary = [[NSDictionary alloc] initWithContentsOfFile:filePath];
     NSAssert([dictionary isKindOfClass:[NSDictionary class]], @"Plist root object must be a dictionary, not %@", dictionary.class);
     return dictionary;
+}
+
++ (NSString *)findPathForFile:(NSString *)fileName inBundle:(NSString *)bundleName inBundleForClass:(Class)classInBundle {
+    NSBundle *bundle = [self findBundle:bundleName containingClass:classInBundle];
+    if (!bundle) {
+        return nil;
+    }
+    return [self findPathForFile:fileName inBundle:bundle];
+}
+
++ (NSDictionary *)dictionaryForPlistFile:(NSString *)fileName inBundle:(NSString *)bundleName inBundleForClass:(Class)classInBundle {
+    NSString *fullFilePath = [self findPathForFile:fileName inBundle:bundleName inBundleForClass:classInBundle];
+    NSAssert(fullFilePath, @"In order to play back you need to have a plist named: %@ in a bundle called: %@ also containg this class: %@", fileName, bundleName, classInBundle);
+    return [self dictionaryForPlistFilePath:fullFilePath];
 }
 
 @end

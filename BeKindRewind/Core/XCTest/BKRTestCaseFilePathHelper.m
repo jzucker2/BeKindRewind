@@ -12,7 +12,8 @@
 @implementation BKRTestCaseFilePathHelper
 
 + (NSDictionary *)dictionaryForTestCase:(XCTestCase *)testCase {
-    return nil;
+    NSString *plistFileName = [NSString stringWithFormat:@"%@.plist", NSStringFromSelector(testCase.invocation.selector)];
+    return [self dictionaryForPlistFile:plistFileName inBundle:NSStringFromClass(testCase.class) inBundleForClass:testCase.class];
 }
 
 @end

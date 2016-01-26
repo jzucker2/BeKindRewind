@@ -17,6 +17,8 @@
 		51B9B9D21C57EEC9006156C2 /* SimplePlistDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D11C57EEC9006156C2 /* SimplePlistDictionary.plist */; };
 		51B9B9D41C57EED8006156C2 /* SimplePlistArray.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D31C57EED8006156C2 /* SimplePlistArray.plist */; };
 		51B9B9D61C57F5D3006156C2 /* BKRTestCaseFilePathHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9D51C57F5D3006156C2 /* BKRTestCaseFilePathHelperTestCase.m */; };
+		51B9B9D81C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D71C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle */; };
+		51B9B9DA1C57F918006156C2 /* SimpleBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D91C57F918006156C2 /* SimpleBundle.bundle */; };
 		51CEB9D31C4EBF000030A02D /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
 		51CEB9D71C4F03650030A02D /* XCTestCase+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */; };
 		6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F5AF195388D20070C39A /* XCTest.framework */; };
@@ -42,6 +44,8 @@
 		51B9B9D11C57EEC9006156C2 /* SimplePlistDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SimplePlistDictionary.plist; sourceTree = "<group>"; };
 		51B9B9D31C57EED8006156C2 /* SimplePlistArray.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SimplePlistArray.plist; sourceTree = "<group>"; };
 		51B9B9D51C57F5D3006156C2 /* BKRTestCaseFilePathHelperTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRTestCaseFilePathHelperTestCase.m; sourceTree = "<group>"; };
+		51B9B9D71C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BKRTestCaseFilePathHelperTestCase.bundle; sourceTree = "<group>"; };
+		51B9B9D91C57F918006156C2 /* SimpleBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SimpleBundle.bundle; sourceTree = "<group>"; };
 		51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecordingTestCase.m; sourceTree = "<group>"; };
 		51CEB9D51C4F03650030A02D /* XCTestCase+BKRAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRAdditions.h"; sourceTree = "<group>"; };
 		51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRAdditions.m"; sourceTree = "<group>"; };
@@ -95,6 +99,8 @@
 		51B9B9CC1C57EA46006156C2 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				51B9B9D91C57F918006156C2 /* SimpleBundle.bundle */,
+				51B9B9D71C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle */,
 				51B9B9CD1C57ECAB006156C2 /* SimpleFile.txt */,
 				51B9B9D11C57EEC9006156C2 /* SimplePlistDictionary.plist */,
 				51B9B9D31C57EED8006156C2 /* SimplePlistArray.plist */,
@@ -294,9 +300,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				51B9B9CE1C57ECAB006156C2 /* SimpleFile.txt in Resources */,
+				51B9B9DA1C57F918006156C2 /* SimpleBundle.bundle in Resources */,
 				51B9B9D41C57EED8006156C2 /* SimplePlistArray.plist in Resources */,
 				51B9B9D21C57EEC9006156C2 /* SimplePlistDictionary.plist in Resources */,
 				6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */,
+				51B9B9D81C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
