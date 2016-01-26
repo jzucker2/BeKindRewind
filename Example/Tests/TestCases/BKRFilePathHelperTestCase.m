@@ -26,9 +26,47 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)testFindSimpleFile {
+    NSString *expectedFilePath = [BKRFilePathHelper findPathForFile:@"SimpleFile.txt" inBundleForClass:self.class];
+    XCTAssertNotNil(expectedFilePath);
+    // start of file path is dependent on machine, that will change depending on where it is run.
+    // but end will always be the same
+    XCTAssertTrue([expectedFilePath hasSuffix:@".xctest/SimpleFile.txt"]);
+}
+
+- (void)testReturnNilForNonexistentFile {
+    NSString *expectedFilePath = [BKRFilePathHelper findPathForFile:@"IDontExist.txt" inBundleForClass:self.class];
+    XCTAssertNil(expectedFilePath);
+}
+
+- (void)testThrowsExceptionForCreatingDictionaryFromValidNonPlistFile {
+    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFile:@"SimpleFile.txt" inBundleForClass:self.class], NSException, NSInternalInconsistencyException);
+}
+
+- (void)testThrowsExceptionForCreatingDictionaryFromNonExistentPlistFile {
+//    NSDictionary *dictionary = [BKRFilePathHelper dictionaryForPlistFile:@"IDontExist.plist" inBundleForClass:self.class];
+//    XCTAssertNil(dictionary);
+    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFile:@"IDontExist.plist" inBundleForClass:self.class], NSException, NSInternalInconsistencyException);
+}
+
+- (void)testThrowsExceptionForCreatingDictionaryFromNonExistentNonPlistFile {
+    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFile:@"IDontExist.txt" inBundleForClass:self.class], NSException, NSInternalInconsistencyException);
+//    NSDictionary *dictionary = [BKRFilePathHelper dictionaryForPlistFile:@"IDontExist.txt" inBundleForClass:self.class];
+//    XCTAssertNil(dictionary);
+}
+
+- (void)testReturnsDictionaryForPlistFilePathContainingRootDictionary {
+    NSDictionary *dictionary = [BKRFilePathHelper dictionaryForPlistFile:@"SimplePlistDictionary.plist" inBundleForClass:self.class];
+    XCTAssertNotNil(dictionary);
+    NSDictionary *expectedDictionary = @{
+                                         @"foo": @"bar",
+                                         @"baz": @"qux"
+                                         };
+    XCTAssertEqualObjects(dictionary, expectedDictionary);
+}
+
+- (void)testThrowsExceptinForCreatingDictionaryFromPlistFilePathContainingRootArray {
+    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFile:@"SimplePlistArray.plist" inBundleForClass:self.class], NSException, NSInternalInconsistencyException);
 }
 
 @end
