@@ -143,7 +143,8 @@
     });
 }
 
-- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)error {
+- (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error {
+    NSLog(@"^^^^^^^^^^^^^^^^^^^^^ enter finish method");
     if (!self.enabled) {
         return;
     }
@@ -154,7 +155,8 @@
             return;
         }
         if (error) {
-            BKRRecordableRawFrame *frame = [BKRRecordableRawFrame frameWithTask:task];
+            NSLog(@"^^^^^^^^^^^^^^^^^^^^^ recording error");
+            BKRRecordableRawFrame *frame = [BKRRecordableRawFrame frameWithIdentifier:taskUniqueIdentifier];
             frame.item = error;
             [sself.currentCassette addFrame:frame];
         }

@@ -32,7 +32,7 @@
     [super tearDown];
 }
 
-- (void)testPlistSerialization {
+- (void)testPlistSerializingOneGETRequest {
     __block BKRRecordableCassette *cassette = [[BKRRecordableCassette alloc] init];
     cassette.recording = YES;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -86,7 +86,7 @@
     }];
 }
 
-- (void)testPlistDeserializing {
+- (void)testPlistDeserializingOneGETRequest {
     NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
     NSDate *cassetteCreationDate = [NSDate date];
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -109,12 +109,6 @@
                                     @"uniqueIdentifier": task.globallyUniqueIdentifier,
                                     @"frames": frames
                                     };
-//        NSDictionary  *cassetteDict = @{
-//                                        @"creationDate": cassetteCreationDate,
-//                                        @"scenes": @{
-//                                                task.globallyUniqueIdentifier: sceneDict
-//                                                }
-//                                        };
         NSDictionary *cassetteDict = [self expectedCassetteDictionaryWithCreationDate:cassetteCreationDate sceneDictionaries:@[sceneDict]];
         BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:cassetteDict];
         XCTAssertNotNil(cassette);

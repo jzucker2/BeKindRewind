@@ -20,6 +20,7 @@
 @end
 
 @implementation BKRRequestFrame
+@synthesize requestComponents = _requestComponents;
 
 - (void)addRequest:(NSURLRequest *)request {
     self.HTTPBody = request.HTTPBody;
@@ -30,6 +31,33 @@
     self.URL = request.URL;
     self.timeoutInterval = request.timeoutInterval;
     self.allowsCellularAccess = request.allowsCellularAccess;
+}
+
+- (NSURLComponents *)requestComponents {
+    if (!_requestComponents) {
+        _requestComponents = [NSURLComponents componentsWithString:self.URL.absoluteString];
+    }
+    return _requestComponents;
+}
+
+- (NSArray<NSURLQueryItem *> *)requestQueryItems {
+    return self.requestComponents.queryItems;
+}
+
+- (NSString *)requestFragment {
+    return self.requestComponents.fragment;
+}
+
+- (NSString *)requestHost {
+    return self.requestComponents.host;
+}
+
+- (NSString *)requestPath {
+    return self.requestComponents.path;
+}
+
+- (NSString *)requestScheme {
+    return self.requestComponents.scheme;
 }
 
 - (NSDictionary *)plistDictionary {

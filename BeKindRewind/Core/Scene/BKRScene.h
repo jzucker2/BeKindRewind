@@ -10,7 +10,7 @@
 
 @class BKRFrame;
 @class BKRDataFrame;
-@class BKRError;
+@class BKRErrorFrame;
 @class BKRRequestFrame;
 @class BKRResponseFrame;
 @interface BKRScene : NSObject
@@ -23,6 +23,7 @@
 - (NSArray<BKRDataFrame *> *)allDataFrames;
 - (NSArray<BKRResponseFrame *> *)allResponseFrames;
 - (NSArray<BKRRequestFrame *> *)allRequestFrames;
+- (NSArray<BKRErrorFrame *> *)allErrorFrames;
 - (BKRRequestFrame *)originalRequest;
 - (BKRRequestFrame *)currentRequest;
 

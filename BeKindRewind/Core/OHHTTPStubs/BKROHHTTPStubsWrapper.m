@@ -17,6 +17,9 @@
 }
 
 + (OHHTTPStubsResponse *)_responseForScene:(BKRPlayableScene *)scene {
+    if (scene.responseError) {
+        return [OHHTTPStubsResponse responseWithError:scene.responseError];
+    }
     return [OHHTTPStubsResponse responseWithData:scene.responseData statusCode:(int)scene.responseStatusCode headers:scene.responseHeaders];
 }
 

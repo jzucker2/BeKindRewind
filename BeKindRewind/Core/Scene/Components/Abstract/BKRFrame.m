@@ -47,6 +47,19 @@
     return [[self alloc] initFromFrame:frame];
 }
 
+- (instancetype)initWithIdentifier:(NSString *)identifier {
+    self = [super init];
+    if (self) {
+        [self _init];
+        _uniqueIdentifier = identifier;
+    }
+    return self;
+}
+
++ (instancetype)frameWithIdentifier:(NSString *)identifier {
+    return [[self alloc] initWithIdentifier:identifier];
+}
+
 - (NSDictionary *)plistDictionary {
     return @{
              @"creationDate": self.creationDate.copy,

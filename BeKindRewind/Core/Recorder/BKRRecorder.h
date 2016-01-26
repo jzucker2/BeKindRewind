@@ -66,7 +66,8 @@
  *  @param task in flight network task
  *  @param arg1 error from network request
  */
-- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
+- (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error;
+//- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
 /**
  *  Called by JSZVCRNSURLSessionConnection. This is called
  *  when [task cancel] is called.

@@ -9,6 +9,7 @@
 #import "BKRPlayableScene.h"
 #import "BKRPlayableRawFrame.h"
 #import "BKRResponseFrame.h"
+#import "BKRErrorFrame.h"
 #import "BKRDataFrame.h"
 
 @interface BKRPlayableScene ()
@@ -51,7 +52,8 @@
 }
 
 - (NSError *)responseError {
-    return nil;
+    BKRErrorFrame *responseFrame = self.allErrorFrames.firstObject;
+    return responseFrame.error;
 }
 
 @end
