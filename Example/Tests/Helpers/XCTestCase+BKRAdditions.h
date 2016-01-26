@@ -17,6 +17,11 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @property (nonatomic, copy) NSString *HTTPMethod;
 @property (nonatomic, strong) id sentJSON;
 @property (nonatomic, strong) id receivedJSON;
+@property (nonatomic) BOOL hasCurrentRequest;
+@property (nonatomic) BOOL hasResponse;
+@property (nonatomic) NSInteger errorCode; // code and domain are required for this object to have an error frame
+@property (nonatomic) NSDictionary *errorUserInfo; // optional
+@property (nonatomic) NSString *errorDomain; // code and domain are required for this object to have an error frame
 @property (nonatomic, strong) NSDictionary *originalRequestAllHTTPHeaderFields;
 @property (nonatomic, strong) NSDictionary *currentRequestAllHTTPHeaderFields;
 @property (nonatomic, strong) NSDictionary *responseAllHeaderFields;
@@ -40,6 +45,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 - (NSMutableDictionary *)standardRequestDictionary;
 - (NSMutableDictionary *)standardResponseDictionary;
 - (NSMutableDictionary *)standardDataDictionary;
+- (NSMutableDictionary *)standardErrorDictionary;
 
 
 - (NSDictionary *)dictionaryWithRequest:(NSURLRequest *)request forTask:(NSURLSessionTask *)task;

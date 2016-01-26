@@ -23,6 +23,15 @@
     return [[self alloc] init];
 }
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _hasCurrentRequest = YES;
+        _hasResponse = YES;
+    }
+    return self;
+}
+
 @end
 
 @implementation XCTestCase (BKRAdditions)
@@ -157,47 +166,70 @@
               } mutableCopy];
 }
 
+- (NSMutableDictionary *)standardErrorDictionary {
+    return [@{
+              @"class": @"BKRErrorFrame",
+              @"creationDate": [NSDate date],
+              } mutableCopy];
+}
+
 - (NSDictionary *)expectedCassetteDictionaryWithSceneBuilders:(NSArray<BKRExpectedScenePlistDictionaryBuilder *> *)expectedPlistBuilders {
     NSDate *expectedCassetteDictCreationDate = [NSDate date];
     NSMutableArray *expectedPlistSceneDicts = [NSMutableArray array];
     for (BKRExpectedScenePlistDictionaryBuilder *expectedPlistBuilder in expectedPlistBuilders) {
+        NSMutableArray *framesArray = [NSMutableArray array];
         NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
         expectedOriginalRequestDict[@"URL"] = expectedPlistBuilder.URLString;
         expectedOriginalRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
         if (expectedPlistBuilder.originalRequestAllHTTPHeaderFields) {
             expectedOriginalRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.originalRequestAllHTTPHeaderFields;
         }
-        
-        NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
-        expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
-        expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-        if (expectedPlistBuilder.currentRequestAllHTTPHeaderFields) {
-            expectedCurrentRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.currentRequestAllHTTPHeaderFields;
-        }
-        
         if (expectedPlistBuilder.HTTPMethod) {
             expectedOriginalRequestDict[@"HTTPMethod"] = expectedPlistBuilder.HTTPMethod;
-            expectedCurrentRequestDict[@"HTTPMethod"] = expectedPlistBuilder.HTTPMethod;
+        }
+        [framesArray addObject:expectedOriginalRequestDict];
+        
+        if (expectedPlistBuilder.hasCurrentRequest) {
+            NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
+            expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
+            expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+            if (expectedPlistBuilder.currentRequestAllHTTPHeaderFields) {
+                expectedCurrentRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.currentRequestAllHTTPHeaderFields;
+            }
+            if (expectedPlistBuilder.HTTPMethod) {
+                expectedCurrentRequestDict[@"HTTPMethod"] = expectedPlistBuilder.HTTPMethod;
+            }
+            [framesArray addObject:expectedCurrentRequestDict];
         }
         
-        NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
-        expectedResponseDict[@"URL"] = expectedPlistBuilder.URLString;
-        expectedResponseDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-        expectedResponseDict[@"allHeaderFields"] = expectedPlistBuilder.responseAllHeaderFields;
+        if (expectedPlistBuilder.hasResponse) {
+            NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
+            expectedResponseDict[@"URL"] = expectedPlistBuilder.URLString;
+            expectedResponseDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+            expectedResponseDict[@"allHeaderFields"] = expectedPlistBuilder.responseAllHeaderFields;
+            [framesArray addObject:expectedResponseDict];
+        }
         
-        NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
-        expectedDataDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-        expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedPlistBuilder.receivedJSON options:kNilOptions error:nil];
+        if (expectedPlistBuilder.receivedJSON) {
+            NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
+            expectedDataDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+            expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedPlistBuilder.receivedJSON options:kNilOptions error:nil];
+            [framesArray addObject:expectedDataDict];
+        }
         
-        NSArray *framesArray = @[
-                                 expectedOriginalRequestDict.copy,
-                                 expectedCurrentRequestDict.copy,
-                                 expectedResponseDict.copy,
-                                 expectedDataDict.copy
-                                 ];
+        if (expectedPlistBuilder.errorCode && expectedPlistBuilder.errorDomain) {
+            NSMutableDictionary *expectedErrorDict = [self standardErrorDictionary];
+            expectedErrorDict[@"code"] = @(expectedPlistBuilder.errorCode);
+            expectedErrorDict[@"domain"] = expectedPlistBuilder.errorDomain;
+            if (expectedPlistBuilder.errorUserInfo) {
+                expectedErrorDict[@"userInfo"] = expectedPlistBuilder.errorUserInfo;
+            }
+            [framesArray addObject:expectedErrorDict];
+        }
+        
         NSDictionary *sceneDict = @{
                                     @"uniqueIdentifier": expectedPlistBuilder.taskUniqueIdentifier,
-                                    @"frames": framesArray
+                                    @"frames": framesArray.copy
                                     };
         [expectedPlistSceneDicts addObject:sceneDict];
     }
