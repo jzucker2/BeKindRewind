@@ -36,6 +36,8 @@
     XCTAssertEqualObjects(dictionary, expectedDictionary);
 }
 
+#if DEBUG
+
 - (void)testThrowsExceptionForExistentPlistWithRootArrayMatchingThisTestCase {
     XCTAssertThrowsSpecificNamed([BKRTestCaseFilePathHelper dictionaryForTestCase:self], NSException, NSInternalInconsistencyException);
 }
@@ -43,5 +45,7 @@
 - (void)testThrowsExceptionForReturningDictionaryFromNonexistentPlist {
     XCTAssertThrowsSpecificNamed([BKRTestCaseFilePathHelper dictionaryForTestCase:self], NSException, NSInternalInconsistencyException);
 }
+
+#endif
 
 @end

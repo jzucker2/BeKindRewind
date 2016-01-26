@@ -61,17 +61,6 @@
     XCTAssertNil(expectedFilePath);
 }
 
-- (void)testThrowsExceptionForCreatingDictionaryFromValidNonPlistFile {
-    NSString *filePath = [BKRFilePathHelper findPathForFile:@"SimpleFile.txt" inBundleForClass:self.class];
-    XCTAssertNotNil(filePath);
-    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFilePath:filePath], NSException, NSInternalInconsistencyException);
-
-}
-
-- (void)testThrowsExceptionForCreatingDictionaryFromNilFilePath {
-    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFilePath:nil], NSException, NSInternalInconsistencyException);
-}
-
 - (void)testReturnsDictionaryForPlistFilePathContainingRootDictionary {
     NSString *filePath = [BKRFilePathHelper findPathForFile:@"SimplePlistDictionary.plist" inBundleForClass:self.class];
     XCTAssertNotNil(filePath);
@@ -84,12 +73,6 @@
     XCTAssertEqualObjects(dictionary, expectedDictionary);
 }
 
-- (void)testThrowsExceptinForCreatingDictionaryFromPlistFilePathContainingRootArray {
-    NSString *filePath = [BKRFilePathHelper findPathForFile:@"SimplePlistArray.plist" inBundleForClass:self.class];
-    XCTAssertNotNil(filePath);
-    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFilePath:filePath], NSException, NSInternalInconsistencyException);
-}
-
 - (void)testReturnsDictionaryForPlistInABundle {
     NSDictionary *dictionary = [BKRFilePathHelper dictionaryForPlistFile:@"testReturnsDictionaryFromMatchingPlistForThisTestCase.plist" inBundle:@"BKRTestCaseFilePathHelperTestCase" inBundleForClass:self.class];
     XCTAssertNotNil(dictionary);
@@ -100,6 +83,25 @@
     XCTAssertEqualObjects(dictionary, expectedDictionary);
 }
 
+#if DEBUG
+
+- (void)testThrowsExceptionForCreatingDictionaryFromValidNonPlistFile {
+    NSString *filePath = [BKRFilePathHelper findPathForFile:@"SimpleFile.txt" inBundleForClass:self.class];
+    XCTAssertNotNil(filePath);
+    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFilePath:filePath], NSException, NSInternalInconsistencyException);
+
+}
+
+- (void)testThrowsExceptionForCreatingDictionaryFromNilFilePath {
+    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFilePath:nil], NSException, NSInternalInconsistencyException);
+}
+
+- (void)testThrowsExceptinForCreatingDictionaryFromPlistFilePathContainingRootArray {
+    NSString *filePath = [BKRFilePathHelper findPathForFile:@"SimplePlistArray.plist" inBundleForClass:self.class];
+    XCTAssertNotNil(filePath);
+    XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFilePath:filePath], NSException, NSInternalInconsistencyException);
+}
+
 - (void)testThrowsExceptionForExistentPlistInABundleWithRootArray {
     XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFile:@"testThrowsExceptionForExistentPlistWithRootArrayMatchingThisTestCase.plist" inBundle:@"BKRTestCaseFilePathHelperTestCase" inBundleForClass:self.class], NSException, NSInternalInconsistencyException);
 }
@@ -107,5 +109,7 @@
 - (void)testThrowsExceptionForCreatingDictionaryFromNonPlistFileInABundle {
     XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFile:@"SimpleFileInBundle.txt" inBundle:@"SimpleBundle" inBundleForClass:self.class], NSException, NSInternalInconsistencyException);
 }
+
+#endif
 
 @end
