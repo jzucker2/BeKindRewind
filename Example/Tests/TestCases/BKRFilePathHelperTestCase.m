@@ -90,7 +90,129 @@
     NSLog(@"%s", __FILE__);
 }
 
+// this test works locally, but fails in CI. Need to investigate why and write a fastlane action for
+// testing the creation of the frameworks resource plist
+- (void)DISABLE_testReturnsValidFixtureWriteDirectoryFromPodPlist {
+    NSString *fixtureWritePath = [BKRFilePathHelper fixtureWriteDirectoryInProject];
+    XCTAssertNotNil(fixtureWritePath);
+    // not sure how to test higher up the directory structure
+    XCTAssertTrue([fixtureWritePath hasSuffix:@"/BeKindRewind/Example/Tests/Fixtures/"]);
+    // Successfully fetch a file included in the target
+    XCTAssertNotNil([[NSBundle bundleForClass:self.class] pathForResource:@"SimpleFile" ofType:@"txt"]);
+    // Fail to fetch a fail not included in the target
+    XCTAssertNil([[NSBundle bundleForClass:self.class] pathForResource:@"NotInATarget" ofType:@"txt"]);
+    // Fetch same file from plist generated write fixture directory
+    NSString *fullPath = [fixtureWritePath stringByAppendingPathComponent:@"NotInATarget.txt"];
+    XCTAssertNotNil(fullPath);
+    XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:fullPath]);
+    
+}
+
+- (void)testFindDocumentsDirectory {
+    NSString *filePath = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(filePath);
+    XCTAssertTrue([filePath hasSuffix:@"/data/Documents"]);
+}
+
+- (void)testCreateBundleInDocumentsDirectory {
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    NSBundle *createdBundle = [BKRFilePathHelper writingBundleNamed:@"TestBundle" inDirectory:documentsDirectory];
+    XCTAssertNotNil(createdBundle);
+    XCTAssertTrue([createdBundle.bundlePath hasSuffix:@"/data/Documents/TestBundle.bundle"]);
+}
+
+- (void)testReturnsExistingBundleForWritingIfAlreadyExists {
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    NSBundle *createdBundle = [BKRFilePathHelper writingBundleNamed:@"BundleWithItem" inDirectory:documentsDirectory];
+    XCTAssertNotNil(createdBundle);
+    XCTAssertTrue([createdBundle.bundlePath hasSuffix:@"/data/Documents/BundleWithItem.bundle"]);
+    
+    NSString *createdFileName = @"createdfile.txt";
+    NSString *createdFilePath = [createdBundle.bundlePath stringByAppendingPathComponent:createdFileName];
+    NSData *createdFileContents = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
+    XCTAssertNotNil(createdFileContents);
+    BOOL fileCreated = [[NSFileManager defaultManager] createFileAtPath:createdFilePath contents:createdFileContents attributes:nil];
+    XCTAssertTrue(fileCreated);
+    
+    NSBundle *sameBundle = [BKRFilePathHelper writingBundleNamed:@"BundleWithItem" inDirectory:documentsDirectory];
+    XCTAssertNotNil(sameBundle);
+    NSString *otherCreatedFilePath = [sameBundle.bundlePath stringByAppendingPathComponent:createdFileName];
+    XCTAssertNotNil(otherCreatedFilePath);
+    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:otherCreatedFilePath];
+    XCTAssertTrue(fileExists);
+    NSData *sameFileContents = [NSData dataWithContentsOfFile:otherCreatedFilePath];
+    XCTAssertEqualObjects(createdFileContents, sameFileContents);
+    
+    XCTAssertEqualObjects(createdBundle, sameBundle);
+}
+
+- (void)testWriteDictionaryToPlistFilePath {
+    NSDictionary *testDictionary = @{
+                                     @"foo": @"bar"
+                                     };
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    
+    NSString *fullPath = [documentsDirectory stringByAppendingPathComponent:@"CreatedDictionary.plist"];
+    XCTAssertNotNil(fullPath);
+    
+    BOOL createdPlist = [BKRFilePathHelper writeDictionary:testDictionary toFile:fullPath];
+    XCTAssertTrue(createdPlist);
+    
+    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
+    XCTAssertTrue(exists);
+    
+    NSDictionary *expectedDictionary = [NSDictionary dictionaryWithContentsOfFile:fullPath];
+    XCTAssertNotNil(expectedDictionary);
+    XCTAssertEqualObjects(testDictionary, expectedDictionary);
+}
+
+- (void)testOverwriteExistingDictionaryToPlistFilePath {
+    NSDictionary *originalDictionary = @{
+                                         @"foo": @"bar"
+                                         };
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    
+    NSString *fullPath = [documentsDirectory stringByAppendingPathComponent:@"OverwritingDictionary.plist"];
+    XCTAssertNotNil(fullPath);
+    
+    BOOL createdPlist = [BKRFilePathHelper writeDictionary:originalDictionary toFile:fullPath];
+    XCTAssertTrue(createdPlist);
+    
+    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
+    XCTAssertTrue(exists);
+    
+    NSDictionary *expectedDictionary = [NSDictionary dictionaryWithContentsOfFile:fullPath];
+    XCTAssertNotNil(expectedDictionary);
+    XCTAssertEqualObjects(originalDictionary, expectedDictionary);
+    
+    NSDictionary *newDictionary = @{
+                                    @"baz": @"qux"
+                                    };
+    BOOL overwrotePlist = [BKRFilePathHelper writeDictionary:newDictionary toFile:fullPath];
+    XCTAssertTrue(overwrotePlist);
+    
+    BOOL stillExists = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
+    XCTAssertTrue(stillExists);
+    
+    NSDictionary *newExpectedDictionary = [NSDictionary dictionaryWithContentsOfFile:fullPath];
+    XCTAssertNotNil(newExpectedDictionary);
+    XCTAssertNotEqualObjects(originalDictionary, newExpectedDictionary);
+    XCTAssertEqualObjects(newDictionary, newExpectedDictionary);
+}
+
 #if DEBUG
+
+- (void)testThrowsExceptionForCreatingBundleInDocumentsDirectoryWithBundleExtensionIncludeInBundleName {
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    XCTAssertThrowsSpecificNamed([BKRFilePathHelper writingBundleNamed:@"TestBundle.bundle" inDirectory:documentsDirectory], NSException, NSInternalInconsistencyException);
+}
 
 - (void)testThrowsExceptionForCreatingDictionaryFromValidNonPlistFile {
     NSString *filePath = [BKRFilePathHelper findPathForFile:@"SimpleFile.txt" inBundleForClass:self.class];

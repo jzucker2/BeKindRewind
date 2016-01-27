@@ -31,4 +31,15 @@
 // for last param, pass in `self.class`
 + (NSDictionary *)dictionaryForPlistFile:(NSString *)fileName inBundle:(NSString *)bundleName inBundleForClass:(Class)classInBundle;
 
++ (NSString *)fixtureWriteDirectoryInProject;
+
++ (BOOL)writeDictionary:(NSDictionary *)dictionary toFile:(NSString *)filePath;
++ (NSString *)documentsDirectory;
+
+// pass in bundle name without .bundle extension. It is added automatically
+// intended to be used by test classe
++ (NSBundle *)writingBundleNamed:(NSString *)bundleName inDirectory:(NSString *)filePath;
+
+
+
 @end

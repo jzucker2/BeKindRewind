@@ -46,4 +46,56 @@
     return [self dictionaryForPlistFilePath:fullFilePath];
 }
 
++ (NSBundle *)_podResourceBundle {
+    NSBundle *bundle = [NSBundle bundleForClass:self];
+    NSString *bundlePath = [bundle pathForResource:@"BeKindRewind" ofType:@"bundle"];
+    return [NSBundle bundleWithPath:bundlePath];
+}
+
++ (NSString *)_podProjectPlistFilePath {
+    return [[self _podResourceBundle] pathForResource:@"BeKindRewind" ofType:@"plist"];
+}
+
++ (NSDictionary *)_podProjectPlistDictionary {
+    return [[NSDictionary alloc] initWithContentsOfFile:[self _podProjectPlistFilePath]];
+}
+
++ (NSString *)fixtureWriteDirectoryInProject {
+    NSDictionary *podPlist = [self _podProjectPlistDictionary];
+    NSAssert(podPlist, @"Something went wrong fetching the pod plist from the resource bundle");
+    if (!podPlist) {
+        return @"~/Desktop/Runs/";
+    }
+    return podPlist[@"fixture_path"];
+}
+
++ (BOOL)writeDictionary:(NSDictionary *)dictionary toFile:(NSString *)filePath {
+    NSParameterAssert(filePath);
+    NSParameterAssert([filePath.pathExtension isEqualToString:@"plist"]);
+    NSParameterAssert(dictionary);
+    return [dictionary writeToFile:filePath atomically:YES];
+}
+
++ (NSString *)documentsDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0]; //Get the docs directory
+    return documentsPath;
+}
+
++ (NSBundle *)writingBundleNamed:(NSString *)bundleName inDirectory:(NSString *)filePath {
+    NSParameterAssert(bundleName);
+    NSParameterAssert(![bundleName.pathExtension isEqualToString:@"bundle"]);
+    NSString *bundlePath = [filePath stringByAppendingPathComponent:[bundleName stringByAppendingPathExtension:@"bundle"]];
+    BOOL isDir;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:&isDir]) {
+        NSError *bundleCreationError = nil;
+        [[NSFileManager defaultManager] createDirectoryAtPath:bundlePath withIntermediateDirectories:YES attributes:nil error:&bundleCreationError];
+        NSAssert(!bundleCreationError, @"Bundle creation failed: %@", bundleCreationError.localizedDescription);
+        if (bundleCreationError) {
+            NSLog(@"Bundle creation failed: %@", bundleCreationError.localizedDescription);
+        }
+    }
+    return [NSBundle bundleWithPath:bundlePath];
+}
+
 @end
