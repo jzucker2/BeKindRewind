@@ -149,3 +149,4 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * tests for basic test
 * add different types of matchers
 * afnetworking tests
+* automate storing in actual project (works in sim). Fetch project path from plist?

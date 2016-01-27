@@ -83,6 +83,13 @@
     XCTAssertEqualObjects(dictionary, expectedDictionary);
 }
 
+- (void)DISABLE_testEXPERIMENTWITHFILEDIRECTORYSTUFF {
+    BOOL result = [[NSFileManager defaultManager] createFileAtPath:@"/Users/jordanz/Documents/Coding/pod-creation/BeKindRewind/Example/Tests/Fixtures/SimpleBundle.bundle/testFile.txt" contents:[@"test" dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
+    NSLog(@"result: %d", result);
+    //    [[NSFileManager defaultManager] createDirectoryAtPath:newFile withIntermediateDirectories:YES attributes:nil error:&bundleCreationError];
+    NSLog(@"%s", __FILE__);
+}
+
 #if DEBUG
 
 - (void)testThrowsExceptionForCreatingDictionaryFromValidNonPlistFile {
@@ -96,7 +103,7 @@
     XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFilePath:nil], NSException, NSInternalInconsistencyException);
 }
 
-- (void)testThrowsExceptinForCreatingDictionaryFromPlistFilePathContainingRootArray {
+- (void)testThrowsExceptionForCreatingDictionaryFromPlistFilePathContainingRootArray {
     NSString *filePath = [BKRFilePathHelper findPathForFile:@"SimplePlistArray.plist" inBundleForClass:self.class];
     XCTAssertNotNil(filePath);
     XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFilePath:filePath], NSException, NSInternalInconsistencyException);
