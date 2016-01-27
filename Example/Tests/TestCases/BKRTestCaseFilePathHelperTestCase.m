@@ -36,6 +36,120 @@
     XCTAssertEqualObjects(dictionary, expectedDictionary);
 }
 
+- (void)testCreateBundleForThisTestInDocumentsDirectory {
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    NSBundle *createBundle = [BKRTestCaseFilePathHelper writingBundleForTestCase:self inDirectory:documentsDirectory];
+    XCTAssertNotNil(createBundle);
+    NSString *expectedBundleName = [NSStringFromClass(self.class) stringByAppendingPathExtension:@"bundle"];
+    XCTAssertNotNil(expectedBundleName);
+    NSString *expectedSuffix = [@"/data/Documents" stringByAppendingPathComponent:expectedBundleName];
+    XCTAssertNotNil(expectedSuffix);
+    XCTAssertTrue([createBundle.bundlePath hasSuffix:expectedSuffix]);
+}
+
+- (void)testReturnsExistingBundleForWritingIfAlreadyExists {
+    NSString *expectedBundleName = [NSStringFromClass(self.class) stringByAppendingPathExtension:@"bundle"];
+    XCTAssertNotNil(expectedBundleName);
+    
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    NSBundle *createdBundle = [BKRFilePathHelper writingBundleNamed:NSStringFromClass(self.class) inDirectory:documentsDirectory];
+    XCTAssertNotNil(createdBundle);
+    NSString *expectedSuffix = [@"/data/Documents" stringByAppendingPathComponent:expectedBundleName];
+    XCTAssertTrue([createdBundle.bundlePath hasSuffix:expectedSuffix]);
+    
+    NSString *createdFileName = @"createdfile.txt";
+    NSString *createdFilePath = [createdBundle.bundlePath stringByAppendingPathComponent:createdFileName];
+    NSData *createdFileContents = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
+    XCTAssertNotNil(createdFileContents);
+    BOOL fileCreated = [[NSFileManager defaultManager] createFileAtPath:createdFilePath contents:createdFileContents attributes:nil];
+    XCTAssertTrue(fileCreated);
+    
+    NSBundle *sameBundle = [BKRTestCaseFilePathHelper writingBundleForTestCase:self inDirectory:documentsDirectory];
+    XCTAssertNotNil(sameBundle);
+    NSString *otherCreatedFilePath = [sameBundle.bundlePath stringByAppendingPathComponent:createdFileName];
+    XCTAssertNotNil(otherCreatedFilePath);
+    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:otherCreatedFilePath];
+    XCTAssertTrue(fileExists);
+    NSData *sameFileContents = [NSData dataWithContentsOfFile:otherCreatedFilePath];
+    XCTAssertEqualObjects(createdFileContents, sameFileContents);
+    
+    XCTAssertEqualObjects(createdBundle, sameBundle);
+}
+
+- (void)testWriteDictionaryToPlistAtTestCaseFilePath {
+    NSString *expectedBundleName = [NSStringFromClass(self.class) stringByAppendingPathExtension:@"bundle"];
+    XCTAssertNotNil(expectedBundleName);
+    
+    NSDictionary *testDictionary = @{
+                                     @"foo": @"bar"
+                                     };
+    
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    
+    BOOL plistCreated = [BKRTestCaseFilePathHelper writeDictionary:testDictionary forTestCase:self toDirectory:documentsDirectory];
+    XCTAssertTrue(plistCreated);
+    
+    NSString *expectedPlistName = [NSStringFromSelector(self.invocation.selector) stringByAppendingPathExtension:@"plist"];
+    NSString *expectedPlistInBundleSubPath = [expectedBundleName stringByAppendingPathComponent:expectedPlistName];
+    XCTAssertNotNil(expectedPlistInBundleSubPath);
+    NSString *fullPath = [documentsDirectory stringByAppendingPathComponent:expectedPlistInBundleSubPath];
+    XCTAssertNotNil(fullPath);
+    
+    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
+    XCTAssertTrue(exists);
+    
+    NSDictionary *expectedDictionary = [NSDictionary dictionaryWithContentsOfFile:fullPath];
+    XCTAssertNotNil(expectedDictionary);
+    XCTAssertEqualObjects(testDictionary, expectedDictionary);
+}
+
+- (void)testOverwriteExistingDictionaryToPlistAtTestCaseFilePath {
+    NSString *expectedBundleName = [NSStringFromClass(self.class) stringByAppendingPathExtension:@"bundle"];
+    XCTAssertNotNil(expectedBundleName);
+    
+    NSDictionary *originalDictionary = @{
+                                     @"foo": @"bar"
+                                     };
+    
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    
+    BOOL plistCreated = [BKRTestCaseFilePathHelper writeDictionary:originalDictionary forTestCase:self toDirectory:documentsDirectory];
+    XCTAssertTrue(plistCreated);
+    
+    NSString *expectedPlistName = [NSStringFromSelector(self.invocation.selector) stringByAppendingPathExtension:@"plist"];
+    NSString *expectedPlistInBundleSubPath = [expectedBundleName stringByAppendingPathComponent:expectedPlistName];
+    XCTAssertNotNil(expectedPlistInBundleSubPath);
+    NSString *fullPath = [documentsDirectory stringByAppendingPathComponent:expectedPlistInBundleSubPath];
+    XCTAssertNotNil(fullPath);
+    
+    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
+    XCTAssertTrue(exists);
+    
+    NSDictionary *expectedDictionary = [NSDictionary dictionaryWithContentsOfFile:fullPath];
+    XCTAssertNotNil(expectedDictionary);
+    XCTAssertEqualObjects(originalDictionary, expectedDictionary);
+    
+    NSDictionary *newDictionary = @{
+                                    @"baz": @"qux"
+                                    };
+    BOOL overwotePlist = [BKRTestCaseFilePathHelper writeDictionary:newDictionary forTestCase:self toDirectory:documentsDirectory];
+    XCTAssertTrue(overwotePlist);
+    
+    BOOL stillExists = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
+    XCTAssertTrue(stillExists);
+    
+    NSDictionary *newExpectedDictionary = [NSDictionary dictionaryWithContentsOfFile:fullPath];
+    XCTAssertNotNil(newExpectedDictionary);
+    XCTAssertNotEqualObjects(originalDictionary, newExpectedDictionary);
+    XCTAssertEqualObjects(newDictionary, newExpectedDictionary);
+}
+
 #if DEBUG
 
 - (void)testThrowsExceptionForExistentPlistWithRootArrayMatchingThisTestCase {
