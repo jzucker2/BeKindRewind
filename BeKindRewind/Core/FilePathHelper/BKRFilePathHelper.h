@@ -31,4 +31,6 @@
 // for last param, pass in `self.class`
 + (NSDictionary *)dictionaryForPlistFile:(NSString *)fileName inBundle:(NSString *)bundleName inBundleForClass:(Class)classInBundle;
 
++ (NSString *)fixtureWriteDirectory;
+
 @end

@@ -90,6 +90,22 @@
     NSLog(@"%s", __FILE__);
 }
 
+- (void)testReturnsValidFixtureWriteDirectoryFromPodPlist {
+    NSString *fixtureWritePath = [BKRFilePathHelper fixtureWriteDirectory];
+    XCTAssertNotNil(fixtureWritePath);
+    // not sure how to test higher up the directory structure
+    XCTAssertTrue([fixtureWritePath hasSuffix:@"/BeKindRewind/Example/Tests/Fixtures/"]);
+    // Successfully fetch a file included in the target
+    XCTAssertNotNil([[NSBundle bundleForClass:self.class] pathForResource:@"SimpleFile" ofType:@"txt"]);
+    // Fail to fetch a fail not included in the target
+    XCTAssertNil([[NSBundle bundleForClass:self.class] pathForResource:@"NotInATarget" ofType:@"txt"]);
+    // Fetch same file from plist generated write fixture directory
+    NSString *fullPath = [fixtureWritePath stringByAppendingPathComponent:@"NotInATarget.txt"];
+    XCTAssertNotNil(fullPath);
+    XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:fullPath]);
+    
+}
+
 #if DEBUG
 
 - (void)testThrowsExceptionForCreatingDictionaryFromValidNonPlistFile {

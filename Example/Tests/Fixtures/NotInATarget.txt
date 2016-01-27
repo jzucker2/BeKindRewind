@@ -1,0 +1,1 @@
+This needs to be tracked by git but must not be included in any targets. The sim will find this file from the plist dictionary bundled in the resource bundle (created during the install of the framework)

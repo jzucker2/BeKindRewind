@@ -48,6 +48,7 @@
 		51B9B9D71C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BKRTestCaseFilePathHelperTestCase.bundle; sourceTree = "<group>"; };
 		51B9B9D91C57F918006156C2 /* SimpleBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SimpleBundle.bundle; sourceTree = "<group>"; };
 		51B9B9DB1C58211A006156C2 /* BKRDefaultTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRDefaultTestCase.m; sourceTree = "<group>"; };
+		51B9B9DE1C58E2D1006156C2 /* NotInATarget.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = NotInATarget.txt; sourceTree = "<group>"; };
 		51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecordingTestCase.m; sourceTree = "<group>"; };
 		51CEB9D51C4F03650030A02D /* XCTestCase+BKRAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRAdditions.h"; sourceTree = "<group>"; };
 		51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRAdditions.m"; sourceTree = "<group>"; };
@@ -101,6 +102,7 @@
 		51B9B9CC1C57EA46006156C2 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				51B9B9DE1C58E2D1006156C2 /* NotInATarget.txt */,
 				51B9B9D91C57F918006156C2 /* SimpleBundle.bundle */,
 				51B9B9D71C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle */,
 				51B9B9CD1C57ECAB006156C2 /* SimpleFile.txt */,

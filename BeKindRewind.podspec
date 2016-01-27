@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "BeKindRewind"
-  s.version          = "0.4.0"
+  s.version          = "0.5.0"
   s.summary          = "A simple way to record and replay network requests for testing."
   s.description      = <<-DESC
                         Provides an XCTestCase subclass for easily
@@ -30,11 +30,12 @@ Pod::Spec.new do |s|
   s.dependency 'OHHTTPStubs', '~> 4.7.0'
   s.framework = 'XCTest'
   s.source_files = 'BeKindRewind/Core/**/*'
+  s.prepare_command = 'ruby plist_resource_creator.rb'
 
 #s.source_files = 'Pod/Classes/**/*'
-#  s.resource_bundles = {
-#    'BeKindRewind' => ['Pod/Assets/*.png']
-#  }
+  s.resource_bundles = {
+    'BeKindRewind' => ['BeKindRewind/Assets/*.plist']
+  }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
