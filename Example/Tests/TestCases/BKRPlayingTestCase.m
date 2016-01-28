@@ -392,12 +392,12 @@
     BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
     firstSceneBuilder.URLString = URLString;
     firstSceneBuilder.taskUniqueIdentifier = firstTaskUniqueIdentifier;
-    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{
-                                                            @"Accept": @"*/*",
-                                                            @"Accept-Encoding": @"gzip, deflate",
-                                                            @"Accept-Language": @"en-us"
-                                                            };
-//    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
+//    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{
+//                                                            @"Accept": @"*/*",
+//                                                            @"Accept-Encoding": @"gzip, deflate",
+//                                                            @"Accept-Language": @"en-us"
+//                                                            };
+    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
     NSTimeInterval firstTimetoken = [self timeIntervalForCurrentUnixTimestamp];
     firstSceneBuilder.receivedJSON = @[@(firstTimetoken)];
     firstSceneBuilder.responseAllHeaderFields = @{
@@ -414,12 +414,12 @@
     BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
     secondSceneBuilder.URLString = URLString;
     secondSceneBuilder.taskUniqueIdentifier = secondTaskUniqueIdentifier;
-    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{
-                                                             @"Accept": @"*/*",
-                                                             @"Accept-Encoding": @"gzip, deflate",
-                                                             @"Accept-Language": @"en-us"
-                                                             };
-//    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
+//    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{
+//                                                             @"Accept": @"*/*",
+//                                                             @"Accept-Encoding": @"gzip, deflate",
+//                                                             @"Accept-Language": @"en-us"
+//                                                             };
+    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
     NSTimeInterval secondTimeToken = [self timeIntervalForCurrentUnixTimestamp];
     XCTAssertNotEqual(firstTimetoken, secondTimeToken);
     secondSceneBuilder.receivedJSON = @[@(secondTimeToken)];
