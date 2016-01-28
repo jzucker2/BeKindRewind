@@ -210,10 +210,17 @@
             [framesArray addObject:expectedResponseDict];
         }
         
-        if (expectedPlistBuilder.receivedJSON) {
+        if (
+            expectedPlistBuilder.receivedJSON ||
+            expectedPlistBuilder.receivedData
+            ) {
             NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
             expectedDataDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-            expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedPlistBuilder.receivedJSON options:kNilOptions error:nil];
+            if (expectedPlistBuilder.receivedJSON) {
+                expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedPlistBuilder.receivedJSON options:kNilOptions error:nil];
+            } else {
+                expectedDataDict[@"data"] = expectedPlistBuilder.receivedData;
+            }
             [framesArray addObject:expectedDataDict];
         }
         

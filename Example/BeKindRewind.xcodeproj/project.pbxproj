@@ -21,6 +21,7 @@
 		51B9B9DA1C57F918006156C2 /* SimpleBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D91C57F918006156C2 /* SimpleBundle.bundle */; };
 		51B9B9DC1C58211A006156C2 /* BKRDefaultTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9DB1C58211A006156C2 /* BKRDefaultTestCase.m */; };
 		51B9B9E01C598572006156C2 /* BKRVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9DF1C598572006156C2 /* BKRVCRTestCase.m */; };
+		51B9BA051C59FFE8006156C2 /* BKRCassetteTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9BA041C59FFE8006156C2 /* BKRCassetteTestCase.m */; };
 		51CEB9D31C4EBF000030A02D /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
 		51CEB9D71C4F03650030A02D /* XCTestCase+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */; };
 		6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F5AF195388D20070C39A /* XCTest.framework */; };
@@ -51,6 +52,7 @@
 		51B9B9DB1C58211A006156C2 /* BKRDefaultTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRDefaultTestCase.m; sourceTree = "<group>"; };
 		51B9B9DE1C58E2D1006156C2 /* NotInATarget.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = NotInATarget.txt; sourceTree = "<group>"; };
 		51B9B9DF1C598572006156C2 /* BKRVCRTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRVCRTestCase.m; sourceTree = "<group>"; };
+		51B9BA041C59FFE8006156C2 /* BKRCassetteTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRCassetteTestCase.m; sourceTree = "<group>"; };
 		51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecordingTestCase.m; sourceTree = "<group>"; };
 		51CEB9D51C4F03650030A02D /* XCTestCase+BKRAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRAdditions.h"; sourceTree = "<group>"; };
 		51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRAdditions.m"; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 				51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */,
 				51B9B95A1C52FA35006156C2 /* BKRPlayingTestCase.m */,
 				51B9B9441C516A71006156C2 /* BKRPlistSerializingTestCase.m */,
+				51B9BA041C59FFE8006156C2 /* BKRCassetteTestCase.m */,
 				51B9B9C61C57E802006156C2 /* BKRFilePathHelperTestCase.m */,
 				51B9B9D51C57F5D3006156C2 /* BKRTestCaseFilePathHelperTestCase.m */,
 				51B9B9DB1C58211A006156C2 /* BKRDefaultTestCase.m */,
@@ -426,6 +429,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				51CEB9D71C4F03650030A02D /* XCTestCase+BKRAdditions.m in Sources */,
+				51B9BA051C59FFE8006156C2 /* BKRCassetteTestCase.m in Sources */,
 				51CEB9D31C4EBF000030A02D /* BKRRecordingTestCase.m in Sources */,
 				51B9B9C71C57E802006156C2 /* BKRFilePathHelperTestCase.m in Sources */,
 				51B9B95B1C52FA35006156C2 /* BKRPlayingTestCase.m in Sources */,

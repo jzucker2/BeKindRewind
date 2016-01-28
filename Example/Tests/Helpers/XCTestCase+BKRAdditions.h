@@ -16,7 +16,8 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @property (nonatomic, copy) NSString *taskUniqueIdentifier;
 @property (nonatomic, copy) NSString *HTTPMethod;
 @property (nonatomic, strong) id sentJSON;
-@property (nonatomic, strong) id receivedJSON;
+@property (nonatomic, strong) id receivedJSON; // receivedJSON gets precedence (only 1 will be called)
+@property (nonatomic, strong) NSData *receivedData; // receivedJSON gets precedence (need receivedJSON to be nil if you want this to be used)
 @property (nonatomic) BOOL hasCurrentRequest;
 @property (nonatomic) BOOL hasResponse;
 @property (nonatomic) NSInteger errorCode; // code and domain are required for this object to have an error frame
