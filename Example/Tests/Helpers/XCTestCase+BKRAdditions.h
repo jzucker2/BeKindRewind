@@ -64,6 +64,11 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 - (void)assertResponse:(BKRResponseFrame *)response withResponseDict:(NSDictionary *)otherResponse extraAssertions:(void (^)(BKRResponseFrame *response, NSDictionary *otherResponse))assertions;
 - (void)assertData:(BKRDataFrame *)data withDataDict:(NSDictionary *)otherData extraAssertions:(void (^)(BKRDataFrame *data, NSDictionary *otherData))assertions;
 
+#pragma mark - HTTPBin helpers
+
+- (BKRExpectedScenePlistDictionaryBuilder *)standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:(NSString *)queryItemString contentLength:(NSString *)contentLength; // queryItemString is converted to dictionary for testing
+- (BKRExpectedScenePlistDictionaryBuilder *)standardPOSTRequestDictionaryBuilderForHTTPBin;
+
 #pragma mark - PN
 
 - (NSTimeInterval)unixTimestampForPubNubTimetoken:(NSNumber *)timetoken;

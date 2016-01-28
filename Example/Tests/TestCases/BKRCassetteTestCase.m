@@ -9,6 +9,7 @@
 #import <BeKindRewind/BKRPlayableCassette.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import "BKRBaseTestCase.h"
+#import "XCTestCase+BKRAdditions.h"
 
 @interface BKRCassetteTestCase : BKRBaseTestCase
 
@@ -26,16 +27,20 @@
     [super tearDown];
 }
 
-- (void)DISABLE_testCreatePlayableCassetteWithManyScenes {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-}
-
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
+- (void)testCreatePlayableCassetteWithManyScenes {
+    NSMutableArray<BKRExpectedScenePlistDictionaryBuilder *> *sceneBuilders = [NSMutableArray array];
+    for (NSInteger i=0; i < 20; i++) {
+        NSString *queryString = [NSString stringWithFormat:@"scene=%ld", (long)i];
+        BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:queryString contentLength:nil];
+        XCTAssertNotNil(sceneBuilder);
+        [sceneBuilders addObject:sceneBuilder];
+    }
+    XCTAssertEqual(sceneBuilders.count, 20);
+    NSDictionary *cassetteDictionary = [self expectedCassetteDictionaryWithSceneBuilders:sceneBuilders];
+    XCTAssertNotNil(cassetteDictionary);
+    BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:cassetteDictionary];
+    XCTAssertNotNil(cassette);
+    XCTAssertEqual(cassette.allScenes.count, 20);
 }
 
 @end

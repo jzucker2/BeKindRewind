@@ -465,4 +465,66 @@
     return currentUnixTimestamp*pow(10.0, 7.0);
 }
 
+#pragma mark - HTTPBin helpers
+
+// TODO: implement content length at some point
+- (BKRExpectedScenePlistDictionaryBuilder *)standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:(NSString *)queryItemString contentLength:(NSString *)contentLength {
+    NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
+    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
+    NSString *finalQueryItemString = nil;
+    NSMutableDictionary *argsDict = nil;
+    if (queryItemString) {
+        finalQueryItemString = [@"?" stringByAppendingString:queryItemString];
+        NSURLComponents *components = [NSURLComponents componentsWithString:finalQueryItemString];
+        NSArray<NSURLQueryItem *> *queryItems = [components queryItems];
+        argsDict = [NSMutableDictionary dictionary];
+        for (NSURLQueryItem *item in queryItems) {
+            argsDict[item.name] = item.value;
+        }
+    }
+    sceneBuilder.URLString = [NSString stringWithFormat:@"https://httpbin.org/get%@", (finalQueryItemString ? finalQueryItemString : @"")];
+    sceneBuilder.taskUniqueIdentifier = taskUniqueIdentifier;
+    //    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
+    //                                                       @"Accept": @"*/*",
+    //                                                       @"Accept-Encoding": @"gzip, deflate",
+    //                                                       @"Accept-Language": @"en-us"
+    //                                                       };
+    sceneBuilder.currentRequestAllHTTPHeaderFields = @{};
+    NSMutableDictionary *receivedJSON = [@{
+                                           @"args": @{},
+                                           @"headers": @{
+                                                   @"Accept": @"*/*",
+                                                   @"Accept-Encoding": @"gzip, deflate",
+                                                   @"Accept-Language": @"en-us",
+                                                   @"Host": @"httpbin.org",
+                                                   @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
+                                                   },
+                                           @"origin": @"198.0.209.238",
+                                           @"url": sceneBuilder.URLString
+                                           } mutableCopy];
+    if (argsDict) {
+        receivedJSON[@"args"] = argsDict.copy;
+    }
+    sceneBuilder.receivedJSON = receivedJSON.copy;
+    sceneBuilder.responseAllHeaderFields = @{
+                                             @"Access-Control-Allow-Origin": @"*",
+                                             @"Content-Length": @"338",
+                                             @"Content-Type": @"application/json",
+                                             @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
+                                             @"Server": @"nginx",
+                                             @"access-control-allow-credentials": @"true"
+                                             };
+    return sceneBuilder;
+}
+
+- (BKRExpectedScenePlistDictionaryBuilder *)standardPOSTRequestDictionaryBuilderForHTTPBin {
+    NSString *taskUniqueIdentifer = [NSUUID UUID].UUIDString;
+    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
+    sceneBuilder.URLString = @"https://httpbin.org/post";
+    sceneBuilder.taskUniqueIdentifier = taskUniqueIdentifer;
+    sceneBuilder.originalRequestAllHTTPHeaderFields = @{};
+    sceneBuilder.HTTPMethod = @"POST";
+    return sceneBuilder;
+}
+
 @end

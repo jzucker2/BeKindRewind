@@ -34,38 +34,7 @@
 }
 
 - (void)testPlayingOneGETRequest {
-    NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
-    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
-    sceneBuilder.URLString = @"https://httpbin.org/get?test=test";
-    sceneBuilder.taskUniqueIdentifier = taskUniqueIdentifier;
-//    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
-//                                                       @"Accept": @"*/*",
-//                                                       @"Accept-Encoding": @"gzip, deflate",
-//                                                       @"Accept-Language": @"en-us"
-//                                                       };
-    sceneBuilder.currentRequestAllHTTPHeaderFields = @{};
-    sceneBuilder.receivedJSON = @{
-                                  @"args": @{
-                                          @"test": @"test"
-                                          },
-                                  @"headers": @{
-                                          @"Accept": @"*/*",
-                                          @"Accept-Encoding": @"gzip, deflate",
-                                          @"Accept-Language": @"en-us",
-                                          @"Host": @"httpbin.org",
-                                          @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
-                                          },
-                                  @"origin": @"198.0.209.238",
-                                  @"url": @"https://httpbin.org/get?test=test"
-                                  };
-    sceneBuilder.responseAllHeaderFields = @{
-                                             @"Access-Control-Allow-Origin": @"*",
-                                             @"Content-Length": @"338",
-                                             @"Content-Type": @"application/json",
-                                             @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
-                                             @"Server": @"nginx",
-                                             @"access-control-allow-credentials": @"true"
-                                             };
+    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
     __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
     __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
@@ -191,7 +160,7 @@
                                           },
                                   @"json": @"<null>",
                                   @"origin": @"67.180.11.233",
-                                  @"url": @"https://httpbin.org/get?test=test"
+                                  @"url": @"https://httpbin.org/post"
                                   };
     sceneBuilder.sentJSON = @{
                               @"foo": @"bar"
@@ -249,71 +218,8 @@
 }
 
 - (void)testPlayingMultipleGetRequests {
-    NSString *firstTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
-    BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
-    firstSceneBuilder.URLString = @"https://httpbin.org/get?test=test";
-    firstSceneBuilder.taskUniqueIdentifier = firstTaskUniqueIdentifier;
-    //    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
-    //                                                       @"Accept": @"*/*",
-    //                                                       @"Accept-Encoding": @"gzip, deflate",
-    //                                                       @"Accept-Language": @"en-us"
-    //                                                       };
-    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
-    firstSceneBuilder.receivedJSON = @{
-                                       @"args": @{
-                                               @"test": @"test"
-                                               },
-                                       @"headers": @{
-                                               @"Accept": @"*/*",
-                                               @"Accept-Encoding": @"gzip, deflate",
-                                               @"Accept-Language": @"en-us",
-                                               @"Host": @"httpbin.org",
-                                               @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
-                                               },
-                                       @"origin": @"198.0.209.238",
-                                       @"url": @"https://httpbin.org/get?test=test"
-                                       };
-    firstSceneBuilder.responseAllHeaderFields = @{
-                                                  @"Access-Control-Allow-Origin": @"*",
-                                                  @"Content-Length": @"338",
-                                                  @"Content-Type": @"application/json",
-                                                  @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
-                                                  @"Server": @"nginx",
-                                                  @"access-control-allow-credentials": @"true"
-                                                  };
-    
-    NSString *secondTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
-    BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
-    secondSceneBuilder.URLString = @"https://httpbin.org/get?test=test2";
-    secondSceneBuilder.taskUniqueIdentifier = secondTaskUniqueIdentifier;
-    //    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
-    //                                                       @"Accept": @"*/*",
-    //                                                       @"Accept-Encoding": @"gzip, deflate",
-    //                                                       @"Accept-Language": @"en-us"
-    //                                                       };
-    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
-    secondSceneBuilder.receivedJSON = @{
-                                       @"args": @{
-                                               @"test": @"test2"
-                                               },
-                                       @"headers": @{
-                                               @"Accept": @"*/*",
-                                               @"Accept-Encoding": @"gzip, deflate",
-                                               @"Accept-Language": @"en-us",
-                                               @"Host": @"httpbin.org",
-                                               @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
-                                               },
-                                       @"origin": @"198.0.209.238",
-                                       @"url": @"https://httpbin.org/get?test=test"
-                                       };
-    secondSceneBuilder.responseAllHeaderFields = @{
-                                                  @"Access-Control-Allow-Origin": @"*",
-                                                  @"Content-Length": @"338",
-                                                  @"Content-Type": @"application/json",
-                                                  @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
-                                                  @"Server": @"nginx",
-                                                  @"access-control-allow-credentials": @"true"
-                                                  };
+    BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
+    BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test2" contentLength:nil];
     
     __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
     __block BKRScene *firstScene = nil;
@@ -335,6 +241,7 @@
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 2);
         firstScene = cassette.allScenes.firstObject;
+        XCTAssertEqualObjects(firstScene.uniqueIdentifier, firstSceneBuilder.taskUniqueIdentifier);
         XCTAssertTrue(firstScene.allFrames.count > 0);
         XCTAssertEqual(firstScene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = firstScene.allDataFrames.firstObject;
@@ -365,6 +272,7 @@
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 2);
         secondScene = cassette.allScenes.lastObject;
+        XCTAssertEqualObjects(secondScene.uniqueIdentifier, secondSceneBuilder.taskUniqueIdentifier);
         XCTAssertNotEqualObjects(firstScene.uniqueIdentifier, secondScene.uniqueIdentifier, @"The two scenes should not be identical");
         XCTAssertTrue(secondScene.allFrames.count > 0);
         XCTAssertEqual(secondScene.allDataFrames.count, 1);
@@ -454,6 +362,7 @@
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 2);
         firstScene = cassette.allScenes.firstObject;
+        XCTAssertEqualObjects(firstScene.uniqueIdentifier, firstTaskUniqueIdentifier);
         XCTAssertTrue(firstScene.allFrames.count > 0);
         XCTAssertEqual(firstScene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = firstScene.allDataFrames.firstObject;
@@ -486,6 +395,7 @@
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 2);
         secondScene = cassette.allScenes.lastObject;
+        XCTAssertEqualObjects(secondScene.uniqueIdentifier, secondTaskUniqueIdentifier);
         XCTAssertNotEqualObjects(firstScene.uniqueIdentifier, secondScene.uniqueIdentifier, @"The two scenes should not be identical");
         XCTAssertTrue(secondScene.allFrames.count > 0);
         XCTAssertEqual(secondScene.allDataFrames.count, 1);
