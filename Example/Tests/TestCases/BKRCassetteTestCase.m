@@ -28,36 +28,12 @@
 }
 
 - (void)testCreatePlayableCassetteWithManyScenes {
-    NSMutableArray<BKRExpectedScenePlistDictionaryBuilder *> *sceneBuilders = [NSMutableArray array];
-    for (NSInteger i=0; i < 20; i++) {
-        NSString *queryString = [NSString stringWithFormat:@"scene=%ld", (long)i];
-        BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:queryString contentLength:nil];
-        XCTAssertNotNil(sceneBuilder);
-        [sceneBuilders addObject:sceneBuilder];
-    }
-    XCTAssertEqual(sceneBuilders.count, 20);
-    NSDictionary *cassetteDictionary = [self expectedCassetteDictionaryWithSceneBuilders:sceneBuilders];
-    XCTAssertNotNil(cassetteDictionary);
-    BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:cassetteDictionary];
-    XCTAssertNotNil(cassette);
-    XCTAssertEqual(cassette.allScenes.count, 20);
+    [self assertCreationOfCassetteWithNumberOfScenes:20];
 }
 
 - (void)testCreatePlayableCasssetteWithManyScenesPerformance {
     [self measureBlock:^{
-        NSMutableArray<BKRExpectedScenePlistDictionaryBuilder *> *sceneBuilders = [NSMutableArray array];
-        for (NSInteger i=0; i < 20; i++) {
-            NSString *queryString = [NSString stringWithFormat:@"scene=%ld", (long)i];
-            BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:queryString contentLength:nil];
-            XCTAssertNotNil(sceneBuilder);
-            [sceneBuilders addObject:sceneBuilder];
-        }
-        XCTAssertEqual(sceneBuilders.count, 20);
-        NSDictionary *cassetteDictionary = [self expectedCassetteDictionaryWithSceneBuilders:sceneBuilders];
-        XCTAssertNotNil(cassetteDictionary);
-        BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:cassetteDictionary];
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 20);
+        [self assertCreationOfCassetteWithNumberOfScenes:50];
     }];
 }
 

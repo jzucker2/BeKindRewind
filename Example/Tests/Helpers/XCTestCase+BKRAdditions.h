@@ -74,4 +74,8 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 - (NSTimeInterval)unixTimestampForPubNubTimetoken:(NSNumber *)timetoken;
 - (double)timeIntervalForCurrentUnixTimestamp;
 
+#pragma mark - BKRPlayableCassette helpers
+
+- (void)assertCreationOfCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes;
+
 @end

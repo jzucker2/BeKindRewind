@@ -14,6 +14,7 @@
 #import <BeKindRewind/BKRErrorFrame.h>
 #import <BeKindRewind/BKRRecordableRawFrame.h>
 #import <BeKindRewind/BKRPlayableRawFrame.h>
+#import <BeKindRewind/BKRPlayableCassette.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 
@@ -525,6 +526,23 @@
     sceneBuilder.originalRequestAllHTTPHeaderFields = @{};
     sceneBuilder.HTTPMethod = @"POST";
     return sceneBuilder;
+}
+
+- (void)assertCreationOfCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes {
+    NSParameterAssert(numberOfScenes);
+    NSMutableArray<BKRExpectedScenePlistDictionaryBuilder *> *sceneBuilders = [NSMutableArray array];
+    for (NSUInteger i=0; i < numberOfScenes; i++) {
+        NSString *queryString = [NSString stringWithFormat:@"scene=%ld", (long)i];
+        BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:queryString contentLength:nil];
+        XCTAssertNotNil(sceneBuilder);
+        [sceneBuilders addObject:sceneBuilder];
+    }
+    XCTAssertEqual(sceneBuilders.count, numberOfScenes);
+    NSDictionary *cassetteDictionary = [self expectedCassetteDictionaryWithSceneBuilders:sceneBuilders.copy];
+    XCTAssertNotNil(cassetteDictionary);
+    BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:cassetteDictionary];
+    XCTAssertNotNil(cassette);
+    XCTAssertEqual(cassette.allScenes.count, numberOfScenes);
 }
 
 @end
