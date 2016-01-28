@@ -306,9 +306,9 @@
 //                                                            @"Accept-Language": @"en-us"
 //                                                            };
     firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
-    // technically the value returned is much larger, to save effort, it's truncated so no rounding errors are introduced
-    NSTimeInterval firstTimetoken = [self timeIntervalForCurrentUnixTimestamp];
-    firstSceneBuilder.receivedJSON = @[@(firstTimetoken)];
+    // technically the value returned is much larger, to save effort, using string so there's no math or rounding/casting issues
+    NSString *firstTimetoken = @"1454015931.93";
+    firstSceneBuilder.receivedJSON = @[firstTimetoken];
     firstSceneBuilder.responseAllHeaderFields = @{
                                                   @"Access-Control-Allow-Methods": @"GET",
                                                   @"Access-Control-Allow-Origin": @"*",
@@ -329,10 +329,10 @@
 //                                                             @"Accept-Language": @"en-us"
 //                                                             };
     secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
-    // technically the value returned is much larger, to save effort, it's truncated so no rounding errors are introduced
-    NSTimeInterval secondTimeToken = [self timeIntervalForCurrentUnixTimestamp];
-    XCTAssertNotEqual(firstTimetoken, secondTimeToken);
-    secondSceneBuilder.receivedJSON = @[@(secondTimeToken)];
+    // technically the value returned is much larger, to save effort, using string so there's no math or rounding/casting issues
+    NSString *secondTimeToken = @"1454015935.93";
+    XCTAssertNotEqualObjects(firstTimetoken, secondTimeToken);
+    secondSceneBuilder.receivedJSON = @[secondTimeToken];
     secondSceneBuilder.responseAllHeaderFields = @{
                                                    @"Access-Control-Allow-Methods": @"GET",
                                                    @"Access-Control-Allow-Origin": @"*",
@@ -358,7 +358,7 @@
         XCTAssertNotNil(dataArray);
         // ensure that result from network is as expected
         NSNumber *receivedTimeToken = dataArray.firstObject;
-        XCTAssertEqual([receivedTimeToken doubleValue], firstTimetoken);
+        XCTAssertEqualObjects(receivedTimeToken, firstTimetoken);
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
         XCTAssertNotNil(cassette);
@@ -391,7 +391,8 @@
         XCTAssertNotNil(dataArray);
         // ensure that result from network is as expected
         NSNumber *receivedTimeToken = dataArray.firstObject;
-        XCTAssertEqual([receivedTimeToken doubleValue], secondTimeToken);
+        XCTAssertEqualObjects(receivedTimeToken, secondTimeToken);
+        XCTAssertNotEqualObjects(receivedTimeToken, firstTimetoken);
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
         XCTAssertNotNil(cassette);

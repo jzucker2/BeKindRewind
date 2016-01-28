@@ -33,6 +33,7 @@
         BKRPlayableScene *scene = [[BKRPlayableScene alloc] initFromPlistDictionary:rawScenes[iteration]];
         editedScenes[scene.uniqueIdentifier] = scene;
     });
+    
     NSLog(@"finished adding edited scenes");
     return editedScenes.copy;
 }

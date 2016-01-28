@@ -12,6 +12,7 @@
 #import "BKRConstants.h"
 
 @interface BKRCassette ()
+//@property (nonatomic, strong) NSDictionary *scenes;
 @end
 
 @implementation BKRCassette
