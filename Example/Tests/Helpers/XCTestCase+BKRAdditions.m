@@ -448,4 +448,14 @@
     XCTAssertEqualObjects(frame.uniqueIdentifier, frameDict[@"uniqueIdentifier"]);
 }
 
+- (NSTimeInterval)unixTimestampForPubNubTimetoken:(NSNumber *)timetoken {
+    NSTimeInterval rawTimetoken = [timetoken doubleValue];
+    return rawTimetoken/pow(10, 7);
+}
+
+- (long double)timeIntervalForCurrentUnixTimestamp {
+    NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
+    return currentUnixTimestamp*powl(10, 7);
+}
+
 @end

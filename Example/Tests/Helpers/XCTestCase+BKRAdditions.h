@@ -63,4 +63,9 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 - (void)assertResponse:(BKRResponseFrame *)response withResponseDict:(NSDictionary *)otherResponse extraAssertions:(void (^)(BKRResponseFrame *response, NSDictionary *otherResponse))assertions;
 - (void)assertData:(BKRDataFrame *)data withDataDict:(NSDictionary *)otherData extraAssertions:(void (^)(BKRDataFrame *data, NSDictionary *otherData))assertions;
 
+#pragma mark - PN
+
+- (NSTimeInterval)unixTimestampForPubNubTimetoken:(NSNumber *)timetoken;
+- (long double)timeIntervalForCurrentUnixTimestamp;
+
 @end

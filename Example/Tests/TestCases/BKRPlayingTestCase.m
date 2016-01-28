@@ -386,4 +386,125 @@
     }];
 }
 
+- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+    NSString *URLString = @"http://pubsub.pubnub.com/time/0";
+    NSString *firstTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
+    BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
+    firstSceneBuilder.URLString = URLString;
+    firstSceneBuilder.taskUniqueIdentifier = firstTaskUniqueIdentifier;
+    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{
+                                                            @"Accept": @"*/*",
+                                                            @"Accept-Encoding": @"gzip, deflate",
+                                                            @"Accept-Language": @"en-us"
+                                                            };
+//    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
+    NSTimeInterval firstTimetoken = [self timeIntervalForCurrentUnixTimestamp];
+    firstSceneBuilder.receivedJSON = @[@(firstTimetoken)];
+    firstSceneBuilder.responseAllHeaderFields = @{
+                                                  @"Access-Control-Allow-Methods": @"GET",
+                                                  @"Access-Control-Allow-Origin": @"*",
+                                                  @"Cache-Control": @"no-cache",
+                                                  @"Connection": @"keep-alive",
+                                                  @"Content-Length": @"19",
+                                                  @"Content-Type": @"text/javascript; charset=\"UTF-8\"",
+                                                  @"Date": @"Wed, 27 Jan 2016 23:39:04 GMT",
+                                                  };
+    
+    NSString *secondTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
+    BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
+    secondSceneBuilder.URLString = URLString;
+    secondSceneBuilder.taskUniqueIdentifier = secondTaskUniqueIdentifier;
+    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{
+                                                             @"Accept": @"*/*",
+                                                             @"Accept-Encoding": @"gzip, deflate",
+                                                             @"Accept-Language": @"en-us"
+                                                             };
+//    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
+    NSTimeInterval secondTimeToken = [self timeIntervalForCurrentUnixTimestamp];
+    XCTAssertNotEqual(firstTimetoken, secondTimeToken);
+    secondSceneBuilder.receivedJSON = @[@(secondTimeToken)];
+    secondSceneBuilder.responseAllHeaderFields = @{
+                                                   @"Access-Control-Allow-Methods": @"GET",
+                                                   @"Access-Control-Allow-Origin": @"*",
+                                                   @"Cache-Control": @"no-cache",
+                                                   @"Connection": @"keep-alive",
+                                                   @"Content-Length": @"19",
+                                                   @"Content-Type": @"text/javascript; charset=\"UTF-8\"",
+                                                   @"Date": @"Wed, 27 Jan 2016 23:39:07 GMT",
+                                                   };
+    
+    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
+    __block BKRScene *firstScene = nil;
+    __block BKRScene *secondScene = nil;
+    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(cassette.allScenes.count, 2);
+    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    player.currentCassette = cassette;
+    player.enabled = YES;
+    [self getTaskWithURLString:firstSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(data);
+        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        XCTAssertNotNil(dataArray);
+        // ensure that result from network is as expected
+        NSNumber *receivedTimeToken = dataArray.firstObject;
+        XCTAssertEqualObjects(receivedTimeToken, @(firstTimetoken));
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        // now current cassette in recoder should have one scene with data matching this
+        XCTAssertNotNil(cassette);
+        XCTAssertEqual(cassette.allScenes.count, 2);
+        firstScene = cassette.allScenes.firstObject;
+        XCTAssertTrue(firstScene.allFrames.count > 0);
+        XCTAssertEqual(firstScene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = firstScene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqual(firstScene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = firstScene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(firstScene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = firstScene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(firstScene.currentRequest);
+        [self assertRequest:firstScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:firstScene extraAssertions:nil];
+    }];
+    
+    [self getTaskWithURLString:secondSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(data);
+        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        XCTAssertNotNil(dataArray);
+        // ensure that result from network is as expected
+        NSNumber *receivedTimeToken = dataArray.firstObject;
+        XCTAssertEqualObjects(receivedTimeToken, @(secondTimeToken));
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        // now current cassette in recoder should have one scene with data matching this
+        XCTAssertNotNil(cassette);
+        XCTAssertEqual(cassette.allScenes.count, 2);
+        secondScene = cassette.allScenes.lastObject;
+        XCTAssertNotEqualObjects(firstScene.uniqueIdentifier, secondScene.uniqueIdentifier, @"The two scenes should not be identical");
+        XCTAssertTrue(secondScene.allFrames.count > 0);
+        XCTAssertEqual(secondScene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = secondScene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqual(secondScene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = secondScene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(secondScene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = secondScene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(secondScene.currentRequest);
+        [self assertRequest:secondScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:secondScene extraAssertions:nil];
+    }];
+}
+
 @end
