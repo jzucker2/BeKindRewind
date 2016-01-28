@@ -67,6 +67,6 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 #pragma mark - PN
 
 - (NSTimeInterval)unixTimestampForPubNubTimetoken:(NSNumber *)timetoken;
-- (long double)timeIntervalForCurrentUnixTimestamp;
+- (double)timeIntervalForCurrentUnixTimestamp;
 
 @end

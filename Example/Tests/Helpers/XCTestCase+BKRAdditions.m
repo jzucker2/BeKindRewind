@@ -460,9 +460,9 @@
     return rawTimetoken/pow(10, 7);
 }
 
-- (long double)timeIntervalForCurrentUnixTimestamp {
+- (double)timeIntervalForCurrentUnixTimestamp {
     NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
-    return currentUnixTimestamp*powl(10, 7);
+    return currentUnixTimestamp*pow(10.0, 7.0);
 }
 
 @end
