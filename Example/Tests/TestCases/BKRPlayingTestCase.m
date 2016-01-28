@@ -448,7 +448,7 @@
         XCTAssertNotNil(dataArray);
         // ensure that result from network is as expected
         NSNumber *receivedTimeToken = dataArray.firstObject;
-        XCTAssertEqual([receivedTimeToken doubleValue], firstTimetoken);
+        XCTAssertEqual([receivedTimeToken longLongValue], firstTimetoken);
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
         XCTAssertNotNil(cassette);
@@ -480,7 +480,7 @@
         XCTAssertNotNil(dataArray);
         // ensure that result from network is as expected
         NSNumber *receivedTimeToken = dataArray.firstObject;
-        XCTAssertEqual([receivedTimeToken doubleValue], secondTimeToken);
+        XCTAssertEqual([receivedTimeToken longLongValue], secondTimeToken);
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
         XCTAssertNotNil(cassette);
