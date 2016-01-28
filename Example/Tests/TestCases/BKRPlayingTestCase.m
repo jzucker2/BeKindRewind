@@ -306,6 +306,7 @@
 //                                                            @"Accept-Language": @"en-us"
 //                                                            };
     firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
+    // technically the value returned is much larger, to save effort, it's truncated so no rounding errors are introduced
     NSTimeInterval firstTimetoken = [self timeIntervalForCurrentUnixTimestamp];
     firstSceneBuilder.receivedJSON = @[@(firstTimetoken)];
     firstSceneBuilder.responseAllHeaderFields = @{
@@ -328,6 +329,7 @@
 //                                                             @"Accept-Language": @"en-us"
 //                                                             };
     secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
+    // technically the value returned is much larger, to save effort, it's truncated so no rounding errors are introduced
     NSTimeInterval secondTimeToken = [self timeIntervalForCurrentUnixTimestamp];
     XCTAssertNotEqual(firstTimetoken, secondTimeToken);
     secondSceneBuilder.receivedJSON = @[@(secondTimeToken)];

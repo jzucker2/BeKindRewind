@@ -462,7 +462,7 @@
 
 - (double)timeIntervalForCurrentUnixTimestamp {
     NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
-    return currentUnixTimestamp*pow(10.0, 7.0);
+    return currentUnixTimestamp;
 }
 
 #pragma mark - HTTPBin helpers
