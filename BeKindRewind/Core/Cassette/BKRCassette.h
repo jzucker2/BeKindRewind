@@ -12,12 +12,12 @@
 @interface BKRCassette : NSObject
 
 
-// possibly make these private header properties
-@property (nonatomic, strong) NSDictionary<NSString *, BKRScene *> *scenes;
 @property (nonatomic) NSDate *creationDate;
 @property (nonatomic) dispatch_queue_t processingQueue;
 
 // this is definitely public
 - (NSArray<BKRScene *> *)allScenes;
+- (NSDictionary<NSString *, BKRScene *> *)scenesDictionary;
+- (void)addSceneToScenesDictionary:(BKRScene *)scene;
 
 @end

@@ -17,10 +17,12 @@
 @implementation BKRRecordableCassette
 
 @synthesize scenes = _scenes;
+@synthesize recording = _recording;
 
 - (instancetype)init {
     self = [super init];
     if (self) {
+        _recording = NO;
         _scenes = [NSMutableDictionary dictionary];
     }
     return self;
@@ -37,25 +39,33 @@
     __weak typeof (self) wself = self;
     dispatch_barrier_async(self.processingQueue, ^{
         __strong typeof(wself) sself = wself;
-        if (sself.scenes[frame.uniqueIdentifier]) {
-            BKRRecordableScene *existingScene = sself.scenes[frame.uniqueIdentifier];
+        NSDictionary *currentDictionary = sself.scenesDictionary;
+        if (currentDictionary[frame.uniqueIdentifier]) {
+            BKRRecordableScene *existingScene = currentDictionary[frame.uniqueIdentifier];
             [existingScene addFrame:frame];
         } else {
             BKRRecordableScene *newScene = [BKRRecordableScene sceneFromFrame:frame];
-            sself.scenes[newScene.uniqueIdentifier] = newScene;
+            [sself addSceneToScenesDictionary:newScene];
         }
     });
 }
 
-- (void)setRecording:(BOOL)recording {
-    dispatch_barrier_sync(self.processingQueue, ^{
-        _recording = recording;
+- (BOOL)isRecording {
+    __block BOOL currentIsRecording;
+    __weak typeof(self) wself = self;
+    dispatch_sync(self.processingQueue, ^{
+        __strong typeof(wself) sself = wself;
+        currentIsRecording = sself->_recording;
     });
-    if (_recording) {
-        self.creationDate = [NSDate date];
-    } else {
-        
-    }
+    return currentIsRecording;
+}
+
+- (void)setRecording:(BOOL)recording {
+    __weak typeof(self) wself = self;
+    dispatch_barrier_async(self.processingQueue, ^{
+        __strong typeof(wself) sself = wself;
+        sself->_recording = recording;
+    });
 }
 
 - (NSDictionary *)plistDictionary {
