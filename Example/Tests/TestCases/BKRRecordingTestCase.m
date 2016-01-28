@@ -216,7 +216,7 @@
 }
 
 - (void)testRecordingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
-    NSString *URLString = @"http://pubsub.pubnub.com/time/0";
+    NSString *URLString = @"https://pubsub.pubnub.com/time/0";
     __block BKRScene *firstScene = nil;
     __block NSNumber *firstTimetoken = nil;
     [self getTaskWithURLString:URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {

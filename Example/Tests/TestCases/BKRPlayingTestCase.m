@@ -295,7 +295,7 @@
 }
 
 - (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
-    NSString *URLString = @"http://pubsub.pubnub.com/time/0";
+    NSString *URLString = @"https://pubsub.pubnub.com/time/0";
     NSString *firstTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
     BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
     firstSceneBuilder.URLString = URLString;
