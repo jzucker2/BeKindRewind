@@ -15,9 +15,11 @@
 @class BKRResponseFrame;
 @interface BKRScene : NSObject
 
-@property (nonatomic, strong) NSArray<BKRFrame *> *frames;
+//@property (nonatomic, strong) NSMutableArray<BKRFrame *> *frames;
 @property (nonatomic, copy) NSString *uniqueIdentifier;
-@property (nonatomic, copy, readonly) BKRFrame *clapboardFrame;
+@property (nonatomic, strong, readonly) BKRFrame *clapboardFrame;
+
+- (void)addFrameToFramesArray:(BKRFrame *)frame;
 
 - (NSArray<BKRFrame *> *)allFrames;
 - (NSArray<BKRDataFrame *> *)allDataFrames;

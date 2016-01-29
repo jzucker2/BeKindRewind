@@ -31,8 +31,12 @@
 // frames and scenes share unique identifiers, this comes from the recorded task
 // if the frame matches a scene unique identifier, then add it to the scene
 - (void)addFrame:(BKRRecordableRawFrame *)frame {
-    if (!self.isRecording) {
+    if (
+        !self.isRecording ||
+        !frame.item
+        ) {
         // Can't add frames if you are not recording!
+        // Can't add a blank frame!
         return;
     }
     NSParameterAssert(frame);

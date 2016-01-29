@@ -117,7 +117,7 @@
         BKRScene *scene = cassette.allScenes.firstObject;
         [self assertFramesOrder:scene extraAssertions:nil];
         BOOL firstRequest = YES;
-        for (NSInteger i= 0; i < scene.frames.count; i++) {
+        for (NSInteger i= 0; i < scene.allFrames.count; i++) {
             BKRFrame *frame = [scene.allFrames objectAtIndex:i];
             NSDictionary *frameDict = [frames objectAtIndex:i];
             XCTAssertEqual(frame.creationDate, frameDict[@"creationDate"]);

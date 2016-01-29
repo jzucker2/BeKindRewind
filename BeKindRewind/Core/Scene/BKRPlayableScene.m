@@ -13,28 +13,41 @@
 #import "BKRDataFrame.h"
 
 @interface BKRPlayableScene ()
+//@property (nonatomic, strong) NSMutableArray<BKRPlayableRawFrame *> *frames;
 @end
 
 @implementation BKRPlayableScene
+//@synthesize frames = _frames;
 
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
     NSParameterAssert(dictionary);
     self = [super init];
     if (self) {
         self.uniqueIdentifier = dictionary[@"uniqueIdentifier"];
-        self.frames = [self _editedFrames:dictionary[@"frames"]];
+//        _frames = [self _editedFrames:dictionary[@"frames"]];
+        [self _addEditedFrames:dictionary[@"frames"]];
     }
     return self;
 }
 
-- (NSArray<BKRFrame *> *)_editedFrames:(NSArray *)rawFrames {
-    NSMutableArray <BKRFrame *> *editedFrames = [NSMutableArray array];
-    for (NSDictionary *rawFrameDict in rawFrames) {
-        BKRPlayableRawFrame *rawFrame = [[BKRPlayableRawFrame alloc] initFromPlistDictionary:rawFrameDict];
-        [editedFrames addObject:rawFrame.editedFrame];
-    }
-    return editedFrames.copy;
+- (void)_addEditedFrames:(NSArray<NSDictionary *> *)rawFrames {
+    __weak typeof(self) wself = self;
+    dispatch_queue_t editingQueue = dispatch_queue_create("com.BKRPlayableScene.editingQueue", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_apply(rawFrames.count, editingQueue, ^(size_t iteration) {
+        __strong typeof(wself) sself = wself;
+        BKRPlayableRawFrame *rawFrame = [[BKRPlayableRawFrame alloc] initFromPlistDictionary:rawFrames[iteration]];
+        [sself addFrameToFramesArray:rawFrame.editedFrame];
+    });
 }
+
+//- (NSArray<BKRFrame *> *)_editedFrames:(NSArray *)rawFrames {
+//    NSMutableArray <BKRFrame *> *editedFrames = [NSMutableArray array];
+//    for (NSDictionary *rawFrameDict in rawFrames) {
+//        BKRPlayableRawFrame *rawFrame = [[BKRPlayableRawFrame alloc] initFromPlistDictionary:rawFrameDict];
+//        [editedFrames addObject:rawFrame.editedFrame];
+//    }
+//    return editedFrames.copy;
+//}
 
 - (NSData *)responseData {
     BKRDataFrame *dataFrame = self.allDataFrames.firstObject;

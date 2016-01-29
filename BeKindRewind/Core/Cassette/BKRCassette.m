@@ -47,7 +47,7 @@
     __weak typeof(self) wself = self;
     dispatch_sync(self.accessingQueue, ^{
         __strong typeof(wself) sself = wself;
-        currentScenes = sself->_scenes;
+        currentScenes = sself->_scenes.copy;
     });
     return currentScenes;
 }
