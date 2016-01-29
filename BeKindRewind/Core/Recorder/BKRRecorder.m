@@ -140,7 +140,7 @@
         }
         BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
         requestFrame.item = task.originalRequest;
-        [sself addFrame:requestFrame];
+//        [sself addFrame:requestFrame];
     });
 }
 
@@ -162,7 +162,7 @@
         return;
     }
     __typeof (self) wself = self;
-    dispatch_async(self.recordingQueue, ^{
+    dispatch_async(self.cassetteHandler.processingQueue, ^{
         __typeof (wself) sself = wself;
         if (!sself.currentRecordingStartTime) {
             return;
@@ -178,7 +178,7 @@
         return;
     }
     __typeof (self) wself = self;
-    dispatch_async(self.recordingQueue, ^{
+    dispatch_async(self.cassetteHandler.processingQueue, ^{
         __typeof (wself) sself = wself;
         if (!sself.currentRecordingStartTime) {
             return;
@@ -202,7 +202,7 @@
         return;
     }
     __typeof (self) wself = self;
-    dispatch_async(self.recordingQueue, ^{
+    dispatch_async(self.cassetteHandler.processingQueue, ^{
         __typeof (wself) sself = wself;
         if (!sself.currentRecordingStartTime) {
             return;
