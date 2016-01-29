@@ -13,7 +13,7 @@
 
 @interface BKREditor : NSObject
 
-+ (instancetype)handler;
++ (instancetype)editor;
 
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 @property (nonatomic) dispatch_queue_t editingQueue;

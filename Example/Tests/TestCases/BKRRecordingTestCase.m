@@ -163,8 +163,8 @@
         // now current cassette in recorder should have one scene with data matching this
         BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
         XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 1);
-        firstScene = cassette.allScenes.firstObject;
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+        firstScene = [BKRRecorder sharedInstance].allScenes.firstObject;
         XCTAssertTrue(firstScene.allFrames.count > 0);
         XCTAssertEqual(firstScene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = firstScene.allDataFrames.firstObject;

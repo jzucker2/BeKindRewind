@@ -24,7 +24,7 @@
     return self;
 }
 
-+ (instancetype)handler {
++ (instancetype)editor {
     return [[self alloc] init];
 }
 

@@ -9,12 +9,14 @@
 #import "BKRCassetteHandler.h"
 #import "BKRPlayer.h"
 #import "BKRPlayableCassette.h"
+#import "BKRPlayingEditor.h"
 #import "BKRPlayableRawFrame.h"
 #import "BKRPlayableScene.h"
 #import "BKROHHTTPStubsWrapper.h"
 
 @interface BKRPlayer ()
-@property (nonatomic, strong) BKRCassetteHandler *cassetteHandler;
+//@property (nonatomic, strong) BKRCassetteHandler *cassetteHandler;
+@property (nonatomic, strong) BKRPlayingEditor *editor;
 //@property (nonatomic) dispatch_queue_t playingQueue;
 //@property (nonatomic, copy) NSString *playheadUniqueIdentifier;
 //@property (nonatomic, weak, readonly) NSArray <BKRPlayableScene *> *scenes;
@@ -30,12 +32,12 @@
 @synthesize playheadIndex = _playheadIndex;
 
 - (void)_init {
-    _cassetteHandler = [BKRCassetteHandler handler];
+    _editor = [BKRPlayingEditor editor];
     _playheadIndex = 0;
 }
 
 - (NSArray<BKRPlayableScene *> *)allScenes {
-    return (NSArray<BKRPlayableScene *> *)self.cassetteHandler.allScenes;
+    return (NSArray<BKRPlayableScene *> *)self.editor.allScenes;
 }
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
@@ -53,15 +55,15 @@
 }
 
 - (void)setCurrentCassette:(BKRPlayableCassette *)currentCassette {
-    self.cassetteHandler.currentCassette = currentCassette;
+    self.editor.currentCassette = currentCassette;
 }
 
 - (BKRPlayableCassette *)currentCassette {
-    return (BKRPlayableCassette *)self.cassetteHandler.currentCassette;
+    return (BKRPlayableCassette *)self.editor.currentCassette;
 }
 
 - (void)setEnabled:(BOOL)enabled {
-    self.cassetteHandler.enabled = enabled;
+    self.editor.enabled = enabled;
     if (enabled) {
         [self _addStubs];
     } else {
@@ -70,7 +72,7 @@
 }
 
 - (BOOL)isEnabled {
-    return self.cassetteHandler.isEnabled;
+    return self.editor.isEnabled;
 }
 
 - (BKRStubsTestBlock)testBlock {
@@ -132,7 +134,7 @@
 
 - (void)setPlayheadIndex:(NSUInteger)playheadIndex {
     __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.cassetteHandler.processingQueue, ^{
+    dispatch_barrier_async(self.editor.editingQueue, ^{
         __strong typeof(wself) sself = wself;
         sself->_playheadIndex = playheadIndex;
     });
@@ -140,7 +142,7 @@
 
 - (void)_addStubs {
     __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.cassetteHandler.processingQueue, ^{
+    dispatch_barrier_async(self.editor.editingQueue, ^{
         __strong typeof(wself) sself = wself;
         [BKROHHTTPStubsWrapper stubRequestPassingTest:sself.testBlock withStubResponse:sself.responseBlock];
     });
@@ -151,7 +153,7 @@
 }
 
 - (void)_removeStubs {
-    dispatch_barrier_async(self.cassetteHandler.processingQueue, ^{
+    dispatch_barrier_async(self.editor.editingQueue, ^{
         [BKROHHTTPStubsWrapper removeAllStubs];
     });
 }
@@ -159,7 +161,7 @@
 - (NSUInteger)playheadIndex {
     __block NSUInteger index;
     __weak typeof(self) wself = self;
-    dispatch_sync(self.cassetteHandler.processingQueue, ^{
+    dispatch_sync(self.editor.editingQueue, ^{
         __strong typeof(wself) sself = wself;
         index = sself->_playheadIndex;
     });
