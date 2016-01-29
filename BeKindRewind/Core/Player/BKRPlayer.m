@@ -6,7 +6,6 @@
 //
 //
 
-#import "BKRCassetteHandler.h"
 #import "BKRPlayer.h"
 #import "BKRPlayableCassette.h"
 #import "BKRPlayingEditor.h"
@@ -15,11 +14,7 @@
 #import "BKROHHTTPStubsWrapper.h"
 
 @interface BKRPlayer ()
-//@property (nonatomic, strong) BKRCassetteHandler *cassetteHandler;
 @property (nonatomic, strong) BKRPlayingEditor *editor;
-//@property (nonatomic) dispatch_queue_t playingQueue;
-//@property (nonatomic, copy) NSString *playheadUniqueIdentifier;
-//@property (nonatomic, weak, readonly) NSArray <BKRPlayableScene *> *scenes;
 @property (nonatomic) NSUInteger playheadIndex;
 @property (nonatomic, strong, readwrite) id<BKRRequestMatching>matcher;
 @property (nonatomic, strong, readonly) BKRStubsTestBlock testBlock;

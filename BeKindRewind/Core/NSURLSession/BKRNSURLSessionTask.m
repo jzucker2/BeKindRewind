@@ -74,15 +74,8 @@
 }
 
 - (void)BKR_setError:(id)arg1 {
-    //    NSLog(@"error: %@", arg1);
     [[BKRRecorder sharedInstance] recordTask:[(NSURLSessionTask *)self globallyUniqueIdentifier] setError:arg1];
-    //    [[BKRRecorder sharedInstance] recordTask:(NSURLSessionTask *)self didFinishWithError:arg1];
     [self BKR_setError:arg1];
 }
-
-
-//-(id)BKR_dataTaskWithRequest:(id)arg1 completionHandler:(/*^block*/id)arg2 {
-//    NSURLSessionTask *task = [self BKR_dataTaskWithRequest:arg1 completionHandler:arg2];
-//}
 
 @end

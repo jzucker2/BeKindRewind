@@ -14,9 +14,12 @@
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
+#import <BeKindRewind/BKRRecordingEditor.h>
+#import <BeKindRewind/BKRPlayingEditor.h>
 #import "XCTestCase+BKRAdditions.h"
 #import "BKRBaseTestCase.h"
 
+// These tests could use some refactoring and love
 @interface BKRPlistSerializingTestCase : BKRBaseTestCase
 @end
 
@@ -33,29 +36,39 @@
 }
 
 - (void)testPlistSerializingOneGETRequest {
-    __block BKRRecordableCassette *cassette = [[BKRRecordableCassette alloc] init];
-//    cassette.recording = YES;
+    __block BKRRecordingEditor *editor = [BKRRecordingEditor editor];
+    BKRRecordableCassette *testCassette = [[BKRRecordableCassette alloc] init];
+    editor.currentCassette = testCassette;
+    editor.enabled = YES;
+    __block NSDictionary *taskDict;
+    __block NSURLResponse *taskResponse;
+    __block NSError *taskError;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         [task uniqueify];
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         XCTAssertNil(error);
         // ensure that result from network is as expected
-        [self addTask:task data:data response:response error:error toRecordableCassette:cassette];
+        [self addTask:task data:data response:response error:error toRecordingEditor:editor];
         
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
-        
-        // Keep this assert here, it tests to make sure that count happens after raw frames are processed
-        XCTAssertEqual(cassette.allScenes.count, 1);
-        BKRScene *scene = cassette.allScenes.firstObject;
+        taskDict = dataDict;
+        taskResponse = response;
+        taskError = error;
+//        // Assert later, we are testing the plist serializing, not the timing, other classes handle timing
+        XCTAssertEqual(editor.allScenes.count, 1);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        // Assert later, we are testing the plist serializing, not the timing, other classes handle timing
+        XCTAssertEqual(editor.allScenes.count, 1);
+        BKRScene *scene = editor.allScenes.firstObject;
         XCTAssertEqual(scene.allFrames.count, 4);
         XCTAssertEqual(scene.allDataFrames.count, 1);
         XCTAssertEqual(scene.allRequestFrames.count, 2);
         XCTAssertEqual(scene.allResponseFrames.count, 1);
-        [self assertFramesOrder:scene extraAssertions:nil];
-    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-        XCTAssertEqual(cassette.allScenes.count, 1, @"How did the count of scenes change?");
-        BKRScene *recordedScene = cassette.allScenes.firstObject;
+        XCTAssertEqual(editor.allScenes.count, 1, @"How did the count of scenes change?");
+        BKRScene *recordedScene = editor.allScenes.firstObject;
+        BKRRecordableCassette *cassette = (BKRRecordableCassette *)editor.currentCassette;
+        XCTAssertNotNil(cassette);
         NSDictionary *cassetteDict = cassette.plistDictionary;
         XCTAssertNotNil(cassetteDict);
         XCTAssertNotNil(cassetteDict[@"scenes"]);

@@ -6,7 +6,6 @@
 //
 //
 
-//#import "BKRCassetteHandler.h"
 #import "BKRRequestMatching.h"
 
 @class BKRPlayableCassette;
@@ -23,7 +22,6 @@
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
 @property (nonatomic, strong) BKRPlayableCassette *currentCassette;
-//- (void)setCassette:(BKRPlayableCassette *)cassette;
 
 @property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
 

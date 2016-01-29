@@ -60,35 +60,24 @@
     __weak typeof(self) wself = self;
     dispatch_barrier_async(self.accessingQueue, ^{
         __strong typeof(wself) sself = wself;
-        if ([frame isKindOfClass:[BKRErrorFrame class]]) {
-            NSLog(@"error frame being added!");
-        }
         [sself->_frames addObject:frame];
-        if ([frame isKindOfClass:[BKRErrorFrame class]]) {
-            NSLog(@"error frame added!");
-        }
     });
 }
 
 - (NSArray<BKRRequestFrame *> *)allRequestFrames {
     return (NSArray<BKRRequestFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRRequestFrame class]]];
-//    return [self _framesOnlyOfType:[BKRRequestFrame class]];
 }
 
 - (NSArray<BKRResponseFrame *> *)allResponseFrames {
     return (NSArray<BKRResponseFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRResponseFrame class]]];
-//    return [self _framesOnlyOfType:[BKRResponseFrame class]];
 }
 
 - (NSArray<BKRDataFrame *> *)allDataFrames {
     return (NSArray<BKRDataFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRDataFrame class]]];
-//    return [self _framesOnlyOfType:[BKRDataFrame class]];
 }
 
 - (NSArray<BKRErrorFrame *> *)allErrorFrames {
-    NSLog(@"error frames accessed");
     return (NSArray<BKRErrorFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRErrorFrame class]]];
-//    return [self _framesOnlyOfType:[BKRErrorFrame class]];
 }
 
 - (BKRRequestFrame *)originalRequest {

@@ -14,13 +14,10 @@
 
 @implementation BKRRecordableScene
 
-//@synthesize frames = _frames;
-
 - (instancetype)initFromFrame:(BKRRecordableRawFrame *)frame {
     self = [super init];
     if (self) {
         self.uniqueIdentifier = frame.uniqueIdentifier;
-//        _frames = [NSMutableArray array];
         [self addFrame:frame];
     }
     return self;
@@ -31,13 +28,6 @@
 }
 
 - (void)addFrame:(BKRRecordableRawFrame *)frame {
-    
-//    if ([self.frames containsObject:frame]) {
-//        NSLog(@"******************************************");
-//        NSLog(@"Why is the same frame being added twice????????????");
-//        NSLog(@"******************************************");
-//    }
-//    [self.frames addObject:frame.editedFrame];
     [self addFrameToFramesArray:frame.editedFrame];
 }
 

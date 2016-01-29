@@ -19,7 +19,6 @@
 @property (nonatomic) dispatch_queue_t editingQueue;
 
 @property (nonatomic, strong) BKRCassette *currentCassette;
-//- (void)setCassette:(BKRCassette *)cassette;
 
 
 - (NSArray<BKRScene *> *)allScenes;

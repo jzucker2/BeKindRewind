@@ -11,6 +11,4 @@
 
 @interface BKRPlayableCassette : BKRCassette <BKRPlistDeserializer>
 
-//@property (nonatomic, getter=isPlaying) BOOL playing;
-
 @end

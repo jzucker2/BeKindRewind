@@ -40,6 +40,11 @@
     }
 }
 
+- (void)setEnabled:(BOOL)enabled {
+    [super setEnabled:enabled];
+    [self updateRecordingStartTime];
+}
+
 - (void)addFrame:(BKRRecordableRawFrame *)frame {
     __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
     __weak typeof(self) wself = self;

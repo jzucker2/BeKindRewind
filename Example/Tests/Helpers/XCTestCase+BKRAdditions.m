@@ -17,6 +17,7 @@
 #import <BeKindRewind/BKRPlayableCassette.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
+#import <BeKindRewind/BKRRecordingEditor.h>
 
 @implementation BKRExpectedScenePlistDictionaryBuilder
 
@@ -292,22 +293,22 @@
     return dataFrameDict.copy;
 }
 
-- (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordableCassette:(BKRRecordableCassette *)cassette {
+- (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordingEditor:(BKRRecordingEditor *)editor {
     BKRRecordableRawFrame *originalRequestRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     originalRequestRawFrame.item = task.originalRequest;
-    [cassette addFrame:originalRequestRawFrame];
+    [editor addFrame:originalRequestRawFrame];
     
     BKRRecordableRawFrame *currentRequestRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     currentRequestRawFrame.item = task.currentRequest;
-    [cassette addFrame:currentRequestRawFrame];
+    [editor addFrame:currentRequestRawFrame];
     
     BKRRecordableRawFrame *responseRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     responseRawFrame.item = response;
-    [cassette addFrame:responseRawFrame];
+    [editor addFrame:responseRawFrame];
     
     BKRRecordableRawFrame *dataRawFrame = [BKRRecordableRawFrame frameWithTask:task];
     dataRawFrame.item = data;
-    [cassette addFrame:dataRawFrame];
+    [editor addFrame:dataRawFrame];
 }
 
 - (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error {
