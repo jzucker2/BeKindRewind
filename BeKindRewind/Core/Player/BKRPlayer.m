@@ -30,10 +30,8 @@
 @synthesize playheadIndex = _playheadIndex;
 
 - (void)_init {
-//    _playingQueue = dispatch_queue_create("com.BKR.playing", DISPATCH_QUEUE_SERIAL);
     _cassetteHandler = [BKRCassetteHandler handler];
     _playheadIndex = 0;
-//    _enabled = NO;
 }
 
 - (NSArray<BKRPlayableScene *> *)allScenes {
@@ -74,17 +72,6 @@
 - (BOOL)isEnabled {
     return self.cassetteHandler.isEnabled;
 }
-
-//- (void)setEnabled:(BOOL)enabled {
-//    dispatch_barrier_sync(self.playingQueue, ^{
-//        if (enabled) {
-//            [self _addStubs];
-//        } else {
-//            [self _removeStubs];
-//        }
-//    });
-//    _enabled = enabled;
-//}
 
 - (BKRStubsTestBlock)testBlock {
     if (!_testBlock) {
@@ -140,11 +127,6 @@
 }
 
 - (void)resetPlayhead {
-//    __weak typeof(self) wself = self;
-//    dispatch_barrier_async(self.cassetteHandler.processingQueue, ^{
-//        __strong typeof(wself) sself = wself;
-//        sself->_playheadIndex = 0;
-//    });
     self.playheadIndex = 0;
 }
 
@@ -155,14 +137,6 @@
         sself->_playheadIndex = playheadIndex;
     });
 }
-
-//- (NSArray<BKRPlayableScene *> *)scenes {
-//    __block NSArray<BKRPlayableScene *> *playableScenes;
-//    dispatch_barrier_sync(self.playingQueue, ^{
-//        playableScenes = (NSArray<BKRPlayableScene *> *)self.currentCassette.allScenes;
-//    });
-//    return playableScenes;
-//}
 
 - (void)_addStubs {
     __weak typeof(self) wself = self;
@@ -193,6 +167,7 @@
 }
 
 // does this need a dispatch barrier?
+// has one in the getters and setters, right?
 - (BKRPlayableScene *)playheadScene {
     NSUInteger currentPlayheadIndex = self.playheadIndex;
     if (currentPlayheadIndex >= self.allScenes.count) {
@@ -202,23 +177,7 @@
 }
 
 - (void)_incrementPlayheadIndex {
-//    __weak typeof(self) wself = self;
-//    dispatch_barrier_async(self.cassetteHandler.processingQueue, ^{
-//        __strong typeof(wself) sself = wself;
-//        sself->_playheadIndex++;
-//    });
     self.playheadIndex++;
 }
-
-//- (void)setCurrentCassette:(BKRPlayableCassette *)currentCassette {
-//    if (currentCassette) {
-//        // This is for debugging purposes
-//        NSParameterAssert([currentCassette isKindOfClass:[BKRPlayableCassette class]]);
-//    }
-//    dispatch_barrier_sync(self.playingQueue, ^{
-//        _currentCassette = currentCassette;
-//    });
-//    [self resetPlayhead];
-//}
 
 @end

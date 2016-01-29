@@ -79,7 +79,7 @@
         // now current cassette in recoder should have one scene with data matching this
         BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
         XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 1);
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
         scene = cassette.allScenes.firstObject;
         XCTAssertNotNil(scene);
         XCTAssertEqual(scene.allFrames.count, 2);
