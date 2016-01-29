@@ -37,10 +37,16 @@
 }
 
 - (NSArray<BKRFrame *> *)allFrames {
-    return [[self unorderedFrames] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRFrame *, creationDate) ascending:YES]]];
+    NSArray<BKRFrame *> *unorderedFrames = [self _unorderedFrames];
+    __block NSArray<BKRFrame *> *orderedFrames = nil;
+    dispatch_sync(self.accessingQueue, ^{
+        orderedFrames = [unorderedFrames sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRFrame *, creationDate) ascending:YES]]];
+    });
+    return orderedFrames;
+//    return [[self _unorderedFrames] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRFrame *, creationDate) ascending:YES]]];
 }
 
-- (NSArray<BKRFrame *> *)unorderedFrames {
+- (NSArray<BKRFrame *> *)_unorderedFrames {
     __block NSArray<BKRFrame *> *currentFramesArray = nil;
     __weak typeof(self) wself = self;
     dispatch_sync(self.accessingQueue, ^{
@@ -54,24 +60,35 @@
     __weak typeof(self) wself = self;
     dispatch_barrier_async(self.accessingQueue, ^{
         __strong typeof(wself) sself = wself;
+        if ([frame isKindOfClass:[BKRErrorFrame class]]) {
+            NSLog(@"error frame being added!");
+        }
         [sself->_frames addObject:frame];
+        if ([frame isKindOfClass:[BKRErrorFrame class]]) {
+            NSLog(@"error frame added!");
+        }
     });
 }
 
 - (NSArray<BKRRequestFrame *> *)allRequestFrames {
-    return [self _framesOnlyOfType:[BKRRequestFrame class]];
+    return (NSArray<BKRRequestFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRRequestFrame class]]];
+//    return [self _framesOnlyOfType:[BKRRequestFrame class]];
 }
 
 - (NSArray<BKRResponseFrame *> *)allResponseFrames {
-    return [self _framesOnlyOfType:[BKRResponseFrame class]];
+    return (NSArray<BKRResponseFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRResponseFrame class]]];
+//    return [self _framesOnlyOfType:[BKRResponseFrame class]];
 }
 
 - (NSArray<BKRDataFrame *> *)allDataFrames {
-    return [self _framesOnlyOfType:[BKRDataFrame class]];
+    return (NSArray<BKRDataFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRDataFrame class]]];
+//    return [self _framesOnlyOfType:[BKRDataFrame class]];
 }
 
 - (NSArray<BKRErrorFrame *> *)allErrorFrames {
-    return [self _framesOnlyOfType:[BKRErrorFrame class]];
+    NSLog(@"error frames accessed");
+    return (NSArray<BKRErrorFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRErrorFrame class]]];
+//    return [self _framesOnlyOfType:[BKRErrorFrame class]];
 }
 
 - (BKRRequestFrame *)originalRequest {
@@ -85,8 +102,13 @@
     return nil;
 }
 
+- (NSPredicate *)_predicateForFramesOfClass:(Class)frameClass {
+    return [NSPredicate predicateWithFormat:@"class == %@", frameClass];
+}
+
 - (NSArray *)_framesOnlyOfType:(Class)frameClass {
     NSMutableArray *restrictedFrames = [NSMutableArray array];
+    NSLog(@"framesOnlyOfType: %@", frameClass);
     for (BKRFrame *frame in self.allFrames) {
         if ([frame isKindOfClass:frameClass]) {
             [restrictedFrames addObject:frame];

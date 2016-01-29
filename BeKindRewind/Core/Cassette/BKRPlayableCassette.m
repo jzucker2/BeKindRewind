@@ -31,7 +31,6 @@
     __weak typeof(self) wself = self;
     dispatch_apply(rawScenes.count, self.processingQueue, ^(size_t iteration) {
         __strong typeof(wself) sself = wself;
-        NSLog(@"adding edited scene: %zu", iteration);
         BKRPlayableScene *scene = [[BKRPlayableScene alloc] initFromPlistDictionary:rawScenes[iteration]];
         [sself addSceneToScenesDictionary:scene];
     });

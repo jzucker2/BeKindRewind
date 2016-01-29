@@ -82,7 +82,8 @@
         XCTAssertEqual(cassette.allScenes.count, 1);
         scene = cassette.allScenes.firstObject;
         XCTAssertNotNil(scene);
-        XCTAssertEqual(scene.allErrorFrames.count, 1); // because timing was previously an issue, put this check at the top
+        XCTAssertEqual(scene.allFrames.count, 2);
+        XCTAssertEqual(scene.allErrorFrames.count, 1, @"Error frames: %@ and allFrames: %@", scene.allErrorFrames.description, scene.allFrames.description); // because timing was previously an issue, put this check at the top
         XCTAssertNotNil(error);
         taskError = error;
         XCTAssertEqual(error.code, -999);
