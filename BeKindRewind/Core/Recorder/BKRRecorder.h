@@ -6,9 +6,11 @@
 //
 //
 
+//#import "BKRCassetteHandler.h"
 #import <Foundation/Foundation.h>
 
 @class BKRRecordableCassette;
+@class BKRRecordableScene;
 @interface BKRRecorder : NSObject
 
 /**
@@ -17,6 +19,8 @@
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
 @property (nonatomic, strong) BKRRecordableCassette *currentCassette;
+//- (void)setCassette:(BKRRecordableCassette *)cassette;
+- (NSArray<BKRRecordableScene *> *)allScenes;
 
 /**
  *  Singleton instance is used so we don't have to pass in a

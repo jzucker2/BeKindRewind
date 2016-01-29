@@ -12,7 +12,7 @@
 @class BKRRecordableRawFrame;
 @interface BKRRecordableCassette : BKRCassette <BKRPlistSerializer>
 
-@property (nonatomic, getter=isRecording) BOOL recording;
+//@property (nonatomic, getter=isRecording) BOOL recording;
 
 - (void)addFrame:(BKRRecordableRawFrame *)frame;
 

@@ -28,7 +28,7 @@
     [BKRNSURLSessionConnection swizzleNSURLSessionConnection];
     [BKRNSURLSessionTask swizzleNSURLSessionTask];
     BKRRecordableCassette *cassette = [[BKRRecordableCassette alloc] init];
-    cassette.recording = YES;
+//    cassette.recording = YES;
     [BKRRecorder sharedInstance].currentCassette = cassette;
     [BKRRecorder sharedInstance].enabled = YES;
 }

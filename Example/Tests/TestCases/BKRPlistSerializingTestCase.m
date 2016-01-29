@@ -34,7 +34,7 @@
 
 - (void)testPlistSerializingOneGETRequest {
     __block BKRRecordableCassette *cassette = [[BKRRecordableCassette alloc] init];
-    cassette.recording = YES;
+//    cassette.recording = YES;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         [task uniqueify];
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];

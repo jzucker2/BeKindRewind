@@ -6,23 +6,28 @@
 //
 //
 
+#import "BKRCassetteHandler.h"
 #import "BKRRecorder.h"
 #import "BKRRecordableCassette.h"
 #import "BKRRecordableRawFrame.h"
 #import "BKROHHTTPStubsWrapper.h"
+#import "BKRRecordableScene.h"
 
 @interface BKRRecorder ()
-@property (nonatomic) dispatch_queue_t recordingQueue;
+//@property (nonatomic) dispatch_queue_t recordingQueue;
 @property (nonatomic) NSDate *currentRecordingStartTime;
+@property (nonatomic) BKRCassetteHandler *cassetteHandler;
 
 @end
 
 @implementation BKRRecorder
+@synthesize currentRecordingStartTime = _currentRecordingStartTime;
 
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _recordingQueue = dispatch_queue_create("com.BKR.recorderQueue", DISPATCH_QUEUE_CONCURRENT);
+//        _recordingQueue = dispatch_queue_create("com.BKR.recorderQueue", DISPATCH_QUEUE_CONCURRENT);
+        _cassetteHandler = [BKRCassetteHandler handler];
     }
     return self;
 }
@@ -36,34 +41,82 @@
     return sharedInstance;
 }
 
-// maybe set a date flag and ignore things after that flag??
-- (void)reset {
-    if (_enabled) {
+//- (void)setCassette:(BKRRecordableCassette *)cassette {
+//    self.currentCassette = cassette;
+//}
+
+- (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
+    self.cassetteHandler.currentCassette = currentCassette;
+}
+
+- (BKRRecordableCassette *)currentCassette {
+    return (BKRRecordableCassette *)self.cassetteHandler.currentCassette;
+}
+
+- (NSArray<BKRRecordableScene *> *)allScenes {
+    return (NSArray<BKRRecordableScene *> *)self.currentCassette.allScenes;
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    self.cassetteHandler.enabled = enabled;
+    if (enabled) {
         self.currentRecordingStartTime = [NSDate date];
     } else {
         self.currentRecordingStartTime = nil;
     }
 }
 
-- (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
-    if (currentCassette) {
-        // This is for debugging purposes
-        NSParameterAssert([currentCassette isKindOfClass:[BKRRecordableCassette class]]);
-    }
-    dispatch_barrier_sync(self.recordingQueue, ^{
-        _currentCassette = currentCassette;
-    });
-    [self reset];
+- (BOOL)isEnabled {
+    return self.cassetteHandler.isEnabled;
 }
 
-- (void)setEnabled:(BOOL)enabled {
-    dispatch_barrier_sync(self.recordingQueue, ^{
-        _enabled = enabled;
+// maybe set a date flag and ignore things after that flag??
+- (void)reset {
+//    if (_enabled) {
+//        self.currentRecordingStartTime = [NSDate date];
+//    } else {
+//        self.currentRecordingStartTime = nil;
+//    }
+    self.currentRecordingStartTime = [NSDate date];
+}
+
+//- (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
+//    if (currentCassette) {
+//        // This is for debugging purposes
+//        NSParameterAssert([currentCassette isKindOfClass:[BKRRecordableCassette class]]);
+//    }
+//    dispatch_barrier_sync(self.recordingQueue, ^{
+//        _currentCassette = currentCassette;
+//    });
+//    [self reset];
+//}
+
+//- (void)setEnabled:(BOOL)enabled {
+//    dispatch_barrier_sync(self.recordingQueue, ^{
+//        _enabled = enabled;
+//    });
+//    [self reset];
+//    if (_enabled) {
+//        [BKROHHTTPStubsWrapper removeAllStubs];
+//    }
+//}
+
+- (void)setCurrentRecordingStartTime:(NSDate *)currentRecordingStartTime {
+    __weak typeof(self) wself = self;
+    dispatch_barrier_async(self.cassetteHandler.processingQueue, ^{
+        __strong typeof(wself) sself = wself;
+        sself->_currentRecordingStartTime = currentRecordingStartTime;
     });
-    [self reset];
-    if (_enabled) {
-        [BKROHHTTPStubsWrapper removeAllStubs];
-    }
+}
+
+- (NSDate *)currentRecordingStartTime {
+    __block NSDate *recordingTime = nil;
+    __weak typeof(self) wself = self;
+    dispatch_sync(self.cassetteHandler.processingQueue, ^{
+        __strong typeof(wself) sself = wself;
+        recordingTime = sself->_currentRecordingStartTime;
+    });
+    return recordingTime;
 }
 
 #pragma mark - NSURLSession recording
@@ -80,14 +133,14 @@
         return;
     }
     __typeof (self) wself = self;
-    dispatch_async(self.recordingQueue, ^{
+    dispatch_async(self.cassetteHandler.processingQueue, ^{
         __typeof (wself) sself = wself;
         if (!sself.currentRecordingStartTime) {
             return;
         }
         BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
         requestFrame.item = task.originalRequest;
-        [sself.currentCassette addFrame:requestFrame];
+        [sself addFrame:requestFrame];
     });
 }
 
