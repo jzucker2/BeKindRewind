@@ -56,6 +56,10 @@
         XCTAssertEqual(scene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
         [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertNil(dataDict, @"dataDict: %@", dataDict.description);
+        XCTAssertNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", dataFrame.description);
+        XCTAssertNil(data, @"data: %@", data);
+        XCTAssertNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
         XCTAssertEqual(scene.allResponseFrames.count, 1);
         BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
