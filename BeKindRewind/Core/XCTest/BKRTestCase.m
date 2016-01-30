@@ -27,8 +27,8 @@
 - (instancetype)initWithInvocation:(NSInvocation *)invocation {
     self = [super initWithInvocation:invocation];
     if (self) {
-        _vcr = [BKRVCR vcrWithCassette:nil];
-        _vcr.recording = [self isRecording];
+//        _vcr = [BKRVCR vcrWithCassette:nil];
+//        _vcr.recording = [self isRecording];
     }
     return self;
 }

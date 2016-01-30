@@ -18,9 +18,9 @@
 
 @property (nonatomic, strong) BKRCassette *currentCassette;
 
-- (instancetype)initWithCassette:(BKRCassette *)cassette;
-+ (instancetype)vcrWithCassette:(BKRCassette *)cassette;
+//- (instancetype)initWithCassette:(BKRCassette *)cassette;
+//+ (instancetype)vcrWithCassette:(BKRCassette *)cassette;
 
-- (void)swizzleNetworkCallsForRecording;
+//- (void)swizzleNetworkCallsForRecording;
 
 @end
