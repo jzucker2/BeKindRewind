@@ -47,6 +47,10 @@
 
 - (void)addFrame:(BKRRecordableRawFrame *)frame {
     __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
+    if (!cassette) {
+        NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
+        return;
+    }
     __weak typeof(self) wself = self;
     dispatch_barrier_async(self.editingQueue, ^{
         __strong typeof(wself) sself = wself;

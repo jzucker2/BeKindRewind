@@ -56,11 +56,11 @@
         XCTAssertEqual(scene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
         [self assertData:dataFrame withData:data extraAssertions:nil];
-        XCTAssertEqualObjects(dataFrame.JSONConvertedObject, dataDict);
-        XCTAssertNil(dataDict, @"dataDict: %@", dataDict.description);
-        XCTAssertNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
-        XCTAssertNil(data, @"data: %@", data);
-        XCTAssertNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
+        XCTAssertEqualObjects(dataFrame.JSONConvertedObject, dataDict, @"Deserialized data objects not equal");
+        XCTAssertNotNil(dataDict, @"dataDict: %@", dataDict.description);
+        XCTAssertNotNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
+        XCTAssertNotNil(data, @"data: %@", data);
+        XCTAssertNotNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
         XCTAssertEqual(scene.allResponseFrames.count, 1);
         BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
