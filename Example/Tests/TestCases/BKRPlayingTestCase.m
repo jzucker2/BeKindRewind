@@ -56,6 +56,7 @@
         XCTAssertEqual(scene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
         [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqualObjects(dataFrame.JSONConvertedObject, dataDict);
         XCTAssertNil(dataDict, @"dataDict: %@", dataDict.description);
         XCTAssertNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
         XCTAssertNil(data, @"data: %@", data);
