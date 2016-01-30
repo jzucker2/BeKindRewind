@@ -37,9 +37,9 @@
     BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
     __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = cassette;
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    player.currentCassette = testCassette;
     player.enabled = YES;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNotNil(data);
@@ -48,9 +48,10 @@
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 1);
-        scene = cassette.allScenes.firstObject;
+        
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
         XCTAssertTrue(scene.allFrames.count > 0);
         XCTAssertEqual(scene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
