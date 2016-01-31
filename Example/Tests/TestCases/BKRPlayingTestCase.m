@@ -82,7 +82,7 @@
     }];
 }
 
-- (void)DISABLE_testPlayingOneCancelledGETRequest {
+- (void)testPlayingOneCancelledGETRequest {
     NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
     BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
     sceneBuilder.URLString = @"https://httpbin.org/delay/10";
@@ -228,7 +228,7 @@
     }];
 }
 
-- (void)DISABLE_testPlayingMultipleGetRequests {
+- (void)testPlayingMultipleGetRequests {
     BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
     BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test2" contentLength:nil];
     
@@ -247,7 +247,10 @@
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+//        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
         // now current cassette in recoder should have one scene with data matching this
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 2);
@@ -278,7 +281,10 @@
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test2"});
-        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+//        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
         // now current cassette in recoder should have one scene with data matching this
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 2);
