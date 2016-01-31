@@ -46,7 +46,12 @@
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        
+//        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
+        
         // now current cassette in recoder should have one scene with data matching this
         
         XCTAssertNotNil(player.currentCassette);
@@ -77,7 +82,7 @@
     }];
 }
 
-- (void)testPlayingOneCancelledGETRequest {
+- (void)DISABLE_testPlayingOneCancelledGETRequest {
     NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
     BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
     sceneBuilder.URLString = @"https://httpbin.org/delay/10";
@@ -134,7 +139,7 @@
     }];
 }
 
-- (void)testPlayingOnePOSTRequest {
+- (void)DISABLE_testPlayingOnePOSTRequest {
     NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
     BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
     sceneBuilder.URLString = @"https://httpbin.org/post";
@@ -223,7 +228,7 @@
     }];
 }
 
-- (void)testPlayingMultipleGetRequests {
+- (void)DISABLE_testPlayingMultipleGetRequests {
     BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
     BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test2" contentLength:nil];
     
@@ -300,7 +305,7 @@
     }];
 }
 
-- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+- (void)DISABLE_testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
     NSString *URLString = @"https://pubsub.pubnub.com/time/0";
     NSString *firstTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
     BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
