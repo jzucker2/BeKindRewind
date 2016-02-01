@@ -456,4 +456,8 @@
     XCTFail(@"found unmatched request: %@", request);
 }
 
+- (void)responseBlockFailedToFindMatchForRequest:(NSURLRequest *)request {
+    XCTFail(@"failed to find response for response block when expected to find result: %@", request);
+}
+
 @end

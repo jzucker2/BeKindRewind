@@ -39,5 +39,6 @@
 @protocol BKRPlayerDelegate <NSObject>
 
 - (void)unmatchedRequest:(NSURLRequest *)request;
+- (void)responseBlockFailedToFindMatchForRequest:(NSURLRequest *)request;
 
 @end
