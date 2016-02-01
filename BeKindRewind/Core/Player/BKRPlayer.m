@@ -13,6 +13,8 @@
 #import "BKRPlayableScene.h"
 #import "BKROHHTTPStubsWrapper.h"
 
+#import <XCTest/XCTest.h>
+
 @interface BKRPlayer ()
 @property (nonatomic, strong) BKRPlayingEditor *editor;
 @property (nonatomic) NSUInteger playheadIndex;
@@ -132,6 +134,9 @@
             __weak typeof(wself) sself = wself;
             BKRPlayableScene *matchedScene = [sself.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
             [sself _incrementPlayheadIndex];
+            if (!matchedScene) {
+                XCTFail(@"No matched scene found but match supposed to happen! request: %@", request);
+            }
             return matchedScene;
         };
     }
