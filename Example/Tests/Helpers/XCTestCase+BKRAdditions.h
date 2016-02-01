@@ -68,6 +68,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 
 - (BKRExpectedScenePlistDictionaryBuilder *)standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:(NSString *)queryItemString contentLength:(NSString *)contentLength; // queryItemString is converted to dictionary for testing
 - (BKRExpectedScenePlistDictionaryBuilder *)standardPOSTRequestDictionaryBuilderForHTTPBin;
+- (void)testPlayingRequestForExpectedSceneBuilder:(BKRExpectedScenePlistDictionaryBuilder *)sceneBuilder;
 
 #pragma mark - PN
 

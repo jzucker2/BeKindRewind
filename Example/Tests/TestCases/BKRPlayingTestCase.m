@@ -35,9 +35,11 @@
 
 - (void)testPlayingOneGETRequest {
     BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
     BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
     player.currentCassette = testCassette;
     player.enabled = YES;
@@ -97,19 +99,21 @@
                                    NSURLErrorFailingURLStringErrorKey: @"https://httpbin.org/delay/10",
                                    NSLocalizedDescriptionKey: @"cancelled"
                                    };
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
     __block NSError *taskError = nil;
-    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 2, @"testCassette should have 4 frames for it's 1 scene");
     BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = cassette;
+    player.currentCassette = testCassette;
     player.enabled = YES;
     [self cancellingGetTaskWithURLString:@"https://httpbin.org/delay/10" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         // ensure that result from network is as expected
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 1);
-        scene = cassette.allScenes.firstObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
         XCTAssertNotNil(scene);
         XCTAssertNotNil(error);
         taskError = error;
@@ -185,11 +189,13 @@
                                              @"Server": @"nginx",
                                              @"access-control-allow-credentials": @"true"
                                              };
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = cassette;
+    player.currentCassette = testCassette;
     player.enabled = YES;
     [self postJSON:sceneBuilder.sentJSON withURLString:@"https://httpbin.org/post" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
@@ -205,9 +211,9 @@
         XCTAssertEqualObjects(sceneBuilder.sentJSON, receivedDataDictionary);
         
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 1);
-        scene = cassette.allScenes.firstObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
         XCTAssertTrue(scene.allFrames.count > 0);
         XCTAssertEqual(scene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
@@ -232,13 +238,15 @@
     BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
     BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test2" contentLength:nil];
     
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
     __block BKRScene *firstScene = nil;
     __block BKRScene *secondScene = nil;
-    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
-    XCTAssertEqual(cassette.allScenes.count, 2);
+    __block BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 2);
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"First scene should have 4 frames");
+    XCTAssertEqual(testCassette.allScenes.lastObject.allFrames.count, 4, @"Second (last scene) should have 4 frames");
     BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = cassette;
+    player.currentCassette = testCassette;
     player.enabled = YES;
     
     [self getTaskWithURLString:firstSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -252,9 +260,9 @@
         XCTAssertEqual(castedResponse.statusCode, 200);
         XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 2);
-        firstScene = cassette.allScenes.firstObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 2);
+        firstScene = (BKRScene *)player.allScenes.firstObject;
         XCTAssertEqualObjects(firstScene.uniqueIdentifier, firstSceneBuilder.taskUniqueIdentifier);
         XCTAssertTrue(firstScene.allFrames.count > 0);
         XCTAssertEqual(firstScene.allDataFrames.count, 1);
@@ -286,9 +294,9 @@
         XCTAssertEqual(castedResponse.statusCode, 200);
         XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 2);
-        secondScene = cassette.allScenes.lastObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 2);
+        secondScene = (BKRScene *)player.allScenes.lastObject;
         XCTAssertEqualObjects(secondScene.uniqueIdentifier, secondSceneBuilder.taskUniqueIdentifier);
         XCTAssertNotEqualObjects(firstScene.uniqueIdentifier, secondScene.uniqueIdentifier, @"The two scenes should not be identical");
         XCTAssertTrue(secondScene.allFrames.count > 0);
@@ -360,13 +368,15 @@
                                                    @"Date": @"Wed, 27 Jan 2016 23:39:07 GMT",
                                                    };
     
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
     __block BKRScene *firstScene = nil;
     __block BKRScene *secondScene = nil;
-    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
-    XCTAssertEqual(cassette.allScenes.count, 2);
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 2, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1st scene");
+    XCTAssertEqual(testCassette.allScenes.lastObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 2nd scene");
     BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = cassette;
+    player.currentCassette = testCassette;
     player.enabled = YES;
     [self getTaskWithURLString:firstSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
@@ -378,9 +388,9 @@
         XCTAssertEqualObjects(receivedTimeToken, firstTimetoken);
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 2);
-        firstScene = cassette.allScenes.firstObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 2);
+        firstScene = (BKRScene *)player.allScenes.firstObject;
         XCTAssertEqualObjects(firstScene.uniqueIdentifier, firstTaskUniqueIdentifier);
         XCTAssertTrue(firstScene.allFrames.count > 0);
         XCTAssertEqual(firstScene.allDataFrames.count, 1);
@@ -412,9 +422,9 @@
         XCTAssertNotEqualObjects(receivedTimeToken, firstTimetoken);
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 2);
-        secondScene = cassette.allScenes.lastObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 2);
+        secondScene = (BKRScene *)player.allScenes.lastObject;
         XCTAssertEqualObjects(secondScene.uniqueIdentifier, secondTaskUniqueIdentifier);
         XCTAssertNotEqualObjects(firstScene.uniqueIdentifier, secondScene.uniqueIdentifier, @"The two scenes should not be identical");
         XCTAssertTrue(secondScene.allFrames.count > 0);

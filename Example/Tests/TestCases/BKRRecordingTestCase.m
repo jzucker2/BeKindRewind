@@ -164,7 +164,7 @@
         BKRCassette *cassette = [BKRRecorder sharedInstance].currentCassette;
         XCTAssertNotNil(cassette);
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
-        firstScene = [BKRRecorder sharedInstance].allScenes.firstObject;
+        firstScene = (BKRScene *)[BKRRecorder sharedInstance].allScenes.firstObject;
         XCTAssertTrue(firstScene.allFrames.count > 0);
         XCTAssertEqual(firstScene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = firstScene.allDataFrames.firstObject;

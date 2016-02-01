@@ -546,4 +546,8 @@
     XCTAssertEqual(cassette.allScenes.count, numberOfScenes);
 }
 
+- (void)testPlayingRequestForExpectedSceneBuilder:(BKRExpectedScenePlistDictionaryBuilder *)sceneBuilder {
+    
+}
+
 @end
