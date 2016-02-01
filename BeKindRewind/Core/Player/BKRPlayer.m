@@ -75,7 +75,9 @@
         __strong typeof(self) wself = self;
         _testBlock = ^BOOL(NSURLRequest *request){
             __weak typeof(wself) sself = wself;
-            BOOL finalTestResult = [sself.matcher hasMatchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
+            NSArray<BKRPlayableScene *> *currentAllScenes = sself.allScenes;
+            BKRPlayableScene *currentPlayheadScene = sself.playheadScene;
+            BOOL finalTestResult = [sself.matcher hasMatchForRequest:request withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
             if (!finalTestResult) {
                 if (sself.delegate) {
                     [sself.delegate unmatchedRequest:request];
@@ -84,7 +86,7 @@
             }
             NSURLComponents *requestComponents = [NSURLComponents componentsWithString:request.URL.absoluteString];
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestScheme:withPlayhead:inPlayableScenes:)]) {
-                finalTestResult = [sself.matcher hasMatchForRequestScheme:requestComponents.scheme withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
+                finalTestResult = [sself.matcher hasMatchForRequestScheme:requestComponents.scheme withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
                     if (sself.delegate) {
                         [sself.delegate unmatchedRequest:request];
@@ -93,7 +95,7 @@
                 }
             }
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestHost:withPlayhead:inPlayableScenes:)]) {
-                finalTestResult = [sself.matcher hasMatchForRequestHost:requestComponents.host withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
+                finalTestResult = [sself.matcher hasMatchForRequestHost:requestComponents.host withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
                     if (sself.delegate) {
                         [sself.delegate unmatchedRequest:request];
@@ -102,7 +104,7 @@
                 }
             }
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestPath:withPlayhead:inPlayableScenes:)]) {
-                finalTestResult = [sself.matcher hasMatchForRequestPath:requestComponents.path withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
+                finalTestResult = [sself.matcher hasMatchForRequestPath:requestComponents.path withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
                     if (sself.delegate) {
                         [sself.delegate unmatchedRequest:request];
@@ -111,7 +113,7 @@
                 }
             }
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestQueryItems:withPlayhead:inPlayableScenes:)]) {
-                finalTestResult = [sself.matcher hasMatchForRequestQueryItems:requestComponents.queryItems withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
+                finalTestResult = [sself.matcher hasMatchForRequestQueryItems:requestComponents.queryItems withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
                     if (sself.delegate) {
                         [sself.delegate unmatchedRequest:request];
