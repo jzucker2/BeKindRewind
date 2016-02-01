@@ -76,6 +76,6 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 
 #pragma mark - BKRPlayableCassette helpers
 
-- (void)assertCreationOfCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes;
+- (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes;
 
 @end

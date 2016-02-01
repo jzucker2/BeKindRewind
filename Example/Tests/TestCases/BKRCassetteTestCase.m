@@ -28,12 +28,12 @@
 }
 
 - (void)testCreatePlayableCassetteWithManyScenes {
-    [self assertCreationOfCassetteWithNumberOfScenes:20];
+    [self assertCreationOfPlayableCassetteWithNumberOfScenes:20];
 }
 
 - (void)testCreatePlayableCasssetteWithManyScenesPerformance {
     [self measureBlock:^{
-        [self assertCreationOfCassetteWithNumberOfScenes:50];
+        [self assertCreationOfPlayableCassetteWithNumberOfScenes:50];
     }];
 }
 

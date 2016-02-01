@@ -139,7 +139,7 @@
     }];
 }
 
-- (void)DISABLE_testPlayingOnePOSTRequest {
+- (void)testPlayingOnePOSTRequest {
     NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
     BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
     sceneBuilder.URLString = @"https://httpbin.org/post";
@@ -311,7 +311,7 @@
     }];
 }
 
-- (void)DISABLE_testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
     NSString *URLString = @"https://pubsub.pubnub.com/time/0";
     NSString *firstTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
     BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];

@@ -529,7 +529,7 @@
     return sceneBuilder;
 }
 
-- (void)assertCreationOfCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes {
+- (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes {
     NSParameterAssert(numberOfScenes);
     NSMutableArray<BKRExpectedScenePlistDictionaryBuilder *> *sceneBuilders = [NSMutableArray array];
     for (NSUInteger i=0; i < numberOfScenes; i++) {
