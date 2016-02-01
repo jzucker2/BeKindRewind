@@ -28,20 +28,20 @@
 }
 
 - (BOOL)hasMatchForRequestHost:(NSString *)host withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
-    return [host isEqualToString:playhead.currentRequest.requestHost];
+    return [host isEqualToString:playhead.originalRequest.requestHost];
 }
 
 - (BOOL)hasMatchForRequestScheme:(NSString *)scheme withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
-    return [scheme isEqualToString:playhead.currentRequest.requestScheme];
+    return [scheme isEqualToString:playhead.originalRequest.requestScheme];
 }
 
 - (BOOL)hasMatchForRequestPath:(NSString *)path withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
-    return [path isEqualToString:playhead.currentRequest.requestPath];
+    return [path isEqualToString:playhead.originalRequest.requestPath];
 }
 
 - (BOOL)hasMatchForRequestQueryItems:(NSArray<NSURLQueryItem *> *)queryItems withPlayhead:(BKRPlayableScene *)playhead inPlayableScenes:(NSArray<BKRPlayableScene *> *)scenes {
     NSSet *requestQueryItemsSet = [NSSet setWithArray:queryItems];
-    NSSet *playheadQueryItemsSet = [NSSet setWithArray:playhead.currentRequest.requestQueryItems];
+    NSSet *playheadQueryItemsSet = [NSSet setWithArray:playhead.originalRequest.requestQueryItems];
     return [requestQueryItemsSet isEqualToSet:playheadQueryItemsSet];
 }
 

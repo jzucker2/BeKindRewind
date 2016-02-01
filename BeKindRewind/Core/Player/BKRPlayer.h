@@ -11,6 +11,8 @@
 @class BKRPlayableCassette;
 @class BKRPlayableScene;
 
+@protocol BKRPlayerDelegate;
+
 @interface BKRPlayer : NSObject
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
@@ -25,9 +27,17 @@
 
 @property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
 
+@property (nonatomic, weak) id<BKRPlayerDelegate> delegate;
+
 - (BKRPlayableScene *)playheadScene;
 
 - (void)resetPlayhead;
 - (NSArray<BKRPlayableScene *> *)allScenes;
+
+@end
+
+@protocol BKRPlayerDelegate <NSObject>
+
+- (void)unmatchedRequest:(NSURLRequest *)request;
 
 @end

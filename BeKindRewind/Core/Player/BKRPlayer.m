@@ -77,30 +77,45 @@
             __weak typeof(wself) sself = wself;
             BOOL finalTestResult = [sself.matcher hasMatchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
             if (!finalTestResult) {
+                if (sself.delegate) {
+                    [sself.delegate unmatchedRequest:request];
+                }
                 return finalTestResult;
             }
             NSURLComponents *requestComponents = [NSURLComponents componentsWithString:request.URL.absoluteString];
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestScheme:withPlayhead:inPlayableScenes:)]) {
                 finalTestResult = [sself.matcher hasMatchForRequestScheme:requestComponents.scheme withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
                 if (!finalTestResult) {
+                    if (sself.delegate) {
+                        [sself.delegate unmatchedRequest:request];
+                    }
                     return finalTestResult;
                 }
             }
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestHost:withPlayhead:inPlayableScenes:)]) {
                 finalTestResult = [sself.matcher hasMatchForRequestHost:requestComponents.host withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
                 if (!finalTestResult) {
+                    if (sself.delegate) {
+                        [sself.delegate unmatchedRequest:request];
+                    }
                     return finalTestResult;
                 }
             }
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestPath:withPlayhead:inPlayableScenes:)]) {
                 finalTestResult = [sself.matcher hasMatchForRequestPath:requestComponents.path withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
                 if (!finalTestResult) {
+                    if (sself.delegate) {
+                        [sself.delegate unmatchedRequest:request];
+                    }
                     return finalTestResult;
                 }
             }
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestQueryItems:withPlayhead:inPlayableScenes:)]) {
                 finalTestResult = [sself.matcher hasMatchForRequestQueryItems:requestComponents.queryItems withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
                 if (!finalTestResult) {
+                    if (sself.delegate) {
+                        [sself.delegate unmatchedRequest:request];
+                    }
                     return finalTestResult;
                 }
             }
