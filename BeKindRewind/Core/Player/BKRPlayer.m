@@ -79,45 +79,30 @@
             BKRPlayableScene *currentPlayheadScene = sself.playheadScene;
             BOOL finalTestResult = [sself.matcher hasMatchForRequest:request withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
             if (!finalTestResult) {
-                if (sself.delegate) {
-                    [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
-                }
                 return finalTestResult;
             }
             NSURLComponents *requestComponents = [NSURLComponents componentsWithString:request.URL.absoluteString];
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestScheme:withPlayhead:inPlayableScenes:)]) {
                 finalTestResult = [sself.matcher hasMatchForRequestScheme:requestComponents.scheme withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
-                    if (sself.delegate) {
-                        [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
-                    }
                     return finalTestResult;
                 }
             }
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestHost:withPlayhead:inPlayableScenes:)]) {
                 finalTestResult = [sself.matcher hasMatchForRequestHost:requestComponents.host withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
-                    if (sself.delegate) {
-                        [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
-                    }
                     return finalTestResult;
                 }
             }
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestPath:withPlayhead:inPlayableScenes:)]) {
                 finalTestResult = [sself.matcher hasMatchForRequestPath:requestComponents.path withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
-                    if (sself.delegate) {
-                        [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
-                    }
                     return finalTestResult;
                 }
             }
             if ([sself.matcher respondsToSelector:@selector(hasMatchForRequestQueryItems:withPlayhead:inPlayableScenes:)]) {
                 finalTestResult = [sself.matcher hasMatchForRequestQueryItems:requestComponents.queryItems withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
-                    if (sself.delegate) {
-                        [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
-                    }
                     return finalTestResult;
                 }
             }
@@ -136,11 +121,6 @@
             NSArray<BKRPlayableScene *> *currentAllScenes = sself.allScenes;
             BKRPlayableScene *matchedScene = [sself.matcher matchForRequest:request withPlayhead:currentPlayhead inPlayableScenes:currentAllScenes];
             [sself _incrementPlayheadIndex];
-            if (!matchedScene) {
-                if (sself.delegate) {
-                    [sself.delegate responseBlockFailedToFindMatchForRequest:request withPlayhead:currentPlayhead scenes:currentAllScenes];
-                }
-            }
             return matchedScene;
         };
     }
