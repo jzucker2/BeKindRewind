@@ -12,6 +12,9 @@
 #import "BKRErrorFrame.h"
 #import "BKRDataFrame.h"
 
+// remove, only here for testing
+#import "BKRRequestFrame.h"
+
 @interface BKRPlayableScene ()
 //@property (nonatomic, strong) NSMutableArray<BKRPlayableRawFrame *> *frames;
 @end
@@ -67,6 +70,10 @@
 - (NSError *)responseError {
     BKRErrorFrame *responseFrame = self.allErrorFrames.firstObject;
     return responseFrame.error;
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%p>: request: %@", self, self.originalRequest.URL];
 }
 
 @end

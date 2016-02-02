@@ -14,6 +14,7 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
 #import <BeKindRewind/BKROHHTTPStubsWrapper.h>
+#import <BeKindRewind/BKRPlayableScene.h>
 #import "XCTestCase+BKRAdditions.h"
 #import "BKRBaseTestCase.h"
 
@@ -452,11 +453,15 @@
     }];
 }
 
-- (void)unmatchedRequest:(NSURLRequest *)request {
+- (void)unmatchedRequest:(NSURLRequest *)request withPlayhead:(BKRPlayableScene *)playhead scenes:(NSArray<BKRPlayableScene *> *)scenes {
+    XCTFail(@"%@", playhead.description);
+    XCTFail(@"%@", scenes);
     XCTFail(@"found unmatched request: %@", request);
 }
 
-- (void)responseBlockFailedToFindMatchForRequest:(NSURLRequest *)request {
+- (void)responseBlockFailedToFindMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayableScene *)playhead scenes:(NSArray<BKRPlayableScene *> *)scenes {
+    XCTFail(@"%@", playhead.description);
+    XCTFail(@"%@", scenes);
     XCTFail(@"failed to find response for response block when expected to find result: %@", request);
 }
 

@@ -80,7 +80,7 @@
             BOOL finalTestResult = [sself.matcher hasMatchForRequest:request withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
             if (!finalTestResult) {
                 if (sself.delegate) {
-                    [sself.delegate unmatchedRequest:request];
+                    [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
                 }
                 return finalTestResult;
             }
@@ -89,7 +89,7 @@
                 finalTestResult = [sself.matcher hasMatchForRequestScheme:requestComponents.scheme withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
                     if (sself.delegate) {
-                        [sself.delegate unmatchedRequest:request];
+                        [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
                     }
                     return finalTestResult;
                 }
@@ -98,7 +98,7 @@
                 finalTestResult = [sself.matcher hasMatchForRequestHost:requestComponents.host withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
                     if (sself.delegate) {
-                        [sself.delegate unmatchedRequest:request];
+                        [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
                     }
                     return finalTestResult;
                 }
@@ -107,7 +107,7 @@
                 finalTestResult = [sself.matcher hasMatchForRequestPath:requestComponents.path withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
                     if (sself.delegate) {
-                        [sself.delegate unmatchedRequest:request];
+                        [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
                     }
                     return finalTestResult;
                 }
@@ -116,7 +116,7 @@
                 finalTestResult = [sself.matcher hasMatchForRequestQueryItems:requestComponents.queryItems withPlayhead:currentPlayheadScene inPlayableScenes:currentAllScenes];
                 if (!finalTestResult) {
                     if (sself.delegate) {
-                        [sself.delegate unmatchedRequest:request];
+                        [sself.delegate unmatchedRequest:request withPlayhead:currentPlayheadScene scenes:currentAllScenes];
                     }
                     return finalTestResult;
                 }
@@ -132,11 +132,13 @@
         __strong typeof(self) wself = self;
         _responseBlock = ^BKRPlayableScene*(NSURLRequest *request){
             __weak typeof(wself) sself = wself;
-            BKRPlayableScene *matchedScene = [sself.matcher matchForRequest:request withPlayhead:sself.playheadScene inPlayableScenes:sself.allScenes];
+            BKRPlayableScene *currentPlayhead = sself.playheadScene;
+            NSArray<BKRPlayableScene *> *currentAllScenes = sself.allScenes;
+            BKRPlayableScene *matchedScene = [sself.matcher matchForRequest:request withPlayhead:currentPlayhead inPlayableScenes:currentAllScenes];
             [sself _incrementPlayheadIndex];
             if (!matchedScene) {
                 if (sself.delegate) {
-                    [sself.delegate responseBlockFailedToFindMatchForRequest:request];
+                    [sself.delegate responseBlockFailedToFindMatchForRequest:request withPlayhead:currentPlayhead scenes:currentAllScenes];
                 }
             }
             return matchedScene;
@@ -158,12 +160,12 @@
 }
 
 - (void)_addStubs {
-//    __weak typeof(self) wself = self;
-//    dispatch_barrier_async(self.editor.editingQueue, ^{
-//        __strong typeof(wself) sself = wself;
-//        [BKROHHTTPStubsWrapper stubRequestPassingTest:sself.testBlock withStubResponse:sself.responseBlock];
-//    });
-    [BKROHHTTPStubsWrapper stubRequestPassingTest:self.testBlock withStubResponse:self.responseBlock];
+    __weak typeof(self) wself = self;
+    dispatch_barrier_async(self.editor.editingQueue, ^{
+        __strong typeof(wself) sself = wself;
+        [BKROHHTTPStubsWrapper stubRequestPassingTest:sself.testBlock withStubResponse:sself.responseBlock];
+    });
+//    [BKROHHTTPStubsWrapper stubRequestPassingTest:self.testBlock withStubResponse:self.responseBlock];
 }
 
 - (void)dealloc {
@@ -171,10 +173,10 @@
 }
 
 - (void)_removeStubs {
-//    dispatch_barrier_async(self.editor.editingQueue, ^{
-//        [BKROHHTTPStubsWrapper removeAllStubs];
-//    });
-    [BKROHHTTPStubsWrapper removeAllStubs];
+    dispatch_barrier_async(self.editor.editingQueue, ^{
+        [BKROHHTTPStubsWrapper removeAllStubs];
+    });
+//    [BKROHHTTPStubsWrapper removeAllStubs];
 }
 
 - (NSUInteger)playheadIndex {

@@ -38,7 +38,7 @@
 
 @protocol BKRPlayerDelegate <NSObject>
 
-- (void)unmatchedRequest:(NSURLRequest *)request;
-- (void)responseBlockFailedToFindMatchForRequest:(NSURLRequest *)request;
+- (void)unmatchedRequest:(NSURLRequest *)request withPlayhead:(BKRPlayableScene *)playhead scenes:(NSArray<BKRPlayableScene *> *)scenes;
+- (void)responseBlockFailedToFindMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayableScene *)playhead scenes:(NSArray<BKRPlayableScene *> *)scenes;
 
 @end
