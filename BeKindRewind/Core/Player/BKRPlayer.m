@@ -158,11 +158,12 @@
 }
 
 - (void)_addStubs {
-    __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.editor.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        [BKROHHTTPStubsWrapper stubRequestPassingTest:sself.testBlock withStubResponse:sself.responseBlock];
-    });
+//    __weak typeof(self) wself = self;
+//    dispatch_barrier_async(self.editor.editingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        [BKROHHTTPStubsWrapper stubRequestPassingTest:sself.testBlock withStubResponse:sself.responseBlock];
+//    });
+    [BKROHHTTPStubsWrapper stubRequestPassingTest:self.testBlock withStubResponse:self.responseBlock];
 }
 
 - (void)dealloc {
@@ -170,9 +171,10 @@
 }
 
 - (void)_removeStubs {
-    dispatch_barrier_async(self.editor.editingQueue, ^{
-        [BKROHHTTPStubsWrapper removeAllStubs];
-    });
+//    dispatch_barrier_async(self.editor.editingQueue, ^{
+//        [BKROHHTTPStubsWrapper removeAllStubs];
+//    });
+    [BKROHHTTPStubsWrapper removeAllStubs];
 }
 
 - (NSUInteger)playheadIndex {
