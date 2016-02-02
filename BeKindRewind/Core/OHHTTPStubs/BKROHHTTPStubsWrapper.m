@@ -31,4 +31,8 @@
     }];
 }
 
++ (void)setEnabled:(BOOL)enabled {
+    [OHHTTPStubs setEnabled:enabled];
+}
+
 @end

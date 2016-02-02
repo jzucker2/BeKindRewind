@@ -17,6 +17,8 @@ typedef BKRPlayableScene* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonn
 
 + (void)removeAllStubs;
 
++ (void)setEnabled:(BOOL)enabled;
+
 + (void)stubRequestPassingTest:(nonnull BKRStubsTestBlock)testBlock withStubResponse:(nonnull BKRStubsResponseBlock)responseBlock;
 
 @end

@@ -7,7 +7,11 @@
 //
 
 #import "BKREditor.h"
+#import "BKRRequestMatching.h"
 
 @interface BKRPlayingEditor : BKREditor
+
+- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher;
+
 
 @end
