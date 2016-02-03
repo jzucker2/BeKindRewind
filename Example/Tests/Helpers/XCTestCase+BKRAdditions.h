@@ -37,13 +37,20 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @property (nonatomic, strong) NSDictionary *receivedJSON;
 @property (nonatomic, strong) NSData *receivedData;
 @property (nonatomic) NSInteger responseStatusCode;
+@property (nonatomic) NSInteger expectedSceneNumber; // index in scene array
+@property (nonatomic) NSInteger expectedNumberOfFrames; // scene should contain this many frames
+@property (nonatomic, getter=isCancelling) BOOL cancelling;
+@property (nonatomic) NSDictionary *expectedErrorUserInfo;
+@property (nonatomic) NSInteger expectedErrorCode;
+@property (nonatomic, copy) NSString *expectedErrorDomain;
 + (instancetype)recording;
 @end
 
 @class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRRecordableCassette, BKRPlayableCassette, BKRErrorFrame, BKRPlayingEditor, BKRRecordingEditor;
 @interface XCTestCase (BKRAdditions)
 
-- (void)recordingTaskWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskTimeoutAssertions:(taskCompletionHandler)taskTimeoutHandler;
+- (void)recordingTaskForHTTPBinWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskCompletionAssertions:(taskCompletionHandler)taskCompletion taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeout;
+- (void)recordingTaskWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskCompletionAssertions:(taskCompletionHandler)taskCompletion taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeout;
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 - (void)cancellingGetTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;

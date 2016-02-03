@@ -18,6 +18,8 @@
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/BKRRecordingEditor.h>
+#import <BeKindRewind/BKRRecorder.h>
+#import <BeKindRewind/BKRRecordableScene.h>
 
 @implementation BKRExpectedScenePlistDictionaryBuilder
 
@@ -42,19 +44,53 @@
     return [[self alloc] init];
 }
 
-//- (instancetype)init {
-//    self = [super init];
-//    if (self) {
-////        _HTTPMethod = @"GET";
-//    }
-//    return self;
-//}
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+//        _HTTPMethod = @"GET";
+        _cancelling = NO;
+    }
+    return self;
+}
 
 @end
 
 @implementation XCTestCase (BKRAdditions)
 
-- (void)recordingTaskWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskTimeoutAssertions:(taskCompletionHandler)taskTimeoutHandler {
+- (void)recordingTaskForHTTPBinWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskCompletionAssertions:(taskCompletionHandler)taskCompletion taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeout {
+//    __block NSData *receivedData;
+//    __block NSURLResponse *receivedResponse;
+    
+    [self recordingTaskWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        if (expectedRecording.isCancelling) {
+            
+        } else {
+            NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+            if ([expectedRecording.HTTPMethod isEqualToString:@"POST"]) {
+                NSDictionary *formDict = dataDict[@"form"];
+                // for this service, need to fish out the data sent
+                NSArray *formKeys = formDict.allKeys;
+                NSString *rawReceivedDataString = formKeys.firstObject;
+                NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                // ensure that result from network is as expected
+                XCTAssertEqualObjects(expectedRecording.sentJSON, receivedDataDictionary);
+            } else {
+                XCTAssertEqualObjects(dataDict[@"args"], expectedRecording.receivedJSON);
+            }
+        }
+        
+        if (taskCompletion) {
+            taskCompletion(task, data, response, error);
+        }
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+        if (taskTimeout) {
+            taskTimeout(task, error);
+        }
+    }];
+}
+
+- (void)recordingTaskWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskCompletionAssertions:(taskCompletionHandler)taskCompletion taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeout {
     NSURL *expectedURL = [NSURL URLWithString:expectedRecording.URLString];
     NSMutableURLRequest *basicAssertRequest = [NSMutableURLRequest requestWithURL:expectedURL];
     if (expectedRecording.HTTPMethod) {
@@ -62,16 +98,67 @@
     }
     
     // include one or the other but not both
-    if (expectedRecording.receivedJSON) {
-        basicAssertRequest.HTTPBody = [NSJSONSerialization dataWithJSONObject:expectedRecording.receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
+    if (expectedRecording.sentJSON) {
+        basicAssertRequest.HTTPBody = [NSJSONSerialization dataWithJSONObject:expectedRecording.sentJSON options:NSJSONWritingPrettyPrinted error:nil];
     } else if (expectedRecording.HTTPBody) {
         basicAssertRequest.HTTPBody = expectedRecording.HTTPBody;
     }
-    [self _executeRequest:basicAssertRequest withExpectationString:@"simple assert task" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-        
-    } tastTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-        
-    }];
+    __block NSData *receivedData;
+    __block NSURLResponse *receivedResponse;
+    __block NSError *receivedError;
+    
+    taskCompletionHandler localCompletionHandler = ^void(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil([BKRRecorder sharedInstance].currentCassette);
+        if (expectedRecording.isCancelling) {
+            XCTAssertEqual(expectedRecording.expectedErrorCode, error.code);
+            XCTAssertEqualObjects(expectedRecording.expectedErrorDomain, error.domain);
+            XCTAssertEqualObjects(expectedRecording.expectedErrorUserInfo, error.userInfo);
+            receivedError = error;
+        } else {
+            XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
+            receivedData = data;
+            receivedResponse = response;
+        }
+        if (taskCompletion) {
+            taskCompletion(task, data, response, error);
+        }
+    };
+    
+    taskTimeoutCompletionHandler localTimeoutHandler = ^void(NSURLSessionTask *task, NSError *error) {
+        BKRRecordableScene *expectedScene = [BKRRecorder sharedInstance].allScenes[expectedRecording.expectedSceneNumber];
+        XCTAssertNotNil(expectedScene);
+        XCTAssertEqual(expectedScene.allFrames.count, expectedRecording.expectedNumberOfFrames);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = expectedScene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        if (expectedRecording.isCancelling) {
+            XCTAssertEqual(expectedScene.allRequestFrames.count, 1);
+            XCTAssertEqual(expectedScene.allErrorFrames.count, 1);
+        } else {
+            XCTAssertEqual(expectedScene.allRequestFrames.count, 2);
+            XCTAssertEqual(expectedScene.allDataFrames.count, 1);
+            XCTAssertEqual(expectedScene.allResponseFrames.count, 1);
+            BKRDataFrame *dataFrame = expectedScene.allDataFrames.firstObject;
+            [self assertData:dataFrame withData:receivedData extraAssertions:nil];
+            BKRResponseFrame *responseFrame = expectedScene.allResponseFrames.firstObject;
+            [self assertResponse:responseFrame withResponse:receivedResponse extraAssertions:nil];
+            NSURLRequest *currentRequest = task.currentRequest;
+            BKRRequestFrame *currentRequestFrame = expectedScene.currentRequest;
+            XCTAssertNotNil(currentRequestFrame);
+            [self assertRequest:currentRequestFrame withRequest:currentRequest extraAssertions:nil];
+        }
+        [self assertFramesOrder:expectedScene extraAssertions:nil];
+        if (taskTimeout) {
+            taskTimeout(task, error);
+        }
+    };
+    
+    if (expectedRecording.isCancelling) {
+        [self _executeCancellingRequest:basicAssertRequest withExpectationString:@"cancelling assert" taskCompletionAssertions:localCompletionHandler taskTimeoutAssertions:localTimeoutHandler];
+    } else {
+        [self _executeRequest:basicAssertRequest withExpectationString:@"simple assert task" taskCompletionAssertions:localCompletionHandler tastTimeoutAssertions:localTimeoutHandler];
+    }
 }
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
