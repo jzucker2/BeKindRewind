@@ -36,7 +36,43 @@
 
 @end
 
+@implementation BKRExpectedRecording
+
++ (instancetype)recording {
+    return [[self alloc] init];
+}
+
+//- (instancetype)init {
+//    self = [super init];
+//    if (self) {
+////        _HTTPMethod = @"GET";
+//    }
+//    return self;
+//}
+
+@end
+
 @implementation XCTestCase (BKRAdditions)
+
+- (void)recordingTaskWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskTimeoutAssertions:(taskCompletionHandler)taskTimeoutHandler {
+    NSURL *expectedURL = [NSURL URLWithString:expectedRecording.URLString];
+    NSMutableURLRequest *basicAssertRequest = [NSMutableURLRequest requestWithURL:expectedURL];
+    if (expectedRecording.HTTPMethod) {
+        basicAssertRequest.HTTPMethod = expectedRecording.HTTPMethod;
+    }
+    
+    // include one or the other but not both
+    if (expectedRecording.receivedJSON) {
+        basicAssertRequest.HTTPBody = [NSJSONSerialization dataWithJSONObject:expectedRecording.receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
+    } else if (expectedRecording.HTTPBody) {
+        basicAssertRequest.HTTPBody = expectedRecording.HTTPBody;
+    }
+    [self _executeRequest:basicAssertRequest withExpectationString:@"simple assert task" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        
+    } tastTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
+}
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler {
     NSURL *basicGetURL = [NSURL URLWithString:URLString];

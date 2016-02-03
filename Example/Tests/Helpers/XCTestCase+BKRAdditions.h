@@ -29,8 +29,21 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 + (instancetype)builder;
 @end
 
+@interface BKRExpectedRecording : NSObject
+@property (nonatomic, copy) NSString *URLString;
+@property (nonatomic, copy) NSString *HTTPMethod;
+@property (nonatomic, copy) NSData *HTTPBody;
+@property (nonatomic, strong) NSDictionary *sentJSON;
+@property (nonatomic, strong) NSDictionary *receivedJSON;
+@property (nonatomic, strong) NSData *receivedData;
+@property (nonatomic) NSInteger responseStatusCode;
++ (instancetype)recording;
+@end
+
 @class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRRecordableCassette, BKRPlayableCassette, BKRErrorFrame, BKRPlayingEditor, BKRRecordingEditor;
 @interface XCTestCase (BKRAdditions)
+
+- (void)recordingTaskWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskTimeoutAssertions:(taskCompletionHandler)taskTimeoutHandler;
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 - (void)cancellingGetTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
