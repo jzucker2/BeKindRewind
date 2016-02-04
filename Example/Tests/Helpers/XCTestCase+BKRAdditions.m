@@ -20,6 +20,7 @@
 #import <BeKindRewind/BKRRecordingEditor.h>
 #import <BeKindRewind/BKRRecorder.h>
 #import <BeKindRewind/BKRRecordableScene.h>
+#import <BeKindRewind/BKRPlayer.h>
 
 @implementation BKRExpectedScenePlistDictionaryBuilder
 
@@ -675,6 +676,20 @@
 
 - (void)testPlayingRequestForExpectedSceneBuilder:(BKRExpectedScenePlistDictionaryBuilder *)sceneBuilder {
     
+}
+
+- (void)setWithExpectationsPlayableCassette:(BKRPlayableCassette *)cassette inPlayer:(BKRPlayer *)player {
+    __block XCTestExpectation *stubsExpectation;
+    player.beforeAddingStubsBlock = ^void(void) {
+        stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
+    };
+    player.afterAddingStubsBlock = ^void(void) {
+        [stubsExpectation fulfill];
+    };
+    player.currentCassette = cassette;
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
 }
 
 @end

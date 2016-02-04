@@ -11,6 +11,10 @@
 @class BKRPlayableCassette;
 @class BKRPlayableScene;
 
+// typedef returnType (^TypeName)(parameterTypes);
+typedef void (^BKRBeforeAddingStubs)(void);
+typedef void (^BKRAfterAddingStubs)(void);
+
 @interface BKRPlayer : NSObject
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
@@ -25,6 +29,11 @@
 
 @property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
 
+- (void)reset;
+
 - (NSArray<BKRPlayableScene *> *)allScenes;
+
+@property (nonatomic, copy) BKRBeforeAddingStubs beforeAddingStubsBlock;
+@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock;
 
 @end

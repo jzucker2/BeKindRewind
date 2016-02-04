@@ -20,7 +20,10 @@
     });
 }
 
-- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher {
+- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher beforeStubsBlock:(BKRBeforeAddingStubs)beforeStubsBlock afterStubsBlock:(BKRAfterAddingStubs)afterStubsBlock {
+    if (beforeStubsBlock) {
+        beforeStubsBlock();
+    }
     // reverse array: http://stackoverflow.com/questions/586370/how-can-i-reverse-a-nsarray-in-objective-c
     NSArray<BKRPlayableScene *> *currentScenes = (NSArray<BKRPlayableScene *> *)self.currentCassette.allScenes;
     dispatch_barrier_async(self.editingQueue, ^{
@@ -63,6 +66,11 @@
             }];
         }];
     });
+    if (afterStubsBlock) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            afterStubsBlock();
+        });
+    }
 }
 
 - (void)_removeStubs {

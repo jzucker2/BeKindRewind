@@ -59,7 +59,13 @@
 }
 
 - (void)_addStubs {
-    [self.editor addStubsForMatcher:self.matcher];
+    [self.editor addStubsForMatcher:self.matcher beforeStubsBlock:self.beforeAddingStubsBlock afterStubsBlock:self.afterAddingStubsBlock];
+}
+
+- (void)reset {
+    self.enabled = NO;
+    self.beforeAddingStubsBlock = nil;
+    self.afterAddingStubsBlock = nil;
 }
 
 @end

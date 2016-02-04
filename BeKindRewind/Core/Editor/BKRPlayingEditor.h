@@ -8,10 +8,13 @@
 
 #import "BKREditor.h"
 #import "BKRRequestMatching.h"
+#import "BKRPlayer.h"
+
+@class BKRPlayer;
 
 @interface BKRPlayingEditor : BKREditor
 
-- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher;
+- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher beforeStubsBlock:(BKRBeforeAddingStubs)beforeStubsBlock afterStubsBlock:(BKRAfterAddingStubs)afterStubsBlock;
 
 
 @end

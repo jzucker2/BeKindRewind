@@ -42,7 +42,7 @@
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = testCassette;
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     player.enabled = YES;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNotNil(data);
@@ -106,8 +106,8 @@
     BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 2, @"testCassette should have 4 frames for it's 1 scene");
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = testCassette;
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     player.enabled = YES;
     [self cancellingGetTaskWithURLString:@"https://httpbin.org/delay/10" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         // ensure that result from network is as expected
@@ -195,8 +195,9 @@
     BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = testCassette;
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+//    player.currentCassette = testCassette;
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     player.enabled = YES;
     [self postJSON:sceneBuilder.sentJSON withURLString:@"https://httpbin.org/post" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
@@ -246,8 +247,9 @@
     XCTAssertEqual(testCassette.allScenes.count, 2);
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"First scene should have 4 frames");
     XCTAssertEqual(testCassette.allScenes.lastObject.allFrames.count, 4, @"Second (last scene) should have 4 frames");
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = testCassette;
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+//    player.currentCassette = testCassette;
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     player.enabled = YES;
     
     [self getTaskWithURLString:firstSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -376,8 +378,9 @@
     XCTAssertEqual(testCassette.allScenes.count, 2, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1st scene");
     XCTAssertEqual(testCassette.allScenes.lastObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 2nd scene");
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = testCassette;
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+//    player.currentCassette = testCassette;
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     player.enabled = YES;
     [self getTaskWithURLString:firstSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
