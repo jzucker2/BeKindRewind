@@ -87,6 +87,7 @@
 ////        __strong typeof(wself) sself = wself;
 //        [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)wself];
 //    });
+    [(NSURLSessionTask *)self uniqueify];
     [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)self];
     NSLog(@"now init task");
 //    [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)self];
