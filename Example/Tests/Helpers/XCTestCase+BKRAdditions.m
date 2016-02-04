@@ -110,11 +110,16 @@
     taskCompletionHandler localCompletionHandler = ^void(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNotNil([BKRRecorder sharedInstance].currentCassette);
         if (expectedRecording.isCancelling) {
+            XCTAssertNil(data);
+            XCTAssertNotNil(error);
             XCTAssertEqual(expectedRecording.expectedErrorCode, error.code);
             XCTAssertEqualObjects(expectedRecording.expectedErrorDomain, error.domain);
             XCTAssertEqualObjects(expectedRecording.expectedErrorUserInfo, error.userInfo);
             receivedError = error;
         } else {
+            XCTAssertNil(error);
+            XCTAssertNotNil(data);
+            XCTAssertNotNil(response);
             XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
             receivedData = data;
             receivedResponse = response;
