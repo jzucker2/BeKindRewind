@@ -24,10 +24,7 @@
 @property (nonatomic, strong) BKRPlayableCassette *currentCassette;
 
 @property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
-//
-//- (BKRPlayableScene *)playheadScene;
-//
-//- (void)resetPlayhead;
+
 - (NSArray<BKRPlayableScene *> *)allScenes;
 
 @end
