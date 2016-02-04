@@ -65,8 +65,8 @@
 #pragma mark - NSURLSession recording
 
 - (void)beginRecording:(NSURLSessionTask *)task {
+    // need this to be synchronous on the main queue
     if (self.beginRecordingBlock) {
-        NSLog(@"call recording block");
         self.beginRecordingBlock(task);
     }
 }

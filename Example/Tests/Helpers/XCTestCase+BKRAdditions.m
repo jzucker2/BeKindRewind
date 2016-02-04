@@ -223,7 +223,6 @@
     }];
     XCTAssertEqual(task.state, NSURLSessionTaskStateSuspended);
     [task resume];
-    NSLog(@"waitForExpectation");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         XCTAssertEqual(task.state, NSURLSessionTaskStateCompleted);

@@ -13,11 +13,6 @@
 
 - (void)setUp {
     [super setUp];
-    if(getenv("NSZombieEnabled") || getenv("NSAutoreleaseFreedObjectCheckEnabled")) {
-        NSLog(@"NSZombieEnabled/NSAutoreleaseFreedObjectCheckEnabled enabled!");
-    } else {
-        NSLog(@"all clean");
-    }
     [BKROHHTTPStubsWrapper removeAllStubs];
 }
 
