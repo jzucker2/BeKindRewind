@@ -34,12 +34,28 @@
     [BKRRecorder sharedInstance].currentCassette = cassette;
     [BKRRecorder sharedInstance].enabled = YES;
 
+    
+//    NSString *recordingExpectationString = [NSString stringWithFormat:@"%@", NSStringFromSelector(self.invocation.selector)];
+//    __block XCTestExpectation *recordingExpectation = [self expectationWithDescription:recordingExpectationString];
     [BKRRecorder sharedInstance].beginRecordingBlock = ^void(NSURLSessionTask *task) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
+//            NSLog(@"&&&&&& create expectation with string: %@", recordingExpectationString);
+//            task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
+//            NSLog(@"&&&&&& create expectation: %@", task.recordingExpectation);
+//        });
         NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
+        NSLog(@"&&&&&& create expectation with string: %@", recordingExpectationString);
         task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
+        NSLog(@"&&&&&& create expectation: %@", task.recordingExpectation);
     };
     
     [BKRRecorder sharedInstance].endRecordingBlock = ^void(NSURLSessionTask *task) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            NSLog(@"****** fulfill expectation: %@", task.recordingExpectation);
+//            [task.recordingExpectation fulfill];
+//        });
+        NSLog(@"****** fulfill expectation: %@", task.recordingExpectation);
         [task.recordingExpectation fulfill];
     };
 }
@@ -51,7 +67,7 @@
     [super tearDown];
 }
 
-- (void)DISABLE_testRecordingOneGETRequest {
+- (void)testRecordingOneGETRequest {
 //    __block BKRScene *scene = nil;
 //    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
 //        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
@@ -95,7 +111,7 @@
     }];
 }
 
-- (void)DISABLE_testRecordingOneCancelledGETRequest {
+- (void)testRecordingOneCancelledGETRequest {
     BKRExpectedRecording *recording = [BKRExpectedRecording recording];
     recording.cancelling = YES;
     recording.URLString = @"https://httpbin.org/delay/10";
@@ -115,7 +131,7 @@
     }];
 }
 
-- (void)DISABLE_testRecordingOnePOSTRequest {
+- (void)testRecordingOnePOSTRequest {
     BKRExpectedRecording *recording = [BKRExpectedRecording recording];
     recording.URLString = @"https://httpbin.org/post";
     recording.expectedNumberOfFrames = 4;
@@ -172,7 +188,7 @@
 
 
 
-- (void)DISABLE_testRecordingMultipleGETRequests {
+- (void)testRecordingMultipleGETRequests {
     BKRExpectedRecording *firstRecording = [BKRExpectedRecording recording];
     firstRecording.URLString = @"https://httpbin.org/get?test=test";
     firstRecording.receivedJSON = @{
@@ -269,7 +285,7 @@
 //    }];
 }
 
-- (void)DISABLE_testRecordingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+- (void)testRecordingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
     BKRExpectedRecording *firstRecording = [BKRExpectedRecording recording];
     firstRecording.URLString = @"https://pubsub.pubnub.com/time/0";
     firstRecording.responseStatusCode = 200;

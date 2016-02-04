@@ -66,13 +66,25 @@
 
 - (void)beginRecording:(NSURLSessionTask *)task {
     if (self.beginRecordingBlock) {
+        NSLog(@"call recording block");
         self.beginRecordingBlock(task);
     }
+//    if (self.beginRecordingBlock) {
+//        __weak typeof(self) wself = self;
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            __strong typeof(wself) sself = wself;
+//            sself.beginRecordingBlock(task);
+//        });
+//    }
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
     if (self.endRecordingBlock) {
-        self.endRecordingBlock(task);
+        __weak typeof(self) wself = self;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            __strong typeof(wself) sself = wself;
+            sself.endRecordingBlock(task);
+        });
     }
 }
 
