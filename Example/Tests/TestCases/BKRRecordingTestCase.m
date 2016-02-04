@@ -63,6 +63,7 @@
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [[BKRRecorder sharedInstance] reset];
+    [[NSURLSession sharedSession] invalidateAndCancel];
 //    [BKRRecorder sharedInstance].currentCassette = nil; // this causes an assert to fire
     [super tearDown];
 }
@@ -105,7 +106,7 @@
     expectedRecording.expectedSceneNumber = 0;
     expectedRecording.expectedNumberOfFrames = 4;
     [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-        
+        NSLog(@"task: %@", task.description);
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
