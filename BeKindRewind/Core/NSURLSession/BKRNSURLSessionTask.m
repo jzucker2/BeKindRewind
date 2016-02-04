@@ -78,4 +78,9 @@
     [self BKR_setError:arg1];
 }
 
+- (id)BKR_initWithOriginalRequest:(id)arg1 updatedRequest:(id)arg2 ident:(unsigned long long)arg3 session:(id)arg4 {
+    [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)self];
+    return [self BKR_initWithOriginalRequest:arg1 updatedRequest:arg2 ident:arg3 session:arg4];
+}
+
 @end

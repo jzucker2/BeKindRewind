@@ -12,12 +12,17 @@
 @class BKRRecordableScene;
 @interface BKRRecorder : NSObject
 
+typedef void (^BKRBeginRecordingTaskBlock)(NSURLSessionTask *task);
+typedef void (^BKREndRecordingTaskBlock)(NSURLSessionTask *task);
+
 /**
  *  Whether or not network activity should be recorded
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
 @property (nonatomic, strong) BKRRecordableCassette *currentCassette;
+@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
+@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
 //- (void)setCassette:(BKRRecordableCassette *)cassette;
 - (NSArray<BKRRecordableScene *> *)allScenes;
 
@@ -35,6 +40,8 @@
 - (void)reset;
 
 //- (void)recordTaskResumption:(NSURLSessionTask *)task;
+
+- (void)beginRecording:(NSURLSessionTask *)task;
 
 - (void)initTask:(NSURLSessionTask *)task;
 
@@ -70,7 +77,7 @@
  *  @param arg1 error from network request
  */
 - (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error;
-//- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
+- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
 /**
  *  Called by JSZVCRNSURLSessionConnection. This is called
  *  when [task cancel] is called.

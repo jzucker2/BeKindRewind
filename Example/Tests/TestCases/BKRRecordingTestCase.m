@@ -14,6 +14,8 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRNSURLSessionConnection.h>
 #import <BeKindRewind/BKRNSURLSessionTask.h>
+#import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
+#import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import "XCTestCase+BKRAdditions.h"
 #import "BKRBaseTestCase.h"
 
@@ -31,6 +33,15 @@
 //    cassette.recording = YES;
     [BKRRecorder sharedInstance].currentCassette = cassette;
     [BKRRecorder sharedInstance].enabled = YES;
+
+    [BKRRecorder sharedInstance].beginRecordingBlock = ^void(NSURLSessionTask *task) {
+        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
+        task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
+    };
+    
+    [BKRRecorder sharedInstance].endRecordingBlock = ^void(NSURLSessionTask *task) {
+        [task.recordingExpectation fulfill];
+    };
 }
 
 - (void)tearDown {

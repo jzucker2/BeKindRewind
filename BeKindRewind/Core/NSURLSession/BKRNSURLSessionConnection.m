@@ -136,11 +136,11 @@
     [self BKR__didReceiveResponse:response sniff:sniff];
 }
 
-//- (void)BKR__didFinishWithError:(NSError *)error;
-//{
-//    [self.task uniqueify];
-//    [[BKRRecorder sharedInstance] recordTask:self.task didFinishWithError:error];
-//    [self BKR__didFinishWithError:error];
-//}
+- (void)BKR__didFinishWithError:(NSError *)error;
+{
+    [self.task uniqueify];
+    [[BKRRecorder sharedInstance] recordTask:self.task didFinishWithError:error];
+    [self BKR__didFinishWithError:error];
+}
 
 @end

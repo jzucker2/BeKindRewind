@@ -62,11 +62,22 @@
 
 #pragma mark - NSURLSession recording
 
+- (void)beginRecording:(NSURLSessionTask *)task {
+    if (self.beginRecordingBlock) {
+        self.beginRecordingBlock(task);
+    }
+}
+
+- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
+    if (self.endRecordingBlock) {
+        self.endRecordingBlock(task);
+    }
+}
+
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 {
     if (!self.enabled) {
         return;
     }
-    
 }
 
 - (void)initTask:(NSURLSessionTask *)task {
