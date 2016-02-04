@@ -21,9 +21,9 @@ typedef void (^BKREndRecordingTaskBlock)(NSURLSessionTask *task);
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
 @property (nonatomic, strong) BKRRecordableCassette *currentCassette;
-@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
-@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
-//- (void)setCassette:(BKRRecordableCassette *)cassette;
+@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock; // this delays the main queue, don't block!
+@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock; // this is async on main queue
+
 - (NSArray<BKRRecordableScene *> *)allScenes;
 
 /**

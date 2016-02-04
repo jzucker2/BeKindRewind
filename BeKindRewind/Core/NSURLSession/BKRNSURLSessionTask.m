@@ -33,7 +33,7 @@
         overrideSessionConnectionClassString = @"__NSCFURLSessionTask";
     }
 #else
-    overrideSessionConnectionClassString = @"NSURLSessionTask";
+    overrideSessionConnectionClassString = @"__NSCFURLSessionTask";
 #endif
     Class cfURLSessionConnectionClass = NSClassFromString(overrideSessionConnectionClassString);
     if (!cfURLSessionConnectionClass) {
@@ -79,35 +79,9 @@
 }
 
 - (void)BKR_resume {
-    NSLog(@"resume swizzle");
-    //    __weak typeof(self) wself = self;
-    // this is dispatch sync to guarantee the block executes before the task is created
-    NSLog(@"try to get recorder to call begin block");
-    //    dispatch_sync(dispatch_get_main_queue(), ^{
-    ////        __strong typeof(wself) sself = wself;
-    //        [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)wself];
-    //    });
     [(NSURLSessionTask *)self uniqueify];
     [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)self];
-    NSLog(@"now resume task");
-    //    [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)self];
     [self BKR_resume];
 }
-
-//- (id)BKR_initWithOriginalRequest:(id)arg1 updatedRequest:(id)arg2 ident:(unsigned long long)arg3 session:(id)arg4 {
-//    NSLog(@"initTask swizzle");
-////    __weak typeof(self) wself = self;
-//    // this is dispatch sync to guarantee the block executes before the task is created
-//    NSLog(@"try to get recorder to call begin block");
-////    dispatch_sync(dispatch_get_main_queue(), ^{
-//////        __strong typeof(wself) sself = wself;
-////        [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)wself];
-////    });
-//    [(NSURLSessionTask *)self uniqueify];
-//    [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)self];
-//    NSLog(@"now init task");
-////    [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)self];
-//    return [self BKR_initWithOriginalRequest:arg1 updatedRequest:arg2 ident:arg3 session:arg4];
-//}
 
 @end

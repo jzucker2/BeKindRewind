@@ -90,29 +90,11 @@
     }
 }
 
-//- (void)BKR_cancel {
-//    [self.task uniqueify];
-//    [[BKRRecorder sharedInstance] recordTaskCancellation:self.task];
-//    [self BKR_cancel];
-//}
-
 - (instancetype)BKR_initWithTask:(NSURLSessionTask *)task delegate:(id <NSURLSessionDelegate>)delegate delegateQueue:(NSOperationQueue *)queue {
     [task uniqueify];
     [[BKRRecorder sharedInstance] initTask:task];
     return [self BKR_initWithTask:task delegate:delegate delegateQueue:queue];
 }
-
-//- (void)BKR_setTask(id)arg1 {
-//    NSURLSessionTask *task = (NSURLSessionTask *)arg1;
-//    [self BKR_setTask:arg1];
-//}
-
-// record right before network request begins
-//- (void)BKR_resume {
-//    [self.task uniqueify];
-//    [[BKRRecorder sharedInstance] recordTaskResumption:self.task];
-//    [self BKR_resume];
-//}
 
 - (void)BKR__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(id)arg3;
 {
