@@ -58,6 +58,8 @@
 
 - (void)reset {
     [self.editor updateRecordingStartTime];
+    self.beginRecordingBlock = nil;
+    self.endRecordingBlock = nil;
 }
 
 #pragma mark - NSURLSession recording
