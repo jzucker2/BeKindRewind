@@ -59,8 +59,6 @@
 @implementation XCTestCase (BKRAdditions)
 
 - (void)recordingTaskForHTTPBinWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskCompletionAssertions:(taskCompletionHandler)taskCompletion taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeout {
-//    __block NSData *receivedData;
-//    __block NSURLResponse *receivedResponse;
     
     [self recordingTaskWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         if (expectedRecording.isCancelling) {
@@ -110,14 +108,15 @@
     
     taskCompletionHandler localCompletionHandler = ^void(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNotNil([BKRRecorder sharedInstance].currentCassette);
-        XCTAssertNotNil(data);
         if (expectedRecording.isCancelling) {
+            // can't assert data in here, either it is a valid NSData object with no bytes or the data object hasn't returned because the request is slow
             XCTAssertNotNil(error);
             XCTAssertEqual(expectedRecording.expectedErrorCode, error.code);
             XCTAssertEqualObjects(expectedRecording.expectedErrorDomain, error.domain);
             XCTAssertEqualObjects(expectedRecording.expectedErrorUserInfo, error.userInfo);
             receivedError = error;
         } else {
+            XCTAssertNotNil(data);
             XCTAssertNil(error);
             XCTAssertNotNil(response);
             XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
