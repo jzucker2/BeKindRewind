@@ -7,6 +7,7 @@
 //
 
 #import "BKREditor.h"
+#import "BKRRecorder.h" // can remove this eventually, only need the block declaration
 
 @class BKRRecordableRawFrame;
 @interface BKRRecordingEditor : BKREditor
@@ -16,5 +17,7 @@
 - (void)updateRecordingStartTime;
 
 - (void)addFrame:(BKRRecordableRawFrame *)frame;
+
+- (void)executeEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock withTask:(NSURLSessionTask *)task;
 
 @end

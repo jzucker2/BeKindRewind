@@ -71,4 +71,12 @@
     return [rawFrame.creationDate compare:self->_recordingStartTime];
 }
 
+- (void)executeEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock withTask:(NSURLSessionTask *)task {
+    dispatch_barrier_async(self.editingQueue, ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            endRecordingBlock(task);
+        });
+    });
+}
+
 @end

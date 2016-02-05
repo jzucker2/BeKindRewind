@@ -73,11 +73,12 @@
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
     if (self.endRecordingBlock) {
-        __weak typeof(self) wself = self;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            __strong typeof(wself) sself = wself;
-            sself.endRecordingBlock(task);
-        });
+//        __weak typeof(self) wself = self;
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            __strong typeof(wself) sself = wself;
+//            sself.endRecordingBlock(task);
+//        });
+        [self.editor executeEndRecordingBlock:self.endRecordingBlock withTask:task];
     }
 }
 

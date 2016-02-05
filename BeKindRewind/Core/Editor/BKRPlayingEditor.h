@@ -8,7 +8,7 @@
 
 #import "BKREditor.h"
 #import "BKRRequestMatching.h"
-#import "BKRPlayer.h"
+#import "BKRPlayer.h" // can remove this eventually, only need the block declaration
 
 @class BKRPlayer;
 
