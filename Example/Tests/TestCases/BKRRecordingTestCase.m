@@ -36,12 +36,10 @@
     [BKRRecorder sharedInstance].beginRecordingBlock = ^void(NSURLSessionTask *task) {
         NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
         task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
-        NSLog(@"task expectation: %@", task);
     };
     
     [BKRRecorder sharedInstance].endRecordingBlock = ^void(NSURLSessionTask *task) {
         [task.recordingExpectation fulfill];
-        NSLog(@"task fulfill: %@", task);
     };
 }
 

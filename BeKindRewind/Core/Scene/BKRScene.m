@@ -97,7 +97,6 @@
 
 - (NSArray *)_framesOnlyOfType:(Class)frameClass {
     NSMutableArray *restrictedFrames = [NSMutableArray array];
-    NSLog(@"framesOnlyOfType: %@", frameClass);
     for (BKRFrame *frame in self.allFrames) {
         if ([frame isKindOfClass:frameClass]) {
             [restrictedFrames addObject:frame];
