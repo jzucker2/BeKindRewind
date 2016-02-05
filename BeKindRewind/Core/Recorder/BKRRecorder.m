@@ -81,7 +81,6 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
-    NSLog(@"didFinishWithError: %@", task);
     if (self.endRecordingBlock) {
         [self.editor executeEndRecordingBlock:self.endRecordingBlock withTask:task];
     }

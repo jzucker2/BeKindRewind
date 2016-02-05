@@ -46,7 +46,6 @@
 }
 
 - (void)addFrame:(BKRRecordableRawFrame *)frame {
-    NSLog(@"begin add frame: %@", frame.debugDescription);
     __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
     if (!cassette) {
         NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
@@ -58,7 +57,6 @@
         if (![sself _shouldRecord:frame]) {
             return;
         }
-        NSLog(@"finally adding frame: %@", frame.debugDescription);
         [cassette addFrame:frame];
     });
 }
@@ -74,7 +72,6 @@
 }
 
 - (void)executeEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock withTask:(NSURLSessionTask *)task {
-    NSLog(@"add end recording block to main queue: %@", task);
     __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
     dispatch_barrier_async(self.editingQueue, ^{
         [cassette executeEndTaskRecordingBlock:endRecordingBlock withTask:task];

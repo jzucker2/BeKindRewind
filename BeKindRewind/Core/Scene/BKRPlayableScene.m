@@ -43,15 +43,6 @@
     });
 }
 
-//- (NSArray<BKRFrame *> *)_editedFrames:(NSArray *)rawFrames {
-//    NSMutableArray <BKRFrame *> *editedFrames = [NSMutableArray array];
-//    for (NSDictionary *rawFrameDict in rawFrames) {
-//        BKRPlayableRawFrame *rawFrame = [[BKRPlayableRawFrame alloc] initFromPlistDictionary:rawFrameDict];
-//        [editedFrames addObject:rawFrame.editedFrame];
-//    }
-//    return editedFrames.copy;
-//}
-
 - (NSData *)responseData {
     BKRDataFrame *dataFrame = self.allDataFrames.firstObject;
     return dataFrame.rawData;
@@ -72,7 +63,7 @@
     return responseFrame.error;
 }
 
-- (NSString *)description {
+- (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%p>: request: %@", self, self.originalRequest.URL];
 }
 
