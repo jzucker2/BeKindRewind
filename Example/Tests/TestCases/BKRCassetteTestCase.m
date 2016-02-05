@@ -31,9 +31,11 @@
     [self assertCreationOfPlayableCassetteWithNumberOfScenes:20];
 }
 
-- (void)testCreatePlayableCasssetteWithManyScenesPerformance {
+- (void)DISABLE_testCreatePlayableCasssetteWithManyScenesPerformance {
+    __weak typeof(self) wself = self;
     [self measureBlock:^{
-        [self assertCreationOfPlayableCassetteWithNumberOfScenes:50];
+        __strong typeof(wself) sself = wself;
+        [sself assertCreationOfPlayableCassetteWithNumberOfScenes:50];
     }];
 }
 
