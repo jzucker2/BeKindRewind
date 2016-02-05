@@ -8,7 +8,7 @@
 
 #import "BKRVCR.h"
 #import "BKRCassette.h"
-#import "BKRNSURLSessionConnection.h"
+#import "BKRNSURLSessionSwizzling.h"
 #import "BKRRecorder.h"
 #import "BKRPlayer.h"
 
