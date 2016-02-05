@@ -73,4 +73,8 @@
     return self;
 }
 
+- (NSString *)debugDescription {
+    return [NSString stringWithFormat:@"%@: <%p> ID: %@", NSStringFromClass(self.class), self, self.uniqueIdentifier];
+}
+
 @end

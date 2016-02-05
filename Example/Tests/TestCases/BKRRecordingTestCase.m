@@ -34,12 +34,14 @@
     [BKRRecorder sharedInstance].enabled = YES;
 
     [BKRRecorder sharedInstance].beginRecordingBlock = ^void(NSURLSessionTask *task) {
+        NSLog(@"beginRecordingBlock: %@", task.globallyUniqueIdentifier);
         NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
         task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
     };
     
     [BKRRecorder sharedInstance].endRecordingBlock = ^void(NSURLSessionTask *task) {
         [task.recordingExpectation fulfill];
+        NSLog(@"endRecordingBlock");
     };
 }
 
@@ -150,6 +152,7 @@
     secondRecording.expectedNumberOfFrames = 4;
     
     __block NSNumber *firstTimetoken = nil;
+    NSLog(@"firstTask");
     [self recordingTaskWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         // ensure that result from network is as expected
@@ -164,6 +167,7 @@
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
     
+    NSLog(@"secondTask");
     [self recordingTaskWithExpectedRecording:secondRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         // ensure that result from network is as expected

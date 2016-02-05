@@ -49,6 +49,14 @@
     });
 }
 
+- (void)executeEndTaskRecordingBlock:(BKREndRecordingTaskBlock)endTaskBlock withTask:(NSURLSessionTask *)task {
+    dispatch_barrier_async(self.processingQueue, ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            endTaskBlock(task);
+        });
+    });
+}
+
 - (NSDictionary *)plistDictionary {
     NSMutableArray *plistArray = [NSMutableArray array];
     for (BKRRecordableScene *scene in self.allScenes) {

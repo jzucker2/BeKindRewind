@@ -72,6 +72,7 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
+    NSLog(@"didFinishWithError: %@", task);
     if (self.endRecordingBlock) {
 //        __weak typeof(self) wself = self;
 //        dispatch_async(dispatch_get_main_queue(), ^{
