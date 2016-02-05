@@ -75,15 +75,8 @@
 
 - (void)executeEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock withTask:(NSURLSessionTask *)task {
     NSLog(@"add end recording block to main queue: %@", task);
-//    dispatch_barrier_async(self.editingQueue, ^{
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            endRecordingBlock(task);
-//        });
-//    });
-//    __weak typeof(self) wself = self;
     __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
     dispatch_barrier_async(self.editingQueue, ^{
-//        __strong typeof(wself) sself = wself;
         [cassette executeEndTaskRecordingBlock:endRecordingBlock withTask:task];
     });
 }

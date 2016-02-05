@@ -7,13 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRConstants.h"
 
 @class BKRRecordableCassette;
 @class BKRRecordableScene;
 @interface BKRRecorder : NSObject
-
-typedef void (^BKRBeginRecordingTaskBlock)(NSURLSessionTask *task);
-typedef void (^BKREndRecordingTaskBlock)(NSURLSessionTask *task);
 
 /**
  *  Whether or not network activity should be recorded

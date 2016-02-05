@@ -8,7 +8,7 @@
 
 #import "BKRCassette.h"
 #import "BKRPlistSerializing.h"
-#import "BKRRecorder.h" // should remove this, only need the block typedef
+#import "BKRConstants.h"
 
 @class BKRRecordableRawFrame;
 @interface BKRRecordableCassette : BKRCassette <BKRPlistSerializer>

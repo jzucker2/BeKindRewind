@@ -7,13 +7,10 @@
 //
 
 #import "BKRRequestMatching.h"
+#import "BKRConstants.h"
 
 @class BKRPlayableCassette;
 @class BKRPlayableScene;
-
-// typedef returnType (^TypeName)(parameterTypes);
-typedef void (^BKRBeforeAddingStubs)(void);
-typedef void (^BKRAfterAddingStubs)(void);
 
 @interface BKRPlayer : NSObject
 
@@ -33,7 +30,7 @@ typedef void (^BKRAfterAddingStubs)(void);
 
 - (NSArray<BKRPlayableScene *> *)allScenes;
 
-@property (nonatomic, copy) BKRBeforeAddingStubs beforeAddingStubsBlock;
-@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock;
+@property (nonatomic, copy) BKRBeforeAddingStubs beforeAddingStubsBlock; // executed on main thread
+@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock; // executed on main thread
 
 @end

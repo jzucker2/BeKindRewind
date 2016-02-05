@@ -8,13 +8,13 @@
 
 #import "BKREditor.h"
 #import "BKRRequestMatching.h"
-#import "BKRPlayer.h" // can remove this eventually, only need the block declaration
+#import "BKRConstants.h"
 
 @class BKRPlayer;
 
 @interface BKRPlayingEditor : BKREditor
 
-- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher beforeStubsBlock:(BKRBeforeAddingStubs)beforeStubsBlock afterStubsBlock:(BKRAfterAddingStubs)afterStubsBlock;
+- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher afterStubsBlock:(BKRAfterAddingStubs)afterStubsBlock;
 
 
 @end

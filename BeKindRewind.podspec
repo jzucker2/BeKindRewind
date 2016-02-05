@@ -30,6 +30,7 @@ Pod::Spec.new do |s|
   s.dependency 'OHHTTPStubs', '~> 4.7.0'
   s.framework = 'XCTest'
   s.source_files = 'BeKindRewind/Core/**/*'
+#  s.prefix_header_contents = '#import "BKRConstants.h"'
   s.prepare_command = 'ruby plist_resource_creator.rb'
 
 #s.source_files = 'Pod/Classes/**/*'

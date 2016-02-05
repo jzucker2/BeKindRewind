@@ -36,4 +36,12 @@
     });
 }
 
+- (void)executeAfterAddingStubsBlock:(BKRAfterAddingStubs)afterStubsBlock {
+    dispatch_barrier_async(self.processingQueue, ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            afterStubsBlock();
+        });
+    });
+}
+
 @end

@@ -10,7 +10,6 @@
 #import "BKRPlayableCassette.h"
 #import "BKRPlayingEditor.h"
 #import "BKRPlayableScene.h"
-#import "BKROHHTTPStubsWrapper.h"
 
 @interface BKRPlayer ()
 @property (nonatomic, strong) BKRPlayingEditor *editor;
@@ -59,7 +58,20 @@
 }
 
 - (void)_addStubs {
-    [self.editor addStubsForMatcher:self.matcher beforeStubsBlock:self.beforeAddingStubsBlock afterStubsBlock:self.afterAddingStubsBlock];
+    // make sure this executes on the main thread
+    if (self.beforeAddingStubsBlock) {
+        if ([NSThread isMainThread]) {
+            self.beforeAddingStubsBlock();
+        } else {
+            // if player is called from a background queue, make sure this happens on main queue
+            __weak typeof(self) wself = self;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                __strong typeof(wself) sself = wself;
+                sself.beforeAddingStubsBlock();
+            });
+        }
+    }
+    [self.editor addStubsForMatcher:self.matcher afterStubsBlock:self.afterAddingStubsBlock];
 }
 
 - (void)reset {

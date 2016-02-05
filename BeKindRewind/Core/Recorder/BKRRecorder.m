@@ -67,18 +67,22 @@
 - (void)beginRecording:(NSURLSessionTask *)task {
     // need this to be synchronous on the main queue
     if (self.beginRecordingBlock) {
-        self.beginRecordingBlock(task);
+        if ([NSThread isMainThread]) {
+            self.beginRecordingBlock(task);
+        } else {
+            // if recorder was called from a background queue, then make sure this is called on the main queue
+            __weak typeof(self) wself = self;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                __strong typeof(wself) sself = wself;
+                sself.beginRecordingBlock(task);
+            });
+        }
     }
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
     NSLog(@"didFinishWithError: %@", task);
     if (self.endRecordingBlock) {
-//        __weak typeof(self) wself = self;
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            __strong typeof(wself) sself = wself;
-//            sself.endRecordingBlock(task);
-//        });
         [self.editor executeEndRecordingBlock:self.endRecordingBlock withTask:task];
     }
 }
