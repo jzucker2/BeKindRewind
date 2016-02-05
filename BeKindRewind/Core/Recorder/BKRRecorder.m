@@ -88,19 +88,21 @@
 }
 
 - (void)initTask:(NSURLSessionTask *)task {
-
+    NSLog(@"record request: %@", task.originalRequest);
     BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
     requestFrame.item = task.originalRequest;
     [self.editor addFrame:requestFrame];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
+    NSLog(@"record data: %@", data);
     BKRRecordableRawFrame *dataFrame = [BKRRecordableRawFrame frameWithTask:task];
     dataFrame.item = data.copy;
     [self.editor addFrame:dataFrame];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
+    NSLog(@"record response: %@", response);
     BKRRecordableRawFrame *currentRequestFrame = [BKRRecordableRawFrame frameWithTask:task];
     currentRequestFrame.item = task.currentRequest;
     [self.editor addFrame:currentRequestFrame];
