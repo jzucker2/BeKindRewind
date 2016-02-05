@@ -10,7 +10,7 @@
 #import "BKRPlayableScene.h"
 
 @interface BKRPlayableCassette ()
-@property (nonatomic, strong) NSDictionary<NSString *, BKRPlayableScene*> *scenes;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, BKRPlayableScene*> *scenes;
 @end
 
 @implementation BKRPlayableCassette
@@ -21,20 +21,27 @@
     self = [[[self class] alloc] init];
     if (self) {
         self.creationDate = dictionary[@"creationDate"];
-        _scenes = [self _editedScenes:dictionary[@"scenes"]];
+        _scenes = [NSMutableDictionary dictionary];
+        [self _addEditedScenes:dictionary[@"scenes"]];
     }
     return self;
 }
 
-- (NSDictionary *)_editedScenes:(NSArray<NSDictionary *> *)rawScenes {
-    __block NSMutableDictionary *editedScenes = [NSMutableDictionary dictionary];
+- (void)_addEditedScenes:(NSArray<NSDictionary *> *)rawScenes {
+    __weak typeof(self) wself = self;
     dispatch_apply(rawScenes.count, self.processingQueue, ^(size_t iteration) {
-        NSLog(@"adding edited scene: %zu", iteration);
+        __strong typeof(wself) sself = wself;
         BKRPlayableScene *scene = [[BKRPlayableScene alloc] initFromPlistDictionary:rawScenes[iteration]];
-        editedScenes[scene.uniqueIdentifier] = scene;
+        [sself addSceneToScenesDictionary:scene];
     });
-    NSLog(@"finished adding edited scenes");
-    return editedScenes.copy;
+}
+
+- (void)executeAfterAddingStubsBlock:(BKRAfterAddingStubs)afterStubsBlock {
+    dispatch_barrier_async(self.processingQueue, ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            afterStubsBlock();
+        });
+    });
 }
 
 @end

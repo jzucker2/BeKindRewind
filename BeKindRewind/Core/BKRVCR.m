@@ -8,28 +8,34 @@
 
 #import "BKRVCR.h"
 #import "BKRCassette.h"
-#import "BKRNSURLSessionConnection.h"
+#import "BKRNSURLSessionSwizzling.h"
+#import "BKRRecorder.h"
+#import "BKRPlayer.h"
 
 @interface BKRVCR ()
-
+@property (nonatomic, strong) BKRPlayer *player;
 @end
 
 @implementation BKRVCR
 
-- (instancetype)initWithCassette:(BKRCassette *)cassette {
-    self = [super init];
-    if (self) {
-        _currentCassette = cassette;
-    }
-    return self;
+- (void)_init {
+    _player = [BKRPlayer playerWithMatcherClass:nil];
 }
 
-+ (instancetype)vcrWithCassette:(BKRCassette *)cassette {
-    return [[self alloc] initWithCassette:cassette];
-}
+//- (instancetype)initWithCassette:(BKRCassette *)cassette {
+//    self = [super init];
+//    if (self) {
+//        _currentCassette = cassette;
+//    }
+//    return self;
+//}
 
-- (void)swizzleNetworkCallsForRecording {
-    [BKRNSURLSessionConnection swizzleNSURLSessionClasses];
-}
+//+ (instancetype)vcrWithCassette:(BKRCassette *)cassette {
+//    return [[self alloc] initWithCassette:cassette];
+//}
+//
+//- (void)swizzleNetworkCallsForRecording {
+//    [BKRNSURLSessionConnection swizzleNSURLSessionConnection];
+//}
 
 @end

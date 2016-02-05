@@ -12,9 +12,9 @@
 #import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
-#import <BeKindRewind/BKRNSURLSessionConnection.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
 #import <BeKindRewind/BKROHHTTPStubsWrapper.h>
+#import <BeKindRewind/BKRPlayableScene.h>
 #import "XCTestCase+BKRAdditions.h"
 #import "BKRBaseTestCase.h"
 
@@ -35,58 +35,40 @@
 }
 
 - (void)testPlayingOneGETRequest {
-    NSString *taskUniqueIdentifier = [NSUUID UUID].UUIDString;
-    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
-    sceneBuilder.URLString = @"https://httpbin.org/get?test=test";
-    sceneBuilder.taskUniqueIdentifier = taskUniqueIdentifier;
-//    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
-//                                                       @"Accept": @"*/*",
-//                                                       @"Accept-Encoding": @"gzip, deflate",
-//                                                       @"Accept-Language": @"en-us"
-//                                                       };
-    sceneBuilder.currentRequestAllHTTPHeaderFields = @{};
-    sceneBuilder.receivedJSON = @{
-                                  @"args": @{
-                                          @"test": @"test"
-                                          },
-                                  @"headers": @{
-                                          @"Accept": @"*/*",
-                                          @"Accept-Encoding": @"gzip, deflate",
-                                          @"Accept-Language": @"en-us",
-                                          @"Host": @"httpbin.org",
-                                          @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
-                                          },
-                                  @"origin": @"198.0.209.238",
-                                  @"url": @"https://httpbin.org/get?test=test"
-                                  };
-    sceneBuilder.responseAllHeaderFields = @{
-                                             @"Access-Control-Allow-Origin": @"*",
-                                             @"Content-Length": @"338",
-                                             @"Content-Type": @"application/json",
-                                             @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
-                                             @"Server": @"nginx",
-                                             @"access-control-allow-credentials": @"true"
-                                             };
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = cassette;
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     player.enabled = YES;
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNotNil(data);
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        
+//        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
+        
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 1);
-        scene = cassette.allScenes.firstObject;
+        
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
         XCTAssertTrue(scene.allFrames.count > 0);
         XCTAssertEqual(scene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
         [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqualObjects(dataFrame.JSONConvertedObject, dataDict, @"Deserialized data objects not equal. [[Data frame: %@]]. [[dataDict: %@]]",dataFrame.JSONConvertedObject, dataDict);
+        XCTAssertNotNil(dataDict, @"dataDict: %@", dataDict.description);
+        XCTAssertNotNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
+        XCTAssertNotNil(data, @"data: %@", data);
+        XCTAssertNotNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
         XCTAssertEqual(scene.allResponseFrames.count, 1);
         BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
         XCTAssertEqual(responseFrame.statusCode, 200);
@@ -118,19 +100,21 @@
                                    NSURLErrorFailingURLStringErrorKey: @"https://httpbin.org/delay/10",
                                    NSLocalizedDescriptionKey: @"cancelled"
                                    };
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
     __block NSError *taskError = nil;
-    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = cassette;
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 2, @"testCassette should have 4 frames for it's 1 scene");
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     player.enabled = YES;
     [self cancellingGetTaskWithURLString:@"https://httpbin.org/delay/10" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         // ensure that result from network is as expected
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 1);
-        scene = cassette.allScenes.firstObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
         XCTAssertNotNil(scene);
         XCTAssertNotNil(error);
         taskError = error;
@@ -192,7 +176,7 @@
                                           },
                                   @"json": @"<null>",
                                   @"origin": @"67.180.11.233",
-                                  @"url": @"https://httpbin.org/get?test=test"
+                                  @"url": @"https://httpbin.org/post"
                                   };
     sceneBuilder.sentJSON = @{
                               @"foo": @"bar"
@@ -206,11 +190,14 @@
                                              @"Server": @"nginx",
                                              @"access-control-allow-credentials": @"true"
                                              };
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = cassette;
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+//    player.currentCassette = testCassette;
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     player.enabled = YES;
     [self postJSON:sceneBuilder.sentJSON withURLString:@"https://httpbin.org/post" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
@@ -226,9 +213,9 @@
         XCTAssertEqualObjects(sceneBuilder.sentJSON, receivedDataDictionary);
         
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 1);
-        scene = cassette.allScenes.firstObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
         XCTAssertTrue(scene.allFrames.count > 0);
         XCTAssertEqual(scene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
@@ -250,79 +237,19 @@
 }
 
 - (void)testPlayingMultipleGetRequests {
-    NSString *firstTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
-    BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
-    firstSceneBuilder.URLString = @"https://httpbin.org/get?test=test";
-    firstSceneBuilder.taskUniqueIdentifier = firstTaskUniqueIdentifier;
-    //    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
-    //                                                       @"Accept": @"*/*",
-    //                                                       @"Accept-Encoding": @"gzip, deflate",
-    //                                                       @"Accept-Language": @"en-us"
-    //                                                       };
-    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
-    firstSceneBuilder.receivedJSON = @{
-                                       @"args": @{
-                                               @"test": @"test"
-                                               },
-                                       @"headers": @{
-                                               @"Accept": @"*/*",
-                                               @"Accept-Encoding": @"gzip, deflate",
-                                               @"Accept-Language": @"en-us",
-                                               @"Host": @"httpbin.org",
-                                               @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
-                                               },
-                                       @"origin": @"198.0.209.238",
-                                       @"url": @"https://httpbin.org/get?test=test"
-                                       };
-    firstSceneBuilder.responseAllHeaderFields = @{
-                                                  @"Access-Control-Allow-Origin": @"*",
-                                                  @"Content-Length": @"338",
-                                                  @"Content-Type": @"application/json",
-                                                  @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
-                                                  @"Server": @"nginx",
-                                                  @"access-control-allow-credentials": @"true"
-                                                  };
+    BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
+    BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test2" contentLength:nil];
     
-    NSString *secondTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
-    BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
-    secondSceneBuilder.URLString = @"https://httpbin.org/get?test=test2";
-    secondSceneBuilder.taskUniqueIdentifier = secondTaskUniqueIdentifier;
-    //    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
-    //                                                       @"Accept": @"*/*",
-    //                                                       @"Accept-Encoding": @"gzip, deflate",
-    //                                                       @"Accept-Language": @"en-us"
-    //                                                       };
-    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
-    secondSceneBuilder.receivedJSON = @{
-                                       @"args": @{
-                                               @"test": @"test2"
-                                               },
-                                       @"headers": @{
-                                               @"Accept": @"*/*",
-                                               @"Accept-Encoding": @"gzip, deflate",
-                                               @"Accept-Language": @"en-us",
-                                               @"Host": @"httpbin.org",
-                                               @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
-                                               },
-                                       @"origin": @"198.0.209.238",
-                                       @"url": @"https://httpbin.org/get?test=test"
-                                       };
-    secondSceneBuilder.responseAllHeaderFields = @{
-                                                  @"Access-Control-Allow-Origin": @"*",
-                                                  @"Content-Length": @"338",
-                                                  @"Content-Type": @"application/json",
-                                                  @"Date": @"Fri, 22 Jan 2016 20:36:26 GMT",
-                                                  @"Server": @"nginx",
-                                                  @"access-control-allow-credentials": @"true"
-                                                  };
-    
-    __block NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
     __block BKRScene *firstScene = nil;
     __block BKRScene *secondScene = nil;
-    __block BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
-    XCTAssertEqual(cassette.allScenes.count, 2);
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-    player.currentCassette = cassette;
+    __block BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 2);
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"First scene should have 4 frames");
+    XCTAssertEqual(testCassette.allScenes.lastObject.allFrames.count, 4, @"Second (last scene) should have 4 frames");
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+//    player.currentCassette = testCassette;
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     player.enabled = YES;
     
     [self getTaskWithURLString:firstSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -331,11 +258,15 @@
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+//        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 2);
-        firstScene = cassette.allScenes.firstObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 2);
+        firstScene = (BKRScene *)player.allScenes.firstObject;
+        XCTAssertEqualObjects(firstScene.uniqueIdentifier, firstSceneBuilder.taskUniqueIdentifier);
         XCTAssertTrue(firstScene.allFrames.count > 0);
         XCTAssertEqual(firstScene.allDataFrames.count, 1);
         BKRDataFrame *dataFrame = firstScene.allDataFrames.firstObject;
@@ -361,11 +292,144 @@
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test2"});
+//        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
+        // now current cassette in recoder should have one scene with data matching this
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 2);
+        secondScene = (BKRScene *)player.allScenes.lastObject;
+        XCTAssertEqualObjects(secondScene.uniqueIdentifier, secondSceneBuilder.taskUniqueIdentifier);
+        XCTAssertNotEqualObjects(firstScene.uniqueIdentifier, secondScene.uniqueIdentifier, @"The two scenes should not be identical");
+        XCTAssertTrue(secondScene.allFrames.count > 0);
+        XCTAssertEqual(secondScene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = secondScene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqual(secondScene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = secondScene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(secondScene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = secondScene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(secondScene.currentRequest);
+        [self assertRequest:secondScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:secondScene extraAssertions:nil];
+    }];
+}
+
+- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+    NSString *URLString = @"https://pubsub.pubnub.com/time/0";
+    NSString *firstTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
+    BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
+    firstSceneBuilder.URLString = URLString;
+    firstSceneBuilder.taskUniqueIdentifier = firstTaskUniqueIdentifier;
+//    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{
+//                                                            @"Accept": @"*/*",
+//                                                            @"Accept-Encoding": @"gzip, deflate",
+//                                                            @"Accept-Language": @"en-us"
+//                                                            };
+    firstSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
+    // technically the value returned is much larger, to save effort, using string so there's no math or rounding/casting issues
+    NSString *firstTimetoken = @"1454015931.93";
+    firstSceneBuilder.receivedJSON = @[firstTimetoken];
+    firstSceneBuilder.responseAllHeaderFields = @{
+                                                  @"Access-Control-Allow-Methods": @"GET",
+                                                  @"Access-Control-Allow-Origin": @"*",
+                                                  @"Cache-Control": @"no-cache",
+                                                  @"Connection": @"keep-alive",
+                                                  @"Content-Length": @"19",
+                                                  @"Content-Type": @"text/javascript; charset=\"UTF-8\"",
+                                                  @"Date": @"Wed, 27 Jan 2016 23:39:04 GMT",
+                                                  };
+    
+    NSString *secondTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
+    BKRExpectedScenePlistDictionaryBuilder *secondSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
+    secondSceneBuilder.URLString = URLString;
+    secondSceneBuilder.taskUniqueIdentifier = secondTaskUniqueIdentifier;
+//    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{
+//                                                             @"Accept": @"*/*",
+//                                                             @"Accept-Encoding": @"gzip, deflate",
+//                                                             @"Accept-Language": @"en-us"
+//                                                             };
+    secondSceneBuilder.currentRequestAllHTTPHeaderFields = @{};
+    // technically the value returned is much larger, to save effort, using string so there's no math or rounding/casting issues
+    NSString *secondTimeToken = @"1454015935.93";
+    XCTAssertNotEqualObjects(firstTimetoken, secondTimeToken);
+    secondSceneBuilder.receivedJSON = @[secondTimeToken];
+    secondSceneBuilder.responseAllHeaderFields = @{
+                                                   @"Access-Control-Allow-Methods": @"GET",
+                                                   @"Access-Control-Allow-Origin": @"*",
+                                                   @"Cache-Control": @"no-cache",
+                                                   @"Connection": @"keep-alive",
+                                                   @"Content-Length": @"19",
+                                                   @"Content-Type": @"text/javascript; charset=\"UTF-8\"",
+                                                   @"Date": @"Wed, 27 Jan 2016 23:39:07 GMT",
+                                                   };
+    
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
+    __block BKRScene *firstScene = nil;
+    __block BKRScene *secondScene = nil;
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 2, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1st scene");
+    XCTAssertEqual(testCassette.allScenes.lastObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 2nd scene");
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+//    player.currentCassette = testCassette;
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
+    player.enabled = YES;
+    [self getTaskWithURLString:firstSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(data);
+        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        XCTAssertNotNil(dataArray);
+        // ensure that result from network is as expected
+        NSNumber *receivedTimeToken = dataArray.firstObject;
+        XCTAssertEqualObjects(receivedTimeToken, firstTimetoken);
         XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         // now current cassette in recoder should have one scene with data matching this
-        XCTAssertNotNil(cassette);
-        XCTAssertEqual(cassette.allScenes.count, 2);
-        secondScene = cassette.allScenes.lastObject;
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 2);
+        firstScene = (BKRScene *)player.allScenes.firstObject;
+        XCTAssertEqualObjects(firstScene.uniqueIdentifier, firstTaskUniqueIdentifier);
+        XCTAssertTrue(firstScene.allFrames.count > 0);
+        XCTAssertEqual(firstScene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = firstScene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqual(firstScene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = firstScene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(firstScene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = firstScene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(firstScene.currentRequest);
+        [self assertRequest:firstScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:firstScene extraAssertions:nil];
+    }];
+    
+    [self getTaskWithURLString:secondSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(data);
+        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        XCTAssertNotNil(dataArray);
+        // ensure that result from network is as expected
+        NSNumber *receivedTimeToken = dataArray.firstObject;
+        XCTAssertEqualObjects(receivedTimeToken, secondTimeToken);
+        XCTAssertNotEqualObjects(receivedTimeToken, firstTimetoken);
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        // now current cassette in recoder should have one scene with data matching this
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 2);
+        secondScene = (BKRScene *)player.allScenes.lastObject;
+        XCTAssertEqualObjects(secondScene.uniqueIdentifier, secondTaskUniqueIdentifier);
         XCTAssertNotEqualObjects(firstScene.uniqueIdentifier, secondScene.uniqueIdentifier, @"The two scenes should not be identical");
         XCTAssertTrue(secondScene.allFrames.count > 0);
         XCTAssertEqual(secondScene.allDataFrames.count, 1);

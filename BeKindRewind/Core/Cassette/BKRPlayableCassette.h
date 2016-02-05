@@ -8,9 +8,10 @@
 
 #import "BKRCassette.h"
 #import "BKRPlistSerializing.h"
+#import "BKRConstants.h"
 
 @interface BKRPlayableCassette : BKRCassette <BKRPlistDeserializer>
 
-@property (nonatomic, getter=isPlaying) BOOL playing;
+- (void)executeAfterAddingStubsBlock:(BKRAfterAddingStubs)afterStubsBlock;
 
 @end

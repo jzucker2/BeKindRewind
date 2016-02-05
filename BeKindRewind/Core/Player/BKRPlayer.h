@@ -6,8 +6,8 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "BKRRequestMatching.h"
+#import "BKRConstants.h"
 
 @class BKRPlayableCassette;
 @class BKRPlayableScene;
@@ -26,8 +26,11 @@
 
 @property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
 
-- (BKRPlayableScene *)playheadScene;
+- (void)reset;
 
-- (void)resetPlayhead;
+- (NSArray<BKRPlayableScene *> *)allScenes;
+
+@property (nonatomic, copy) BKRBeforeAddingStubs beforeAddingStubsBlock; // executed on main thread
+@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock; // executed on main thread
 
 @end

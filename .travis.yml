@@ -103,6 +103,7 @@ after_success:
   #    bash <(curl -s https://codecov.io/bash);
   #   fi
 after_failure:
+ - cat -n fastlane/report.xml
  - cat -n ~/Library/Logs/scan/*
  - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
  - cat -n ~/Library/Logs/DiagnosticReports/xctest*.crash

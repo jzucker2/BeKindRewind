@@ -5,7 +5,7 @@
 //  Created by Jordan Zucker on 1/18/16.
 //
 //
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
 #endif
 
@@ -32,15 +32,15 @@
 @implementation BKRNSURLSessionConnection
 @dynamic task;
 
-+ (void)swizzleNSURLSessionClasses
++ (void)swizzleNSURLSessionConnection
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [self _swizzleNSURLSessionClasses];
+        [self _swizzleNSURLSessionConnection];
     });
 }
 
-+ (void)_swizzleNSURLSessionClasses;
++ (void)_swizzleNSURLSessionConnection;
 {
     NSString *overrideSessionConnectionClassString = nil;
 #if TARGET_OS_IOS
@@ -67,7 +67,7 @@
         SEL sourceMethod = method_getName(m);
         const char *encoding = method_getTypeEncoding(m);
         NSString *sourceMethodName = NSStringFromSelector(sourceMethod);
-        NSLog(@"%@", sourceMethodName);
+//        NSLog(@"%@", sourceMethodName);
         NSAssert([sourceMethodName hasPrefix:@"BKR_"], @"Expecting swizzle methods only");
         NSString *originalMethodName = [sourceMethodName substringFromIndex:4];
         SEL originalMethod = NSSelectorFromString(originalMethodName);
@@ -90,29 +90,11 @@
     }
 }
 
-//- (void)BKR_cancel {
-//    [self.task uniqueify];
-//    [[BKRRecorder sharedInstance] recordTaskCancellation:self.task];
-//    [self BKR_cancel];
-//}
-
 - (instancetype)BKR_initWithTask:(NSURLSessionTask *)task delegate:(id <NSURLSessionDelegate>)delegate delegateQueue:(NSOperationQueue *)queue {
     [task uniqueify];
     [[BKRRecorder sharedInstance] initTask:task];
     return [self BKR_initWithTask:task delegate:delegate delegateQueue:queue];
 }
-
-//- (void)BKR_setTask(id)arg1 {
-//    NSURLSessionTask *task = (NSURLSessionTask *)arg1;
-//    [self BKR_setTask:arg1];
-//}
-
-// record right before network request begins
-//- (void)BKR_resume {
-//    [self.task uniqueify];
-//    [[BKRRecorder sharedInstance] recordTaskResumption:self.task];
-//    [self BKR_resume];
-//}
 
 - (void)BKR__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(id)arg3;
 {
@@ -136,11 +118,11 @@
     [self BKR__didReceiveResponse:response sniff:sniff];
 }
 
-//- (void)BKR__didFinishWithError:(NSError *)error;
-//{
-//    [self.task uniqueify];
-//    [[BKRRecorder sharedInstance] recordTask:self.task didFinishWithError:error];
-//    [self BKR__didFinishWithError:error];
-//}
+- (void)BKR__didFinishWithError:(NSError *)error;
+{
+    [self.task uniqueify];
+    [[BKRRecorder sharedInstance] recordTask:self.task didFinishWithError:error];
+    [self BKR__didFinishWithError:error];
+}
 
 @end

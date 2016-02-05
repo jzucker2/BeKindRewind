@@ -17,14 +17,10 @@
 
 @implementation BKRFrame
 
-- (void)_init {
-    _creationDate = [NSDate date];
-}
-
 - (instancetype)initWithTask:(NSURLSessionTask *)task {
     self = [super init];
     if (self) {
-        [self _init];
+        _creationDate = [NSDate date];
         _uniqueIdentifier = task.globallyUniqueIdentifier;
     }
     return self;
@@ -50,7 +46,7 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier {
     self = [super init];
     if (self) {
-        [self _init];
+        _creationDate = [NSDate date];
         _uniqueIdentifier = identifier;
     }
     return self;
@@ -75,6 +71,10 @@
         _uniqueIdentifier = dictionary[@"uniqueIdentifier"];
     }
     return self;
+}
+
+- (NSString *)debugDescription {
+    return [NSString stringWithFormat:@"%@: <%p> ID: %@", NSStringFromClass(self.class), self, self.uniqueIdentifier];
 }
 
 @end

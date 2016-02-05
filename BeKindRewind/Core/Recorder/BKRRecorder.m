@@ -6,15 +6,15 @@
 //
 //
 
+#import "BKRRecordingEditor.h"
 #import "BKRRecorder.h"
 #import "BKRRecordableCassette.h"
 #import "BKRRecordableRawFrame.h"
 #import "BKROHHTTPStubsWrapper.h"
+#import "BKRRecordableScene.h"
 
 @interface BKRRecorder ()
-@property (nonatomic) dispatch_queue_t recordingQueue;
-@property (nonatomic) NSDate *currentRecordingStartTime;
-
+@property (nonatomic, strong) BKRRecordingEditor *editor;
 @end
 
 @implementation BKRRecorder
@@ -22,7 +22,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _recordingQueue = dispatch_queue_create("com.BKR.recorderQueue", DISPATCH_QUEUE_CONCURRENT);
+        _editor = [BKRRecordingEditor editor];
     }
     return self;
 }
@@ -36,145 +36,90 @@
     return sharedInstance;
 }
 
-// maybe set a date flag and ignore things after that flag??
-- (void)reset {
-    if (_enabled) {
-        self.currentRecordingStartTime = [NSDate date];
-    } else {
-        self.currentRecordingStartTime = nil;
-    }
+- (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
+    self.editor.currentCassette = currentCassette;
 }
 
-- (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
-    if (currentCassette) {
-        // This is for debugging purposes
-        NSParameterAssert([currentCassette isKindOfClass:[BKRRecordableCassette class]]);
-    }
-    dispatch_barrier_sync(self.recordingQueue, ^{
-        _currentCassette = currentCassette;
-    });
-    [self reset];
+- (BKRRecordableCassette *)currentCassette {
+    return (BKRRecordableCassette *)self.editor.currentCassette;
+}
+
+- (NSArray<BKRRecordableScene *> *)allScenes {
+    return (NSArray<BKRRecordableScene *> *)self.currentCassette.allScenes;
 }
 
 - (void)setEnabled:(BOOL)enabled {
-    dispatch_barrier_sync(self.recordingQueue, ^{
-        _enabled = enabled;
-    });
-    [self reset];
-    if (_enabled) {
-        [BKROHHTTPStubsWrapper removeAllStubs];
-    }
+    self.editor.enabled = enabled;
+}
+
+- (BOOL)isEnabled {
+    return self.editor.isEnabled;
+}
+
+- (void)reset {
+    [self.editor updateRecordingStartTime];
+    self.beginRecordingBlock = nil;
+    self.endRecordingBlock = nil;
 }
 
 #pragma mark - NSURLSession recording
+
+- (void)beginRecording:(NSURLSessionTask *)task {
+    // need this to be synchronous on the main queue
+    if (self.beginRecordingBlock) {
+        if ([NSThread isMainThread]) {
+            self.beginRecordingBlock(task);
+        } else {
+            // if recorder was called from a background queue, then make sure this is called on the main queue
+            __weak typeof(self) wself = self;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                __strong typeof(wself) sself = wself;
+                sself.beginRecordingBlock(task);
+            });
+        }
+    }
+}
+
+- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
+    if (self.endRecordingBlock) {
+        [self.editor executeEndRecordingBlock:self.endRecordingBlock withTask:task];
+    }
+}
 
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 {
     if (!self.enabled) {
         return;
     }
-    
 }
 
 - (void)initTask:(NSURLSessionTask *)task {
-    if (!self.enabled) {
-        return;
-    }
-    __typeof (self) wself = self;
-    dispatch_async(self.recordingQueue, ^{
-        __typeof (wself) sself = wself;
-        if (!sself.currentRecordingStartTime) {
-            return;
-        }
-        BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
-        requestFrame.item = task.originalRequest;
-        [sself.currentCassette addFrame:requestFrame];
-    });
+    BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
+    requestFrame.item = task.originalRequest;
+    [self.editor addFrame:requestFrame];
 }
 
-//- (void)recordTaskResumption:(NSURLSessionTask *)task {
-//    if (!self.enabled) {
-//        return;
-//    }
-//    __typeof (self) wself = self;
-//    dispatch_async(self.recordingQueue, ^{
-//        __typeof (wself) sself = wself;
-//        BKRRequest *frame = [BKRRequest frameWithTask:task];
-//        [frame addRequest:task.originalRequest isOriginal:YES];
-//        [sself.currentCassette addFrame:frame];
-//    });
-//}
-
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
-    if (!self.enabled) {
-        return;
-    }
-    __typeof (self) wself = self;
-    dispatch_async(self.recordingQueue, ^{
-        __typeof (wself) sself = wself;
-        if (!sself.currentRecordingStartTime) {
-            return;
-        }
-        BKRRecordableRawFrame *dataFrame = [BKRRecordableRawFrame frameWithTask:task];
-        dataFrame.item = data.copy;
-        [sself.currentCassette addFrame:dataFrame];
-    });
+    BKRRecordableRawFrame *dataFrame = [BKRRecordableRawFrame frameWithTask:task];
+    dataFrame.item = data.copy;
+    [self.editor addFrame:dataFrame];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
-    if (!self.enabled) {
-        return;
-    }
-    __typeof (self) wself = self;
-    dispatch_async(self.recordingQueue, ^{
-        __typeof (wself) sself = wself;
-        if (!sself.currentRecordingStartTime) {
-            return;
-        }
-        // after response from server, the currentRequest might not match the original request, let's record that
-        // just in case it's important
-        BKRRecordableRawFrame *currentRequestFrame = [BKRRecordableRawFrame frameWithTask:task];
-        currentRequestFrame.item = task.currentRequest;
-        [sself.currentCassette addFrame:currentRequestFrame];
-        
-        // now add response
-        BKRRecordableRawFrame *frame = [BKRRecordableRawFrame frameWithTask:task];
-        frame.item = response;
-        [sself.currentCassette addFrame:frame];
-    });
+    BKRRecordableRawFrame *currentRequestFrame = [BKRRecordableRawFrame frameWithTask:task];
+    currentRequestFrame.item = task.currentRequest;
+    [self.editor addFrame:currentRequestFrame];
+    
+    BKRRecordableRawFrame *responseFrame = [BKRRecordableRawFrame frameWithTask:task];
+    responseFrame.item = response;
+    [self.editor addFrame:responseFrame];
 }
 
 - (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error {
-    NSLog(@"^^^^^^^^^^^^^^^^^^^^^ enter finish method");
-    if (!self.enabled) {
-        return;
+    if (error) {
+        BKRRecordableRawFrame *errorFrame = [BKRRecordableRawFrame frameWithIdentifier:taskUniqueIdentifier];
+        errorFrame.item = error;
+        [self.editor addFrame:errorFrame];
     }
-    __typeof (self) wself = self;
-    dispatch_async(self.recordingQueue, ^{
-        __typeof (wself) sself = wself;
-        if (!sself.currentRecordingStartTime) {
-            return;
-        }
-        if (error) {
-            NSLog(@"^^^^^^^^^^^^^^^^^^^^^ recording error");
-            BKRRecordableRawFrame *frame = [BKRRecordableRawFrame frameWithIdentifier:taskUniqueIdentifier];
-            frame.item = error;
-            [sself.currentCassette addFrame:frame];
-        }
-    });
 }
-
-//- (void)recordTaskCancellation:(NSURLSessionTask *)task {
-//    if (!self.enabled) {
-//        return;
-//    }
-//    __typeof (self) wself = self;
-//    dispatch_async(self.recordingQueue, ^{
-//        __typeof (wself) sself = wself;
-////        JSZVCRRecording *recording = [sself storedRecordingFromTask:task];
-////        recording.cancelled = YES;
-//        BKRScene *scene = [BKRScene sceneWithTask:task];
-//        
-//    });
-//}
 
 @end

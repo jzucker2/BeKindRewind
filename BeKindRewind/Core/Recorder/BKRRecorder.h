@@ -7,8 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRConstants.h"
 
 @class BKRRecordableCassette;
+@class BKRRecordableScene;
 @interface BKRRecorder : NSObject
 
 /**
@@ -17,6 +19,10 @@
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
 @property (nonatomic, strong) BKRRecordableCassette *currentCassette;
+@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock; // this delays the main queue, don't block!
+@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock; // this is async on main queue
+
+- (NSArray<BKRRecordableScene *> *)allScenes;
 
 /**
  *  Singleton instance is used so we don't have to pass in a
@@ -32,6 +38,8 @@
 - (void)reset;
 
 //- (void)recordTaskResumption:(NSURLSessionTask *)task;
+
+- (void)beginRecording:(NSURLSessionTask *)task;
 
 - (void)initTask:(NSURLSessionTask *)task;
 
@@ -67,7 +75,7 @@
  *  @param arg1 error from network request
  */
 - (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error;
-//- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
+- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
 /**
  *  Called by JSZVCRNSURLSessionConnection. This is called
  *  when [task cancel] is called.

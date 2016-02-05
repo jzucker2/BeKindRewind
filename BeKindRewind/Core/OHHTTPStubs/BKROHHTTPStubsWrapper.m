@@ -23,12 +23,20 @@
     return [OHHTTPStubsResponse responseWithData:scene.responseData statusCode:(int)scene.responseStatusCode headers:scene.responseHeaders];
 }
 
++ (BOOL)hasStubs {
+    return ([OHHTTPStubs allStubs].count != 0);
+}
+
 + (void)stubRequestPassingTest:(BKRStubsTestBlock)testBlock withStubResponse:(BKRStubsResponseBlock)responseBlock {
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return testBlock(request);
     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         return [self _responseForScene:responseBlock(request)];
     }];
+}
+
++ (void)setEnabled:(BOOL)enabled {
+    [OHHTTPStubs setEnabled:enabled];
 }
 
 @end

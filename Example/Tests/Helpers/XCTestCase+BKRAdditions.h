@@ -16,7 +16,8 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @property (nonatomic, copy) NSString *taskUniqueIdentifier;
 @property (nonatomic, copy) NSString *HTTPMethod;
 @property (nonatomic, strong) id sentJSON;
-@property (nonatomic, strong) id receivedJSON;
+@property (nonatomic, strong) id receivedJSON; // receivedJSON gets precedence (only 1 will be called)
+@property (nonatomic, strong) NSData *receivedData; // receivedJSON gets precedence (need receivedJSON to be nil if you want this to be used)
 @property (nonatomic) BOOL hasCurrentRequest;
 @property (nonatomic) BOOL hasResponse;
 @property (nonatomic) NSInteger errorCode; // code and domain are required for this object to have an error frame
@@ -28,15 +29,35 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 + (instancetype)builder;
 @end
 
-@class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRRecordableCassette, BKRPlayableCassette, BKRErrorFrame;
+@interface BKRExpectedRecording : NSObject
+@property (nonatomic, copy) NSString *URLString;
+@property (nonatomic, copy) NSString *HTTPMethod;
+@property (nonatomic, copy) NSData *HTTPBody;
+@property (nonatomic, strong) NSDictionary *sentJSON;
+@property (nonatomic, strong) NSDictionary *receivedJSON;
+@property (nonatomic, strong) NSData *receivedData;
+@property (nonatomic) NSInteger responseStatusCode;
+@property (nonatomic) NSInteger expectedSceneNumber; // index in scene array
+@property (nonatomic) NSInteger expectedNumberOfFrames; // scene should contain this many frames
+@property (nonatomic, getter=isCancelling) BOOL cancelling;
+@property (nonatomic) NSDictionary *expectedErrorUserInfo;
+@property (nonatomic) NSInteger expectedErrorCode;
+@property (nonatomic, copy) NSString *expectedErrorDomain;
++ (instancetype)recording;
+@end
+
+@class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRRecordableCassette, BKRPlayableCassette, BKRErrorFrame, BKRPlayingEditor, BKRRecordingEditor, BKRPlayer;
 @interface XCTestCase (BKRAdditions)
+
+- (void)recordingTaskForHTTPBinWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskCompletionAssertions:(taskCompletionHandler)taskCompletion taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeout;
+- (void)recordingTaskWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskCompletionAssertions:(taskCompletionHandler)taskCompletion taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeout;
 
 - (void)getTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 - (void)cancellingGetTaskWithURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 - (void)post:(NSData *)postData withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 - (void)postJSON:(id)JSON withURLString:(NSString *)URLString taskCompletionAssertions:(taskCompletionHandler)taskCompletionHandler taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeoutHandler;
 
-- (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordableCassette:(BKRRecordableCassette *)cassette;
+- (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordingEditor:(BKRRecordingEditor *)editor;
 - (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error;
 
 // used for building
@@ -62,5 +83,22 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 - (void)assertRequest:(BKRRequestFrame *)request withRequestDict:(NSDictionary *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *request, NSDictionary *otherRequest))assertions;
 - (void)assertResponse:(BKRResponseFrame *)response withResponseDict:(NSDictionary *)otherResponse extraAssertions:(void (^)(BKRResponseFrame *response, NSDictionary *otherResponse))assertions;
 - (void)assertData:(BKRDataFrame *)data withDataDict:(NSDictionary *)otherData extraAssertions:(void (^)(BKRDataFrame *data, NSDictionary *otherData))assertions;
+
+#pragma mark - HTTPBin helpers
+
+- (BKRExpectedScenePlistDictionaryBuilder *)standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:(NSString *)queryItemString contentLength:(NSString *)contentLength; // queryItemString is converted to dictionary for testing
+- (BKRExpectedScenePlistDictionaryBuilder *)standardPOSTRequestDictionaryBuilderForHTTPBin;
+- (void)testPlayingRequestForExpectedSceneBuilder:(BKRExpectedScenePlistDictionaryBuilder *)sceneBuilder;
+
+#pragma mark - PN
+
+- (NSTimeInterval)unixTimestampForPubNubTimetoken:(NSNumber *)timetoken;
+- (double)timeIntervalForCurrentUnixTimestamp;
+
+#pragma mark - BKRPlayableCassette helpers
+
+- (void)setWithExpectationsPlayableCassette:(BKRPlayableCassette *)cassette inPlayer:(BKRPlayer *)player;
+
+- (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes;
 
 @end

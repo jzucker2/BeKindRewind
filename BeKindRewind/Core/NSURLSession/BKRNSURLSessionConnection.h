@@ -17,6 +17,6 @@
 /**
  *  This method overrides all network calls with our custom recorder
  */
-+ (void)swizzleNSURLSessionClasses;
++ (void)swizzleNSURLSessionConnection;
 
 @end
