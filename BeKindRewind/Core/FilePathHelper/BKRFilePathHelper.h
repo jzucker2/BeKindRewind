@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 
 /**
- *  Collection of class methods for dealing with file system loading and saving
+ *  Collection of class methods for dealing with file system loading and saving. There is no
+ *  object created, these class helpers do not need to persist information between calls.
  */
 @interface BKRFilePathHelper : NSObject
 
