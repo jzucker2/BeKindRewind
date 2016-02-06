@@ -11,6 +11,11 @@
 
 @class BKRRecordableCassette;
 @class BKRRecordableScene;
+
+/**
+ *  This object is responsible for collecting and storing all information associated
+ *  with a network request.
+ */
 @interface BKRRecorder : NSObject
 
 /**
@@ -18,33 +23,64 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
+/**
+ *  Current cassette used to store network requests. If this is nil,
+ *  then no recordings are stored.
+ */
 @property (nonatomic, strong) BKRRecordableCassette *currentCassette;
+
+/**
+ *  This block executes on the main queue before any network request
+ *  begins. Make sure not to deadlock or execute slow code. It passes in
+ *  the NSURLSessionTask associated with this recording.
+ */
 @property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock; // this delays the main queue, don't block!
+
+/**
+ *  This block executes on the main queue after any network request
+ *  begins. Make sure not to deadlock or execute slow code. It passes in
+ *  the NSURLSessionTask associated with this recording.
+ */
 @property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock; // this is async on main queue
 
+/**
+ *  Ordered array of BKRRecordableScene objects from current cassette
+ *
+ *  @return ordered array by creation date of each scene or nil if no current cassette
+ */
 - (NSArray<BKRRecordableScene *> *)allScenes;
 
 /**
- *  Singleton instance is used so we don't have to pass in a
- *  reference to every disparate network connection
+ *  Singleton instance is used because we cannot pass in a
+ *  reference to every networking class
  *
  *  @return singleton recorder instance
  */
 + (instancetype)sharedInstance;
 
 /**
- *  Reset all recorded values
+ *  Reset all recorded values and before and after recording
+ *  task blocks
  */
 - (void)reset;
 
-//- (void)recordTaskResumption:(NSURLSessionTask *)task;
-
+/**
+ *  Called by networking swizzled classes to begin recording
+ *  for a task by executing the beginRecordingBlock
+ *
+ *  @param task NSURLSessionTask that just began executing
+ */
 - (void)beginRecording:(NSURLSessionTask *)task;
 
+/**
+ *  Called by networking swizzled classes to set the original request
+ *
+ *  @param task NSURLSessionTask that just began executing
+ */
 - (void)initTask:(NSURLSessionTask *)task;
 
 /**
- *  Called by JSZVCRNSURLSessionConnection
+ *  Called by networking swizzled classes to record redirects
  *
  *  @param task in flight network task
  *  @param arg1 redirect request
@@ -53,7 +89,7 @@
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2;
 
 /**
- *  Called by JSZVCRNSURLSessionConnection
+ *  Called by networking swizzled classes to record data received from the network request
  *
  *  @param task in flight network task
  *  @param data data received from network task
@@ -61,41 +97,29 @@
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data;
 
 /**
- *  Called by JSZVCRNSURLSessionConnection. May be called multiple times.
+ *  Called by networking swizzled classes to record the response. May be called multiple times.
  *
  *  @param task in flight network task
  *  @param response Response received from server
  */
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response;
 /**
- *  Called by JSZVCRNSURLSessionConnection. Error will only
- *  be passed if something goes wrong.
+ *  Called by networking swizzled classes to record any error if one is set for a 
+ *  NSURLSessionTask. Error will only be passed if something goes wrong.
  *
- *  @param task in flight network task
+ *  @param taskUniqueIdentifier unique identifier for in flight network task
  *  @param arg1 error from network request
  */
 - (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error;
-- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
-/**
- *  Called by JSZVCRNSURLSessionConnection. This is called
- *  when [task cancel] is called.
- *
- *  @param task in flight network task
- */
-//- (void)recordTaskCancellation:(NSURLSessionTask *)task;
 
-///**
-// *  All recordings from this instance
-// *
-// *  @return array of JSZVCRRecordings
-// */
-//- (NSArray *)allRecordings;
-///**
-// *  All recordings from this instance as Foundation objects,
-// *  similar to NSJSONSerialization
-// *
-// *  @return array of Foundation objects
-// */
-//- (NSArray *)allRecordingsForPlist;
+/**
+ *  Called by networking swizzled classes so that after task recording block will
+ *  execute.
+ *
+ *  @param task recently finished network task
+ *  @param arg1 error or nil from network request
+ */
+- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
+
 
 @end

@@ -29,7 +29,7 @@
  *  This executes on the main queue after adding all frames for a particular scene/network
  *  task to a cassette for grouping into scenes.
  *
- *  @param endTaskBlock block to execute after all frames are added for a NSURLSessionTask
+ *  @param endTaskBlock block to execute after all frames are added for a NSURLSessionTask. This will execute after every single network request if it is not nil.
  *  @param task         NSURLSessionTask that just finished recording
  */
 - (void)executeEndTaskRecordingBlock:(BKREndRecordingTaskBlock)endTaskBlock withTask:(NSURLSessionTask *)task;
