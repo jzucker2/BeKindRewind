@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ *  This category extends NSURLSessionTask objects
+ *  for easy recording
+ */
 @interface NSURLSessionTask (BKRAdditions)
 
 /**
