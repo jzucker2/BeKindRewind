@@ -43,7 +43,6 @@
         orderedFrames = [unorderedFrames sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRFrame *, creationDate) ascending:YES]]];
     });
     return orderedFrames;
-//    return [[self _unorderedFrames] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRFrame *, creationDate) ascending:YES]]];
 }
 
 - (NSArray<BKRFrame *> *)_unorderedFrames {

@@ -11,23 +11,18 @@
 #import "BKRResponseFrame.h"
 #import "BKRErrorFrame.h"
 #import "BKRDataFrame.h"
-
-// remove, only here for testing
 #import "BKRRequestFrame.h"
 
 @interface BKRPlayableScene ()
-//@property (nonatomic, strong) NSMutableArray<BKRPlayableRawFrame *> *frames;
 @end
 
 @implementation BKRPlayableScene
-//@synthesize frames = _frames;
 
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
     NSParameterAssert(dictionary);
     self = [super init];
     if (self) {
         self.uniqueIdentifier = dictionary[@"uniqueIdentifier"];
-//        _frames = [self _editedFrames:dictionary[@"frames"]];
         [self _addEditedFrames:dictionary[@"frames"]];
     }
     return self;

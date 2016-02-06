@@ -7,9 +7,13 @@
 //
 
 #import "BKRRawFrame.h"
+#import "BKREditable.h"
 
-@interface BKRPlayableRawFrame : BKRRawFrame <BKRPlistDeserializer>
-
-- (BKRFrame *)editedFrame;
+/**
+ *  This is a raw network component from a plist dictionary that needs
+ *  to be normalized into a concrete BKRFrame subclass for proper handling
+ *  by the BKRPlayer instance
+ */
+@interface BKRPlayableRawFrame : BKRRawFrame <BKRPlistDeserializer, BKREditable>
 
 @end

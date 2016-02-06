@@ -11,7 +11,8 @@
 
 /**
  *  This abstract class represents a single component of a network call. Many frames make up a scene, 
- *  just like in a video. Examples of components are requests, responses, data received, and any possible errors.
+ *  just like in a video. Examples of components that can be frames are requests, responses, data 
+ *  received, and any possible errors. Each component as it is received is recorded as a separate frame.
  */
 @interface BKRFrame : NSObject <BKRPlistSerializing>
 

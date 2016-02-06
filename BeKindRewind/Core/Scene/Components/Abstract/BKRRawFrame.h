@@ -9,8 +9,9 @@
 #import "BKRFrame.h"
 
 /**
- *  This is a basic weakly typed component of a network activity
+ *  This is a basic, unnormalized component of a network activity
  *  containing a single piece of information (possibly data, a response, a request, etc.)
+ *  that may be a Foundation object or a BeKindRewind class
  */
 @interface BKRRawFrame : BKRFrame
 
