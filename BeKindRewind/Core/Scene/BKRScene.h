@@ -16,7 +16,14 @@
 
 /**
  *  This class represents all the information associated with a network request,
- *  similar to NSURLSessionTask and its subclasses
+ *  similar to NSURLSessionTask and its subclasses. A scene typically consists of many 
+ *  instances of a BKRFrame object. A typical NSURLSessionTask object will have the following
+ *  components:
+ *      * BKRRequestFrame representing the task.originalRequest NSURLRequest
+ *      * BKRRequestFrame representing the task.currentRequest NSURLRequest (this is different in the event that the server updates the request, as per Apple's documentation (https://developer.apple.com/library/mac/documentation/Foundation/Reference/NSURLSessionTask_class/#//apple_ref/occ/instp/NSURLSessionTask/currentRequest)
+ *      * BKRResponseFrame representing the NSURLResponse (or NSHTTPURLResponse) object from the server for this task
+ *      * BKRDataFrame representing the data received from the server in response to the network call
+ *      * BKRErrorFrame will be present if an NSError is received during the course of the network operation
  */
 @interface BKRScene : NSObject
 

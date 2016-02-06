@@ -7,10 +7,13 @@
 //
 
 #import "BKRRawFrame.h"
+#import "BKREditable.h"
 
-@interface BKRRecordableRawFrame : BKRRawFrame
-
-// returns specialized, serializable version for saving or restoring
-- (BKRFrame *)editedFrame;
+/**
+ *  This is a raw network component from a Foundation network component (NSURLRequest, 
+ *  NSURLResponse, NSData, NSError, etc.) that needs to be normalized into a concrete 
+ *  BKRFrame subclass for proper handling by the BKRRecorder instance
+ */
+@interface BKRRecordableRawFrame : BKRRawFrame <BKREditable>
 
 @end

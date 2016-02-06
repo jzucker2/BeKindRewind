@@ -9,6 +9,11 @@
 #import "BKRFilePathHelper.h"
 
 @class XCTestCase;
+
+/**
+ *  This is a subclass of BKRFilePathHelper tailored to help fetch and store network mocking
+ *  information associated with a XCTestCase
+ */
 @interface BKRTestCaseFilePathHelper : BKRFilePathHelper
 
 // finds fixture from app target (must be included in target using Xcode)

@@ -9,7 +9,6 @@
 #import "BKRErrorFrame.h"
 
 @interface BKRErrorFrame ()
-//@property (nonatomic, strong) NSError *error;
 @property (nonatomic, readwrite) NSInteger code;
 @property (nonatomic, copy, readwrite) NSString *domain;
 @property (nonatomic, readwrite) NSDictionary *userInfo;
