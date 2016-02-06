@@ -12,11 +12,28 @@
 // the NO if statement doesn't run but is a compiler check to test if the object containst the key
 #define BKRKey(object, selector) ({ __typeof(object) testObject = nil; if (NO) { (void)((testObject).selector); } @#selector; })
 
-// typedef returnType (^TypeName)(parameterTypes);
+/**
+ *  Block for code execution before stubs are added for playback
+ */
 typedef void (^BKRBeforeAddingStubs)(void);
+
+/**
+ *  Block for code execution after stubs are added for playback
+ */
 typedef void (^BKRAfterAddingStubs)(void);
 
+/**
+ *  Block for execution before a NSURLSessionTask begins recording
+ *
+ *  @param task NSURLSessionTask that just began executing
+ */
 typedef void (^BKRBeginRecordingTaskBlock)(NSURLSessionTask *task);
+
+/**
+ *  Block for execution after a NSURLSessionTask ends recording
+ *
+ *  @param task NSURLSessionTask that just finished recording
+ */
 typedef void (^BKREndRecordingTaskBlock)(NSURLSessionTask *task);
 
 
