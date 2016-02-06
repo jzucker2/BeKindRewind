@@ -135,18 +135,12 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 ## Release criteria
 * Bring over to-do's from JSZVCR
 * Tests for different types of NSURLSession (shared, ephemeral, standard, background, etc). Make different test case classes for each type of session
-* Turn network activity test helper methods into accepting a single object instead of different pieces
-* Subclass of tests for httpbin.org
-* test for recording same network call twice with two different responses (ordering)
-* test for playing same network call twice with two different responses (ordering)
 * test vcr by playing playing network calls from plist
 * test vcr by recording networks calls and comparing against plist
 * test different types of errors (timeout, invalid url) for playing/recording
 * swift tests (at least basic)
-* test file path stuff
 * add documentation
 * add code coverage
 * tests for basic test
 * add different types of matchers
 * afnetworking tests
-* automate storing in actual project (works in sim). Fetch project path from plist?
