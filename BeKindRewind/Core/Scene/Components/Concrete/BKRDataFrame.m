@@ -27,6 +27,7 @@
     NSError *jsonSerializingError = nil;
     id jsonData = [NSJSONSerialization JSONObjectWithData:self.data options:kNilOptions error:&jsonSerializingError];
     if (jsonSerializingError) {
+        NSLog(@"%@: failed to convert to JSON with error: %@", self.debugDescription, jsonSerializingError.localizedDescription);
         return nil;
     } else {
         return jsonData;

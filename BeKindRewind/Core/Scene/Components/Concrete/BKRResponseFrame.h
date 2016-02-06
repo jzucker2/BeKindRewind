@@ -9,6 +9,10 @@
 #import "BKRFrame.h"
 #import "BKRPlistSerializing.h"
 
+/**
+ *  Concrete subclass of BKRFrame representing NSURLResponse or NSHTTPURLResponse 
+ *  associated with a network operation
+ */
 @interface BKRResponseFrame : BKRFrame <BKRPlistSerializing>
 
 @property (nonatomic, copy, readonly) NSURL *URL;

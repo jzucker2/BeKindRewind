@@ -9,6 +9,9 @@
 #import "BKRFrame.h"
 #import "BKRPlistSerializing.h"
 
+/**
+ *  Concrete subclass of BKRFrame representing a BKRRequestFrame associated with a network operation
+ */
 @interface BKRRequestFrame : BKRFrame <BKRPlistSerializing>
 
 @property (nonatomic, copy, readonly) NSData *HTTPBody;
@@ -26,6 +29,11 @@
 @property (nonatomic, readonly) NSString *requestFragment;
 @property (nonatomic, readonly) NSArray<NSURLQueryItem *> *requestQueryItems;
 
+/**
+ *  Add the request that this subclass of BKRFrame is meant to represent
+ *
+ *  @param request associated with network operation
+ */
 - (void)addRequest:(NSURLRequest *)request;
 
 @end
