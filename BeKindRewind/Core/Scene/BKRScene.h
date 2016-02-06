@@ -16,7 +16,8 @@
 
 /**
  *  This class represents all the information associated with a network request,
- *  similar to NSURLSessionTask and its subclasses
+ *  similar to NSURLSessionTask and its subclasses. A scene typically consists of many 
+ *  instances of a BKRFrame object.
  */
 @interface BKRScene : NSObject
 
