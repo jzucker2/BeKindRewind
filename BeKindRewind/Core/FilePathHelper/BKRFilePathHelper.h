@@ -74,7 +74,7 @@
 /**
  *  This is the most useful method for fetching stub data at a file path and returning a dictionary
  *  that can be converted into a BKRPlayableCassette object. The other method for finding files and
- *  bundles are included for those who'd like more control, but this is the main function for 
+ *  bundles are included for those who would like more control, but this is the main function for 
  *  retrieving data for stubbing.
  *
  *  @param fileName      name of file to search for
@@ -88,7 +88,7 @@
 
 /**
  *  This is used to represent the root directory to use for saving recordings
- *  @warning untested, this can't be tested in unit tests through traditional means
+ *  @note experimental and untested, this can't be tested in unit tests through traditional means
  *
  *  @return full path of directory to write recordings to located within current Xcode project
  */
