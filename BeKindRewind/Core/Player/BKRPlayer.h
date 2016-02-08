@@ -78,6 +78,6 @@
  *  playback session are added
  *  @note make sure not to deadlock or execute slow code in this block
  */
-@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock; // executed on main thread
+@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock;
 
 @end

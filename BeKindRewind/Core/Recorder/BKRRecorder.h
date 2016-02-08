@@ -35,15 +35,19 @@
  *  This block executes on the main queue before any network request
  *  begins. Make sure not to deadlock or execute slow code. It passes in
  *  the NSURLSessionTask associated with this recording.
+ *
+ *  @note this block is executed synchronously on the main queue
  */
-@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock; // this delays the main queue, don't block!
+@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
 
 /**
  *  This block executes on the main queue after any network request
  *  begins. Make sure not to deadlock or execute slow code. It passes in
  *  the NSURLSessionTask associated with this recording.
+ *
+ *  @note this block is executed asynchronously on the main queue
  */
-@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock; // this is async on main queue
+@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
 
 /**
  *  Ordered array of BKRRecordableScene objects from current cassette

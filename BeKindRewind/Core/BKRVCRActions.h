@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRConstants.h"
 
 /**
  *  This describes the state of the object conforming to BKRVCRActions. There are a range of actions, this enum is meant to be exhaustive.
@@ -35,6 +36,15 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
     BKRVCRStatePaused = 3,
 };
 
+// what would i use this for?
+typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
+    BKRVCRConfigurationEmpty            = 0,
+    BKRVCRConfigurationHasCassette      = 1 << 0,
+    BKRVCRConfigurationHasCassettePath  = 1 << 1,
+    BKRVCRConfigurationIsRecording      = 1 << 2,
+    BKRVCRConfigurationIsPlaying        = 1 << 3,
+};
+
 @class BKRCassette;
 
 @protocol BKRVCRActions <NSObject>
@@ -43,7 +53,7 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
 - (void)pause; // is there a difference between stop and pause?
 - (void)stop; // is there a difference between stop and pause?
 - (void)reset; // reset to start of cassette
-- (void)insert:(NSString *)cassetteFilePath; // must end in .plist
+- (BOOL)insert:(NSString *)cassetteFilePath; // must end in .plist
 /**
  *  This "ejects" the current cassette, saving the results to the location specified by filePath
  */
@@ -58,11 +68,43 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
 // *  Recordings or stubbings for a session are contained in this object. If this
 // *  property is nil then network operations are not recorded or stubbed.
 // */
-//@property (nonatomic, strong, readonly) BKRCassette *currentCassette;
+@property (nonatomic, strong, readonly) BKRCassette *currentCassette;
 
 @property (nonatomic, assign, readonly) BKRVCRState state;
 
 @property (nonatomic, copy, readonly) NSString *cassetteFilePath;
+
+/**
+ *  Block is executed on the main thread before all stubs for a
+ *  playback session are added
+ *  @note make sure not to deadlock or execute slow code in this block
+ */
+@property (nonatomic, copy) BKRBeforeAddingStubs beforeAddingStubsBlock;
+
+/**
+ *  Block is executed on the main thread after all stubs for a
+ *  playback session are added
+ *  @note make sure not to deadlock or execute slow code in this block
+ */
+@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock;
+
+/**
+ *  This block executes on the main queue before any network request
+ *  begins. Make sure not to deadlock or execute slow code. It passes in
+ *  the NSURLSessionTask associated with this recording.
+ *
+ *  @note this block is executed synchronously on the main queue
+ */
+@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
+
+/**
+ *  This block executes on the main queue after any network request
+ *  begins. Make sure not to deadlock or execute slow code. It passes in
+ *  the NSURLSessionTask associated with this recording.
+ *
+ *  @note this block is executed asynchronously on the main queue
+ */
+@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
 
 //- (NSInteger)playhead;
 //- (NSInteger)totalRequests;
