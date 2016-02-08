@@ -63,11 +63,13 @@
  */
 @property (nonatomic, getter=isDisabled) BOOL disabled;
 
+
+
 /**
  *  Recordings or stubbings for a session are contained in this object. If this
  *  property is nil then network operations are not recorded or stubbed.
  */
-@property (nonatomic, strong) BKRCassette *currentCassette;
+@property (nonatomic, strong, readonly) BKRCassette *currentCassette;
 
 /**
  *  This is the matcher object created during class initialization. It is

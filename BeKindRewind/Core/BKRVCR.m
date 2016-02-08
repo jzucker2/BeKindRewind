@@ -14,6 +14,7 @@
 @interface BKRVCR ()
 @property (nonatomic, strong) BKRPlayer *player;
 @property (nonatomic) dispatch_queue_t processingQueue;
+@property (nonatomic, strong, readwrite) BKRCassette *currentCassette;
 @end
 
 @implementation BKRVCR
