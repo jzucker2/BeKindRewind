@@ -21,6 +21,8 @@
  */
 @property (nonatomic, strong) NSDate *recordingStartTime;
 
+@property (nonatomic, assign, readonly) BOOL handledRecording;
+
 /**
  *  Update the recordingStartTime to now or set it to nil if BKRRecordingEditor is not enabled
  */

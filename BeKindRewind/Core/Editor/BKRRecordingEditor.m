@@ -10,9 +10,22 @@
 #import "BKRRecordableCassette.h"
 #import "BKRRecordableRawFrame.h"
 
+@interface BKRRecordingEditor ()
+@property (nonatomic, assign, readwrite) BOOL handledRecording;
+
+@end
+
 @implementation BKRRecordingEditor
 
 @synthesize recordingStartTime = _recordingStartTime;
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _handledRecording = NO;
+    }
+    return self;
+}
 
 - (NSDate *)recordingStartTime {
     __block NSDate *recordingTime = nil;
@@ -57,6 +70,7 @@
         if (![sself _shouldRecord:frame]) {
             return;
         }
+        sself->_handledRecording = YES;
         [cassette addFrame:frame];
     });
 }
@@ -69,6 +83,16 @@
         return NO;
     }
     return [rawFrame.creationDate compare:self->_recordingStartTime];
+}
+
+- (BOOL)handledRecording {
+    __block BOOL currentHandledRecording;
+    __weak typeof(self) wself = self;
+    dispatch_sync(self.editingQueue, ^{
+        __strong typeof(wself) sself = wself;
+        currentHandledRecording = sself->_handledRecording;
+    });
+    return currentHandledRecording;
 }
 
 - (void)executeEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock withTask:(NSURLSessionTask *)task {

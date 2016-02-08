@@ -23,6 +23,8 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
+@property (nonatomic, assign, readonly) BOOL didRecord;
+
 /**
  *  Current cassette used to store network requests. If this is nil,
  *  then no recordings are stored.

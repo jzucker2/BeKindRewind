@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BKRRequestMatching.h"
+#import "BKRVCRActions.h"
 
 @class BKRCassette;
 
@@ -17,7 +18,7 @@
  *  play back information. Unlike the VCR of the 1980s which records and plays back grainy 
  *  video, the BKRVCR records and plays back network activity in Objective-C and Swift.
  */
-@interface BKRVCR : NSObject
+@interface BKRVCR : NSObject <BKRVCRActions>
 
 /**
  *  Designated intializer for creating a BKRVCR instance. Must provide a
@@ -47,29 +48,29 @@
  */
 + (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
 
-/**
- *  This determines whether the BKRVCR instance is playing or recording.
- *  If recording is YES then the VCR is saving network activity information
- *  to the BKRCassette instance stored in currentCassette. If this is NO,
- *  then the VCR is playing back network operations from the BKRCassette
- *  instance stored in currentCassette.
- *  @note default is NO
- */
-@property (nonatomic, getter=isRecording) BOOL recording;
+///**
+// *  This determines whether the BKRVCR instance is playing or recording.
+// *  If recording is YES then the VCR is saving network activity information
+// *  to the BKRCassette instance stored in currentCassette. If this is NO,
+// *  then the VCR is playing back network operations from the BKRCassette
+// *  instance stored in currentCassette.
+// *  @note default is NO
+// */
+//@property (nonatomic, getter=isRecording) BOOL recording;
+//
+///**
+// *  Default is NO, when isDisabled is set to YES, recording and 
+// *  playback are both turned off. This is not expected to be used often.
+// */
+//@property (nonatomic, getter=isDisabled) BOOL disabled;
 
-/**
- *  Default is NO, when isDisabled is set to YES, recording and 
- *  playback are both turned off. This is not expected to be used often.
- */
-@property (nonatomic, getter=isDisabled) BOOL disabled;
 
 
-
-/**
- *  Recordings or stubbings for a session are contained in this object. If this
- *  property is nil then network operations are not recorded or stubbed.
- */
-@property (nonatomic, strong, readonly) BKRCassette *currentCassette;
+///**
+// *  Recordings or stubbings for a session are contained in this object. If this
+// *  property is nil then network operations are not recorded or stubbed.
+// */
+//@property (nonatomic, strong, readonly) BKRCassette *currentCassette;
 
 /**
  *  This is the matcher object created during class initialization. It is

@@ -98,4 +98,9 @@
     return [NSBundle bundleWithPath:bundlePath];
 }
 
++ (BOOL)filePathExists:(NSString *)filePath {
+    NSParameterAssert(filePath);
+    return [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+}
+
 @end

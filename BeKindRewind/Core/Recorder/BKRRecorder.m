@@ -15,9 +15,11 @@
 
 @interface BKRRecorder ()
 @property (nonatomic, strong) BKRRecordingEditor *editor;
+//@property (nonatomic, assign, readwrite) BOOL didRecord;
 @end
 
 @implementation BKRRecorder
+//@synthesize didRecord = _didRecord;
 
 - (instancetype)init {
     self = [super init];
@@ -54,6 +56,10 @@
 
 - (BOOL)isEnabled {
     return self.editor.isEnabled;
+}
+
+- (BOOL)didRecord {
+    return self.editor.handledRecording;
 }
 
 - (void)reset {

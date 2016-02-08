@@ -17,6 +17,10 @@
 
 @synthesize scenes = _scenes;
 
++ (instancetype)cassetteFromDictionary:(NSDictionary *)dictionary {
+    return [[self alloc] initFromPlistDictionary:dictionary];
+}
+
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
     self = [[[self class] alloc] init];
     if (self) {
