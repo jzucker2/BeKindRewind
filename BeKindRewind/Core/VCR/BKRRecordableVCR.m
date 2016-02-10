@@ -122,7 +122,8 @@
             finalResult = [BKRFilePathHelper writeDictionary:cassetteDictionary toFile:currentFilePath];
             self->_state = BKRVCRStateStopped; // somewhat unnecessary
             self->_cassetteFilePath = nil; // remove the cassette file path
-            [BKRRecorder sharedInstance].currentCassette = nil; // remove the cassette from the recorder
+            [[BKRRecorder sharedInstance] reset]; // reset the recorder (removes cassette)
+            finalResult = YES;
         }
     });
     return finalResult;

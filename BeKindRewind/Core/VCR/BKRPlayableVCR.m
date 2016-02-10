@@ -174,8 +174,10 @@
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
-        NSString *currentFilePath = self->_cassetteFilePath;
-        
+        self->_state = BKRVCRStateStopped;
+        self->_cassetteFilePath = nil;
+        [self->_player reset]; // removes cassette
+        finalResult = YES;
     });
     return finalResult;
 }
