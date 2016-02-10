@@ -63,6 +63,7 @@
 }
 
 - (void)reset {
+    self.currentCassette = nil;
     [self.editor updateRecordingStartTime];
     self.beginRecordingBlock = nil;
     self.endRecordingBlock = nil;

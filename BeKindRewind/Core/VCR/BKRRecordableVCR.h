@@ -11,4 +11,6 @@
 
 @interface BKRRecordableVCR : NSObject <BKRVCRActions>
 
++ (instancetype)vcr;
+
 @end

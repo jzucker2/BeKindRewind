@@ -75,6 +75,7 @@
 }
 
 - (void)reset {
+    self.currentCassette = nil;
     self.enabled = NO;
     self.beforeAddingStubsBlock = nil;
     self.afterAddingStubsBlock = nil;

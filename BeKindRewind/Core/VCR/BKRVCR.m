@@ -25,10 +25,10 @@
 @implementation BKRVCR
 @synthesize currentCassette = _currentCassette;
 @synthesize state = _state;
-@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
-@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
-@synthesize beginRecordingBlock = _beginRecordingBlock;
-@synthesize endRecordingBlock = _endRecordingBlock;
+//@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
+//@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
+//@synthesize beginRecordingBlock = _beginRecordingBlock;
+//@synthesize endRecordingBlock = _endRecordingBlock;
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
     self = [super init];
@@ -186,77 +186,77 @@
 //    });
 //}
 
-- (void)setAfterAddingStubsBlock:(BKRAfterAddingStubs)afterAddingStubsBlock {
-    __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.processingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        sself->_afterAddingStubsBlock = afterAddingStubsBlock;
-    });
-}
-
-- (BKRAfterAddingStubs)afterAddingStubsBlock {
-    __block BKRAfterAddingStubs block;
-    __weak typeof(self) wself = self;
-    dispatch_sync(self.processingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        block = sself->_afterAddingStubsBlock;
-    });
-    return block;
-}
-
-- (void)setBeforeAddingStubsBlock:(BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.processingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        sself->_beforeAddingStubsBlock = beforeAddingStubsBlock;
-    });
-}
-
-- (BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    __block BKRBeforeAddingStubs block;
-    __weak typeof(self) wself = self;
-    dispatch_sync(self.processingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        block = sself->_beforeAddingStubsBlock;
-    });
-    return block;
-}
-
-- (void)setBeginRecordingBlock:(BKRBeginRecordingTaskBlock)beginRecordingBlock {
-    __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.processingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        sself->_beginRecordingBlock = beginRecordingBlock;
-    });
-}
-
-- (BKRBeginRecordingTaskBlock)beginRecordingBlock {
-    __block BKRBeginRecordingTaskBlock block;
-    __weak typeof(self) wself = self;
-    dispatch_sync(self.processingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        block = sself->_beginRecordingBlock;
-    });
-    return block;
-}
-
-- (void)setEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock {
-    __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.processingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        sself->_endRecordingBlock = endRecordingBlock;
-    });
-}
-
-- (BKREndRecordingTaskBlock)endRecordingBlock {
-    __block BKREndRecordingTaskBlock block;
-    __weak typeof(self) wself = self;
-    dispatch_sync(self.processingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        block = sself->_endRecordingBlock;
-    });
-    return block;
-}
+//- (void)setAfterAddingStubsBlock:(BKRAfterAddingStubs)afterAddingStubsBlock {
+//    __weak typeof(self) wself = self;
+//    dispatch_barrier_async(self.processingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        sself->_afterAddingStubsBlock = afterAddingStubsBlock;
+//    });
+//}
+//
+//- (BKRAfterAddingStubs)afterAddingStubsBlock {
+//    __block BKRAfterAddingStubs block;
+//    __weak typeof(self) wself = self;
+//    dispatch_sync(self.processingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        block = sself->_afterAddingStubsBlock;
+//    });
+//    return block;
+//}
+//
+//- (void)setBeforeAddingStubsBlock:(BKRBeforeAddingStubs)beforeAddingStubsBlock {
+//    __weak typeof(self) wself = self;
+//    dispatch_barrier_async(self.processingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        sself->_beforeAddingStubsBlock = beforeAddingStubsBlock;
+//    });
+//}
+//
+//- (BKRBeforeAddingStubs)beforeAddingStubsBlock {
+//    __block BKRBeforeAddingStubs block;
+//    __weak typeof(self) wself = self;
+//    dispatch_sync(self.processingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        block = sself->_beforeAddingStubsBlock;
+//    });
+//    return block;
+//}
+//
+//- (void)setBeginRecordingBlock:(BKRBeginRecordingTaskBlock)beginRecordingBlock {
+//    __weak typeof(self) wself = self;
+//    dispatch_barrier_async(self.processingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        sself->_beginRecordingBlock = beginRecordingBlock;
+//    });
+//}
+//
+//- (BKRBeginRecordingTaskBlock)beginRecordingBlock {
+//    __block BKRBeginRecordingTaskBlock block;
+//    __weak typeof(self) wself = self;
+//    dispatch_sync(self.processingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        block = sself->_beginRecordingBlock;
+//    });
+//    return block;
+//}
+//
+//- (void)setEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock {
+//    __weak typeof(self) wself = self;
+//    dispatch_barrier_async(self.processingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        sself->_endRecordingBlock = endRecordingBlock;
+//    });
+//}
+//
+//- (BKREndRecordingTaskBlock)endRecordingBlock {
+//    __block BKREndRecordingTaskBlock block;
+//    __weak typeof(self) wself = self;
+//    dispatch_sync(self.processingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        block = sself->_endRecordingBlock;
+//    });
+//    return block;
+//}
 
 //// this depends on state, whether it returns a playable cassette or a recording cassette
 - (BKRCassette *)currentCassette {
