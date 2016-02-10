@@ -8,23 +8,24 @@
 
 #import "BKRVCR.h"
 #import "BKRCassette.h"
-#import "BKRRecorder.h"
-#import "BKRPlayer.h"
 #import "BKRFilePathHelper.h"
-#import "BKRRecordableCassette.h"
-#import "BKRPlayableCassette.h"
 
 @interface BKRVCR ()
-@property (nonatomic, strong) BKRPlayer *player;
-@property (nonatomic) dispatch_queue_t processingQueue;
-@property (nonatomic, strong, readwrite) BKRCassette *currentCassette;
-@property (nonatomic, assign, readwrite) BKRVCRState state;
-@property (nonatomic, copy, readwrite) NSString *cassetteFilePath;
+//@property (nonatomic, strong) BKRPlayer *player;
+@property (nonatomic) dispatch_queue_t accessQueue;
+@property (nonatomic) Class<BKRRequestMatching> matcherClass;
+@property (nonatomic, strong) id<BKRVCRActions> internalVCR;
+//@property (nonatomic, strong, readwrite) BKRCassette *currentCassette;
+//@property (nonatomic, assign, readwrite) BKRVCRState state;
+//@property (nonatomic, copy, readwrite) NSString *cassetteFilePath;
 @end
 
 @implementation BKRVCR
-@synthesize currentCassette = _currentCassette;
+//@synthesize currentCassette = _currentCassette;
+@synthesize cassetteFilePath = _cassetteFilePath;
 @synthesize state = _state;
+@synthesize matcherClass = _matcherClass;
+@synthesize internalVCR = _internalVCR;
 //@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
 //@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
 //@synthesize beginRecordingBlock = _beginRecordingBlock;
@@ -33,12 +34,16 @@
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
     self = [super init];
     if (self) {
-        _player = [BKRPlayer playerWithMatcherClass:matcherClass];
-        [BKRRecorder sharedInstance].enabled = NO;
-        _processingQueue = dispatch_queue_create("com.BKR.VCR.processingQueue", DISPATCH_QUEUE_CONCURRENT);
+//        _player = [BKRPlayer playerWithMatcherClass:matcherClass];
+//        _player.enabled = NO;
+//        [BKRRecorder sharedInstance].enabled = NO;
+        _matcherClass = matcherClass;
+        _accessQueue = dispatch_queue_create("com.BKR.VCR.processingQueue", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
-        _currentCassette = nil;
         _cassetteFilePath = nil;
+        _internalVCR = nil;
+//        _currentCassette = nil;
+//        _cassetteFilePath = nil;
 //        _disabled = NO;
 //        _recording = NO;
     }
@@ -50,10 +55,69 @@
 }
 
 - (id<BKRRequestMatching>)matcher {
-    return self.player.matcher;
+//    return self.player.matcher;
+    return nil;
+}
+
+#pragma mark - helpers
+
+- (void)setInternalVCR:(id<BKRVCRActions>)internalVCR {
+    BKRWeakify(self);
+    dispatch_barrier_async(self.accessQueue, ^{
+        BKRStrongify(self);
+        self->_internalVCR = internalVCR;
+    });
+}
+
+- (id<BKRVCRActions>)internalVCR {
+    __block id<BKRVCRActions> currentInternalVCR = nil;
+    dispatch_sync(self.accessQueue, ^{
+        currentInternalVCR = self->_internalVCR;
+    });
+    return currentInternalVCR;
 }
 
 #pragma mark - BKRVCRActions
+
+- (BKRCassette *)currentCassette {
+    __block BKRCassette *cassette = nil;
+    BKRWeakify(self);
+    dispatch_sync(self.accessQueue, ^{
+        BKRStrongify(self);
+        cassette = [self->_internalVCR currentCassette];
+    });
+    return cassette;
+}
+
+- (NSString *)cassetteFilePath {
+    __block NSString *currentCassetteFilePath = nil;
+    BKRWeakify(self);
+    dispatch_sync(self.accessQueue, ^{
+        BKRStrongify(self);
+        currentCassetteFilePath = self->_cassetteFilePath;
+    });
+    return currentCassetteFilePath;
+}
+
+- (void)reset {
+    BKRWeakify(self);
+    dispatch_barrier_async(self.accessQueue, ^{
+        BKRStrongify(self);
+        [self->_internalVCR reset];
+        self->_cassetteFilePath = nil;
+        self->_state = BKRVCRStateStopped;
+    });
+}
+
+- (BKRVCRState)state {
+    __block BKRVCRState currentState;
+    BKRWeakify(self);
+    dispatch_sync(self.accessQueue, ^{
+        BKRStrongify(self);
+        currentState = self->_state;
+    });
+    return currentState;
+}
 
 
 @end

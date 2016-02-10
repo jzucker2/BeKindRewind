@@ -28,6 +28,7 @@
         _player = [BKRPlayer playerWithMatcherClass:matcherClass];
         _accessQueue = dispatch_queue_create("com.BKR.BKRPlayableVCR", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
+        _cassetteFilePath = nil;
     }
     return self;
 }
@@ -184,7 +185,7 @@
 
 - (void)reset {
     BKRWeakify(self);
-    bkr_safe_property_write(self.accessQueue, ^{
+    dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         [self->_player reset];
         self->_cassetteFilePath = nil;

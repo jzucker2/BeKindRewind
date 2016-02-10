@@ -21,24 +21,6 @@ _Pragma("clang diagnostic pop") \
 // the NO if statement doesn't run but is a compiler check to test if the object containst the key
 #define BKRKey(object, selector) ({ __typeof(object) testObject = nil; if (NO) { (void)((testObject).selector); } @#selector; })
 
-void bkr_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
-    if (queue && block) {
-        dispatch_sync(queue, block);
-    }
-}
-
-void bkr_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
-    if (queue && block) {
-        dispatch_barrier_async(queue, block);
-    }
-}
-
-void bkr_safe_property_read(dispatch_queue_t queue, dispatch_block_t block) {
-    if (queue && block) {
-        dispatch_sync(queue, block);
-    }
-}
-
 
 /**
  *  Block for code execution before stubs are added for playback

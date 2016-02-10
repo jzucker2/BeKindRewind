@@ -25,8 +25,10 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+        [[BKRRecorder sharedInstance] reset];
         _accessQueue = dispatch_queue_create("com.BKR.RecordableVCR", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
+        _cassetteFilePath = nil;
     }
     return self;
 }
@@ -62,7 +64,7 @@
 
 - (void)record {
     BKRWeakify(self);
-    bkr_safe_property_write(self.accessQueue, ^{
+    dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         switch (self->_state) {
             case BKRVCRStatePlaying:
@@ -131,7 +133,7 @@
 
 - (void)stop {
     BKRWeakify(self);
-    bkr_safe_property_write(self.accessQueue, ^{
+    dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         switch (self->_state) {
             case BKRVCRStatePlaying:
@@ -153,7 +155,7 @@
 
 - (void)pause {
     BKRWeakify(self);
-    bkr_safe_property_write(self.accessQueue, ^{
+    dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         switch (self->_state) {
             case BKRVCRStatePlaying:
@@ -175,7 +177,7 @@
 
 - (void)reset {
     BKRWeakify(self);
-    bkr_safe_property_write(self.accessQueue, ^{
+    dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         [[BKRRecorder sharedInstance] reset];
         self->_cassetteFilePath = nil;
