@@ -721,13 +721,25 @@
             NSString *frameClass = frame[@"class"];
             XCTAssertNotNil(frameClass);
             if ([frameClass isEqualToString:@"BKRErrorFrame"]) {
-                
+                XCTAssertEqual([frame[@"code"] integerValue], recording.expectedErrorCode);
+                XCTAssertEqualObjects(frame[@"domain"], recording.expectedErrorDomain);
+                NSDictionary *finalUserInfo;
+                if (recording.expectedErrorUserInfo) {
+                    NSMutableDictionary *comparingDictionary = recording.expectedErrorUserInfo.mutableCopy;
+                    if (comparingDictionary[NSURLErrorFailingURLErrorKey]) {
+                        comparingDictionary[NSURLErrorFailingURLErrorKey] = [recording.expectedErrorUserInfo[NSURLErrorFailingURLErrorKey] absoluteString];
+                    }
+                    finalUserInfo = comparingDictionary.copy;
+                }
+                XCTAssertEqualObjects(frame[@"userInfo"], finalUserInfo);
             } else if ([frameClass isEqualToString:@"BKRDataFrame"]) {
 //                NSData *data = [NSJSONSerialization dataWithJSONObject:recording.receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
-                NSData *savedData = frame[@"data"];
-                XCTAssertNotNil(savedData);
-                NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:savedData options:NSJSONReadingAllowFragments error:nil];
-                XCTAssertEqualObjects(recording.receivedJSON, dictionary[@"args"]);
+                if (recording.receivedJSON) {
+                    NSData *savedData = frame[@"data"];
+                    XCTAssertNotNil(savedData);
+                    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:savedData options:NSJSONReadingAllowFragments error:nil];
+                    XCTAssertEqualObjects(recording.receivedJSON, dictionary[@"args"]);
+                }
             } else if ([frameClass isEqualToString:@"BKRResponseFrame"]) {
                 XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
                 XCTAssertNotNil(frame[@"MIMEType"]);
@@ -740,11 +752,19 @@
                 XCTAssertNotNil(frame[@"allowsCellularAccess"]);
                 XCTAssertNotNil(frame[@"HTTPShouldHandleCookies"]);
                 XCTAssertNotNil(frame[@"HTTPShouldUsePipelining"]);
+                if (numberOfRequestChecks == 0) {
+                    if (recording.HTTPMethod) {
+                        XCTAssertEqualObjects(recording.HTTPMethod, frame[@"HTTPMethod"]);
+                    }
+                    if (recording.sentJSON) {
+                        NSData *sentData = [NSJSONSerialization dataWithJSONObject:recording.sentJSON options:NSJSONWritingPrettyPrinted error:nil];
+                        XCTAssertEqualObjects(sentData, frame[@"HTTPBody"]);
+                    } else if (recording.HTTPBody) {
+                        XCTAssertEqualObjects(recording.HTTPBody, frame[@"HTTPBody"]);
+                    }
+                }
                 if (recording.HTTPMethod) {
                     XCTAssertEqualObjects(recording.HTTPMethod, frame[@"HTTPMethod"]);
-                }
-                if (recording.HTTPBody) {
-                    XCTAssertEqualObjects(recording.HTTPBody, frame[@"HTTPBody"]);
                 }
                 // should assert on headers too
                 
