@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		518436BF1C6D1A3C006B5A07 /* BKRRecordingVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 518436BE1C6D1A3C006B5A07 /* BKRRecordingVCRTestCase.m */; };
+		518436C11C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */; };
 		51B9B9421C50D70C006156C2 /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
 		51B9B9431C50D712006156C2 /* XCTestCase+BKRAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D61C4F03650030A02D /* XCTestCase+BKRAdditions.m */; };
 		51B9B9451C516A71006156C2 /* BKRPlistSerializingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9441C516A71006156C2 /* BKRPlistSerializingTestCase.m */; };
@@ -36,6 +38,8 @@
 		2ABA0ED2BAFDF50ADCC348D3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		46FDC6D62117BCC2DBD07745 /* BeKindRewind.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BeKindRewind.podspec; path = ../BeKindRewind.podspec; sourceTree = "<group>"; };
 		4D2A9743CBA46BB14A7BC2BF /* Pods_BKR_Tests_iOS_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_iOS_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		518436BE1C6D1A3C006B5A07 /* BKRRecordingVCRTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecordingVCRTestCase.m; sourceTree = "<group>"; };
+		518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRPlayableVCRTestCase.m; sourceTree = "<group>"; };
 		51B9B93A1C50D448006156C2 /* BKR-Tests-OSX-ObjC.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BKR-Tests-OSX-ObjC.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B9B93E1C50D448006156C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51B9B9441C516A71006156C2 /* BKRPlistSerializingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRPlistSerializingTestCase.m; sourceTree = "<group>"; };
@@ -121,6 +125,8 @@
 			children = (
 				51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */,
 				51B9B95A1C52FA35006156C2 /* BKRPlayingTestCase.m */,
+				518436BE1C6D1A3C006B5A07 /* BKRRecordingVCRTestCase.m */,
+				518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */,
 				51B9B9441C516A71006156C2 /* BKRPlistSerializingTestCase.m */,
 				51B9BA041C59FFE8006156C2 /* BKRCassetteTestCase.m */,
 				51B9B9C61C57E802006156C2 /* BKRFilePathHelperTestCase.m */,
@@ -428,8 +434,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				518436BF1C6D1A3C006B5A07 /* BKRRecordingVCRTestCase.m in Sources */,
 				51CEB9D71C4F03650030A02D /* XCTestCase+BKRAdditions.m in Sources */,
 				51B9BA051C59FFE8006156C2 /* BKRCassetteTestCase.m in Sources */,
+				518436C11C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m in Sources */,
 				51CEB9D31C4EBF000030A02D /* BKRRecordingTestCase.m in Sources */,
 				51B9B9C71C57E802006156C2 /* BKRFilePathHelperTestCase.m in Sources */,
 				51B9B95B1C52FA35006156C2 /* BKRPlayingTestCase.m in Sources */,

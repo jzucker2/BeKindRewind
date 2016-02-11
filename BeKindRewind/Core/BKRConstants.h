@@ -21,6 +21,8 @@ _Pragma("clang diagnostic pop") \
 // the NO if statement doesn't run but is a compiler check to test if the object containst the key
 #define BKRKey(object, selector) ({ __typeof(object) testObject = nil; if (NO) { (void)((testObject).selector); } @#selector; })
 
+#define XOR(x,y) (((x) && !(y)) || (!(x) && (y)))
+
 
 /**
  *  Block for code execution before stubs are added for playback

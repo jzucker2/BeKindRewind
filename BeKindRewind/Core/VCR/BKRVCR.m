@@ -79,6 +79,31 @@
 
 #pragma mark - BKRVCRActions
 
+- (void)play {
+//    BKRWeakify(self);
+    
+}
+
+- (void)pause {
+    
+}
+
+- (void)stop {
+    
+}
+
+- (void)record {
+    
+}
+
+- (BOOL)insert:(NSString *)cassetteFilePath {
+    return NO;
+}
+
+- (BOOL)eject:(BOOL)shouldOverwrite {
+    return NO;
+}
+
 - (BKRCassette *)currentCassette {
     __block BKRCassette *cassette = nil;
     BKRWeakify(self);

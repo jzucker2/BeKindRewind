@@ -20,6 +20,8 @@
 
 @implementation BKRRecorder
 //@synthesize didRecord = _didRecord;
+@synthesize beginRecordingBlock = _beginRecordingBlock;
+@synthesize endRecordingBlock = _endRecordingBlock;
 
 - (instancetype)init {
     self = [super init];

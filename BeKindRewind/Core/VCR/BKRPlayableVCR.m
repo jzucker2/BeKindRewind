@@ -19,6 +19,8 @@
 
 @implementation BKRPlayableVCR
 
+@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
+@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
 @synthesize state = _state;
 @synthesize cassetteFilePath = _cassetteFilePath;
 
@@ -35,6 +37,45 @@
 
 + (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
     return [[self alloc] initWithMatcherClass:matcherClass];
+}
+
+#pragma mark - BKRVCRPlaying
+
+- (void)setBeforeAddingStubsBlock:(BKRBeforeAddingStubs)beforeAddingStubsBlock {
+    BKRWeakify(self);
+    dispatch_barrier_async(self.accessQueue, ^{
+        BKRStrongify(self);
+        self->_player.beforeAddingStubsBlock = beforeAddingStubsBlock;
+    });
+}
+
+- (BKRBeforeAddingStubs)beforeAddingStubsBlock {
+    __block BKRBeforeAddingStubs stubsBlock = nil;
+    BKRWeakify(self);
+    dispatch_sync(self.accessQueue, ^{
+        BKRStrongify(self);
+        stubsBlock = self->_player.beforeAddingStubsBlock;
+    });
+    return stubsBlock;
+}
+
+- (void)setAfterAddingStubsBlock:(BKRAfterAddingStubs)afterAddingStubsBlock {
+    BKRWeakify(self);
+    dispatch_barrier_async(self.accessQueue, ^{
+        BKRStrongify(self);
+        self->_player.afterAddingStubsBlock = afterAddingStubsBlock;
+    });
+
+}
+
+- (BKRAfterAddingStubs)afterAddingStubsBlock {
+    __block BKRAfterAddingStubs stubsBlock = nil;
+    BKRWeakify(self);
+    dispatch_sync(self.accessQueue, ^{
+        BKRStrongify(self);
+        stubsBlock = self->_player.afterAddingStubsBlock;
+    });
+    return stubsBlock;
 }
 
 #pragma mark - BKRActions

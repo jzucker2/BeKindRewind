@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BKRConstants.h"
+#import "BKRVCRActions.h"
 
 @class BKRRecordableCassette;
 @class BKRRecordableScene;
@@ -16,7 +17,7 @@
  *  This object is responsible for collecting and storing all information associated
  *  with a network request.
  */
-@interface BKRRecorder : NSObject
+@interface BKRRecorder : NSObject <BKRVCRRecording>
 
 /**
  *  Whether or not network activity should be recorded
@@ -31,23 +32,23 @@
  */
 @property (nonatomic, strong) BKRRecordableCassette *currentCassette;
 
-/**
- *  This block executes on the main queue before any network request
- *  begins. Make sure not to deadlock or execute slow code. It passes in
- *  the NSURLSessionTask associated with this recording.
- *
- *  @note this block is executed synchronously on the main queue
- */
-@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
-
-/**
- *  This block executes on the main queue after any network request
- *  begins. Make sure not to deadlock or execute slow code. It passes in
- *  the NSURLSessionTask associated with this recording.
- *
- *  @note this block is executed asynchronously on the main queue
- */
-@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
+///**
+// *  This block executes on the main queue before any network request
+// *  begins. Make sure not to deadlock or execute slow code. It passes in
+// *  the NSURLSessionTask associated with this recording.
+// *
+// *  @note this block is executed synchronously on the main queue
+// */
+//@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
+//
+///**
+// *  This block executes on the main queue after any network request
+// *  begins. Make sure not to deadlock or execute slow code. It passes in
+// *  the NSURLSessionTask associated with this recording.
+// *
+// *  @note this block is executed asynchronously on the main queue
+// */
+//@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
 
 /**
  *  Ordered array of BKRRecordableScene objects from current cassette

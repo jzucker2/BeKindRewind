@@ -47,6 +47,46 @@ typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
 
 @class BKRCassette;
 
+@protocol BKRVCRPlaying <NSObject>
+
+/**
+ *  Block is executed on the main thread before all stubs for a
+ *  playback session are added
+ *  @note make sure not to deadlock or execute slow code in this block
+ */
+@property (nonatomic, copy) BKRBeforeAddingStubs beforeAddingStubsBlock;
+
+/**
+ *  Block is executed on the main thread after all stubs for a
+ *  playback session are added
+ *  @note make sure not to deadlock or execute slow code in this block
+ */
+@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock;
+
+@end
+
+@protocol BKRVCRRecording <NSObject>
+
+/**
+ *  This block executes on the main queue before any network request
+ *  begins. Make sure not to deadlock or execute slow code. It passes in
+ *  the NSURLSessionTask associated with this recording.
+ *
+ *  @note this block is executed synchronously on the main queue
+ */
+@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
+
+/**
+ *  This block executes on the main queue after any network request
+ *  begins. Make sure not to deadlock or execute slow code. It passes in
+ *  the NSURLSessionTask associated with this recording.
+ *
+ *  @note this block is executed asynchronously on the main queue
+ */
+@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
+
+@end
+
 @protocol BKRVCRActions <NSObject>
 
 - (void)play;

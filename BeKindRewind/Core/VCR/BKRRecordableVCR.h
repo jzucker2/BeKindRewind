@@ -9,8 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "BKRVCRActions.h"
 
-@interface BKRRecordableVCR : NSObject <BKRVCRActions>
+@interface BKRRecordableVCR : NSObject <BKRVCRActions, BKRVCRRecording>
+
+- (instancetype)initWithEmptyCassetteOption:(BOOL)shouldSaveEmptyCassette;
++ (instancetype)vcrWithCassetteSavingOption:(BOOL)shouldSaveEmptyCassette;
 
 + (instancetype)vcr;
+
+@property (nonatomic, assign, readonly) BOOL shouldSaveEmptyCassette; // no by default
 
 @end

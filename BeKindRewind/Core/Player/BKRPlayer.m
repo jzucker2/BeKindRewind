@@ -17,6 +17,8 @@
 @end
 
 @implementation BKRPlayer
+@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
+@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
 
 - (void)_init {
     _editor = [BKRPlayingEditor editor];
@@ -57,6 +59,7 @@
     return self.editor.isEnabled;
 }
 
+// TODO: probably should add before stubs on the editor's queue
 - (void)_addStubs {
     // make sure this executes on the main thread
     if (self.beforeAddingStubsBlock) {

@@ -15,26 +15,64 @@
 @interface BKRRecordableVCR ()
 @property (nonatomic) dispatch_queue_t accessQueue;
 //@property (nonatomic, copy, readwrite) NSString *cassetteFilePath;
+@property (nonatomic, assign, readwrite) BOOL shouldSaveEmptyCassette; // no by default
 @end
 
 @implementation BKRRecordableVCR
 
 @synthesize state = _state;
 @synthesize cassetteFilePath = _cassetteFilePath;
+@synthesize beginRecordingBlock = _beginRecordingBlock;
+@synthesize endRecordingBlock = _endRecordingBlock;
 
-- (instancetype)init {
+- (instancetype)initWithEmptyCassetteOption:(BOOL)shouldSaveEmptyCassette {
     self = [super init];
     if (self) {
         [[BKRRecorder sharedInstance] reset];
         _accessQueue = dispatch_queue_create("com.BKR.RecordableVCR", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
         _cassetteFilePath = nil;
+        _shouldSaveEmptyCassette = shouldSaveEmptyCassette;
     }
     return self;
 }
 
++ (instancetype)vcrWithCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
+    return [[self alloc] initWithEmptyCassetteOption:shouldSaveEmptyCassette];
+}
+
 + (instancetype)vcr {
-    return [[self alloc] init];
+    return [self vcrWithCassetteSavingOption:NO];
+}
+
+#pragma mark - BKRVCRRecording
+
+- (void)setBeginRecordingBlock:(BKRBeginRecordingTaskBlock)beginRecordingBlock {
+    dispatch_barrier_async(self.accessQueue, ^{
+        [BKRRecorder sharedInstance].beginRecordingBlock = beginRecordingBlock;
+    });
+}
+
+- (BKRBeginRecordingTaskBlock)beginRecordingBlock {
+    __block BKRBeginRecordingTaskBlock recordingBlock = nil;
+    dispatch_sync(self.accessQueue, ^{
+        recordingBlock = [BKRRecorder sharedInstance].beginRecordingBlock;
+    });
+    return recordingBlock;
+}
+
+- (void)setEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock {
+    dispatch_barrier_async(self.accessQueue, ^{
+        [BKRRecorder sharedInstance].endRecordingBlock = endRecordingBlock;
+    });
+}
+
+- (BKREndRecordingTaskBlock)endRecordingBlock {
+    __block BKREndRecordingTaskBlock recordingBlock = nil;
+    dispatch_sync(self.accessQueue, ^{
+        recordingBlock = [BKRRecorder sharedInstance].endRecordingBlock;
+    });
+    return recordingBlock;
 }
 
 #pragma mark - BKRActions
@@ -113,12 +151,27 @@
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
-        NSString *currentFilePath = self->_cassetteFilePath;
+        // if current VCR state is unknown, then let's log an error and stop
+        if (self->_state == BKRVCRStateUnknown) {
+            NSLog(@"what happened, how did we get in this state? Please open a GitHub issue");
+            return;
+        }
+        // if there's nothing to record and we aren't supposed to save empty cassettes, then exit here
         if (
-            (self->_state != BKRVCRStateUnknown) && // if state is unknown, then no save, should we log an error?
-            ([BKRRecorder sharedInstance].didRecord) && // only save if something was recorded, maybe this could be an option
-            (currentFilePath) && // only save if there's a place to save
-            ([BKRFilePathHelper filePathExists:currentFilePath] && shouldOverwrite) // if there's a place to save and it already exists, then only save if overwriting
+            (!self->_shouldSaveEmptyCassette) &&
+            (![BKRRecorder sharedInstance].didRecord)
+            ) {
+            return;
+        }
+        NSString *currentFilePath = self->_cassetteFilePath;
+        if (!currentFilePath) {
+            NSLog(@"there is not path to save a file to! How did we get here? Open a GitHub issue with repro steps");
+            return;
+        }
+        BOOL fileExists = [BKRFilePathHelper filePathExists:currentFilePath];
+        if (
+            !fileExists || // if the file path does not exist, then just save it!
+            (fileExists && shouldOverwrite) // if there's a place to save and it already exists, then only save if overwriting
             ) {
             NSDictionary *cassetteDictionary = [BKRRecorder sharedInstance].currentCassette.plistDictionary;
             finalResult = [BKRFilePathHelper writeDictionary:cassetteDictionary toFile:currentFilePath];
