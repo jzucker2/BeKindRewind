@@ -64,7 +64,6 @@
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [self.vcr reset];
-    self.vcr = nil;
 //    NSError *testResultRemovalError = nil;
 //    BOOL removeTestResults = [[NSFileManager defaultManager] removeItemAtPath:self.testRecordingFilePath error:&testResultRemovalError];
 //    XCTAssertTrue(removeTestResults);
@@ -95,6 +94,7 @@
 //        XCTAssertNil(error);
 //    }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[expectedRecording]];
 }
 
 @end

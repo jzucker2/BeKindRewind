@@ -21,6 +21,7 @@
 #import <BeKindRewind/BKRRecorder.h>
 #import <BeKindRewind/BKRRecordableScene.h>
 #import <BeKindRewind/BKRPlayer.h>
+#import <BeKindRewind/BKRFilePathHelper.h>
 
 @implementation BKRExpectedScenePlistDictionaryBuilder
 
@@ -689,6 +690,72 @@
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+}
+
+- (void)assertCassettePath:(NSString *)cassettePath matchesExpectedRecordings:(NSArray<BKRExpectedRecording *> *)expectedRecordings {
+    NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassettePath];
+    XCTAssertTrue([cassetteDictionary isKindOfClass:[NSDictionary class]]);
+    XCTAssertTrue([cassetteDictionary[@"creationDate"] isKindOfClass:[NSDate class]]);
+    NSArray *scenes = cassetteDictionary[@"scenes"];
+    XCTAssertEqual(expectedRecordings.count, scenes.count);
+    // if there are no expected recordings, then there are no more comparisons left
+    if (!expectedRecordings.count) {
+        return;
+    }
+    
+    for (NSInteger i=0; i < expectedRecordings.count; i++) {
+        NSDictionary *scene = [scenes objectAtIndex:i];
+        XCTAssertTrue([scene isKindOfClass:[NSDictionary class]]);
+        NSString *uniqueIdentifier = scene[@"uniqueIdentifier"];
+        XCTAssertNotNil(uniqueIdentifier);
+        BKRExpectedRecording *recording = [expectedRecordings objectAtIndex:i];
+        XCTAssertEqual(recording.expectedSceneNumber, i);
+        XCTAssertNotNil(recording);
+        NSArray *frames = scene[@"frames"];
+        XCTAssertNotNil(frames);
+        NSInteger numberOfRequestChecks = 0;
+        XCTAssertEqual(recording.expectedNumberOfFrames, frames.count);
+        for (NSDictionary *frame in frames) {
+            XCTAssertEqualObjects(frame[@"uniqueIdentifier"], uniqueIdentifier);
+            XCTAssertTrue([frame[@"creationDate"] isKindOfClass:[NSDate class]]);
+            NSString *frameClass = frame[@"class"];
+            XCTAssertNotNil(frameClass);
+            if ([frameClass isEqualToString:@"BKRErrorFrame"]) {
+                
+            } else if ([frameClass isEqualToString:@"BKRDataFrame"]) {
+//                NSData *data = [NSJSONSerialization dataWithJSONObject:recording.receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
+                NSData *savedData = frame[@"data"];
+                XCTAssertNotNil(savedData);
+                NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:savedData options:NSJSONReadingAllowFragments error:nil];
+                XCTAssertEqualObjects(recording.receivedJSON, dictionary[@"args"]);
+            } else if ([frameClass isEqualToString:@"BKRResponseFrame"]) {
+                XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+                XCTAssertNotNil(frame[@"MIMEType"]);
+                XCTAssertEqual([frame[@"statusCode"] integerValue], recording.responseStatusCode);
+                // check response header fields
+            } else if ([frameClass isEqualToString:@"BKRRequestFrame"]) {
+                XCTAssertTrue(numberOfRequestChecks < 2, @"only expecting an original request and a current request");
+                XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+                XCTAssertNotNil(frame[@"timeoutInterval"]);
+                XCTAssertNotNil(frame[@"allowsCellularAccess"]);
+                XCTAssertNotNil(frame[@"HTTPShouldHandleCookies"]);
+                XCTAssertNotNil(frame[@"HTTPShouldUsePipelining"]);
+                if (recording.HTTPMethod) {
+                    XCTAssertEqualObjects(recording.HTTPMethod, frame[@"HTTPMethod"]);
+                }
+                if (recording.HTTPBody) {
+                    XCTAssertEqualObjects(recording.HTTPBody, frame[@"HTTPBody"]);
+                }
+                // should assert on headers too
+                
+                numberOfRequestChecks++;
+                
+            } else {
+                XCTFail(@"frameClass is unknown type: %@", frameClass);
+            }
+        }
+        // assert order of frames and scenes
+    }
 }
 
 @end
