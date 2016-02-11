@@ -87,17 +87,20 @@ typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
 
 @end
 
+//typedef returnType (^TypeName)(parameterTypes);
+typedef void (^BKRCassetteHandlingBlock)(BOOL, NSString *);
+
 @protocol BKRVCRActions <NSObject>
 
 - (void)play;
 - (void)pause; // is there a difference between stop and pause?
 - (void)stop; // is there a difference between stop and pause?
 - (void)reset; // reset to start of cassette
-- (BOOL)insert:(NSString *)cassetteFilePath; // must end in .plist
+- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock; // must end in .plist
 /**
  *  This "ejects" the current cassette, saving the results to the location specified by filePath
  */
-- (BOOL)eject:(BOOL)shouldOverwrite; // consider making BOOLEAN with something like force, etc, returns success or failure
+- (BOOL)eject:(BOOL)shouldOverwrite completionHandler:(BKRCassetteHandlingBlock)completionBlock; // consider making BOOLEAN with something like force, etc, returns success or failure
 
 /**
  *  Record network

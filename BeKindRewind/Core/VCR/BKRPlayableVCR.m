@@ -177,7 +177,7 @@
     });
 }
 
-- (BOOL)insert:(NSString *)cassetteFilePath {
+- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     // can't insert a cassette if you already have one
     if (self.cassetteFilePath) {
         NSLog(@"Already contains a cassette");
@@ -191,6 +191,7 @@
         return NO;
     }
     __block BOOL finalResult = NO;
+    __block NSString *finalPath = nil;
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
@@ -198,29 +199,50 @@
         if (cassetteDictionary) {
             // if no cassette dictionary is fetched, then return NO
             self->_cassetteFilePath = cassetteFilePath;
+            finalPath = self->_cassetteFilePath;
             BKRPlayableCassette *cassette = [BKRPlayableCassette cassetteFromDictionary:cassetteDictionary];
             self->_player.currentCassette = cassette;
             finalResult = YES;
         }
     });
+    if (completionBlock) {
+        if ([NSThread isMainThread]) {
+            completionBlock(finalResult, finalPath);
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock(finalResult, finalPath);
+            });
+        }
+    }
     return finalResult;
 }
 
-- (BOOL)eject:(BOOL)shouldOverwrite {
+- (BOOL)eject:(BOOL)shouldOverwrite completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     if (!self.cassetteFilePath) {
         NSLog(@"no cassette contained");
         return NO;
     }
     __block BOOL finalResult = NO;
+    __block NSString *finalPath = nil;
     [self stop];
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
         self->_state = BKRVCRStateStopped;
+        finalPath = self->_cassetteFilePath;
         self->_cassetteFilePath = nil;
         [self->_player reset]; // removes cassette
         finalResult = YES;
     });
+    if (completionBlock) {
+        if ([NSThread isMainThread]) {
+            completionBlock(finalResult, finalPath);
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock(finalResult, finalPath);
+            });
+        }
+    }
     return finalResult;
 }
 

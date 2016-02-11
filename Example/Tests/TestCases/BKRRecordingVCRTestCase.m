@@ -58,7 +58,10 @@
         [task.recordingExpectation fulfill];
     };
     
-    XCTAssertTrue([self.vcr insert:self.testRecordingFilePath]);
+    __block XCTestExpectation *insertExpectation = [self expectationWithDescription:@"insert expectation"];
+    XCTAssertTrue([self.vcr insert:self.testRecordingFilePath completionHandler:^(BOOL result, NSString *filePath) {
+        [insertExpectation fulfill];
+    }]);
 }
 
 - (void)tearDown {
@@ -89,7 +92,13 @@
         
     }];
     
-    XCTAssertTrue([self.vcr eject:YES]);
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+    }]);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[expectedRecording]];
 }
@@ -113,7 +122,13 @@
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
     }];
     
-    XCTAssertTrue([self.vcr eject:YES]);
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+    }]);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[recording]];
 }
@@ -134,7 +149,13 @@
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
     }];
-    XCTAssertTrue([self.vcr eject:YES]);
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+    }]);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[recording]];
 }
@@ -171,7 +192,13 @@
 //        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
     }];
     
-    XCTAssertTrue([self.vcr eject:YES]);
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+    }]);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[firstRecording, secondRecording]];
 }
@@ -221,7 +248,13 @@
 //        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
     }];
     
-    XCTAssertTrue([self.vcr eject:YES]);
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+    }]);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[firstRecording, secondRecording]];
 }
