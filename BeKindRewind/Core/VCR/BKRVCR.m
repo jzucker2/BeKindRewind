@@ -96,11 +96,11 @@
     
 }
 
-- (BOOL)insert:(NSString *)cassetteFilePath {
+- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     return NO;
 }
 
-- (BOOL)eject:(BOOL)shouldOverwrite {
+- (BOOL)eject:(BOOL)shouldOverwrite completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     return NO;
 }
 
