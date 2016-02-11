@@ -88,7 +88,7 @@ typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
 @end
 
 //typedef returnType (^TypeName)(parameterTypes);
-typedef void (^BKRCassetteHandlingBlock)(BOOL, NSString *);
+typedef void (^BKRCassetteHandlingBlock)(BOOL result, NSString *filePath);
 
 @protocol BKRVCRActions <NSObject>
 
