@@ -70,10 +70,10 @@
         [resetExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-        if (error) {
-            XCTFail(@"%@", error.localizedDescription);
-        }
+        XCTAssertNil(error);
+//        if (error) {
+//            XCTFail(@"%@", error.localizedDescription);
+//        }
     }];
 //    self.vcr.beforeAddingStubsBlock = nil;
 //    self.vcr.afterAddingStubsBlock = nil;
