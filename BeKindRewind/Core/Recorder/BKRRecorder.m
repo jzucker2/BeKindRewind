@@ -12,6 +12,7 @@
 #import "BKRRawFrame+Recordable.h"
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRScene+Recordable.h"
+#import "BKRNSURLSessionSwizzling.h"
 
 @interface BKRRecorder ()
 @property (nonatomic, strong) BKRRecordingEditor *editor;
@@ -24,6 +25,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+        [BKRNSURLSessionSwizzling swizzleForRecording];
         _editor = [BKRRecordingEditor editor];
     }
     return self;

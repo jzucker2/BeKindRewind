@@ -12,7 +12,6 @@
 #import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
-#import <BeKindRewind/BKRNSURLSessionSwizzling.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import "XCTestCase+BKRAdditions.h"
@@ -26,7 +25,6 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    [BKRNSURLSessionSwizzling swizzleForRecording];
     BKRRecordableCassette *cassette = [[BKRRecordableCassette alloc] init];
     [BKRRecorder sharedInstance].currentCassette = cassette;
     [BKRRecorder sharedInstance].enabled = YES;

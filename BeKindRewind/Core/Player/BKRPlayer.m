@@ -46,8 +46,9 @@
     self.editor.currentCassette = currentCassette;
     if (currentCassette) {
         [self _addStubs];
+    } else {
+        [self.editor removeAllStubs];
     }
-//    [self _addStubs];
 }
 
 - (BKRPlayableCassette *)currentCassette {
@@ -62,28 +63,13 @@
     return self.editor.isEnabled;
 }
 
-// TODO: probably should add before stubs on the editor's queue
 - (void)_addStubs {
-//    // make sure this executes on the main thread
-//    if (self.beforeAddingStubsBlock) {
-//        if ([NSThread isMainThread]) {
-//            self.beforeAddingStubsBlock();
-//        } else {
-//            // if player is called from a background queue, make sure this happens on main queue
-//            __weak typeof(self) wself = self;
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                __strong typeof(wself) sself = wself;
-//                sself.beforeAddingStubsBlock();
-//            });
-//        }
-//    }
     [self.editor addStubsForMatcher:self.matcher];
 }
 
 - (void)reset {
     self.currentCassette = nil;
     self.enabled = NO;
-    [self.editor removeAllStubs];
     self.beforeAddingStubsBlock = nil;
     self.afterAddingStubsBlock = nil;
 }

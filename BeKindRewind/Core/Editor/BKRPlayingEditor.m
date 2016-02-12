@@ -61,7 +61,9 @@
 }
 
 - (void)removeAllStubs {
-    [self _removeStubs];
+    dispatch_barrier_async(self.editingQueue, ^{
+        [BKROHHTTPStubsWrapper removeAllStubs];
+    });
 }
 
 - (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher {
@@ -81,7 +83,7 @@
     // reverse array: http://stackoverflow.com/questions/586370/how-can-i-reverse-a-nsarray-in-objective-c
     BKRPlayableCassette *stubbingCassette = (BKRPlayableCassette *)self.currentCassette;
     NSArray<BKRScene *> *currentScenes = (NSArray<BKRScene *> *)stubbingCassette.allScenes;
-    dispatch_barrier_async(self.editingQueue, ^{
+    dispatch_barrier_sync(self.editingQueue, ^{
         __block NSUInteger callCount = 0;
         [currentScenes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRScene * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
@@ -124,12 +126,6 @@
     if (self.afterAddingStubsBlock) {
         [stubbingCassette executeAfterAddingStubsBlock:self.afterAddingStubsBlock];
     }
-}
-
-- (void)_removeStubs {
-    dispatch_barrier_async(self.editingQueue, ^{
-        [BKROHHTTPStubsWrapper removeAllStubs];
-    });
 }
 
 

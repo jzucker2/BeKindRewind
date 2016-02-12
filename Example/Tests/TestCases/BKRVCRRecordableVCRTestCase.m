@@ -7,7 +7,6 @@
 //
 
 #import <BeKindRewind/BKRRecordableVCR.h>
-#import <BeKindRewind/BKRNSURLSessionSwizzling.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
@@ -24,7 +23,6 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    [BKRNSURLSessionSwizzling swizzleForRecording];
     NSString *baseDirectory = [BKRFilePathHelper documentsDirectory];
     NSString *fileName = [NSStringFromSelector(self.invocation.selector) stringByAppendingPathExtension:@"plist"];
     self.testRecordingFilePath = [baseDirectory stringByAppendingPathComponent:fileName];
