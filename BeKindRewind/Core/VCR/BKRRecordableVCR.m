@@ -14,7 +14,6 @@
 
 @interface BKRRecordableVCR ()
 @property (nonatomic) dispatch_queue_t accessQueue;
-//@property (nonatomic, copy, readwrite) NSString *cassetteFilePath;
 @property (nonatomic, assign, readwrite) BOOL shouldSaveEmptyCassette; // no by default
 @end
 
@@ -273,6 +272,15 @@
             }
         });
     });
+//    if (completionBlock) {
+//        if ([NSThread isMainThread]) {
+//            completionBlock();
+//        } else {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                completionBlock();
+//            });
+//        }
+//    }
 }
 
 - (BKRVCRState)state {

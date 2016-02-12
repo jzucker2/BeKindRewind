@@ -76,16 +76,6 @@
 }
 
 - (void)testPlayingOneGETRequest {
-//    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
-//    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
-//    __block BKRScene *scene = nil;
-//    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
-//    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
-//    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
-//    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
-//    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
-    
-//    player.enabled = YES;
     __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
     [self.vcr playWithCompletionBlock:^{
         [playExpectation fulfill];
@@ -101,59 +91,158 @@
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
         // ensure that result from network is as expected
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-        
-        //        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
         NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
         XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
-        
-        // now current cassette in recorder should have one scene with data matching this
-        
-//        XCTAssertNotNil(self.vcr.currentCassette);
-//        scene = (BKRScene *)player.allScenes.firstObject;
-//        XCTAssertTrue(scene.allFrames.count > 0);
-//        XCTAssertEqual(scene.allDataFrames.count, 1);
-//        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
-//        [self assertData:dataFrame withData:data extraAssertions:nil];
-//        XCTAssertEqualObjects(dataFrame.JSONConvertedObject, dataDict, @"Deserialized data objects not equal. [[Data frame: %@]]. [[dataDict: %@]]",dataFrame.JSONConvertedObject, dataDict);
-//        XCTAssertNotNil(dataDict, @"dataDict: %@", dataDict.description);
-//        XCTAssertNotNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
-//        XCTAssertNotNil(data, @"data: %@", data);
-//        XCTAssertNotNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
-//        XCTAssertEqual(scene.allResponseFrames.count, 1);
-//        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
-//        XCTAssertEqual(responseFrame.statusCode, 200);
-//        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        XCTAssertEqual(scene.allRequestFrames.count, 2);
-//        NSURLRequest *originalRequest = task.originalRequest;
-//        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
-//        XCTAssertNotNil(originalRequestFrame);
-//        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
-//        XCTAssertNotNil(scene.currentRequest);
-//        [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
-//        [self assertFramesOrder:scene extraAssertions:nil];
+
     }];
 }
 
 - (void)testPlayingOneCancelledGETRequest {
-    NSLog(@"what");
-    XCTAssertTrue(YES);
+    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
+    [self.vcr playWithCompletionBlock:^{
+        [playExpectation fulfill];
+        playExpectation = nil;
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+//    BKRWeakify(self);
+    [self cancellingGetTaskWithURLString:@"https://httpbin.org/delay/10" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertEqual(error.code, -999);
+        XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
+        NSDictionary *expectedErrorUserInfo = @{
+                                                NSURLErrorFailingURLErrorKey: [NSURL URLWithString:@"https://httpbin.org/delay/10"],
+                                                NSURLErrorFailingURLStringErrorKey: @"https://httpbin.org/delay/10",
+                                                NSLocalizedDescriptionKey: @"cancelled"
+                                                };
+        XCTAssertEqualObjects(error.userInfo, expectedErrorUserInfo);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
 }
 
 - (void)testPlayingOnePOSTRequest {
-    NSLog(@"what");
-    XCTAssertTrue(YES);
+    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
+    [self.vcr playWithCompletionBlock:^{
+        [playExpectation fulfill];
+        playExpectation = nil;
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    
+    NSDictionary *sendingJSON = @{@"foo":@"bar"};
+    
+    [self postJSON:sendingJSON withURLString:@"https://httpbin.org/post" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(data);
+        // ensure that data returned is same as data posted
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        NSDictionary *formDict = dataDict[@"form"];
+        // for this service, need to fish out the data sent
+        NSArray *formKeys = formDict.allKeys;
+        NSString *rawReceivedDataString = formKeys.firstObject;
+        NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(sendingJSON, receivedDataDictionary);
+        
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
 }
 
 - (void)testPlayingMultipleGETRequests {
-    NSLog(@"what");
-    XCTAssertTrue(YES);
+    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
+    [self.vcr playWithCompletionBlock:^{
+        [playExpectation fulfill];
+        playExpectation = nil;
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    BKRWeakify(self);
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        BKRStrongify(self);
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
+    
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test2" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        BKRStrongify(self);
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test2"});
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
+    
+    
 }
 
 - (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
-    NSLog(@"what");
-    XCTAssertTrue(YES);
+    NSString *getTaskURLString = @"https://pubsub.pubnub.com/time/0";
+    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
+    [self.vcr playWithCompletionBlock:^{
+        [playExpectation fulfill];
+        playExpectation = nil;
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+//    BKRWeakify(self);
+    __block NSNumber *firstTimetoken = nil;
+    [self getTaskWithURLString:getTaskURLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        // ensure that result from network is as expected
+        XCTAssertNotNil(dataArray);
+        firstTimetoken = dataArray.firstObject;
+        XCTAssertNotNil(firstTimetoken);
+        XCTAssertTrue([firstTimetoken isKindOfClass:[NSNumber class]]);
+        NSTimeInterval firstTimeTokenAsUnix = [self unixTimestampForPubNubTimetoken:firstTimetoken];
+        NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
+        XCTAssertNotEqualWithAccuracy(firstTimeTokenAsUnix, currentUnixTimestamp, 5);
+        
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
+    
+    [self getTaskWithURLString:getTaskURLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        // ensure that result from network is as expected
+        XCTAssertNotNil(dataArray);
+        NSNumber *secondTimetoken = dataArray.firstObject;
+        XCTAssertNotNil(secondTimetoken);
+        XCTAssertTrue([secondTimetoken isKindOfClass:[NSNumber class]]);
+        NSTimeInterval secondTimeTokenAsUnix = [self unixTimestampForPubNubTimetoken:secondTimetoken];
+        NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
+        XCTAssertNotEqualWithAccuracy(secondTimeTokenAsUnix, currentUnixTimestamp, 5);
+        // also make sure that the two time tokens returned are different
+        XCTAssertNotEqualObjects(firstTimetoken, secondTimetoken);
+        
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
 }
 
 @end

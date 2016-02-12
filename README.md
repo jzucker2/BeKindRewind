@@ -143,4 +143,5 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * tests for XCTest subclass
 * add different types of matchers
 * afnetworking tests
+* JSON serializing in addition to plist serializing
 * make sure that before and after recording/playing blocks are on editor's queue

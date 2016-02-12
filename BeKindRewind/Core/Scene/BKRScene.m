@@ -78,6 +78,7 @@
     return self.allRequestFrames.firstObject;
 }
 
+// return last request if more than 1 or second request if more than 1?
 - (BKRRequestFrame *)currentRequest {
     if (self.allRequestFrames.count > 1) {
         return [self.allRequestFrames objectAtIndex:1];
@@ -87,18 +88,6 @@
 
 - (NSPredicate *)_predicateForFramesOfClass:(Class)frameClass {
     return [NSPredicate predicateWithFormat:@"class == %@", frameClass];
-}
-
-- (NSArray *)_framesOnlyOfType:(Class)frameClass {
-    NSMutableArray *restrictedFrames = [NSMutableArray array];
-    for (BKRFrame *frame in self.allFrames) {
-        if ([frame isKindOfClass:frameClass]) {
-            [restrictedFrames addObject:frame];
-        } else {
-            continue;
-        }
-    }
-    return restrictedFrames.copy;
 }
 
 @end
