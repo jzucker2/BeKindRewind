@@ -718,7 +718,7 @@
         NSArray *frames = scene[@"frames"];
         XCTAssertNotNil(frames);
         NSInteger numberOfRequestChecks = 0;
-        XCTAssertEqual(recording.expectedNumberOfFrames, frames.count);
+        XCTAssertEqual(recording.expectedNumberOfFrames, frames.count, @"frames: %@", frames);
         for (NSDictionary *frame in frames) {
             XCTAssertEqualObjects(frame[@"uniqueIdentifier"], uniqueIdentifier);
             XCTAssertTrue([frame[@"creationDate"] isKindOfClass:[NSDate class]]);

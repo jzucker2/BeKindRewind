@@ -135,6 +135,7 @@
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
+        NSLog(@"loading cassette at: %@", cassetteFilePath);
         self->_cassetteFilePath = cassetteFilePath;
         finalPath = self->_cassetteFilePath;
         [BKRRecorder sharedInstance].currentCassette = [BKRRecordableCassette cassette];
@@ -188,10 +189,10 @@
             NSDictionary *cassetteDictionary = [BKRRecorder sharedInstance].currentCassette.plistDictionary;
             finalPath = currentFilePath;
             finalResult = [BKRFilePathHelper writeDictionary:cassetteDictionary toFile:currentFilePath];
+            NSLog(@"writing result to: %@", finalPath);
             self->_state = BKRVCRStateStopped; // somewhat unnecessary
             self->_cassetteFilePath = nil; // remove the cassette file path
             [[BKRRecorder sharedInstance] reset]; // reset the recorder (removes cassette)
-            finalResult = YES;
         }
     });
     if (completionBlock) {
