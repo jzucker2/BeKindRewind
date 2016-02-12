@@ -189,6 +189,7 @@
             ) {
             NSDictionary *cassetteDictionary = [BKRRecorder sharedInstance].plistDictionary;
             finalPath = currentFilePath;
+            NSLog(@"trying to write cassette to: %@", currentFilePath);
             finalResult = [BKRFilePathHelper writeDictionary:cassetteDictionary toFile:currentFilePath];
             self->_state = BKRVCRStateStopped; // somewhat unnecessary
             self->_cassetteFilePath = nil; // remove the cassette file path
