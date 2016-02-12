@@ -84,6 +84,7 @@
     // reverse array: http://stackoverflow.com/questions/586370/how-can-i-reverse-a-nsarray-in-objective-c
     BKRPlayableCassette *stubbingCassette = (BKRPlayableCassette *)self.currentCassette;
     NSArray<BKRPlayableScene *> *currentScenes = (NSArray<BKRPlayableScene *> *)stubbingCassette.allScenes;
+    NSLog(@"editor adding: %@", currentScenes);
     dispatch_barrier_async(self.editingQueue, ^{
         __block NSUInteger callCount = 0;
         [currentScenes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRPlayableScene * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
