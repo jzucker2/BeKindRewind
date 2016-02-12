@@ -25,6 +25,7 @@
     self = [super init];
     if (self) {
         _handledRecording = NO;
+        _recordingStartTime = nil;
     }
     return self;
 }

@@ -34,6 +34,7 @@
     if (self) {
         _hasCurrentRequest = YES;
         _hasResponse = YES;
+        _shouldCompareRequestHeaderFields = YES;
     }
     return self;
 }
@@ -315,8 +316,10 @@
         NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
         expectedOriginalRequestDict[@"URL"] = expectedPlistBuilder.URLString;
         expectedOriginalRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-        if (expectedPlistBuilder.originalRequestAllHTTPHeaderFields) {
-            expectedOriginalRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.originalRequestAllHTTPHeaderFields;
+        if (expectedPlistBuilder.shouldCompareRequestHeaderFields) {
+            if (expectedPlistBuilder.originalRequestAllHTTPHeaderFields) {
+                expectedOriginalRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.originalRequestAllHTTPHeaderFields;
+            }
         }
         if (expectedPlistBuilder.HTTPMethod) {
             expectedOriginalRequestDict[@"HTTPMethod"] = expectedPlistBuilder.HTTPMethod;
@@ -327,7 +330,10 @@
             NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
             expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
             expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-            if (expectedPlistBuilder.currentRequestAllHTTPHeaderFields) {
+            if (
+                (expectedPlistBuilder.currentRequestAllHTTPHeaderFields) &&
+                expectedPlistBuilder.shouldCompareRequestHeaderFields
+                ) {
                 expectedCurrentRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.currentRequestAllHTTPHeaderFields;
             }
             if (expectedPlistBuilder.HTTPMethod) {
@@ -476,18 +482,14 @@
     }
 }
 
-- (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *, NSURLRequest *))assertions {
+- (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest ignoreHeaderFields:(BOOL)shouldIgnoreHeaderFields extraAssertions:(void (^)(BKRRequestFrame *, NSURLRequest *))assertions {
     XCTAssertNotNil(request);
     XCTAssertNotNil(otherRequest);
     XCTAssertEqual(request.HTTPShouldHandleCookies, otherRequest.HTTPShouldHandleCookies);
     XCTAssertEqual(request.HTTPShouldUsePipelining, otherRequest.HTTPShouldUsePipelining);
-//    NSLog(@"request: %@", request.allHTTPHeaderFields);
-//    NSLog(@"otherRequest: %@", otherRequest.allHTTPHeaderFields);
-    XCTAssertEqualObjects(request.allHTTPHeaderFields, otherRequest.allHTTPHeaderFields);
-//    if (request.allHTTPHeaderFields.allKeys.count) {
-//        NSLog(@"%d", [request.allHTTPHeaderFields.allKeys.firstObject isEqual:otherRequest.allHTTPHeaderFields.allKeys.firstObject]);
-//        NSLog(@"%d", [request.allHTTPHeaderFields.allValues.firstObject isEqual:otherRequest.allHTTPHeaderFields.allValues.firstObject]);
-//    }
+    if (!shouldIgnoreHeaderFields) {
+        XCTAssertEqualObjects(request.allHTTPHeaderFields, otherRequest.allHTTPHeaderFields);
+    }
     XCTAssertEqualObjects(request.URL, otherRequest.URL);
     XCTAssertEqual(request.timeoutInterval, otherRequest.timeoutInterval);
     XCTAssertEqualObjects(request.HTTPMethod, otherRequest.HTTPMethod);
@@ -495,6 +497,10 @@
     if (assertions) {
         assertions(request, otherRequest);
     }
+}
+
+- (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *, NSURLRequest *))assertions {
+    [self assertRequest:request withRequest:otherRequest ignoreHeaderFields:NO extraAssertions:assertions];
 }
 
 - (void)assertResponse:(BKRResponseFrame *)response withResponse:(NSURLResponse *)otherResponse extraAssertions:(void (^)(BKRResponseFrame *, NSURLResponse *))assertions {
