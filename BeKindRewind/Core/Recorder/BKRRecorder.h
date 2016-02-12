@@ -24,6 +24,7 @@
  *  Whether or not network activity should be recorded
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
+
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock;
 
 @property (nonatomic, assign, readonly) BOOL didRecord;
@@ -33,24 +34,6 @@
  *  then no recordings are stored.
  */
 @property (nonatomic, strong) BKRRecordableCassette *currentCassette;
-
-///**
-// *  This block executes on the main queue before any network request
-// *  begins. Make sure not to deadlock or execute slow code. It passes in
-// *  the NSURLSessionTask associated with this recording.
-// *
-// *  @note this block is executed synchronously on the main queue
-// */
-//@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
-//
-///**
-// *  This block executes on the main queue after any network request
-// *  begins. Make sure not to deadlock or execute slow code. It passes in
-// *  the NSURLSessionTask associated with this recording.
-// *
-// *  @note this block is executed asynchronously on the main queue
-// */
-//@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
 
 /**
  *  Ordered array of BKRRecordableScene objects from current cassette

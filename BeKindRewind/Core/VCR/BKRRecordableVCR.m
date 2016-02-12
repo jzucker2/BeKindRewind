@@ -265,25 +265,10 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-//        [[BKRRecorder sharedInstance] reset];
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
-//        if (completionBlock) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                completionBlock();
-//            });
-//        }
         [[BKRRecorder sharedInstance] resetWithCompletionBlock:completionBlock];
     });
-//    if (completionBlock) {
-//        if ([NSThread isMainThread]) {
-//            completionBlock();
-//        } else {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                completionBlock();
-//            });
-//        }
-//    }
 }
 
 - (BKRVCRState)state {

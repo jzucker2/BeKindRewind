@@ -12,7 +12,6 @@
 #import "BKRScene+Playable.h"
 
 @interface BKRPlayingEditor ()
-//@property (nonatomic, strong, readwrite) id<BKRRequestMatching>matcher;
 @end
 
 @implementation BKRPlayingEditor

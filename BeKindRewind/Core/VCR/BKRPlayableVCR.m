@@ -228,15 +228,6 @@
             });
         }
     });
-//    if (completionBlock) {
-//        if ([NSThread isMainThread]) {
-//            completionBlock();
-//        } else {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                completionBlock();
-//            });
-//        }
-//    }
 }
 
 - (BKRVCRState)state {
