@@ -1,8 +1,8 @@
 //
-//  BKRRecordingVCRTestCase.m
+//  BKRVCRRecordableVCRTestCase.m
 //  BeKindRewind
 //
-//  Created by Jordan Zucker on 2/11/16.
+//  Created by Jordan Zucker on 2/12/16.
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
@@ -14,12 +14,12 @@
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRAdditions.h"
 
-@interface BKRRecordingVCRTestCase : BKRBaseTestCase
+@interface BKRVCRRecordableVCRTestCase : XCTestCase
 @property (nonatomic, copy) NSString *testRecordingFilePath;
 @property (nonatomic, strong) BKRRecordableVCR *vcr;
 @end
 
-@implementation BKRRecordingVCRTestCase
+@implementation BKRVCRRecordableVCRTestCase
 
 - (void)setUp {
     [super setUp];
@@ -66,11 +66,11 @@
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-//    [self.vcr reset];
-//    NSError *testResultRemovalError = nil;
-//    BOOL removeTestResults = [[NSFileManager defaultManager] removeItemAtPath:self.testRecordingFilePath error:&testResultRemovalError];
-//    XCTAssertTrue(removeTestResults);
-//    XCTAssertNil(testResultRemovalError, @"Couldn't remove test results: %@", testResultRemovalError.localizedDescription);
+    //    [self.vcr reset];
+    //    NSError *testResultRemovalError = nil;
+    //    BOOL removeTestResults = [[NSFileManager defaultManager] removeItemAtPath:self.testRecordingFilePath error:&testResultRemovalError];
+    //    XCTAssertTrue(removeTestResults);
+    //    XCTAssertNil(testResultRemovalError, @"Couldn't remove test results: %@", testResultRemovalError.localizedDescription);
     __block XCTestExpectation *resetExpectation = [self expectationWithDescription:@"reset expectation"];
     [self.vcr resetWithCompletionBlock:^{
         [resetExpectation fulfill];
@@ -218,13 +218,13 @@
     [self recordingTaskForHTTPBinWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+        //        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
     
     [self recordingTaskForHTTPBinWithExpectedRecording:secondRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
+        //        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
     }];
     
     __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
@@ -272,7 +272,7 @@
         NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
         XCTAssertEqualWithAccuracy(firstTimeTokenAsUnix, currentUnixTimestamp, 5);
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+        //        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
     
     [self recordingTaskWithExpectedRecording:secondRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -288,7 +288,7 @@
         // also make sure that the two time tokens returned are different
         XCTAssertNotEqualObjects(firstTimetoken, secondTimetoken);
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
+        //        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
     }];
     
     __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
