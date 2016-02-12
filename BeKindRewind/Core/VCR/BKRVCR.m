@@ -84,11 +84,11 @@
     
 }
 
-- (void)pause {
+- (void)pauseWithCompletionBlock:(void (^)(void))completionBlock {
     
 }
 
-- (void)stop {
+- (void)stopWithCompletionBlock:(void (^)(void))completionBlock {
     
 }
 

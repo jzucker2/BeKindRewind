@@ -116,13 +116,9 @@
                 [BKRRecorder sharedInstance].enabled = YES;
                 self->_state = BKRVCRStateRecording;
                 if (completionBlock) {
-                    if ([NSThread isMainThread]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
                         completionBlock();
-                    } else {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            completionBlock();
-                        });
-                    }
+                    });
                 }
             }
                 break;
@@ -168,7 +164,7 @@
     }
     __block BOOL finalResult = NO;
     __block NSString *finalPath = nil;
-    [self stop]; // call a stop
+    [self stopWithCompletionBlock:nil]; // call a stop, no completion necessary, not done yet
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
@@ -215,7 +211,7 @@
     return finalResult;
 }
 
-- (void)stop {
+- (void)stopWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -229,6 +225,11 @@
             {
                 [BKRRecorder sharedInstance].enabled = NO;
                 self->_state = BKRVCRStateStopped;
+                if (completionBlock) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completionBlock();
+                    });
+                }
             }
                 break;
             case BKRVCRStateStopped:
@@ -237,7 +238,7 @@
     });
 }
 
-- (void)pause {
+- (void)pauseWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -250,6 +251,11 @@
             {
                 [BKRRecorder sharedInstance].enabled = NO;
                 self->_state = BKRVCRStatePaused;
+                if (completionBlock) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completionBlock();
+                    });
+                }
             }
                 break;
             case BKRVCRStatePaused:
@@ -261,7 +267,7 @@
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
-    dispatch_barrier_sync(self.accessQueue, ^{
+    dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         [[BKRRecorder sharedInstance] reset];
         self->_cassetteFilePath = nil;

@@ -93,8 +93,8 @@ typedef void (^BKRCassetteHandlingBlock)(BOOL result, NSString *filePath);
 @protocol BKRVCRActions <NSObject>
 
 - (void)playWithCompletionBlock:(void (^)(void))completionBlock;
-- (void)pause; // is there a difference between stop and pause?
-- (void)stop; // is there a difference between stop and pause?
+- (void)pauseWithCompletionBlock:(void (^)(void))completionBlock; // is there a difference between stop and pause?
+- (void)stopWithCompletionBlock:(void (^)(void))completionBlock; // is there a difference between stop and pause?
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock; // reset to start of cassette
 - (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock; // must end in .plist
 /**
