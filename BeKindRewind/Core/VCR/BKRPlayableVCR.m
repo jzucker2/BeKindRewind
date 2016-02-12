@@ -100,7 +100,7 @@
     return currentCassetteFilePath;
 }
 
-- (void)play {
+- (void)playWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -110,6 +110,15 @@
             {
                 self->_player.enabled = YES;
                 self->_state = BKRVCRStatePlaying;
+                if (completionBlock) {
+                    if ([NSThread isMainThread]) {
+                        completionBlock();
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            completionBlock();
+                        });
+                    }
+                }
             }
                 break;
             case BKRVCRStateUnknown:

@@ -95,7 +95,7 @@
     return currentCassetteFilePath;
 }
 
-- (void)play {
+- (void)playWithCompletionBlock:(void (^)(void))completionBlock {
     // no-op
     NSLog(@"recording VCR can't play a cassette");
 }

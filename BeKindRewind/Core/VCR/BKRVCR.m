@@ -79,7 +79,7 @@
 
 #pragma mark - BKRVCRActions
 
-- (void)play {
+- (void)playWithCompletionBlock:(void (^)(void))completionBlock {
 //    BKRWeakify(self);
     
 }

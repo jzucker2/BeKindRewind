@@ -61,9 +61,7 @@
 }
 
 - (void)removeAllStubs {
-    dispatch_barrier_async(self.editingQueue, ^{
-        [BKROHHTTPStubsWrapper removeAllStubs];
-    });
+    [self _removeStubs];
 }
 
 - (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher {

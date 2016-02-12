@@ -33,15 +33,17 @@
     
     self.vcr = [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
     XCTAssertNotNil(self.vcr);
-    __block XCTestExpectation *stubsExpectation;
+    __block XCTestExpectation *stubsExpectation = nil;
     BKRWeakify(self);
     self.vcr.beforeAddingStubsBlock = ^void(void) {
         BKRStrongify(self);
-        NSLog(@"self: %@", self);
+        NSLog(@"before adding stubs self: %@", self);
         stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
     };
     self.vcr.afterAddingStubsBlock = ^void(void) {
+        NSLog(@"afterAddingStubs");
         [stubsExpectation fulfill];
+        stubsExpectation = nil;
     };
     
     __block XCTestExpectation *insertExpectation = [self expectationWithDescription:@"insert expectation"];
@@ -75,7 +77,17 @@
 //    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
     
 //    player.enabled = YES;
-    [self.vcr play];
+    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
+    NSLog(@"created play expectation");
+    [self.vcr playWithCompletionBlock:^{
+        NSLog(@"fulfilling play expectation");
+        [playExpectation fulfill];
+    }];
+    NSLog(@"wait for play expectation");
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+        NSLog(@"play expectation finished");
+    }];
     BKRWeakify(self);
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         BKRStrongify(self);
@@ -119,19 +131,19 @@
 }
 
 - (void)testPlayingOneCancelledGETRequest {
-    
+    NSLog(@"what");
 }
 
 - (void)testPlayingOnePOSTRequest {
-    
+    NSLog(@"what");
 }
 
 - (void)testPlayingMultipleGETRequests {
-    
+    NSLog(@"what");
 }
 
 - (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
-    
+    NSLog(@"what");
 }
 
 @end
