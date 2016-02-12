@@ -94,7 +94,6 @@
     expectedRecording.checkAgainstRecorder = NO;
     NSLog(@"about to call record in test");
     [self.vcr record];
-//    BKRWeakify(self);
     NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
@@ -129,7 +128,9 @@
                                         NSURLErrorFailingURLStringErrorKey: recording.URLString,
                                         NSLocalizedDescriptionKey: @"cancelled"
                                         };
+    NSLog(@"about to call record in test");
     [self.vcr record];
+    NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:recording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
@@ -161,7 +162,9 @@
     recording.sentJSON = @{
                            @"foo": @"bar"
                            };
+    NSLog(@"about to call record in test");
     [self.vcr record];
+    NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:recording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
@@ -201,7 +204,9 @@
     secondRecording.expectedNumberOfFrames = 4;
     secondRecording.checkAgainstRecorder = NO;
     
+    NSLog(@"about to call record in test");
     [self.vcr record];
+    NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
@@ -243,7 +248,9 @@
     secondRecording.expectedNumberOfFrames = 4;
     secondRecording.checkAgainstRecorder = NO;
     
+    NSLog(@"about to call record in test");
     [self.vcr record];
+    NSLog(@"start network task");
     __block NSNumber *firstTimetoken = nil;
     [self recordingTaskWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
