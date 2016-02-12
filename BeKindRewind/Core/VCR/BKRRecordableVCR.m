@@ -266,11 +266,11 @@
         [[BKRRecorder sharedInstance] reset];
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (completionBlock) {
+        if (completionBlock) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 completionBlock();
-            }
-        });
+            });
+        }
     });
 //    if (completionBlock) {
 //        if ([NSThread isMainThread]) {
