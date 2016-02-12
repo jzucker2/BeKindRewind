@@ -12,8 +12,8 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRErrorFrame.h>
-#import <BeKindRewind/BKRRecordableRawFrame.h>
-#import <BeKindRewind/BKRPlayableRawFrame.h>
+#import <BeKindRewind/BKRRawFrame+Recordable.h>
+#import <BeKindRewind/BKRRawFrame+Playable.h>
 #import <BeKindRewind/BKRPlayableCassette.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
@@ -426,19 +426,19 @@
 }
 
 - (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordingEditor:(BKRRecordingEditor *)editor {
-    BKRRecordableRawFrame *originalRequestRawFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *originalRequestRawFrame = [BKRRawFrame frameWithTask:task];
     originalRequestRawFrame.item = task.originalRequest;
     [editor addFrame:originalRequestRawFrame];
     
-    BKRRecordableRawFrame *currentRequestRawFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *currentRequestRawFrame = [BKRRawFrame frameWithTask:task];
     currentRequestRawFrame.item = task.currentRequest;
     [editor addFrame:currentRequestRawFrame];
     
-    BKRRecordableRawFrame *responseRawFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *responseRawFrame = [BKRRawFrame frameWithTask:task];
     responseRawFrame.item = response;
     [editor addFrame:responseRawFrame];
     
-    BKRRecordableRawFrame *dataRawFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *dataRawFrame = [BKRRawFrame frameWithTask:task];
     dataRawFrame.item = data;
     [editor addFrame:dataRawFrame];
 }
@@ -446,21 +446,21 @@
 - (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error {
     NSMutableArray *frames = [NSMutableArray array];
     
-    BKRPlayableRawFrame *originalRequestFrame = [BKRPlayableRawFrame frameWithTask:task];
+    BKRRawFrame *originalRequestFrame = [BKRRawFrame frameWithTask:task];
     originalRequestFrame.item = task.originalRequest;
-    [frames addObject:originalRequestFrame.editedFrame];
+    [frames addObject:originalRequestFrame.editedPlaying];
     
-    BKRPlayableRawFrame *currentRequestFrame = [BKRPlayableRawFrame frameWithTask:task];
+    BKRRawFrame *currentRequestFrame = [BKRRawFrame frameWithTask:task];
     currentRequestFrame.item = task.currentRequest;
-    [frames addObject:currentRequestFrame.editedFrame];
+    [frames addObject:currentRequestFrame.editedPlaying];
     
-    BKRPlayableRawFrame *responseFrame = [BKRPlayableRawFrame frameWithTask:task];
+    BKRRawFrame *responseFrame = [BKRRawFrame frameWithTask:task];
     responseFrame.item = response;
-    [frames addObject:responseFrame.editedFrame];
+    [frames addObject:responseFrame.editedPlaying];
     
-    BKRPlayableRawFrame *dataFrame = [BKRPlayableRawFrame frameWithTask:task];
+    BKRRawFrame *dataFrame = [BKRRawFrame frameWithTask:task];
     dataFrame.item = data;
-    [frames addObject:dataFrame.editedFrame];
+    [frames addObject:dataFrame.editedPlaying];
     
     return frames.copy;
 }

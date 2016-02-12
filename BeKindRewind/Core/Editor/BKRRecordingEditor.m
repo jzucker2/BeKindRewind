@@ -8,7 +8,7 @@
 
 #import "BKRRecordingEditor.h"
 #import "BKRRecordableCassette.h"
-#import "BKRRecordableRawFrame.h"
+#import "BKRRawFrame+Recordable.h"
 
 @interface BKRRecordingEditor ()
 @property (nonatomic, assign, readwrite) BOOL handledRecording;
@@ -60,7 +60,7 @@
     [self updateRecordingStartTime];
 }
 
-- (void)addFrame:(BKRRecordableRawFrame *)frame {
+- (void)addFrame:(BKRRawFrame *)frame {
     __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
     if (!cassette) {
         NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
@@ -77,7 +77,7 @@
     });
 }
 
-- (BOOL)_shouldRecord:(BKRRecordableRawFrame *)rawFrame {
+- (BOOL)_shouldRecord:(BKRRawFrame *)rawFrame {
     if (
         !self->_recordingStartTime ||
         !rawFrame

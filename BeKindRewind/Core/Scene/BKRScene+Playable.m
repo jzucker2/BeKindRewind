@@ -7,7 +7,7 @@
 //
 
 #import "BKRScene+Playable.h"
-#import "BKRPlayableRawFrame.h"
+#import "BKRRawFrame+Playable.h"
 #import "BKRResponseFrame.h"
 #import "BKRErrorFrame.h"
 #import "BKRDataFrame.h"
@@ -31,8 +31,8 @@
     dispatch_queue_t editingQueue = dispatch_queue_create("com.BKRPlayableScene.editingQueue", DISPATCH_QUEUE_CONCURRENT);
     dispatch_apply(rawFrames.count, editingQueue, ^(size_t iteration) {
         BKRStrongify(self);
-        BKRPlayableRawFrame *rawFrame = [[BKRPlayableRawFrame alloc] initFromPlistDictionary:rawFrames[iteration]];
-        [self addFrameToFramesArray:rawFrame.editedFrame];
+        BKRRawFrame *rawFrame = [[BKRRawFrame alloc] initFromPlistDictionary:rawFrames[iteration]];
+        [self addFrameToFramesArray:rawFrame.editedPlaying];
     });
 }
 

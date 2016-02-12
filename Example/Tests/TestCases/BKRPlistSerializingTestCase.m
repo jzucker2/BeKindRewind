@@ -9,7 +9,7 @@
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/BKRPlayableCassette.h>
 #import <BeKindRewind/BKRScene.h>
-#import <BeKindRewind/BKRRecordableRawFrame.h>
+#import <BeKindRewind/BKRRawFrame+Recordable.h>
 #import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>

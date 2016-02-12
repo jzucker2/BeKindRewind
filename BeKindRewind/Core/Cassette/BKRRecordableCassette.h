@@ -10,7 +10,7 @@
 #import "BKRPlistSerializing.h"
 #import "BKRConstants.h"
 
-@class BKRRecordableRawFrame;
+@class BKRRawFrame;
 
 /**
  *  Subclass is used for managing BKRRecordableScene objects
@@ -25,7 +25,7 @@
  *
  *  @param frame piece of a network request that needs to be grouped into a BRKScene
  */
-- (void)addFrame:(BKRRecordableRawFrame *)frame;
+- (void)addFrame:(BKRRawFrame *)frame;
 
 /**
  *  This executes on the main queue after adding all frames for a particular scene/network

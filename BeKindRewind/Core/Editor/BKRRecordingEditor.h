@@ -11,7 +11,7 @@
 #import "BKRPlistSerializing.h"
 #import "BKRVCRActions.h"
 
-@class BKRRecordableRawFrame;
+@class BKRRawFrame;
 
 /**
  *  This subclass is for turning network request components into cassettes in a thread-safe manner.
@@ -35,7 +35,7 @@
  *
  *  @param frame component of a network request
  */
-- (void)addFrame:(BKRRecordableRawFrame *)frame;
+- (void)addFrame:(BKRRawFrame *)frame;
 
 - (void)executeBeginRecordingBlockWithTask:(NSURLSessionTask *)task;
 

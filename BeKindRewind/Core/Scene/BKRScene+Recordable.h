@@ -9,7 +9,7 @@
 #import "BKRScene.h"
 #import "BKRPlistSerializing.h"
 
-@class BKRRecordableRawFrame;
+@class BKRRawFrame;
 
 /**
  *  This contains all of the data associated with a single,
@@ -26,7 +26,7 @@
  *
  *  @return instance of a recordable scene
  */
-- (instancetype)initFromFrame:(BKRRecordableRawFrame *)frame;
+- (instancetype)initFromFrame:(BKRRawFrame *)frame;
 
 /**
  *  Convenience initializer for a recordable scene created from
@@ -36,13 +36,13 @@
  *
  *  @return instance of a recordable scene
  */
-+ (instancetype)sceneFromFrame:(BKRRecordableRawFrame *)frame;
++ (instancetype)sceneFromFrame:(BKRRawFrame *)frame;
 
 /**
  *  Add component of a network request as a frame
  *
  *  @param frame component of network request
  */
-- (void)addFrame:(BKRRecordableRawFrame *)frame;
+- (void)addFrame:(BKRRawFrame *)frame;
 
 @end

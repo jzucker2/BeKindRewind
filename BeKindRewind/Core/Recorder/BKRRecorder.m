@@ -9,17 +9,15 @@
 #import "BKRRecordingEditor.h"
 #import "BKRRecorder.h"
 #import "BKRRecordableCassette.h"
-#import "BKRRecordableRawFrame.h"
+#import "BKRRawFrame+Recordable.h"
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRScene+Recordable.h"
 
 @interface BKRRecorder ()
 @property (nonatomic, strong) BKRRecordingEditor *editor;
-//@property (nonatomic, assign, readwrite) BOOL didRecord;
 @end
 
 @implementation BKRRecorder
-//@synthesize didRecord = _didRecord;
 @synthesize beginRecordingBlock = _beginRecordingBlock;
 @synthesize endRecordingBlock = _endRecordingBlock;
 
@@ -110,30 +108,30 @@
 }
 
 - (void)initTask:(NSURLSessionTask *)task {
-    BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *requestFrame = [BKRRawFrame frameWithTask:task];
     requestFrame.item = task.originalRequest;
     [self.editor addFrame:requestFrame];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
-    BKRRecordableRawFrame *dataFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *dataFrame = [BKRRawFrame frameWithTask:task];
     dataFrame.item = data.copy;
     [self.editor addFrame:dataFrame];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
-    BKRRecordableRawFrame *currentRequestFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *currentRequestFrame = [BKRRawFrame frameWithTask:task];
     currentRequestFrame.item = task.currentRequest;
     [self.editor addFrame:currentRequestFrame];
     
-    BKRRecordableRawFrame *responseFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *responseFrame = [BKRRawFrame frameWithTask:task];
     responseFrame.item = response;
     [self.editor addFrame:responseFrame];
 }
 
 - (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error {
     if (error) {
-        BKRRecordableRawFrame *errorFrame = [BKRRecordableRawFrame frameWithIdentifier:taskUniqueIdentifier];
+        BKRRawFrame *errorFrame = [BKRRawFrame frameWithIdentifier:taskUniqueIdentifier];
         errorFrame.item = error;
         [self.editor addFrame:errorFrame];
     }

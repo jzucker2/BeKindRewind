@@ -7,11 +7,11 @@
 //
 
 #import "BKRScene+Recordable.h"
-#import "BKRRecordableRawFrame.h"
+#import "BKRRawFrame+Recordable.h"
 
 @implementation BKRScene (Recordable)
 
-- (instancetype)initFromFrame:(BKRRecordableRawFrame *)frame {
+- (instancetype)initFromFrame:(BKRRawFrame *)frame {
     self = [self init];
     if (self) {
         self.uniqueIdentifier = frame.uniqueIdentifier;
@@ -20,12 +20,12 @@
     return self;
 }
 
-+ (instancetype)sceneFromFrame:(BKRRecordableRawFrame *)frame {
++ (instancetype)sceneFromFrame:(BKRRawFrame *)frame {
     return [[self alloc] initFromFrame:frame];
 }
 
-- (void)addFrame:(BKRRecordableRawFrame *)frame {
-    [self addFrameToFramesArray:frame.editedFrame];
+- (void)addFrame:(BKRRawFrame *)frame {
+    [self addFrameToFramesArray:frame.editedRecording];
 }
 
 - (NSDictionary *)plistDictionary {
