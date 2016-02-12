@@ -37,25 +37,19 @@
     BKRWeakify(self);
     self.vcr.beforeAddingStubsBlock = ^void(void) {
         BKRStrongify(self);
-        NSLog(@"before adding stubs self: %@", self);
         stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
     };
     self.vcr.afterAddingStubsBlock = ^void(void) {
-        NSLog(@"afterAddingStubs");
         [stubsExpectation fulfill];
         stubsExpectation = nil;
     };
     
     __block XCTestExpectation *insertExpectation = [self expectationWithDescription:@"insert expectation"];
-    NSLog(@"insert expectation create");
     XCTAssertTrue([self.vcr insert:self.testRecordingFilePath completionHandler:^(BOOL result, NSString *filePath) {
-        NSLog(@"insert expectation fulfill");
         [insertExpectation fulfill];
         insertExpectation = nil;
     }]);
-    NSLog(@"insert wait");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"insert expire");
         XCTAssertNil(error);
     }];
     
@@ -93,16 +87,12 @@
     
 //    player.enabled = YES;
     __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
-    NSLog(@"created play expectation");
     [self.vcr playWithCompletionBlock:^{
-        NSLog(@"fulfilling play expectation");
         [playExpectation fulfill];
         playExpectation = nil;
     }];
-    NSLog(@"wait for play expectation");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
-        NSLog(@"play expectation finished");
     }];
     BKRWeakify(self);
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {

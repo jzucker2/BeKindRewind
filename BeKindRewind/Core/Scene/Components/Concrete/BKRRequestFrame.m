@@ -80,7 +80,6 @@
     if (self.allHTTPHeaderFields) {
         plistDict[@"allHTTPHeaderFields"] = self.allHTTPHeaderFields;
     }
-    NSLog(@"%@: %@", self, plistDict);
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 

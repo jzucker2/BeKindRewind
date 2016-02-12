@@ -57,7 +57,6 @@
 }
 
 - (void)setEnabled:(BOOL)enabled {
-    NSLog(@"starting recording");
     self.editor.enabled = enabled;
 }
 
@@ -97,12 +96,10 @@
 #pragma mark - NSURLSession recording
 
 - (void)beginRecording:(NSURLSessionTask *)task {
-    NSLog(@"execute begin recording block");
     [self.editor executeBeginRecordingBlockWithTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
-    NSLog(@"execute end recording block");
     [self.editor executeEndRecordingBlockWithTask:task];
 }
 
@@ -113,7 +110,6 @@
 }
 
 - (void)initTask:(NSURLSessionTask *)task {
-    NSLog(@"initTask recording");
     BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
     requestFrame.item = task.originalRequest;
     [self.editor addFrame:requestFrame];

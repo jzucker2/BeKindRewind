@@ -102,7 +102,6 @@
 
 - (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
-    NSLog(@"before queueing record");
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         switch (self->_state) {
@@ -115,9 +114,7 @@
             case BKRVCRStatePaused:
             case BKRVCRStateStopped:
             {
-                NSLog(@"about to enable recorder");
                 [BKRRecorder sharedInstance].enabled = YES;
-                NSLog(@"enabled recorder");
                 self->_state = BKRVCRStateRecording;
                 if (completionBlock) {
                     if ([NSThread isMainThread]) {
@@ -270,16 +267,12 @@
         [[BKRRecorder sharedInstance] reset];
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
-    });
-    if (completionBlock) {
-        if ([NSThread isMainThread]) {
-            completionBlock();
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completionBlock) {
                 completionBlock();
-            });
-        }
-    }
+            }
+        });
+    });
 }
 
 - (BKRVCRState)state {

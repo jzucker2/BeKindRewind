@@ -47,25 +47,19 @@
     BKRWeakify(self);
     self.vcr.beginRecordingBlock = ^void(NSURLSessionTask *task) {
         BKRStrongify(self);
-        NSLog(@"beginRecording");
         NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
         task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
     };
     
     self.vcr.endRecordingBlock = ^void(NSURLSessionTask *task) {
-        NSLog(@"endRecording");
         [task.recordingExpectation fulfill];
     };
     
     __block XCTestExpectation *insertExpectation = [self expectationWithDescription:@"insert expectation"];
-    NSLog(@"insert expectation create");
     XCTAssertTrue([self.vcr insert:self.testRecordingFilePath completionHandler:^(BOOL result, NSString *filePath) {
-        NSLog(@"insert expectation fulfill");
         [insertExpectation fulfill];
     }]);
-    NSLog(@"insert wait");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"insert expire");
         XCTAssertNil(error);
     }];
 }
@@ -99,32 +93,23 @@
     expectedRecording.expectedSceneNumber = 0;
     expectedRecording.expectedNumberOfFrames = 4;
     expectedRecording.checkAgainstRecorder = NO;
-    NSLog(@"about to call record in test");
     __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
-    NSLog(@"created start recording expectation");
     [self.vcr recordWithCompletionBlock:^{
-        NSLog(@"fulfilling start recording expectation");
         [startRecordingExpectation fulfill];
     }];
-    NSLog(@"waiting to start recording");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"finished start recording expectations");
         XCTAssertNil(error);
     }];
-    NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         
     }];
     
     __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
-    NSLog(@"eject expectation create");
     XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
-        NSLog(@"eject expectation fulfill");
         [ejectExpectation fulfill];
     }]);
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"eject expectation timeout");
         XCTAssertNil(error);
     }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
@@ -145,32 +130,23 @@
                                         NSURLErrorFailingURLStringErrorKey: recording.URLString,
                                         NSLocalizedDescriptionKey: @"cancelled"
                                         };
-    NSLog(@"about to call record in test");
     __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
-    NSLog(@"created start recording expectation");
     [self.vcr recordWithCompletionBlock:^{
-        NSLog(@"fulfilling start recording expectation");
         [startRecordingExpectation fulfill];
     }];
-    NSLog(@"waiting to start recording");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"finished start recording expectations");
         XCTAssertNil(error);
     }];
-    NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:recording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
     }];
     
     __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
-    NSLog(@"eject expectation create");
     XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
-        NSLog(@"eject expectation fulfill");
         [ejectExpectation fulfill];
     }]);
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"eject expectation timeout");
         XCTAssertNil(error);
     }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
@@ -189,31 +165,22 @@
     recording.sentJSON = @{
                            @"foo": @"bar"
                            };
-    NSLog(@"about to call record in test");
     __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
-    NSLog(@"created start recording expectation");
     [self.vcr recordWithCompletionBlock:^{
-        NSLog(@"fulfilling start recording expectation");
         [startRecordingExpectation fulfill];
     }];
-    NSLog(@"waiting to start recording");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"finished start recording expectations");
         XCTAssertNil(error);
     }];
-    NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:recording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
     }];
     __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
-    NSLog(@"eject expectation create");
     XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
-        NSLog(@"eject expectation fulfill");
         [ejectExpectation fulfill];
     }]);
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"eject expectation timeout");
         XCTAssertNil(error);
     }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
@@ -241,19 +208,13 @@
     secondRecording.expectedNumberOfFrames = 4;
     secondRecording.checkAgainstRecorder = NO;
     
-    NSLog(@"about to call record in test");
     __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
-    NSLog(@"created start recording expectation");
     [self.vcr recordWithCompletionBlock:^{
-        NSLog(@"fulfilling start recording expectation");
         [startRecordingExpectation fulfill];
     }];
-    NSLog(@"waiting to start recording");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"finished start recording expectations");
         XCTAssertNil(error);
     }];
-    NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
@@ -267,13 +228,10 @@
     }];
     
     __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
-    NSLog(@"eject expectation create");
     XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
-        NSLog(@"eject expectation fulfill");
         [ejectExpectation fulfill];
     }]);
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"eject expectation timeout");
         XCTAssertNil(error);
     }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
@@ -295,19 +253,13 @@
     secondRecording.expectedNumberOfFrames = 4;
     secondRecording.checkAgainstRecorder = NO;
     
-    NSLog(@"about to call record in test");
     __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
-    NSLog(@"created start recording expectation");
     [self.vcr recordWithCompletionBlock:^{
-        NSLog(@"fulfilling start recording expectation");
         [startRecordingExpectation fulfill];
     }];
-    NSLog(@"waiting to start recording");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"finished start recording expectations");
         XCTAssertNil(error);
     }];
-    NSLog(@"start network task");
     __block NSNumber *firstTimetoken = nil;
     [self recordingTaskWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
@@ -340,13 +292,10 @@
     }];
     
     __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
-    NSLog(@"eject expectation create");
     XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
-        NSLog(@"eject expectation fulfill");
         [ejectExpectation fulfill];
     }]);
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        NSLog(@"eject expectation timeout");
         XCTAssertNil(error);
     }];
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
