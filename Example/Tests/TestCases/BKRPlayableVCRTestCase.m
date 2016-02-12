@@ -33,16 +33,6 @@
     
     self.vcr = [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
     XCTAssertNotNil(self.vcr);
-    __block XCTestExpectation *stubsExpectation = nil;
-    BKRWeakify(self);
-    self.vcr.beforeAddingStubsBlock = ^void(void) {
-        BKRStrongify(self);
-        stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
-    };
-    self.vcr.afterAddingStubsBlock = ^void(void) {
-        [stubsExpectation fulfill];
-        stubsExpectation = nil;
-    };
     
     __block XCTestExpectation *insertExpectation = [self expectationWithDescription:@"insert expectation"];
     XCTAssertTrue([self.vcr insert:self.testRecordingFilePath completionHandler:^(BOOL result, NSString *filePath) {
@@ -75,6 +65,26 @@
     [super tearDown];
 }
 
+// the fixture for this exists, and is asserted in the setUp
+// this fixture is an exact copy of `testPlayingOneGETRequest` so assert that the date is different, because rest of the test should be about the same
+- (void)testNoMockingWhenVCRIsNotSentPlay {
+    BKRWeakify(self);
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        BKRStrongify(self);
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertNotNil(castedResponse.allHeaderFields[@"Date"]);
+        XCTAssertNotEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:20 GMT", @"actual received response is different");
+        
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
+}
+
 - (void)testPlayingOneGETRequest {
     __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
     [self.vcr playWithCompletionBlock:^{
@@ -93,6 +103,7 @@
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
         NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
         XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:20 GMT", @"actual received response is different");
 
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
 
@@ -150,6 +161,7 @@
         
         NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
         XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:20 GMT", @"actual received response is different");
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         
     }];
@@ -173,6 +185,7 @@
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
         NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
         XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:19 GMT", @"actual received response is different");
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         
@@ -186,6 +199,7 @@
         XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test2"});
         NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
         XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:19 GMT", @"actual received response is different");
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         
@@ -219,6 +233,7 @@
         
         NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
         XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:20 GMT", @"actual received response is different");
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         
@@ -239,6 +254,7 @@
         
         NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
         XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:21 GMT", @"actual received response is different");
         
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         

@@ -17,12 +17,6 @@
 @end
 
 @implementation BKRPlayer
-@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
-@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
-
-- (void)_init {
-    _editor = [BKRPlayingEditor editor];
-}
 
 - (NSArray<BKRScene *> *)allScenes {
     return self.editor.allScenes;
@@ -32,8 +26,8 @@
     NSParameterAssert(matcherClass);
     self = [super init];
     if (self) {
-        [self _init];
         _matcher = [matcherClass matcher];
+        _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
     }
     return self;
 }
@@ -44,11 +38,6 @@
 
 - (void)setCurrentCassette:(BKRPlayableCassette *)currentCassette {
     self.editor.currentCassette = currentCassette;
-    if (currentCassette) {
-        [self _addStubs];
-    } else {
-        [self.editor removeAllStubs];
-    }
 }
 
 - (BKRPlayableCassette *)currentCassette {
@@ -56,40 +45,20 @@
 }
 
 - (void)setEnabled:(BOOL)enabled {
-    self.editor.enabled = enabled;
+    [self setEnabled:enabled withCompletionHandler:nil];
+}
+
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
+    [self.editor setEnabled:enabled withCompletionHandler:completionBlock];
 }
 
 - (BOOL)isEnabled {
     return self.editor.isEnabled;
 }
 
-- (void)_addStubs {
-    [self.editor addStubsForMatcher:self.matcher];
-}
-
 - (void)reset {
     self.currentCassette = nil;
     self.enabled = NO;
-    self.beforeAddingStubsBlock = nil;
-    self.afterAddingStubsBlock = nil;
-}
-
-#pragma mark - BKRVCRPlaying
-
-- (void)setAfterAddingStubsBlock:(BKRAfterAddingStubs)afterAddingStubsBlock {
-    self.editor.afterAddingStubsBlock = afterAddingStubsBlock;
-}
-
-- (BKRAfterAddingStubs)afterAddingStubsBlock {
-    return self.editor.afterAddingStubsBlock;
-}
-
-- (void)setBeforeAddingStubsBlock:(BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    self.editor.beforeAddingStubsBlock = beforeAddingStubsBlock;
-}
-
-- (BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    return self.editor.beforeAddingStubsBlock;
 }
 
 @end

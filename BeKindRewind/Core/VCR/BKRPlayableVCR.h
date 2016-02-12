@@ -10,7 +10,7 @@
 #import "BKRVCRActions.h"
 #import "BKRRequestMatching.h"
 
-@interface BKRPlayableVCR : NSObject <BKRVCRActions, BKRVCRPlaying>
+@interface BKRPlayableVCR : NSObject <BKRVCRActions>
 
 /**
  *  Designated intializer for creating a BKRVCR instance. Must provide a

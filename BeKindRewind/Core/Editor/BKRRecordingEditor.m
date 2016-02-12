@@ -29,6 +29,14 @@
     return self;
 }
 
+- (void)resetHandledRecording {
+    BKRWeakify(self);
+    dispatch_barrier_async(self.editingQueue, ^{
+        BKRStrongify(self);
+        self->_handledRecording = NO;
+    });
+}
+
 - (NSDate *)recordingStartTime {
     __block NSDate *recordingTime = nil;
     __weak typeof(self) wself = self;
@@ -55,9 +63,22 @@
     }
 }
 
-- (void)setEnabled:(BOOL)enabled {
-    [super setEnabled:enabled];
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
+    [super setEnabled:enabled withCompletionHandler:nil];
     [self updateRecordingStartTime];
+    if (completionBlock) {
+        if ([NSThread isMainThread]) {
+            completionBlock();
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
+    }
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    [self setEnabled:enabled withCompletionHandler:nil];
 }
 
 - (void)addFrame:(BKRRawFrame *)frame {

@@ -11,53 +11,46 @@
 #import "BKRPlayableCassette.h"
 #import "BKRScene+Playable.h"
 
+@interface BKRPlayingEditor ()
+//@property (nonatomic, strong, readwrite) id<BKRRequestMatching>matcher;
+@end
+
 @implementation BKRPlayingEditor
 
-@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
-@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
+@synthesize matcher = _matcher;
 
-- (void)setBeforeAddingStubsBlock:(BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    BKRWeakify(self);
-    dispatch_barrier_async(self.editingQueue, ^{
-        BKRStrongify(self);
-        self->_beforeAddingStubsBlock = beforeAddingStubsBlock;
-    });
+- (instancetype)initWithMatcher:(id<BKRRequestMatching>)matcher {
+    self = [super init];
+    if (self) {
+        _matcher = matcher;
+    }
+    return self;
 }
 
-- (BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    __block BKRBeforeAddingStubs stubsBlock = nil;
-    BKRWeakify(self);
-    dispatch_sync(self.editingQueue, ^{
-        BKRStrongify(self);
-        stubsBlock = self->_beforeAddingStubsBlock;
-    });
-    return stubsBlock;
-}
-
-- (void)setAfterAddingStubsBlock:(BKRAfterAddingStubs)afterAddingStubsBlock {
-    BKRWeakify(self);
-    dispatch_barrier_async(self.editingQueue, ^{
-        BKRStrongify(self);
-        self->_afterAddingStubsBlock = afterAddingStubsBlock;
-    });
-    
-}
-
-- (BKRAfterAddingStubs)afterAddingStubsBlock {
-    __block BKRAfterAddingStubs stubsBlock = nil;
-    BKRWeakify(self);
-    dispatch_sync(self.editingQueue, ^{
-        BKRStrongify(self);
-        stubsBlock = self->_afterAddingStubsBlock;
-    });
-    return stubsBlock;
++ (instancetype)editorWithMatcher:(id<BKRRequestMatching>)matcher {
+    return [[self alloc] initWithMatcher:matcher];
 }
 
 - (void)setEnabled:(BOOL)enabled {
-    [super setEnabled:enabled];
-    dispatch_barrier_async(self.editingQueue, ^{
-        [BKROHHTTPStubsWrapper setEnabled:enabled];
-    });
+    [self setEnabled:enabled withCompletionHandler:nil];
+}
+
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
+    [super setEnabled:enabled withCompletionHandler:nil];
+    if (enabled) {
+        [self addStubsForMatcher];
+    } else {
+        [self removeAllStubs];
+    }
+    if (completionBlock) {
+        if ([NSThread isMainThread]) {
+            completionBlock();
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
+    }
 }
 
 - (void)removeAllStubs {
@@ -66,20 +59,11 @@
     });
 }
 
-- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher {
-    // make sure this executes on the main thread
-    BKRBeforeAddingStubs currentBeforeAddingStubsBlock = self.beforeAddingStubsBlock;
-    if (currentBeforeAddingStubsBlock) {
-        if ([NSThread isMainThread]) {
-            currentBeforeAddingStubsBlock();
-        } else {
-            // if player is called from a background queue, make sure this happens on main queue
-            dispatch_async(dispatch_get_main_queue(), ^{
-                currentBeforeAddingStubsBlock();
-            });
-        }
-    }
+- (void)addStubsForMatcher {
+    [self _addStubsForMatcherForMatcher:self.matcher];
+}
 
+- (void)_addStubsForMatcherForMatcher:(id<BKRRequestMatching>)matcher {
     // reverse array: http://stackoverflow.com/questions/586370/how-can-i-reverse-a-nsarray-in-objective-c
     BKRPlayableCassette *stubbingCassette = (BKRPlayableCassette *)self.currentCassette;
     NSArray<BKRScene *> *currentScenes = (NSArray<BKRScene *> *)stubbingCassette.allScenes;
@@ -123,11 +107,6 @@
             }];
         }];
     });
-    if (self.afterAddingStubsBlock) {
-        [stubbingCassette executeAfterAddingStubsBlock:self.afterAddingStubsBlock];
-    }
 }
-
-
 
 @end

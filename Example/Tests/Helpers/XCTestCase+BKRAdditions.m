@@ -683,19 +683,19 @@
 }
 
 - (void)setWithExpectationsPlayableCassette:(BKRPlayableCassette *)cassette inPlayer:(BKRPlayer *)player {
-    __block XCTestExpectation *stubsExpectation;
-    BKRWeakify(self);
-    player.beforeAddingStubsBlock = ^void(void) {
-        BKRStrongify(self);
-        stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
-    };
-    player.afterAddingStubsBlock = ^void(void) {
-        [stubsExpectation fulfill];
-    };
+//    __block XCTestExpectation *stubsExpectation;
+//    BKRWeakify(self);
+//    player.beforeAddingStubsBlock = ^void(void) {
+//        BKRStrongify(self);
+//        stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
+//    };
+//    player.afterAddingStubsBlock = ^void(void) {
+//        [stubsExpectation fulfill];
+//    };
     player.currentCassette = cassette;
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-    }];
+//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+//        XCTAssertNil(error);
+//    }];
 }
 
 - (void)assertCassettePath:(NSString *)cassettePath matchesExpectedRecordings:(NSArray<BKRExpectedRecording *> *)expectedRecordings {

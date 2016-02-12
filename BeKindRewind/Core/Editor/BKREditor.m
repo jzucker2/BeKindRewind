@@ -9,6 +9,7 @@
 #import "BKREditor.h"
 #import "BKRCassette.h"
 #import "BKRScene.h"
+#import "BKRConstants.h"
 
 @implementation BKREditor
 
@@ -28,12 +29,21 @@
     return [[self alloc] init];
 }
 
-- (void)setEnabled:(BOOL)enabled {
-    __weak typeof(self) wself = self;
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
+    BKRWeakify(self);
     dispatch_barrier_async(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        sself->_enabled = enabled;
+        BKRStrongify(self);
+        self->_enabled = enabled;
+        if (completionBlock) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
     });
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    [self setEnabled:enabled withCompletionHandler:nil];
 }
 
 - (BOOL)isEnabled {

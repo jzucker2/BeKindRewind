@@ -47,4 +47,6 @@
  */
 - (void)executeEndRecordingBlockWithTask:(NSURLSessionTask *)task;
 
+- (void)resetHandledRecording;
+
 @end

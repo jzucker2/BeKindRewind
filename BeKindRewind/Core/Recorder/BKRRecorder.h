@@ -24,6 +24,7 @@
  *  Whether or not network activity should be recorded
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock;
 
 @property (nonatomic, assign, readonly) BOOL didRecord;
 
@@ -70,7 +71,7 @@
  *  Reset all recorded values and before and after recording
  *  task blocks
  */
-- (void)reset;
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock;
 
 /**
  *  Called by networking swizzled classes to begin recording

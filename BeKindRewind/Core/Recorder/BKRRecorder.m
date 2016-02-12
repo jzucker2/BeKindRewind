@@ -57,7 +57,11 @@
 }
 
 - (void)setEnabled:(BOOL)enabled {
-    self.editor.enabled = enabled;
+    [self setEnabled:enabled withCompletionHandler:nil];
+}
+
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
+    [self.editor setEnabled:enabled withCompletionHandler:completionBlock];
 }
 
 - (BOOL)isEnabled {
@@ -68,11 +72,25 @@
     return self.editor.handledRecording;
 }
 
-- (void)reset {
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     self.currentCassette = nil;
-    [self.editor updateRecordingStartTime];
     self.beginRecordingBlock = nil;
     self.endRecordingBlock = nil;
+    [self.editor resetHandledRecording];
+    BKRWeakify(self);
+    [self setEnabled:NO withCompletionHandler:^{
+        BKRStrongify(self);
+        [self.editor updateRecordingStartTime];
+        if (completionBlock) {
+            if ([NSThread isMainThread]) {
+                completionBlock();
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completionBlock();
+                });
+            }
+        }
+    }];
 }
 
 #pragma mark - BKRVCRRecording

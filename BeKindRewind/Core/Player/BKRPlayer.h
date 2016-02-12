@@ -8,7 +8,6 @@
 
 #import "BKRRequestMatching.h"
 #import "BKRConstants.h"
-#import "BKRVCRActions.h"
 
 @class BKRPlayableCassette;
 @class BKRScene;
@@ -17,7 +16,7 @@
  *  This class manages playing back stubs for network requests at
  *  a high level.
  */
-@interface BKRPlayer : NSObject <BKRVCRPlaying>
+@interface BKRPlayer : NSObject
 
 /**
  *  Designated initializer for BKRPlayer
@@ -41,6 +40,8 @@
  *  Whether or not network activity should be recorded
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
+
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock;
 
 /**
  *  Current cassette used as a source for stubs. If this is nil,

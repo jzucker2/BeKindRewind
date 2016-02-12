@@ -29,6 +29,8 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock;
+
 /**
  *  Separate queue for processing editing actions
  */
