@@ -60,6 +60,12 @@
     });
 }
 
+- (void)removeAllStubs {
+    dispatch_barrier_async(self.editingQueue, ^{
+        [BKROHHTTPStubsWrapper removeAllStubs];
+    });
+}
+
 - (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher {
     // make sure this executes on the main thread
     BKRBeforeAddingStubs currentBeforeAddingStubsBlock = self.beforeAddingStubsBlock;

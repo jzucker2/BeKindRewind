@@ -92,8 +92,10 @@
     expectedRecording.expectedSceneNumber = 0;
     expectedRecording.expectedNumberOfFrames = 4;
     expectedRecording.checkAgainstRecorder = NO;
+    NSLog(@"about to call record in test");
     [self.vcr record];
 //    BKRWeakify(self);
+    NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         

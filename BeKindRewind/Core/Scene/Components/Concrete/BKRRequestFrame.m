@@ -23,7 +23,7 @@
 @synthesize requestComponents = _requestComponents;
 
 - (void)addRequest:(NSURLRequest *)request {
-    self.HTTPBody = request.HTTPBody;
+    self.HTTPBody = request.HTTPBody.copy;
     self.HTTPShouldHandleCookies = request.HTTPShouldHandleCookies;
     self.HTTPShouldUsePipelining = request.HTTPShouldUsePipelining;
     self.allHTTPHeaderFields = request.allHTTPHeaderFields;

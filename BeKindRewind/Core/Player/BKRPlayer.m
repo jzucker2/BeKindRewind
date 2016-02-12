@@ -80,6 +80,7 @@
 - (void)reset {
     self.currentCassette = nil;
     self.enabled = NO;
+    [self.editor removeAllStubs];
     self.beforeAddingStubsBlock = nil;
     self.afterAddingStubsBlock = nil;
 }

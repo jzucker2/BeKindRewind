@@ -102,6 +102,7 @@
 
 - (void)record {
     BKRWeakify(self);
+    NSLog(@"before queueing record");
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         switch (self->_state) {
@@ -114,8 +115,9 @@
             case BKRVCRStatePaused:
             case BKRVCRStateStopped:
             {
+                NSLog(@"about to enable recorder");
                 [BKRRecorder sharedInstance].enabled = YES;
-                NSLog(@"started recording");
+                NSLog(@"enabled recorder");
                 self->_state = BKRVCRStateRecording;
             }
                 break;

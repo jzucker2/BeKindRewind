@@ -34,7 +34,10 @@
     self.vcr = [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
     XCTAssertNotNil(self.vcr);
     __block XCTestExpectation *stubsExpectation;
+    BKRWeakify(self);
     self.vcr.beforeAddingStubsBlock = ^void(void) {
+        BKRStrongify(self);
+        NSLog(@"self: %@", self);
         stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
     };
     self.vcr.afterAddingStubsBlock = ^void(void) {

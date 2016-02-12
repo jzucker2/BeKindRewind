@@ -27,5 +27,7 @@
  */
 - (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher;
 
+- (void)removeAllStubs;
+
 
 @end
