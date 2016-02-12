@@ -18,6 +18,8 @@
 @implementation BKRRecordingEditor
 
 @synthesize recordingStartTime = _recordingStartTime;
+@synthesize beginRecordingBlock = _beginRecordingBlock;
+@synthesize endRecordingBlock = _endRecordingBlock;
 
 - (instancetype)init {
     self = [super init];
@@ -95,10 +97,29 @@
     return currentHandledRecording;
 }
 
-- (void)executeEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock withTask:(NSURLSessionTask *)task {
+- (void)executeBeginRecordingBlockWithTask:(NSURLSessionTask *)task {
+    // need this to be synchronous on the main queue
+    BKRBeginRecordingTaskBlock currentBeginRecordingBlock = self.beginRecordingBlock;
+    if (currentBeginRecordingBlock) {
+        if ([NSThread isMainThread]) {
+            currentBeginRecordingBlock(task);
+        } else {
+            // if recorder was called from a background queue, then make sure this is called on the main queue
+            dispatch_async(dispatch_get_main_queue(), ^{
+                currentBeginRecordingBlock(task);
+            });
+        }
+    }
+}
+
+- (void)executeEndRecordingBlockWithTask:(NSURLSessionTask *)task {
     __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
+    BKREndRecordingTaskBlock currentEndRecordingTaskBlock = self.endRecordingBlock;
+    if (!currentEndRecordingTaskBlock) {
+        return;
+    }
     dispatch_barrier_async(self.editingQueue, ^{
-        [cassette executeEndTaskRecordingBlock:endRecordingBlock withTask:task];
+        [cassette executeEndTaskRecordingBlock:currentEndRecordingTaskBlock withTask:task];
     });
 }
 
@@ -111,5 +132,36 @@
     });
     return dictionary;
 }
+
+#pragma mark - BKRVCRRecording
+
+- (void)setBeginRecordingBlock:(BKRBeginRecordingTaskBlock)beginRecordingBlock {
+    dispatch_barrier_async(self.editingQueue, ^{
+        self->_beginRecordingBlock = beginRecordingBlock;
+    });
+}
+
+- (BKRBeginRecordingTaskBlock)beginRecordingBlock {
+    __block BKRBeginRecordingTaskBlock recordingBlock = nil;
+    dispatch_sync(self.editingQueue, ^{
+        recordingBlock = self->_beginRecordingBlock;
+    });
+    return recordingBlock;
+}
+
+- (void)setEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock {
+    dispatch_barrier_async(self.editingQueue, ^{
+        self->_endRecordingBlock = endRecordingBlock;
+    });
+}
+
+- (BKREndRecordingTaskBlock)endRecordingBlock {
+    __block BKREndRecordingTaskBlock recordingBlock = nil;
+    dispatch_sync(self.editingQueue, ^{
+        recordingBlock = self->_endRecordingBlock;
+    });
+    return recordingBlock;
+}
+
 
 @end
