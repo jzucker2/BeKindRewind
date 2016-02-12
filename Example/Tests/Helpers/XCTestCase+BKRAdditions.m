@@ -19,7 +19,7 @@
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/BKRRecordingEditor.h>
 #import <BeKindRewind/BKRRecorder.h>
-#import <BeKindRewind/BKRRecordableScene.h>
+#import <BeKindRewind/BKRScene+Recordable.h>
 #import <BeKindRewind/BKRPlayer.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 
@@ -132,7 +132,7 @@
     
     taskTimeoutCompletionHandler localTimeoutHandler = ^void(NSURLSessionTask *task, NSError *error) {
         if (expectedRecording.checkAgainstRecorder) {
-            BKRRecordableScene *expectedScene = [BKRRecorder sharedInstance].allScenes[expectedRecording.expectedSceneNumber];
+            BKRScene *expectedScene = [BKRRecorder sharedInstance].allScenes[expectedRecording.expectedSceneNumber];
             XCTAssertNotNil(expectedScene);
             XCTAssertEqual(expectedScene.allFrames.count, expectedRecording.expectedNumberOfFrames);
             NSURLRequest *originalRequest = task.originalRequest;

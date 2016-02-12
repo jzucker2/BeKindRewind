@@ -8,10 +8,10 @@
 
 #import "BKRRecordableCassette.h"
 #import "BKRRecordableRawFrame.h"
-#import "BKRRecordableScene.h"
+#import "BKRScene+Recordable.h"
 
 @interface BKRRecordableCassette ()
-@property (nonatomic, strong) NSMutableDictionary<NSString *, BKRRecordableScene*> *scenes;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, BKRScene*> *scenes;
 @end
 
 @implementation BKRRecordableCassette
@@ -44,10 +44,10 @@
         __strong typeof(wself) sself = wself;
         NSDictionary *currentDictionary = sself.scenesDictionary;
         if (currentDictionary[frame.uniqueIdentifier]) {
-            BKRRecordableScene *existingScene = currentDictionary[frame.uniqueIdentifier];
+            BKRScene *existingScene = currentDictionary[frame.uniqueIdentifier];
             [existingScene addFrame:frame];
         } else {
-            BKRRecordableScene *newScene = [BKRRecordableScene sceneFromFrame:frame];
+            BKRScene *newScene = [BKRScene sceneFromFrame:frame];
             [sself addSceneToScenesDictionary:newScene];
         }
     });
@@ -63,7 +63,7 @@
 
 - (NSDictionary *)plistDictionary {
     NSMutableArray *plistArray = [NSMutableArray array];
-    for (BKRRecordableScene *scene in self.allScenes) {
+    for (BKRScene *scene in self.allScenes) {
         [plistArray addObject:scene.plistDictionary];
     }
     NSMutableDictionary *plistDict = [@{

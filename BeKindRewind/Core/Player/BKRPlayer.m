@@ -9,7 +9,7 @@
 #import "BKRPlayer.h"
 #import "BKRPlayableCassette.h"
 #import "BKRPlayingEditor.h"
-#import "BKRPlayableScene.h"
+#import "BKRScene+Playable.h"
 
 @interface BKRPlayer ()
 @property (nonatomic, strong) BKRPlayingEditor *editor;
@@ -24,8 +24,8 @@
     _editor = [BKRPlayingEditor editor];
 }
 
-- (NSArray<BKRPlayableScene *> *)allScenes {
-    return (NSArray<BKRPlayableScene *> *)self.editor.allScenes;
+- (NSArray<BKRScene *> *)allScenes {
+    return self.editor.allScenes;
 }
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {

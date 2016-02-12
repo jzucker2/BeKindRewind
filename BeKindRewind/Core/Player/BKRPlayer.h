@@ -11,7 +11,7 @@
 #import "BKRVCRActions.h"
 
 @class BKRPlayableCassette;
-@class BKRPlayableScene;
+@class BKRScene;
 
 /**
  *  This class manages playing back stubs for network requests at
@@ -65,7 +65,7 @@
  *
  *  @return ordered array by creation date of each scene or nil if no current cassette
  */
-- (NSArray<BKRPlayableScene *> *)allScenes;
+- (NSArray<BKRScene *> *)allScenes;
 
 ///**
 // *  Block is executed on the main thread before all stubs for a

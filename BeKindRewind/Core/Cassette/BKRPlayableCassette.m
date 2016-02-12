@@ -7,10 +7,10 @@
 //
 
 #import "BKRPlayableCassette.h"
-#import "BKRPlayableScene.h"
+#import "BKRScene+Playable.h"
 
 @interface BKRPlayableCassette ()
-@property (nonatomic, strong) NSMutableDictionary<NSString *, BKRPlayableScene*> *scenes;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, BKRScene*> *scenes;
 @end
 
 @implementation BKRPlayableCassette
@@ -32,11 +32,11 @@
 }
 
 - (void)_addEditedScenes:(NSArray<NSDictionary *> *)rawScenes {
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_apply(rawScenes.count, self.processingQueue, ^(size_t iteration) {
-        __strong typeof(wself) sself = wself;
-        BKRPlayableScene *scene = [[BKRPlayableScene alloc] initFromPlistDictionary:rawScenes[iteration]];
-        [sself addSceneToScenesDictionary:scene];
+        BKRStrongify(self);
+        BKRScene *scene = [[BKRScene alloc] initFromPlistDictionary:rawScenes[iteration]];
+        [self addSceneToScenesDictionary:scene];
     });
 }
 

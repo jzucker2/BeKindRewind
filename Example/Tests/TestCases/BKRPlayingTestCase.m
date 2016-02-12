@@ -14,7 +14,7 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
 #import <BeKindRewind/BKROHHTTPStubsWrapper.h>
-#import <BeKindRewind/BKRPlayableScene.h>
+#import <BeKindRewind/BKRScene+Playable.h>
 #import "XCTestCase+BKRAdditions.h"
 #import "BKRBaseTestCase.h"
 

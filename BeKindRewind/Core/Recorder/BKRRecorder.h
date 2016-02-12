@@ -12,7 +12,7 @@
 #import "BKRPlistSerializing.h"
 
 @class BKRRecordableCassette;
-@class BKRRecordableScene;
+@class BKRScene;
 
 /**
  *  This object is responsible for collecting and storing all information associated
@@ -56,7 +56,7 @@
  *
  *  @return ordered array by creation date of each scene or nil if no current cassette
  */
-- (NSArray<BKRRecordableScene *> *)allScenes;
+- (NSArray<BKRScene *> *)allScenes;
 
 /**
  *  Singleton instance is used because we cannot pass in a

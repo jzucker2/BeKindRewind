@@ -11,7 +11,7 @@
 #import "BKRRecordableCassette.h"
 #import "BKRRecordableRawFrame.h"
 #import "BKROHHTTPStubsWrapper.h"
-#import "BKRRecordableScene.h"
+#import "BKRScene+Recordable.h"
 
 @interface BKRRecorder ()
 @property (nonatomic, strong) BKRRecordingEditor *editor;
@@ -52,8 +52,8 @@
     return (BKRRecordableCassette *)self.editor.currentCassette;
 }
 
-- (NSArray<BKRRecordableScene *> *)allScenes {
-    return (NSArray<BKRRecordableScene *> *)self.currentCassette.allScenes;
+- (NSArray<BKRScene *> *)allScenes {
+    return self.editor.allScenes;
 }
 
 - (void)setEnabled:(BOOL)enabled {

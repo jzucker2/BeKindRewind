@@ -9,7 +9,7 @@
 #import "BKRPlayingEditor.h"
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRPlayableCassette.h"
-#import "BKRPlayableScene.h"
+#import "BKRScene+Playable.h"
 
 @implementation BKRPlayingEditor
 
@@ -80,10 +80,10 @@
 
     // reverse array: http://stackoverflow.com/questions/586370/how-can-i-reverse-a-nsarray-in-objective-c
     BKRPlayableCassette *stubbingCassette = (BKRPlayableCassette *)self.currentCassette;
-    NSArray<BKRPlayableScene *> *currentScenes = (NSArray<BKRPlayableScene *> *)stubbingCassette.allScenes;
+    NSArray<BKRScene *> *currentScenes = (NSArray<BKRScene *> *)stubbingCassette.allScenes;
     dispatch_barrier_async(self.editingQueue, ^{
         __block NSUInteger callCount = 0;
-        [currentScenes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRPlayableScene * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [currentScenes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRScene * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
                 BOOL finalTestResult = [matcher hasMatchForRequest:request withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
                 if (!finalTestResult) {
@@ -115,7 +115,7 @@
                     }
                 }
                 return finalTestResult;
-            } withStubResponse:^BKRPlayableScene * _Nonnull(NSURLRequest * _Nonnull request) {
+            } withStubResponse:^BKRScene * _Nonnull(NSURLRequest * _Nonnull request) {
                 // check on this increment call to make sure it happens properly
                 return [matcher matchForRequest:request withFirstMatchedIndex:idx currentNetworkCalls:callCount++ inPlayableScenes:currentScenes];
             }];
