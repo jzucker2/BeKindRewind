@@ -93,7 +93,17 @@
     expectedRecording.expectedNumberOfFrames = 4;
     expectedRecording.checkAgainstRecorder = NO;
     NSLog(@"about to call record in test");
-    [self.vcr record];
+    __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
+    NSLog(@"created start recording expectation");
+    [self.vcr recordWithCompletionBlock:^{
+        NSLog(@"fulfilling start recording expectation");
+        [startRecordingExpectation fulfill];
+    }];
+    NSLog(@"waiting to start recording");
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSLog(@"finished start recording expectations");
+        XCTAssertNil(error);
+    }];
     NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
@@ -129,7 +139,17 @@
                                         NSLocalizedDescriptionKey: @"cancelled"
                                         };
     NSLog(@"about to call record in test");
-    [self.vcr record];
+    __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
+    NSLog(@"created start recording expectation");
+    [self.vcr recordWithCompletionBlock:^{
+        NSLog(@"fulfilling start recording expectation");
+        [startRecordingExpectation fulfill];
+    }];
+    NSLog(@"waiting to start recording");
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSLog(@"finished start recording expectations");
+        XCTAssertNil(error);
+    }];
     NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:recording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
@@ -163,7 +183,17 @@
                            @"foo": @"bar"
                            };
     NSLog(@"about to call record in test");
-    [self.vcr record];
+    __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
+    NSLog(@"created start recording expectation");
+    [self.vcr recordWithCompletionBlock:^{
+        NSLog(@"fulfilling start recording expectation");
+        [startRecordingExpectation fulfill];
+    }];
+    NSLog(@"waiting to start recording");
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSLog(@"finished start recording expectations");
+        XCTAssertNil(error);
+    }];
     NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:recording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
@@ -205,7 +235,17 @@
     secondRecording.checkAgainstRecorder = NO;
     
     NSLog(@"about to call record in test");
-    [self.vcr record];
+    __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
+    NSLog(@"created start recording expectation");
+    [self.vcr recordWithCompletionBlock:^{
+        NSLog(@"fulfilling start recording expectation");
+        [startRecordingExpectation fulfill];
+    }];
+    NSLog(@"waiting to start recording");
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSLog(@"finished start recording expectations");
+        XCTAssertNil(error);
+    }];
     NSLog(@"start network task");
     [self recordingTaskForHTTPBinWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
@@ -249,7 +289,17 @@
     secondRecording.checkAgainstRecorder = NO;
     
     NSLog(@"about to call record in test");
-    [self.vcr record];
+    __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
+    NSLog(@"created start recording expectation");
+    [self.vcr recordWithCompletionBlock:^{
+        NSLog(@"fulfilling start recording expectation");
+        [startRecordingExpectation fulfill];
+    }];
+    NSLog(@"waiting to start recording");
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSLog(@"finished start recording expectations");
+        XCTAssertNil(error);
+    }];
     NSLog(@"start network task");
     __block NSNumber *firstTimetoken = nil;
     [self recordingTaskWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {

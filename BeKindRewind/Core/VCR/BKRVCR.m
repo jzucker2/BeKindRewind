@@ -92,7 +92,7 @@
     
 }
 
-- (void)record {
+- (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
     
 }
 

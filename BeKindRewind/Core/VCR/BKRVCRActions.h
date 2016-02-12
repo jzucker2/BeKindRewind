@@ -105,7 +105,7 @@ typedef void (^BKRCassetteHandlingBlock)(BOOL result, NSString *filePath);
 /**
  *  Record network
  */
-- (void)record;
+- (void)recordWithCompletionBlock:(void (^)(void))completionBlock;
 
 ///**
 // *  Recordings or stubbings for a session are contained in this object. If this

@@ -124,7 +124,7 @@
     });
 }
 
-- (void)record {
+- (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
     // no-op
     NSLog(@"playing VCR can't record a cassette");
 }

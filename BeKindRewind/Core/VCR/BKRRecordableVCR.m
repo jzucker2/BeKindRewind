@@ -100,7 +100,7 @@
     NSLog(@"recording VCR can't play a cassette");
 }
 
-- (void)record {
+- (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
     NSLog(@"before queueing record");
     dispatch_barrier_async(self.accessQueue, ^{
@@ -119,6 +119,15 @@
                 [BKRRecorder sharedInstance].enabled = YES;
                 NSLog(@"enabled recorder");
                 self->_state = BKRVCRStateRecording;
+                if (completionBlock) {
+                    if ([NSThread isMainThread]) {
+                        completionBlock();
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            completionBlock();
+                        });
+                    }
+                }
             }
                 break;
         }
