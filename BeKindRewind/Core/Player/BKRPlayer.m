@@ -61,20 +61,20 @@
 
 // TODO: probably should add before stubs on the editor's queue
 - (void)_addStubs {
-    // make sure this executes on the main thread
-    if (self.beforeAddingStubsBlock) {
-        if ([NSThread isMainThread]) {
-            self.beforeAddingStubsBlock();
-        } else {
-            // if player is called from a background queue, make sure this happens on main queue
-            __weak typeof(self) wself = self;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                __strong typeof(wself) sself = wself;
-                sself.beforeAddingStubsBlock();
-            });
-        }
-    }
-    [self.editor addStubsForMatcher:self.matcher afterStubsBlock:self.afterAddingStubsBlock];
+//    // make sure this executes on the main thread
+//    if (self.beforeAddingStubsBlock) {
+//        if ([NSThread isMainThread]) {
+//            self.beforeAddingStubsBlock();
+//        } else {
+//            // if player is called from a background queue, make sure this happens on main queue
+//            __weak typeof(self) wself = self;
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                __strong typeof(wself) sself = wself;
+//                sself.beforeAddingStubsBlock();
+//            });
+//        }
+//    }
+    [self.editor addStubsForMatcher:self.matcher];
 }
 
 - (void)reset {
@@ -82,6 +82,24 @@
     self.enabled = NO;
     self.beforeAddingStubsBlock = nil;
     self.afterAddingStubsBlock = nil;
+}
+
+#pragma mark - BKRVCRPlaying
+
+- (void)setAfterAddingStubsBlock:(BKRAfterAddingStubs)afterAddingStubsBlock {
+    self.editor.afterAddingStubsBlock = afterAddingStubsBlock;
+}
+
+- (BKRAfterAddingStubs)afterAddingStubsBlock {
+    return self.editor.afterAddingStubsBlock;
+}
+
+- (void)setBeforeAddingStubsBlock:(BKRBeforeAddingStubs)beforeAddingStubsBlock {
+    self.editor.beforeAddingStubsBlock = beforeAddingStubsBlock;
+}
+
+- (BKRBeforeAddingStubs)beforeAddingStubsBlock {
+    return self.editor.beforeAddingStubsBlock;
 }
 
 @end
