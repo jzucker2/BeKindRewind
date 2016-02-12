@@ -30,6 +30,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @end
 
 @interface BKRExpectedRecording : NSObject
+@property (nonatomic, assign) BOOL checkAgainstRecorder; // default is YES
 @property (nonatomic, copy) NSString *URLString;
 @property (nonatomic, copy) NSString *HTTPMethod;
 @property (nonatomic, copy) NSData *HTTPBody;
@@ -59,6 +60,8 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 
 - (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordingEditor:(BKRRecordingEditor *)editor;
 - (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error;
+
+- (void)assertCassettePath:(NSString *)cassettePath matchesExpectedRecordings:(NSArray<BKRExpectedRecording *> *)expectedRecordings;
 
 // used for building
 - (NSDictionary *)expectedCassetteDictionaryWithSceneBuilders:(NSArray<BKRExpectedScenePlistDictionaryBuilder *> *)expectedPlistBuilders;

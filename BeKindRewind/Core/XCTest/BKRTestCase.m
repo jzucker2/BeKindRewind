@@ -35,7 +35,7 @@
 
 - (void)setUp {
     [super setUp];
-    self.vcr.recording = [self isRecording];
+//    self.vcr.recording = [self isRecording];
 }
 
 @end

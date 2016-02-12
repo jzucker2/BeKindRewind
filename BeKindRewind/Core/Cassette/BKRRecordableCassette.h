@@ -17,6 +17,8 @@
  */
 @interface BKRRecordableCassette : BKRCassette <BKRPlistSerializer>
 
++ (instancetype)cassette;
+
 /**
  *  Add pieces of network requests to this cassette. Cassette will combine
  *  these "frames" into full scenes.

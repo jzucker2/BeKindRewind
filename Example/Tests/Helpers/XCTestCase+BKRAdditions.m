@@ -21,6 +21,7 @@
 #import <BeKindRewind/BKRRecorder.h>
 #import <BeKindRewind/BKRRecordableScene.h>
 #import <BeKindRewind/BKRPlayer.h>
+#import <BeKindRewind/BKRFilePathHelper.h>
 
 @implementation BKRExpectedScenePlistDictionaryBuilder
 
@@ -50,6 +51,7 @@
     if (self) {
 //        _HTTPMethod = @"GET";
         _cancelling = NO;
+        _checkAgainstRecorder = YES;
     }
     return self;
 }
@@ -129,30 +131,33 @@
     };
     
     taskTimeoutCompletionHandler localTimeoutHandler = ^void(NSURLSessionTask *task, NSError *error) {
-        BKRRecordableScene *expectedScene = [BKRRecorder sharedInstance].allScenes[expectedRecording.expectedSceneNumber];
-        XCTAssertNotNil(expectedScene);
-        XCTAssertEqual(expectedScene.allFrames.count, expectedRecording.expectedNumberOfFrames);
-        NSURLRequest *originalRequest = task.originalRequest;
-        BKRRequestFrame *originalRequestFrame = expectedScene.originalRequest;
-        XCTAssertNotNil(originalRequestFrame);
-        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
-        if (expectedRecording.isCancelling) {
-            XCTAssertEqual(expectedScene.allRequestFrames.count, 1);
-            XCTAssertEqual(expectedScene.allErrorFrames.count, 1);
-        } else {
-            XCTAssertEqual(expectedScene.allRequestFrames.count, 2);
-            XCTAssertEqual(expectedScene.allDataFrames.count, 1);
-            XCTAssertEqual(expectedScene.allResponseFrames.count, 1);
-            BKRDataFrame *dataFrame = expectedScene.allDataFrames.firstObject;
-            [self assertData:dataFrame withData:receivedData extraAssertions:nil];
-            BKRResponseFrame *responseFrame = expectedScene.allResponseFrames.firstObject;
-            [self assertResponse:responseFrame withResponse:receivedResponse extraAssertions:nil];
-            NSURLRequest *currentRequest = task.currentRequest;
-            BKRRequestFrame *currentRequestFrame = expectedScene.currentRequest;
-            XCTAssertNotNil(currentRequestFrame);
-            [self assertRequest:currentRequestFrame withRequest:currentRequest extraAssertions:nil];
+        if (expectedRecording.checkAgainstRecorder) {
+            BKRRecordableScene *expectedScene = [BKRRecorder sharedInstance].allScenes[expectedRecording.expectedSceneNumber];
+            XCTAssertNotNil(expectedScene);
+            XCTAssertEqual(expectedScene.allFrames.count, expectedRecording.expectedNumberOfFrames);
+            NSURLRequest *originalRequest = task.originalRequest;
+            BKRRequestFrame *originalRequestFrame = expectedScene.originalRequest;
+            XCTAssertNotNil(originalRequestFrame);
+            [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+            if (expectedRecording.isCancelling) {
+                XCTAssertEqual(expectedScene.allRequestFrames.count, 1);
+                XCTAssertEqual(expectedScene.allErrorFrames.count, 1);
+            } else {
+                XCTAssertEqual(expectedScene.allRequestFrames.count, 2);
+                XCTAssertEqual(expectedScene.allDataFrames.count, 1);
+                XCTAssertEqual(expectedScene.allResponseFrames.count, 1);
+                BKRDataFrame *dataFrame = expectedScene.allDataFrames.firstObject;
+                [self assertData:dataFrame withData:receivedData extraAssertions:nil];
+                BKRResponseFrame *responseFrame = expectedScene.allResponseFrames.firstObject;
+                [self assertResponse:responseFrame withResponse:receivedResponse extraAssertions:nil];
+                NSURLRequest *currentRequest = task.currentRequest;
+                BKRRequestFrame *currentRequestFrame = expectedScene.currentRequest;
+                XCTAssertNotNil(currentRequestFrame);
+                [self assertRequest:currentRequestFrame withRequest:currentRequest extraAssertions:nil];
+            }
+            [self assertFramesOrder:expectedScene extraAssertions:nil];
         }
-        [self assertFramesOrder:expectedScene extraAssertions:nil];
+        
         if (taskTimeout) {
             taskTimeout(task, error);
         }
@@ -679,7 +684,9 @@
 
 - (void)setWithExpectationsPlayableCassette:(BKRPlayableCassette *)cassette inPlayer:(BKRPlayer *)player {
     __block XCTestExpectation *stubsExpectation;
+    BKRWeakify(self);
     player.beforeAddingStubsBlock = ^void(void) {
+        BKRStrongify(self);
         stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
     };
     player.afterAddingStubsBlock = ^void(void) {
@@ -689,6 +696,92 @@
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+}
+
+- (void)assertCassettePath:(NSString *)cassettePath matchesExpectedRecordings:(NSArray<BKRExpectedRecording *> *)expectedRecordings {
+    NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassettePath];
+    XCTAssertTrue([cassetteDictionary isKindOfClass:[NSDictionary class]]);
+    XCTAssertTrue([cassetteDictionary[@"creationDate"] isKindOfClass:[NSDate class]]);
+    NSArray *scenes = cassetteDictionary[@"scenes"];
+    XCTAssertEqual(expectedRecordings.count, scenes.count);
+    // if there are no expected recordings, then there are no more comparisons left
+    if (!expectedRecordings.count) {
+        return;
+    }
+    
+    for (NSInteger i=0; i < expectedRecordings.count; i++) {
+        NSDictionary *scene = [scenes objectAtIndex:i];
+        XCTAssertTrue([scene isKindOfClass:[NSDictionary class]]);
+        NSString *uniqueIdentifier = scene[@"uniqueIdentifier"];
+        XCTAssertNotNil(uniqueIdentifier);
+        BKRExpectedRecording *recording = [expectedRecordings objectAtIndex:i];
+        XCTAssertEqual(recording.expectedSceneNumber, i);
+        XCTAssertNotNil(recording);
+        NSArray *frames = scene[@"frames"];
+        XCTAssertNotNil(frames);
+        NSInteger numberOfRequestChecks = 0;
+        XCTAssertEqual(recording.expectedNumberOfFrames, frames.count, @"frames: %@", frames);
+        for (NSDictionary *frame in frames) {
+            XCTAssertEqualObjects(frame[@"uniqueIdentifier"], uniqueIdentifier);
+            XCTAssertTrue([frame[@"creationDate"] isKindOfClass:[NSDate class]]);
+            NSString *frameClass = frame[@"class"];
+            XCTAssertNotNil(frameClass);
+            if ([frameClass isEqualToString:@"BKRErrorFrame"]) {
+                XCTAssertEqual([frame[@"code"] integerValue], recording.expectedErrorCode);
+                XCTAssertEqualObjects(frame[@"domain"], recording.expectedErrorDomain);
+                NSDictionary *finalUserInfo;
+                if (recording.expectedErrorUserInfo) {
+                    NSMutableDictionary *comparingDictionary = recording.expectedErrorUserInfo.mutableCopy;
+                    if (comparingDictionary[NSURLErrorFailingURLErrorKey]) {
+                        comparingDictionary[NSURLErrorFailingURLErrorKey] = [recording.expectedErrorUserInfo[NSURLErrorFailingURLErrorKey] absoluteString];
+                    }
+                    finalUserInfo = comparingDictionary.copy;
+                }
+                XCTAssertEqualObjects(frame[@"userInfo"], finalUserInfo);
+            } else if ([frameClass isEqualToString:@"BKRDataFrame"]) {
+//                NSData *data = [NSJSONSerialization dataWithJSONObject:recording.receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
+                if (recording.receivedJSON) {
+                    NSData *savedData = frame[@"data"];
+                    XCTAssertNotNil(savedData);
+                    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:savedData options:NSJSONReadingAllowFragments error:nil];
+                    XCTAssertEqualObjects(recording.receivedJSON, dictionary[@"args"]);
+                }
+            } else if ([frameClass isEqualToString:@"BKRResponseFrame"]) {
+                XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+                XCTAssertNotNil(frame[@"MIMEType"]);
+                XCTAssertEqual([frame[@"statusCode"] integerValue], recording.responseStatusCode);
+                // check response header fields
+            } else if ([frameClass isEqualToString:@"BKRRequestFrame"]) {
+                XCTAssertTrue(numberOfRequestChecks < 2, @"only expecting an original request and a current request");
+                XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+                XCTAssertNotNil(frame[@"timeoutInterval"]);
+                XCTAssertNotNil(frame[@"allowsCellularAccess"]);
+                XCTAssertNotNil(frame[@"HTTPShouldHandleCookies"]);
+                XCTAssertNotNil(frame[@"HTTPShouldUsePipelining"]);
+                if (numberOfRequestChecks == 0) {
+                    if (recording.HTTPMethod) {
+                        XCTAssertEqualObjects(recording.HTTPMethod, frame[@"HTTPMethod"]);
+                    }
+                    if (recording.sentJSON) {
+                        NSData *sentData = [NSJSONSerialization dataWithJSONObject:recording.sentJSON options:NSJSONWritingPrettyPrinted error:nil];
+                        XCTAssertEqualObjects(sentData, frame[@"HTTPBody"]);
+                    } else if (recording.HTTPBody) {
+                        XCTAssertEqualObjects(recording.HTTPBody, frame[@"HTTPBody"]);
+                    }
+                }
+                if (recording.HTTPMethod) {
+                    XCTAssertEqualObjects(recording.HTTPMethod, frame[@"HTTPMethod"]);
+                }
+                // should assert on headers too
+                
+                numberOfRequestChecks++;
+                
+            } else {
+                XCTFail(@"frameClass is unknown type: %@", frameClass);
+            }
+        }
+        // assert order of frames and scenes
+    }
 }
 
 @end

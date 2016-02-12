@@ -13,6 +13,46 @@
 
 @implementation BKRPlayingEditor
 
+@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
+@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
+
+- (void)setBeforeAddingStubsBlock:(BKRBeforeAddingStubs)beforeAddingStubsBlock {
+    BKRWeakify(self);
+    dispatch_barrier_async(self.editingQueue, ^{
+        BKRStrongify(self);
+        self->_beforeAddingStubsBlock = beforeAddingStubsBlock;
+    });
+}
+
+- (BKRBeforeAddingStubs)beforeAddingStubsBlock {
+    __block BKRBeforeAddingStubs stubsBlock = nil;
+    BKRWeakify(self);
+    dispatch_sync(self.editingQueue, ^{
+        BKRStrongify(self);
+        stubsBlock = self->_beforeAddingStubsBlock;
+    });
+    return stubsBlock;
+}
+
+- (void)setAfterAddingStubsBlock:(BKRAfterAddingStubs)afterAddingStubsBlock {
+    BKRWeakify(self);
+    dispatch_barrier_async(self.editingQueue, ^{
+        BKRStrongify(self);
+        self->_afterAddingStubsBlock = afterAddingStubsBlock;
+    });
+    
+}
+
+- (BKRAfterAddingStubs)afterAddingStubsBlock {
+    __block BKRAfterAddingStubs stubsBlock = nil;
+    BKRWeakify(self);
+    dispatch_sync(self.editingQueue, ^{
+        BKRStrongify(self);
+        stubsBlock = self->_afterAddingStubsBlock;
+    });
+    return stubsBlock;
+}
+
 - (void)setEnabled:(BOOL)enabled {
     [super setEnabled:enabled];
     dispatch_barrier_async(self.editingQueue, ^{
@@ -20,7 +60,24 @@
     });
 }
 
-- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher afterStubsBlock:(BKRAfterAddingStubs)afterStubsBlock {
+- (void)removeAllStubs {
+    [self _removeStubs];
+}
+
+- (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher {
+    // make sure this executes on the main thread
+    BKRBeforeAddingStubs currentBeforeAddingStubsBlock = self.beforeAddingStubsBlock;
+    if (currentBeforeAddingStubsBlock) {
+        if ([NSThread isMainThread]) {
+            currentBeforeAddingStubsBlock();
+        } else {
+            // if player is called from a background queue, make sure this happens on main queue
+            dispatch_async(dispatch_get_main_queue(), ^{
+                currentBeforeAddingStubsBlock();
+            });
+        }
+    }
+
     // reverse array: http://stackoverflow.com/questions/586370/how-can-i-reverse-a-nsarray-in-objective-c
     BKRPlayableCassette *stubbingCassette = (BKRPlayableCassette *)self.currentCassette;
     NSArray<BKRPlayableScene *> *currentScenes = (NSArray<BKRPlayableScene *> *)stubbingCassette.allScenes;
@@ -64,8 +121,8 @@
             }];
         }];
     });
-    if (afterStubsBlock) {
-        [stubbingCassette executeAfterAddingStubsBlock:afterStubsBlock];
+    if (self.afterAddingStubsBlock) {
+        [stubbingCassette executeAfterAddingStubsBlock:self.afterAddingStubsBlock];
     }
 }
 
@@ -74,5 +131,7 @@
         [BKROHHTTPStubsWrapper removeAllStubs];
     });
 }
+
+
 
 @end

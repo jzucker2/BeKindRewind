@@ -38,10 +38,11 @@
     NSDictionary *superDict = [super plistDictionary];
     NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithDictionary:superDict];
     plistDict[@"data"] = self.data.copy;
-    id JSON = [self JSONConvertedObject];
-    if (JSON) {
-        plistDict[@"JSON"] = JSON;
-    }
+    // TODO: reimplement this when JSON conversion can gracefully handle plist issues (can't save a null value to a plist)
+//    id JSON = [self JSONConvertedObject];
+//    if (JSON) {
+//        plistDict[@"JSON"] = JSON;
+//    }
     return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 

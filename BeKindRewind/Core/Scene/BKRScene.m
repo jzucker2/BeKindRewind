@@ -37,12 +37,7 @@
 }
 
 - (NSArray<BKRFrame *> *)allFrames {
-    NSArray<BKRFrame *> *unorderedFrames = [self _unorderedFrames];
-    __block NSArray<BKRFrame *> *orderedFrames = nil;
-    dispatch_sync(self.accessingQueue, ^{
-        orderedFrames = [unorderedFrames sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRFrame *, creationDate) ascending:YES]]];
-    });
-    return orderedFrames;
+    return [[self _unorderedFrames] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRFrame *, creationDate) ascending:YES]]];
 }
 
 - (NSArray<BKRFrame *> *)_unorderedFrames {
@@ -83,6 +78,7 @@
     return self.allRequestFrames.firstObject;
 }
 
+// return last request if more than 1 or second request if more than 1?
 - (BKRRequestFrame *)currentRequest {
     if (self.allRequestFrames.count > 1) {
         return [self.allRequestFrames objectAtIndex:1];
@@ -92,18 +88,6 @@
 
 - (NSPredicate *)_predicateForFramesOfClass:(Class)frameClass {
     return [NSPredicate predicateWithFormat:@"class == %@", frameClass];
-}
-
-- (NSArray *)_framesOnlyOfType:(Class)frameClass {
-    NSMutableArray *restrictedFrames = [NSMutableArray array];
-    for (BKRFrame *frame in self.allFrames) {
-        if ([frame isKindOfClass:frameClass]) {
-            [restrictedFrames addObject:frame];
-        } else {
-            continue;
-        }
-    }
-    return restrictedFrames.copy;
 }
 
 @end
