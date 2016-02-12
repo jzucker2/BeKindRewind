@@ -51,6 +51,7 @@
     if (self) {
 //        _HTTPMethod = @"GET";
         _cancelling = NO;
+        _checkAgainstRecorder = YES;
     }
     return self;
 }
@@ -130,30 +131,33 @@
     };
     
     taskTimeoutCompletionHandler localTimeoutHandler = ^void(NSURLSessionTask *task, NSError *error) {
-        BKRRecordableScene *expectedScene = [BKRRecorder sharedInstance].allScenes[expectedRecording.expectedSceneNumber];
-        XCTAssertNotNil(expectedScene);
-        XCTAssertEqual(expectedScene.allFrames.count, expectedRecording.expectedNumberOfFrames);
-        NSURLRequest *originalRequest = task.originalRequest;
-        BKRRequestFrame *originalRequestFrame = expectedScene.originalRequest;
-        XCTAssertNotNil(originalRequestFrame);
-        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
-        if (expectedRecording.isCancelling) {
-            XCTAssertEqual(expectedScene.allRequestFrames.count, 1);
-            XCTAssertEqual(expectedScene.allErrorFrames.count, 1);
-        } else {
-            XCTAssertEqual(expectedScene.allRequestFrames.count, 2);
-            XCTAssertEqual(expectedScene.allDataFrames.count, 1);
-            XCTAssertEqual(expectedScene.allResponseFrames.count, 1);
-            BKRDataFrame *dataFrame = expectedScene.allDataFrames.firstObject;
-            [self assertData:dataFrame withData:receivedData extraAssertions:nil];
-            BKRResponseFrame *responseFrame = expectedScene.allResponseFrames.firstObject;
-            [self assertResponse:responseFrame withResponse:receivedResponse extraAssertions:nil];
-            NSURLRequest *currentRequest = task.currentRequest;
-            BKRRequestFrame *currentRequestFrame = expectedScene.currentRequest;
-            XCTAssertNotNil(currentRequestFrame);
-            [self assertRequest:currentRequestFrame withRequest:currentRequest extraAssertions:nil];
+        if (expectedRecording.checkAgainstRecorder) {
+            BKRRecordableScene *expectedScene = [BKRRecorder sharedInstance].allScenes[expectedRecording.expectedSceneNumber];
+            XCTAssertNotNil(expectedScene);
+            XCTAssertEqual(expectedScene.allFrames.count, expectedRecording.expectedNumberOfFrames);
+            NSURLRequest *originalRequest = task.originalRequest;
+            BKRRequestFrame *originalRequestFrame = expectedScene.originalRequest;
+            XCTAssertNotNil(originalRequestFrame);
+            [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+            if (expectedRecording.isCancelling) {
+                XCTAssertEqual(expectedScene.allRequestFrames.count, 1);
+                XCTAssertEqual(expectedScene.allErrorFrames.count, 1);
+            } else {
+                XCTAssertEqual(expectedScene.allRequestFrames.count, 2);
+                XCTAssertEqual(expectedScene.allDataFrames.count, 1);
+                XCTAssertEqual(expectedScene.allResponseFrames.count, 1);
+                BKRDataFrame *dataFrame = expectedScene.allDataFrames.firstObject;
+                [self assertData:dataFrame withData:receivedData extraAssertions:nil];
+                BKRResponseFrame *responseFrame = expectedScene.allResponseFrames.firstObject;
+                [self assertResponse:responseFrame withResponse:receivedResponse extraAssertions:nil];
+                NSURLRequest *currentRequest = task.currentRequest;
+                BKRRequestFrame *currentRequestFrame = expectedScene.currentRequest;
+                XCTAssertNotNil(currentRequestFrame);
+                [self assertRequest:currentRequestFrame withRequest:currentRequest extraAssertions:nil];
+            }
+            [self assertFramesOrder:expectedScene extraAssertions:nil];
         }
-        [self assertFramesOrder:expectedScene extraAssertions:nil];
+        
         if (taskTimeout) {
             taskTimeout(task, error);
         }

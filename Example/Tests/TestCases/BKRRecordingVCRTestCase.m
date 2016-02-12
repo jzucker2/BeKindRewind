@@ -7,7 +7,6 @@
 //
 
 #import <BeKindRewind/BKRRecordableVCR.h>
-#import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/BKRNSURLSessionSwizzling.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
@@ -17,8 +16,6 @@
 
 @interface BKRRecordingVCRTestCase : BKRBaseTestCase
 @property (nonatomic, copy) NSString *testRecordingFilePath;
-@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
-@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
 @property (nonatomic, strong) BKRRecordableVCR *vcr;
 @end
 
@@ -94,6 +91,7 @@
     expectedRecording.responseStatusCode = 200;
     expectedRecording.expectedSceneNumber = 0;
     expectedRecording.expectedNumberOfFrames = 4;
+    expectedRecording.checkAgainstRecorder = NO;
     [self.vcr record];
 //    BKRWeakify(self);
     [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -123,6 +121,7 @@
     recording.expectedNumberOfFrames = 2;
     recording.expectedErrorCode = -999;
     recording.expectedErrorDomain = NSURLErrorDomain;
+    recording.checkAgainstRecorder = NO;
     recording.expectedErrorUserInfo = @{
                                         NSURLErrorFailingURLErrorKey: [NSURL URLWithString:recording.URLString],
                                         NSURLErrorFailingURLStringErrorKey: recording.URLString,
@@ -156,6 +155,7 @@
     recording.responseStatusCode = 200;
     recording.HTTPMethod = @"POST";
     recording.receivedJSON = @{};
+    recording.checkAgainstRecorder = NO;
     recording.sentJSON = @{
                            @"foo": @"bar"
                            };
@@ -187,6 +187,7 @@
     firstRecording.responseStatusCode = 200;
     firstRecording.expectedSceneNumber = 0;
     firstRecording.expectedNumberOfFrames = 4;
+    firstRecording.checkAgainstRecorder = NO;
     
     BKRExpectedRecording *secondRecording = [BKRExpectedRecording recording];
     secondRecording.URLString = @"https://httpbin.org/get?test=test2";
@@ -196,6 +197,7 @@
     secondRecording.responseStatusCode = 200;
     secondRecording.expectedSceneNumber = 1;
     secondRecording.expectedNumberOfFrames = 4;
+    secondRecording.checkAgainstRecorder = NO;
     
     [self.vcr record];
     [self recordingTaskForHTTPBinWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -230,12 +232,14 @@
     firstRecording.responseStatusCode = 200;
     firstRecording.expectedSceneNumber = 0;
     firstRecording.expectedNumberOfFrames = 4;
+    firstRecording.checkAgainstRecorder = NO;
     
     BKRExpectedRecording *secondRecording = [BKRExpectedRecording recording];
     secondRecording.URLString = firstRecording.URLString;
     secondRecording.responseStatusCode = 200;
     secondRecording.expectedSceneNumber = 1;
     secondRecording.expectedNumberOfFrames = 4;
+    secondRecording.checkAgainstRecorder = NO;
     
     [self.vcr record];
     __block NSNumber *firstTimetoken = nil;

@@ -6,10 +6,14 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import <BeKindRewind/BKRPlayableVCR.h>
+#import <BeKindRewind/BKRFilePathHelper.h>
+#import "BKRBaseTestCase.h"
+#import "XCTestCase+BKRAdditions.h"
 
-@interface BKRPlayableVCRTestCase : XCTestCase
-
+@interface BKRPlayableVCRTestCase : BKRBaseTestCase
+@property (nonatomic, copy) NSString *testRecordingFilePath;
+@property (nonatomic, strong) BKRPlayableVCR *vcr;
 @end
 
 @implementation BKRPlayableVCRTestCase
@@ -17,6 +21,7 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    
 }
 
 - (void)tearDown {

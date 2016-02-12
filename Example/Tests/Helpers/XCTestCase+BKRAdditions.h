@@ -30,6 +30,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @end
 
 @interface BKRExpectedRecording : NSObject
+@property (nonatomic, assign) BOOL checkAgainstRecorder; // default is YES
 @property (nonatomic, copy) NSString *URLString;
 @property (nonatomic, copy) NSString *HTTPMethod;
 @property (nonatomic, copy) NSData *HTTPBody;
