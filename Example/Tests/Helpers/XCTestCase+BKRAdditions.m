@@ -684,14 +684,20 @@
 
 - (void)setWithExpectationsPlayableCassette:(BKRPlayableCassette *)cassette inPlayer:(BKRPlayer *)player {
     __block XCTestExpectation *stubsExpectation;
+    BKRWeakify(self);
     player.beforeAddingStubsBlock = ^void(void) {
+        BKRStrongify(self);
+        NSLog(@"before adding stubs expectation: %@", self);
         stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
     };
     player.afterAddingStubsBlock = ^void(void) {
+        NSLog(@"after adding stubs");
         [stubsExpectation fulfill];
     };
     player.currentCassette = cassette;
+    NSLog(@"wait for cassette add");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSLog(@"cassette add expired");
         XCTAssertNil(error);
     }];
 }

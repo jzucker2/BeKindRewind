@@ -67,12 +67,15 @@
 - (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher {
     // make sure this executes on the main thread
     BKRBeforeAddingStubs currentBeforeAddingStubsBlock = self.beforeAddingStubsBlock;
+    NSLog(@"%@: decide whether to call add stubs block", self);
     if (currentBeforeAddingStubsBlock) {
         if ([NSThread isMainThread]) {
+            NSLog(@"execute before add stubs on main thread");
             currentBeforeAddingStubsBlock();
         } else {
             // if player is called from a background queue, make sure this happens on main queue
             dispatch_async(dispatch_get_main_queue(), ^{
+                NSLog(@"execute before add stubs on main thread async");
                 currentBeforeAddingStubsBlock();
             });
         }
