@@ -51,6 +51,7 @@
     XCTAssertTrue([self.vcr insert:self.testRecordingFilePath completionHandler:^(BOOL result, NSString *filePath) {
         NSLog(@"insert expectation fulfill");
         [insertExpectation fulfill];
+        insertExpectation = nil;
     }]);
     NSLog(@"insert wait");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
@@ -62,7 +63,21 @@
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [self.vcr reset];
+//    self.vcr.beforeAddingStubsBlock = nil;
+//    self.vcr.afterAddingStubsBlock = nil;
+    __block XCTestExpectation *resetExpectation = [self expectationWithDescription:@"reset expectation"];
+    [self.vcr resetWithCompletionBlock:^{
+        [resetExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+//        XCTAssertNil(error);
+        if (error) {
+            XCTFail(@"%@", error.localizedDescription);
+        }
+    }];
+//    self.vcr.beforeAddingStubsBlock = nil;
+//    self.vcr.afterAddingStubsBlock = nil;
+//    [self.vcr resetWithCompletionBlock:nil];
     [super tearDown];
 }
 
@@ -82,6 +97,7 @@
     [self.vcr playWithCompletionBlock:^{
         NSLog(@"fulfilling play expectation");
         [playExpectation fulfill];
+        playExpectation = nil;
     }];
     NSLog(@"wait for play expectation");
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
@@ -132,18 +148,22 @@
 
 - (void)testPlayingOneCancelledGETRequest {
     NSLog(@"what");
+    XCTAssertTrue(YES);
 }
 
 - (void)testPlayingOnePOSTRequest {
     NSLog(@"what");
+    XCTAssertTrue(YES);
 }
 
 - (void)testPlayingMultipleGETRequests {
     NSLog(@"what");
+    XCTAssertTrue(YES);
 }
 
 - (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
     NSLog(@"what");
+    XCTAssertTrue(YES);
 }
 
 @end

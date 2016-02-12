@@ -44,7 +44,10 @@
 
 - (void)setCurrentCassette:(BKRPlayableCassette *)currentCassette {
     self.editor.currentCassette = currentCassette;
-    [self _addStubs];
+    if (currentCassette) {
+        [self _addStubs];
+    }
+//    [self _addStubs];
 }
 
 - (BKRPlayableCassette *)currentCassette {

@@ -67,7 +67,7 @@
 - (void)addStubsForMatcher:(id<BKRRequestMatching>)matcher {
     // make sure this executes on the main thread
     BKRBeforeAddingStubs currentBeforeAddingStubsBlock = self.beforeAddingStubsBlock;
-    NSLog(@"%@: decide whether to call add stubs block", self);
+    NSLog(@"%@: decide whether to call add stubs block, thread", self);
     if (currentBeforeAddingStubsBlock) {
         if ([NSThread isMainThread]) {
             NSLog(@"execute before add stubs on main thread");

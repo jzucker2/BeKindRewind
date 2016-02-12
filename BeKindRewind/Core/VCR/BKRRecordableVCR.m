@@ -263,14 +263,23 @@
     });
 }
 
-- (void)reset {
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
-    dispatch_barrier_async(self.accessQueue, ^{
+    dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
         [[BKRRecorder sharedInstance] reset];
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
     });
+    if (completionBlock) {
+        if ([NSThread isMainThread]) {
+            completionBlock();
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
+    }
 }
 
 - (BKRVCRState)state {

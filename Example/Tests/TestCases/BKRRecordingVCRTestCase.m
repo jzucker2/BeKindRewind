@@ -72,11 +72,18 @@
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [self.vcr reset];
+//    [self.vcr reset];
 //    NSError *testResultRemovalError = nil;
 //    BOOL removeTestResults = [[NSFileManager defaultManager] removeItemAtPath:self.testRecordingFilePath error:&testResultRemovalError];
 //    XCTAssertTrue(removeTestResults);
 //    XCTAssertNil(testResultRemovalError, @"Couldn't remove test results: %@", testResultRemovalError.localizedDescription);
+    __block XCTestExpectation *resetExpectation = [self expectationWithDescription:@"reset expectation"];
+    [self.vcr resetWithCompletionBlock:^{
+        [resetExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     [super tearDown];
 }
 

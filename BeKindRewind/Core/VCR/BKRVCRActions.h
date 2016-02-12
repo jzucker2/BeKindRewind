@@ -95,7 +95,7 @@ typedef void (^BKRCassetteHandlingBlock)(BOOL result, NSString *filePath);
 - (void)playWithCompletionBlock:(void (^)(void))completionBlock;
 - (void)pause; // is there a difference between stop and pause?
 - (void)stop; // is there a difference between stop and pause?
-- (void)reset; // reset to start of cassette
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock; // reset to start of cassette
 - (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock; // must end in .plist
 /**
  *  This "ejects" the current cassette, saving the results to the location specified by filePath

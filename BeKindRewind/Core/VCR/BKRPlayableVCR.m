@@ -255,14 +255,28 @@
     return finalResult;
 }
 
-- (void)reset {
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         [self->_player reset];
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completionBlock) {
+                completionBlock();
+            }
+        });
     });
+//    if (completionBlock) {
+//        if ([NSThread isMainThread]) {
+//            completionBlock();
+//        } else {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                completionBlock();
+//            });
+//        }
+//    }
 }
 
 - (BKRVCRState)state {

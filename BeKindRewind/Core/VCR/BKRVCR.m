@@ -124,14 +124,24 @@
     return currentCassetteFilePath;
 }
 
-- (void)reset {
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
+    // this is weird, double completion blocks?
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        [self->_internalVCR reset];
+        [self->_internalVCR resetWithCompletionBlock:nil];
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
     });
+    if (completionBlock) {
+        if ([NSThread isMainThread]) {
+            completionBlock();
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
+    }
 }
 
 - (BKRVCRState)state {
