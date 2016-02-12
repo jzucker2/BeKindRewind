@@ -102,4 +102,14 @@
     });
 }
 
+- (NSDictionary *)plistDictionary {
+    __block NSDictionary *dictionary = nil;
+    BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
+    // this is dispatch sync so that it occurs after any queued writes (adding frames)
+    dispatch_barrier_sync(self.editingQueue, ^{
+        dictionary = cassette.plistDictionary;
+    });
+    return dictionary;
+}
+
 @end

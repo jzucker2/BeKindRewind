@@ -40,6 +40,10 @@
     return sharedInstance;
 }
 
+- (NSDictionary *)plistDictionary {
+    return self.editor.plistDictionary;
+}
+
 - (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
     self.editor.currentCassette = currentCassette;
 }

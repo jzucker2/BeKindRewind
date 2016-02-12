@@ -37,12 +37,7 @@
 }
 
 - (NSArray<BKRFrame *> *)allFrames {
-    NSArray<BKRFrame *> *unorderedFrames = [self _unorderedFrames];
-    __block NSArray<BKRFrame *> *orderedFrames = nil;
-    dispatch_sync(self.accessingQueue, ^{
-        orderedFrames = [unorderedFrames sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRFrame *, creationDate) ascending:YES]]];
-    });
-    return orderedFrames;
+    return [[self _unorderedFrames] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRFrame *, creationDate) ascending:YES]]];
 }
 
 - (NSArray<BKRFrame *> *)_unorderedFrames {

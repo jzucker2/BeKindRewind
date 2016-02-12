@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "BKRConstants.h"
 #import "BKRVCRActions.h"
+#import "BKRPlistSerializing.h"
 
 @class BKRRecordableCassette;
 @class BKRRecordableScene;
@@ -17,7 +18,7 @@
  *  This object is responsible for collecting and storing all information associated
  *  with a network request.
  */
-@interface BKRRecorder : NSObject <BKRVCRRecording>
+@interface BKRRecorder : NSObject <BKRVCRRecording, BKRPlistSerializer>
 
 /**
  *  Whether or not network activity should be recorded

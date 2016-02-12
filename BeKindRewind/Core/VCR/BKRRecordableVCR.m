@@ -186,7 +186,7 @@
             !fileExists || // if the file path does not exist, then just save it!
             (fileExists && shouldOverwrite) // if there's a place to save and it already exists, then only save if overwriting
             ) {
-            NSDictionary *cassetteDictionary = [BKRRecorder sharedInstance].currentCassette.plistDictionary;
+            NSDictionary *cassetteDictionary = [BKRRecorder sharedInstance].plistDictionary;
             finalPath = currentFilePath;
             finalResult = [BKRFilePathHelper writeDictionary:cassetteDictionary toFile:currentFilePath];
             NSLog(@"writing result to: %@", finalPath);

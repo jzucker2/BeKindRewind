@@ -8,13 +8,14 @@
 
 #import "BKREditor.h"
 #import "BKRConstants.h"
+#import "BKRPlistSerializing.h"
 
 @class BKRRecordableRawFrame;
 
 /**
  *  This subclass is for turning network request components into cassettes in a thread-safe manner.
  */
-@interface BKRRecordingEditor : BKREditor
+@interface BKRRecordingEditor : BKREditor <BKRPlistSerializer>
 
 /**
  *  Date at which current recording session begins
