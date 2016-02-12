@@ -8,6 +8,7 @@
 
 #import <BeKindRewind/BKRPlayableVCR.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
+#import <BeKindRewind/BKRPlayheadMatcher.h>
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRAdditions.h"
 
@@ -21,12 +22,40 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    self.testRecordingFilePath = [BKRFilePathHelper findPathForFile:@"SimplePlistDictionary.plist" inBundleForClass:self.class];
+    XCTAssertNotNil(self.testRecordingFilePath);
+    XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     
+    NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:self.testRecordingFilePath];
+    XCTAssertNotNil(cassetteDictionary);
+    
+    self.vcr = [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
+    XCTAssertNotNil(self.vcr);
+    __block XCTestExpectation *stubsExpectation;
+    self.vcr.beforeAddingStubsBlock = ^void(void) {
+        stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
+    };
+    self.vcr.afterAddingStubsBlock = ^void(void) {
+        [stubsExpectation fulfill];
+    };
+    
+    __block XCTestExpectation *insertExpectation = [self expectationWithDescription:@"insert expectation"];
+    NSLog(@"insert expectation create");
+    XCTAssertTrue([self.vcr insert:self.testRecordingFilePath completionHandler:^(BOOL result, NSString *filePath) {
+        NSLog(@"insert expectation fulfill");
+        [insertExpectation fulfill];
+    }]);
+    NSLog(@"insert wait");
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSLog(@"insert expire");
+        XCTAssertNil(error);
+    }];
     
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    [self.vcr reset];
     [super tearDown];
 }
 
