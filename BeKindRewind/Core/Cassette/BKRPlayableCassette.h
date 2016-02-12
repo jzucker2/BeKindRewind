@@ -22,4 +22,6 @@
  */
 - (void)executeAfterAddingStubsBlock:(BKRAfterAddingStubs)afterStubsBlock;
 
++ (instancetype)cassetteFromDictionary:(NSDictionary *)dictionary;
+
 @end

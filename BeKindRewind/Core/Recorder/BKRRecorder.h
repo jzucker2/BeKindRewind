@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "BKRConstants.h"
+#import "BKRVCRActions.h"
+#import "BKRPlistSerializing.h"
 
 @class BKRRecordableCassette;
 @class BKRRecordableScene;
@@ -16,12 +18,14 @@
  *  This object is responsible for collecting and storing all information associated
  *  with a network request.
  */
-@interface BKRRecorder : NSObject
+@interface BKRRecorder : NSObject <BKRVCRRecording, BKRPlistSerializer>
 
 /**
  *  Whether or not network activity should be recorded
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
+
+@property (nonatomic, assign, readonly) BOOL didRecord;
 
 /**
  *  Current cassette used to store network requests. If this is nil,
@@ -29,19 +33,23 @@
  */
 @property (nonatomic, strong) BKRRecordableCassette *currentCassette;
 
-/**
- *  This block executes on the main queue before any network request
- *  begins. Make sure not to deadlock or execute slow code. It passes in
- *  the NSURLSessionTask associated with this recording.
- */
-@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock; // this delays the main queue, don't block!
-
-/**
- *  This block executes on the main queue after any network request
- *  begins. Make sure not to deadlock or execute slow code. It passes in
- *  the NSURLSessionTask associated with this recording.
- */
-@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock; // this is async on main queue
+///**
+// *  This block executes on the main queue before any network request
+// *  begins. Make sure not to deadlock or execute slow code. It passes in
+// *  the NSURLSessionTask associated with this recording.
+// *
+// *  @note this block is executed synchronously on the main queue
+// */
+//@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
+//
+///**
+// *  This block executes on the main queue after any network request
+// *  begins. Make sure not to deadlock or execute slow code. It passes in
+// *  the NSURLSessionTask associated with this recording.
+// *
+// *  @note this block is executed asynchronously on the main queue
+// */
+//@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
 
 /**
  *  Ordered array of BKRRecordableScene objects from current cassette

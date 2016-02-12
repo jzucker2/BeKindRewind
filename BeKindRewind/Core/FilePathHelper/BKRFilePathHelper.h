@@ -95,7 +95,9 @@
 + (NSString *)fixtureWriteDirectoryInProject;
 
 /**
- *  Function for serializing a dictionary of plist encodable Foundation objects to filePath
+ *  Function for serializing a dictionary of plist encodable Foundation objects to filePath. This
+ *  is the main function used for saving recordings to disk, the other functions are helper functions
+ *  exposed to the user if they want to save in a custom way.
  *
  *  @param dictionary must only contain Foundation objects that can be encoded in a plist. 
  *                    Throws exception if object is not a dictionary
@@ -125,5 +127,7 @@
  *  @return bundle newly created or already existing if it matches criteria
  */
 + (NSBundle *)writingBundleNamed:(NSString *)bundleName inDirectory:(NSString *)filePath;
+
++ (BOOL)filePathExists:(NSString *)filePath;
 
 @end

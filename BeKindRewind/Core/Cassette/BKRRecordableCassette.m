@@ -18,6 +18,10 @@
 
 @synthesize scenes = _scenes;
 
++ (instancetype)cassette {
+    return [[self alloc] init];
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {

@@ -8,18 +8,22 @@
 
 #import "BKREditor.h"
 #import "BKRConstants.h"
+#import "BKRPlistSerializing.h"
+#import "BKRVCRActions.h"
 
 @class BKRRecordableRawFrame;
 
 /**
  *  This subclass is for turning network request components into cassettes in a thread-safe manner.
  */
-@interface BKRRecordingEditor : BKREditor
+@interface BKRRecordingEditor : BKREditor <BKRPlistSerializer, BKRVCRRecording>
 
 /**
  *  Date at which current recording session begins
  */
 @property (nonatomic, strong) NSDate *recordingStartTime;
+
+@property (nonatomic, assign, readonly) BOOL handledRecording;
 
 /**
  *  Update the recordingStartTime to now or set it to nil if BKRRecordingEditor is not enabled
@@ -33,12 +37,14 @@
  */
 - (void)addFrame:(BKRRecordableRawFrame *)frame;
 
+- (void)executeBeginRecordingBlockWithTask:(NSURLSessionTask *)task;
+
 /**
  *  Execute end of recording block on the main queue
  *
  *  @param endRecordingBlock block to execute at the end of a network request recording
  *  @param task              task that was being recorded
  */
-- (void)executeEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock withTask:(NSURLSessionTask *)task;
+- (void)executeEndRecordingBlockWithTask:(NSURLSessionTask *)task;
 
 @end

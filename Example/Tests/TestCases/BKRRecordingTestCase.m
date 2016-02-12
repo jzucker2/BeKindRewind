@@ -139,10 +139,7 @@
     firstRecording.expectedNumberOfFrames = 4;
     
     BKRExpectedRecording *secondRecording = [BKRExpectedRecording recording];
-    secondRecording.URLString = @"https://pubsub.pubnub.com/time/0";
-    secondRecording.receivedJSON = @{
-                                     @"test": @"test2"
-                                     };
+    secondRecording.URLString = firstRecording.URLString;
     secondRecording.responseStatusCode = 200;
     secondRecording.expectedSceneNumber = 1;
     secondRecording.expectedNumberOfFrames = 4;

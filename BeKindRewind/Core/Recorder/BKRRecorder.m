@@ -15,9 +15,13 @@
 
 @interface BKRRecorder ()
 @property (nonatomic, strong) BKRRecordingEditor *editor;
+//@property (nonatomic, assign, readwrite) BOOL didRecord;
 @end
 
 @implementation BKRRecorder
+//@synthesize didRecord = _didRecord;
+@synthesize beginRecordingBlock = _beginRecordingBlock;
+@synthesize endRecordingBlock = _endRecordingBlock;
 
 - (instancetype)init {
     self = [super init];
@@ -34,6 +38,10 @@
         sharedInstance = [[BKRRecorder alloc] init];
     });
     return sharedInstance;
+}
+
+- (NSDictionary *)plistDictionary {
+    return self.editor.plistDictionary;
 }
 
 - (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
@@ -56,34 +64,43 @@
     return self.editor.isEnabled;
 }
 
+- (BOOL)didRecord {
+    return self.editor.handledRecording;
+}
+
 - (void)reset {
+    self.currentCassette = nil;
     [self.editor updateRecordingStartTime];
     self.beginRecordingBlock = nil;
     self.endRecordingBlock = nil;
 }
 
+#pragma mark - BKRVCRRecording
+
+- (void)setBeginRecordingBlock:(BKRBeginRecordingTaskBlock)beginRecordingBlock {
+    self.editor.beginRecordingBlock = beginRecordingBlock;
+}
+
+- (BKRBeginRecordingTaskBlock)beginRecordingBlock {
+    return self.editor.beginRecordingBlock;
+}
+
+- (void)setEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock {
+    self.editor.endRecordingBlock = endRecordingBlock;
+}
+
+- (BKREndRecordingTaskBlock)endRecordingBlock {
+    return self.editor.endRecordingBlock;
+}
+
 #pragma mark - NSURLSession recording
 
 - (void)beginRecording:(NSURLSessionTask *)task {
-    // need this to be synchronous on the main queue
-    if (self.beginRecordingBlock) {
-        if ([NSThread isMainThread]) {
-            self.beginRecordingBlock(task);
-        } else {
-            // if recorder was called from a background queue, then make sure this is called on the main queue
-            __weak typeof(self) wself = self;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                __strong typeof(wself) sself = wself;
-                sself.beginRecordingBlock(task);
-            });
-        }
-    }
+    [self.editor executeBeginRecordingBlockWithTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
-    if (self.endRecordingBlock) {
-        [self.editor executeEndRecordingBlock:self.endRecordingBlock withTask:task];
-    }
+    [self.editor executeEndRecordingBlockWithTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 {
