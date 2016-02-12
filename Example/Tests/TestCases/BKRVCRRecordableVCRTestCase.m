@@ -14,7 +14,7 @@
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRAdditions.h"
 
-@interface BKRVCRRecordableVCRTestCase : XCTestCase
+@interface BKRVCRRecordableVCRTestCase : BKRBaseTestCase
 @property (nonatomic, copy) NSString *testRecordingFilePath;
 @property (nonatomic, strong) BKRRecordableVCR *vcr;
 @end
