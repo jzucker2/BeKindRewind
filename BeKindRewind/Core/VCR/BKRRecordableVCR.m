@@ -115,6 +115,7 @@
             case BKRVCRStateStopped:
             {
                 [BKRRecorder sharedInstance].enabled = YES;
+                NSLog(@"started recording");
                 self->_state = BKRVCRStateRecording;
             }
                 break;

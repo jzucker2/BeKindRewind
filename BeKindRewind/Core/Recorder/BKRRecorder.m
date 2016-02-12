@@ -57,6 +57,7 @@
 }
 
 - (void)setEnabled:(BOOL)enabled {
+    NSLog(@"starting recording");
     self.editor.enabled = enabled;
 }
 
@@ -96,26 +97,12 @@
 #pragma mark - NSURLSession recording
 
 - (void)beginRecording:(NSURLSessionTask *)task {
-//    // need this to be synchronous on the main queue
-//    if (self.beginRecordingBlock) {
-//        if ([NSThread isMainThread]) {
-//            self.beginRecordingBlock(task);
-//        } else {
-//            // if recorder was called from a background queue, then make sure this is called on the main queue
-//            __weak typeof(self) wself = self;
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                __strong typeof(wself) sself = wself;
-//                sself.beginRecordingBlock(task);
-//            });
-//        }
-//    }
-    
+    NSLog(@"execute begin recording block");
+    [self.editor executeBeginRecordingBlockWithTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
-//    if (self.endRecordingBlock) {
-//        [self.editor executeEndRecordingBlock:self.endRecordingBlock withTask:task];
-//    }
+    NSLog(@"execute end recording block");
     [self.editor executeEndRecordingBlockWithTask:task];
 }
 
@@ -126,6 +113,7 @@
 }
 
 - (void)initTask:(NSURLSessionTask *)task {
+    NSLog(@"initTask recording");
     BKRRecordableRawFrame *requestFrame = [BKRRecordableRawFrame frameWithTask:task];
     requestFrame.item = task.originalRequest;
     [self.editor addFrame:requestFrame];
