@@ -99,6 +99,10 @@ script:
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
   - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
 after_success:
+ - cat -n fastlane/report.xml
+ - cat -n ~/Library/Logs/scan/*
+ - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
+ - cat -n ~/Library/Logs/DiagnosticReports/xctest*.crash
   # - if [ "$FASTLANE_LANE" == "code_coverage" ]; then
   #    bash <(curl -s https://codecov.io/bash);
   #   fi
