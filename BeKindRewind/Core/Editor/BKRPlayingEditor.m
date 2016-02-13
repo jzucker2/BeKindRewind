@@ -67,6 +67,8 @@
     BKRPlayableCassette *stubbingCassette = (BKRPlayableCassette *)self.currentCassette;
     NSArray<BKRScene *> *currentScenes = (NSArray<BKRScene *> *)stubbingCassette.allScenes;
     dispatch_barrier_sync(self.editingQueue, ^{
+        NSLog(@"stubbingCassette: %@", stubbingCassette);
+        NSLog(@"currentScenes: %@", currentScenes);
         __block NSUInteger callCount = 0;
         [currentScenes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRScene * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
