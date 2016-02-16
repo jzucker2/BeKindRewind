@@ -44,13 +44,14 @@
             NSDate *now = [NSDate date];
             NSLog(@"now: %@ stubbingCassette: %@", now, stubbingCassette);
             NSLog(@"now: %@ currentScenes: %@", now, currentScenes);
-            [self addStubsForMatcherWithScenes:currentScenes];
+            [self _addStubsForMatcherWithScenes:currentScenes withCompletionHandler:editingBlock enabled:updatedEnabled cassette:cassette];
         } else {
             [self _removeAllStubs];
+            if (editingBlock) {
+                editingBlock(updatedEnabled, cassette);
+            }
         }
-        if (editingBlock) {
-            editingBlock(updatedEnabled, cassette);
-        }
+
     }];
 }
 
@@ -79,16 +80,16 @@
 //    });
 }
 
-- (void)addStubsForMatcherWithScenes:(NSArray<BKRScene *> *)scenes {
-    [self _addStubsForMatcherForMatcher:self.matcher withScenes:scenes];
+- (void)_addStubsForMatcherWithScenes:(NSArray<BKRScene *> *)scenes withCompletionHandler:(BKRCassetteEditingBlock)completionBlock enabled:(BOOL)currentEnabled cassette:(BKRCassette *)cassette {
+    [self _addStubsForMatcherForMatcher:self.matcher withScenes:scenes enabled:currentEnabled cassette:cassette andCompletionHandler:completionBlock];
 }
 
-- (void)_addStubsForMatcherForMatcher:(id<BKRRequestMatching>)matcher withScenes:(NSArray<BKRScene *> *)scenes {
+- (void)_addStubsForMatcherForMatcher:(id<BKRRequestMatching>)matcher withScenes:(NSArray<BKRScene *> *)scenes enabled:(BOOL)enabled cassette:(BKRCassette *)cassette andCompletionHandler:(BKRCassetteEditingBlock)completionBlock {
     // reverse array: http://stackoverflow.com/questions/586370/how-can-i-reverse-a-nsarray-in-objective-c
-    __block NSUInteger callCount = 0;
     if (!scenes.count) {
         return;
     }
+    __block NSUInteger callCount = 0;
     [scenes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRScene * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
             BOOL finalTestResult = [matcher hasMatchForRequest:request withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:scenes];
@@ -126,6 +127,9 @@
             return [matcher matchForRequest:request withFirstMatchedIndex:idx currentNetworkCalls:callCount++ inPlayableScenes:scenes];
         }];
     }];
+    if (completionBlock) {
+        completionBlock(enabled, cassette);
+    }
 }
 
 @end
