@@ -51,6 +51,17 @@
     });
 }
 
+- (void)editCassetteSynchronously:(BKRCassetteEditingBlock)cassetteEditingBlock {
+    if (!cassetteEditingBlock) {
+        return;
+    }
+    BKRWeakify(self);
+    dispatch_barrier_sync(self.editingQueue, ^{
+        BKRStrongify(self);
+        cassetteEditingBlock(self->_enabled, self->_currentCassette);
+    });
+}
+
 - (void)setEnabled:(BOOL)enabled {
     [self setEnabled:enabled withCompletionHandler:nil];
 }

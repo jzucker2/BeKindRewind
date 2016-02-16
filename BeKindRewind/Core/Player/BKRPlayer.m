@@ -7,7 +7,7 @@
 //
 
 #import "BKRPlayer.h"
-#import "BKRPlayableCassette.h"
+#import "BKRCassette+Playable.h"
 #import "BKRPlayingEditor.h"
 #import "BKRScene+Playable.h"
 
@@ -36,12 +36,12 @@
     return [[self alloc] initWithMatcherClass:matcherClass];
 }
 
-- (void)setCurrentCassette:(BKRPlayableCassette *)currentCassette {
+- (void)setCurrentCassette:(BKRCassette *)currentCassette {
     self.editor.currentCassette = currentCassette;
 }
 
-- (BKRPlayableCassette *)currentCassette {
-    return (BKRPlayableCassette *)self.editor.currentCassette;
+- (BKRCassette *)currentCassette {
+    return self.editor.currentCassette;
 }
 
 - (void)setEnabled:(BOOL)enabled {

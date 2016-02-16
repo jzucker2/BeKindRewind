@@ -7,7 +7,10 @@
 //
 
 #import "BKRCassette.h"
+#import "BKRPlistSerializing.h"
 
-@interface BKRCassette (Playable)
+@interface BKRCassette (Playable) <BKRPlistDeserializer>
+
++ (instancetype)cassetteFromDictionary:(NSDictionary *)dictionary;
 
 @end

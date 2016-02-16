@@ -6,8 +6,8 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <BeKindRewind/BKRRecordableCassette.h>
-#import <BeKindRewind/BKRPlayableCassette.h>
+#import <BeKindRewind/BKRCassette+Recordable.h>
+#import <BeKindRewind/BKRCassette+Playable.h>
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRRawFrame+Recordable.h>
 #import <BeKindRewind/BKRDataFrame.h>
@@ -37,7 +37,7 @@
 
 - (void)DISABLE_testPlistSerializingOneGETRequest {
     __block BKRRecordingEditor *editor = [BKRRecordingEditor editor];
-    BKRRecordableCassette *testCassette = [[BKRRecordableCassette alloc] init];
+    BKRCassette *testCassette = [[BKRCassette alloc] init];
     editor.currentCassette = testCassette;
     editor.enabled = YES;
     __block NSDictionary *taskDict;
@@ -65,7 +65,7 @@
         XCTAssertEqual(scene.allResponseFrames.count, 1);
         XCTAssertEqual(editor.allScenes.count, 1, @"How did the count of scenes change?");
         BKRScene *recordedScene = editor.allScenes.firstObject;
-        BKRRecordableCassette *cassette = (BKRRecordableCassette *)editor.currentCassette;
+        BKRCassette *cassette = (BKRCassette *)editor.currentCassette;
         XCTAssertNotNil(cassette);
         NSDictionary *cassetteDict = cassette.plistDictionary;
         XCTAssertNotNil(cassetteDict);
@@ -121,7 +121,7 @@
                                     @"frames": frames
                                     };
         NSDictionary *cassetteDict = [self expectedCassetteDictionaryWithCreationDate:cassetteCreationDate sceneDictionaries:@[sceneDict]];
-        BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:cassetteDict];
+        BKRCassette *cassette = [[BKRCassette alloc] initFromPlistDictionary:cassetteDict];
         XCTAssertNotNil(cassette);
         XCTAssertEqual(cassette.allScenes.count, 1);
         XCTAssertEqualObjects(cassette.creationDate, cassetteCreationDate);

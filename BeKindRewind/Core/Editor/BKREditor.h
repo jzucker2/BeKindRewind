@@ -32,6 +32,7 @@
 
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock;
 - (void)editCassette:(BKRCassetteEditingBlock)cassetteEditingBlock;
+- (void)editCassetteSynchronously:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
 /**
  *  Separate queue for processing editing actions

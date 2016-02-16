@@ -8,7 +8,7 @@
 
 #import "BKRRecordableVCR.h"
 #import "BKRConstants.h"
-#import "BKRRecordableCassette.h"
+#import "BKRCassette+Recordable.h"
 #import "BKRFilePathHelper.h"
 #import "BKRRecorder.h"
 
@@ -137,7 +137,7 @@
         NSLog(@"loading cassette at: %@", cassetteFilePath);
         self->_cassetteFilePath = cassetteFilePath;
         finalPath = self->_cassetteFilePath;
-        [BKRRecorder sharedInstance].currentCassette = [BKRRecordableCassette cassette];
+        [BKRRecorder sharedInstance].currentCassette = [BKRCassette cassette];
         finalResult = YES;
     });
     if (completionBlock) {
@@ -220,14 +220,8 @@
             case BKRVCRStatePaused:
             case BKRVCRStateRecording:
             {
-//                [BKRRecorder sharedInstance].enabled = NO;
                 self->_state = BKRVCRStateStopped;
                 [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
-//                if (completionBlock) {
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        completionBlock();
-//                    });
-//                }
             }
                 break;
             case BKRVCRStateStopped:
@@ -247,14 +241,8 @@
                 break;
             case BKRVCRStateRecording:
             {
-//                [BKRRecorder sharedInstance].enabled = NO;
                 self->_state = BKRVCRStatePaused;
                 [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
-//                if (completionBlock) {
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        completionBlock();
-//                    });
-//                }
             }
                 break;
             case BKRVCRStatePaused:

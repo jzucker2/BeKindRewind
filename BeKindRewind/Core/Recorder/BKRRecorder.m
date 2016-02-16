@@ -8,7 +8,7 @@
 
 #import "BKRRecordingEditor.h"
 #import "BKRRecorder.h"
-#import "BKRRecordableCassette.h"
+#import "BKRCassette+Recordable.h"
 #import "BKRRawFrame+Recordable.h"
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRScene+Recordable.h"
@@ -44,12 +44,12 @@
     return self.editor.plistDictionary;
 }
 
-- (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
+- (void)setCurrentCassette:(BKRCassette *)currentCassette {
     self.editor.currentCassette = currentCassette;
 }
 
-- (BKRRecordableCassette *)currentCassette {
-    return (BKRRecordableCassette *)self.editor.currentCassette;
+- (BKRCassette *)currentCassette {
+    return self.editor.currentCassette;
 }
 
 - (NSArray<BKRScene *> *)allScenes {

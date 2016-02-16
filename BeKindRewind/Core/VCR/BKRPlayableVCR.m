@@ -8,7 +8,7 @@
 
 #import "BKRPlayableVCR.h"
 #import "BKRPlayer.h"
-#import "BKRPlayableCassette.h"
+#import "BKRCassette+Playable.h"
 #import "BKRFilePathHelper.h"
 
 @interface BKRPlayableVCR ()
@@ -44,7 +44,7 @@
     BKRWeakify(self);
     dispatch_sync(self.accessQueue, ^{
         BKRStrongify(self);
-        cassette = (BKRCassette *)self->_player.currentCassette;
+        cassette = self->_player.currentCassette;
     });
     return cassette;
 }
@@ -101,13 +101,7 @@
                 break;
             case BKRVCRStatePlaying:
             {
-//                self->_player.enabled = NO;
                 self->_state = BKRVCRStateStopped;
-//                if (completionBlock) {
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        completionBlock();
-//                    });
-//                }
                 [self->_player setEnabled:NO withCompletionHandler:completionBlock];
             }
                 break;
@@ -131,19 +125,7 @@
                 break;
             case BKRVCRStatePlaying:
             {
-//                self->_player.enabled = NO;
-//                self->_state = BKRVCRStatePaused;
-//                if (completionBlock) {
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        completionBlock();
-//                    });
-//                }
                 self->_state = BKRVCRStatePaused;
-                //                if (completionBlock) {
-                //                    dispatch_async(dispatch_get_main_queue(), ^{
-                //                        completionBlock();
-                //                    });
-                //                }
                 [self->_player setEnabled:NO withCompletionHandler:completionBlock];
             }
                 break;
@@ -177,7 +159,7 @@
             // if no cassette dictionary is fetched, then return NO
             self->_cassetteFilePath = cassetteFilePath;
             finalPath = self->_cassetteFilePath;
-            BKRPlayableCassette *cassette = [BKRPlayableCassette cassetteFromDictionary:cassetteDictionary];
+            BKRCassette *cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
             self->_player.currentCassette = cassette;
             finalResult = YES;
         }
@@ -234,11 +216,6 @@
                 completionBlock();
             }
         }];
-//        if (completionBlock) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                completionBlock();
-//            });
-//        }
     });
 }
 

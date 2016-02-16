@@ -8,7 +8,7 @@
 
 #import "BKRPlayingEditor.h"
 #import "BKROHHTTPStubsWrapper.h"
-#import "BKRPlayableCassette.h"
+#import "BKRCassette+Playable.h"
 #import "BKRScene+Playable.h"
 
 @interface BKRPlayingEditor ()
@@ -39,13 +39,12 @@
     [super setEnabled:enabled withCompletionHandler:^void(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         if (updatedEnabled) {
-            BKRPlayableCassette *stubbingCassette = (BKRPlayableCassette *)cassette;
-            NSArray<BKRScene *> *currentScenes = (NSArray<BKRScene *> *)stubbingCassette.allScenes;
+            NSArray<BKRScene *> *currentScenes = (NSArray<BKRScene *> *)cassette.allScenes;
             NSDate *now = [NSDate date];
             NSLog(@"%s", __PRETTY_FUNCTION__);
-            NSLog(@"now: %@ stubbingCassette: %@", now, stubbingCassette);
+            NSLog(@"now: %@ stubbingCassette: %@", now, cassette);
             NSLog(@"now: %@ currentScenes: %@", now, currentScenes);
-            [self _addStubsForMatcher:self.matcher forCassette:stubbingCassette withCompletionHandler:editingBlock];
+            [self _addStubsForMatcher:self.matcher forCassette:cassette withCompletionHandler:editingBlock];
         } else {
             [self _removeAllStubs];
             if (editingBlock) {
@@ -60,7 +59,7 @@
     [BKROHHTTPStubsWrapper removeAllStubs];
 }
 
-- (void)_addStubsForMatcher:(id<BKRRequestMatching>)matcher forCassette:(BKRPlayableCassette *)cassette withCompletionHandler:(BKRCassetteEditingBlock)completionBlock {
+- (void)_addStubsForMatcher:(id<BKRRequestMatching>)matcher forCassette:(BKRCassette *)cassette withCompletionHandler:(BKRCassetteEditingBlock)completionBlock {
     NSArray<BKRScene *> *currentScenes = (NSArray<BKRScene *> *)cassette.allScenes;
     // reverse array: http://stackoverflow.com/questions/586370/how-can-i-reverse-a-nsarray-in-objective-c
     if (!currentScenes.count) {

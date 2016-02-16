@@ -18,6 +18,10 @@
 
 @implementation BKRCassette
 
++ (instancetype)cassette {
+    return [[self alloc] init];
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {

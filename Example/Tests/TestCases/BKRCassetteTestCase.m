@@ -6,8 +6,8 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <BeKindRewind/BKRPlayableCassette.h>
-#import <BeKindRewind/BKRRecordableCassette.h>
+#import <BeKindRewind/BKRCassette+Playable.h>
+#import <BeKindRewind/BKRCassette+Recordable.h>
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRAdditions.h"
 

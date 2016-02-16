@@ -14,8 +14,8 @@
 #import <BeKindRewind/BKRErrorFrame.h>
 #import <BeKindRewind/BKRRawFrame+Recordable.h>
 #import <BeKindRewind/BKRRawFrame+Playable.h>
-#import <BeKindRewind/BKRPlayableCassette.h>
-#import <BeKindRewind/BKRRecordableCassette.h>
+#import <BeKindRewind/BKRCassette+Playable.h>
+#import <BeKindRewind/BKRCassette+Recordable.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/BKRRecordingEditor.h>
 #import <BeKindRewind/BKRRecorder.h>
@@ -679,7 +679,7 @@
     XCTAssertEqual(sceneBuilders.count, numberOfScenes);
     NSDictionary *cassetteDictionary = [self expectedCassetteDictionaryWithSceneBuilders:sceneBuilders.copy];
     XCTAssertNotNil(cassetteDictionary);
-    BKRPlayableCassette *cassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:cassetteDictionary];
+    BKRCassette *cassette = [[BKRCassette alloc] initFromPlistDictionary:cassetteDictionary];
     XCTAssertNotNil(cassette);
     XCTAssertEqual(cassette.allScenes.count, numberOfScenes);
 }
@@ -688,7 +688,7 @@
     
 }
 
-- (void)setWithExpectationsPlayableCassette:(BKRPlayableCassette *)cassette inPlayer:(BKRPlayer *)player {
+- (void)setWithExpectationsPlayableCassette:(BKRCassette *)cassette inPlayer:(BKRPlayer *)player {
 //    __block XCTestExpectation *stubsExpectation;
 //    BKRWeakify(self);
 //    player.beforeAddingStubsBlock = ^void(void) {

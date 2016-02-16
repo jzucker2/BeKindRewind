@@ -48,7 +48,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 + (instancetype)recording;
 @end
 
-@class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRRecordableCassette, BKRPlayableCassette, BKRErrorFrame, BKRPlayingEditor, BKRRecordingEditor, BKRPlayer;
+@class BKRRequestFrame, BKRResponseFrame, BKRDataFrame, BKRScene, BKRCassette, BKRErrorFrame, BKRPlayingEditor, BKRRecordingEditor, BKRPlayer;
 @interface XCTestCase (BKRAdditions)
 
 - (void)recordingTaskForHTTPBinWithExpectedRecording:(BKRExpectedRecording *)expectedRecording taskCompletionAssertions:(taskCompletionHandler)taskCompletion taskTimeoutAssertions:(taskTimeoutCompletionHandler)taskTimeout;
@@ -102,7 +102,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 
 #pragma mark - BKRPlayableCassette helpers
 
-- (void)setWithExpectationsPlayableCassette:(BKRPlayableCassette *)cassette inPlayer:(BKRPlayer *)player;
+- (void)setWithExpectationsPlayableCassette:(BKRCassette *)cassette inPlayer:(BKRPlayer *)player;
 
 - (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes;
 
