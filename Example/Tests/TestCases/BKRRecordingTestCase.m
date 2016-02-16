@@ -8,13 +8,7 @@
 
 #import <BeKindRewind/BKRRecorder.h>
 #import <BeKindRewind/BKRCassette+Recordable.h>
-#import <BeKindRewind/BKRScene.h>
-#import <BeKindRewind/BKRDataFrame.h>
-#import <BeKindRewind/BKRResponseFrame.h>
-#import <BeKindRewind/BKRRequestFrame.h>
-#import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
-#import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
-#import "XCTestCase+BKRAdditions.h"
+#import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
 @interface BKRRecordingTestCase : BKRBaseTestCase
@@ -25,26 +19,13 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    BKRCassette *cassette = [[BKRCassette alloc] init];
+    BKRCassette *cassette = [BKRCassette cassette];
     [BKRRecorder sharedInstance].currentCassette = cassette;
     if (self.invocation.selector != @selector(testNotRecordingGETRequestWhenRecorderIsNotExplicitlyEnabled)) {
-        __block XCTestExpectation *enableExpectation = [self expectationWithDescription:@"enable expectation"];
-        [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:^{
-            [enableExpectation fulfill];
-        }];
-        [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-            XCTAssertNil(error);
-        }];
+        [self setRecorderToEnabledWithExpectation:YES];
     }
 
-    [BKRRecorder sharedInstance].beginRecordingBlock = ^void(NSURLSessionTask *task) {
-        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
-        task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
-    };
-    
-    [BKRRecorder sharedInstance].endRecordingBlock = ^void(NSURLSessionTask *task) {
-        [task.recordingExpectation fulfill];
-    };
+    [self setRecorderBeginAndEndRecordingBlocks];
 }
 
 - (void)tearDown {

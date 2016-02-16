@@ -6,6 +6,10 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
+#import <BeKindRewind/BKRPlayer.h>
+#import <BeKindRewind/BKRRecorder.h>
+#import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
+#import <BeKindRewind/BKRScene.h>
 #import "XCTestCase+BKRHelpers.h"
 
 @implementation BKRTestExpectedResult
@@ -85,6 +89,106 @@
             timeoutAssertions(executingTask, error);
         }
     }];
+}
+
+- (void)setRecorderToEnabledWithExpectation:(BOOL)enabled {
+    __block XCTestExpectation *enableChangeExpectation = [self expectationWithDescription:@"enable expectation"];
+    [[BKRRecorder sharedInstance] setEnabled:enabled withCompletionHandler:^{
+        [enableChangeExpectation fulfill];
+        enableChangeExpectation = nil;
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)setPlayer:(BKRPlayer *)player toEnabledWithExpectation:(BOOL)enabled {
+    __block XCTestExpectation *enableChangeExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:enabled withCompletionHandler:^{
+        [enableChangeExpectation fulfill];
+        enableChangeExpectation = nil;
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)setRecorderBeginAndEndRecordingBlocks {
+    [BKRRecorder sharedInstance].beginRecordingBlock = ^void(NSURLSessionTask *task) {
+        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
+        task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
+    };
+    
+    [BKRRecorder sharedInstance].endRecordingBlock = ^void(NSURLSessionTask *task) {
+        [task.recordingExpectation fulfill];
+    };
+}
+
+- (void)assertFramesOrderForScene:(BKRScene *)scene {
+    NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:0];
+    for (BKRFrame *frame in scene.allFrames) {
+        XCTAssertEqual([lastDate compare:frame.creationDate], NSOrderedAscending);
+        lastDate = frame.creationDate;
+    }
+}
+
+- (NSMutableDictionary *)standardDataDictionary {
+    return [@{
+              @"class": @"BKRDataFrame",
+              @"creationDate": [NSDate date],
+              } mutableCopy];
+}
+
+- (NSMutableDictionary *)standardRequestDictionary {
+    return [@{
+              @"class": @"BKRRequestFrame",
+              @"creationDate": [NSDate date],
+              @"timeoutInterval": @(60),
+              @"HTTPShouldUsePipelining": @(NO),
+              @"HTTPShouldHandleCookies": @(YES),
+              @"allowsCellularAccess": @(YES),
+              @"HTTPMethod": @"GET"
+              } mutableCopy];
+}
+
+- (NSMutableDictionary *)standardResponseDictionary {
+    return [@{
+              @"class": @"BKRResponseFrame",
+              @"creationDate": [NSDate date],
+              @"MIMEType": @"application/json",
+              @"statusCode": @(200)
+              } mutableCopy];
+}
+
+- (NSMutableDictionary *)standardErrorDictionary {
+    return [@{
+              @"class": @"BKRErrorFrame",
+              @"creationDate": [NSDate date],
+              } mutableCopy];
+}
+
+#pragma mark - HTTPBin helpers
+
+- (BKRTestExpectedResult *)HTTPBinCancelledRequest {
+    BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
+    expectedResult.URLString = @"https://httpbin.org/delay/10";
+    expectedResult.shouldCancel = YES;
+    expectedResult.errorCode = -999;
+    expectedResult.errorDomain = NSURLErrorDomain;
+    expectedResult.errorUserInfo = @{
+                                     NSURLErrorFailingURLErrorKey: [NSURL URLWithString:expectedResult.URLString],
+                                     NSURLErrorFailingURLStringErrorKey: expectedResult.URLString,
+                                     NSLocalizedDescriptionKey: @"cancelled"
+                                     };
+    return expectedResult;
+}
+
+- (BKRTestExpectedResult *)HTTPBinGetRequestWithArgs:(NSDictionary *)args {
+    
+}
+
+- (BKRTestExpectedResult *)HTTPBinPostRequest {
+    
 }
 
 @end

@@ -26,14 +26,28 @@
 typedef void (^BKRTestNetworkCompletionHandler)(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error);
 
+@class BKRScene, BKRPlayer;
 @interface XCTestCase (BKRHelpers)
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
 
+- (void)assertFramesOrderForScene:(BKRScene *)scene;
+
+- (void)setRecorderToEnabledWithExpectation:(BOOL)enabled;
+- (void)setPlayer:(BKRPlayer *)player toEnabledWithExpectation:(BOOL)enabled;
+- (void)setRecorderBeginAndEndRecordingBlocks;
+
+#pragma mark - Plist builders
+
+- (NSMutableDictionary *)standardRequestDictionary;
+- (NSMutableDictionary *)standardResponseDictionary;
+- (NSMutableDictionary *)standardDataDictionary;
+- (NSMutableDictionary *)standardErrorDictionary;
+
 #pragma mark - HTTPBin helpers
 
-- (BKRTestExpectedResult *)cancelledRequest;
-- (BKRTestExpectedResult *)getRequest;
-- (BKRTestExpectedResult *)postRequest;
+- (BKRTestExpectedResult *)HTTPBinCancelledRequest;
+- (BKRTestExpectedResult *)HTTPBinGetRequestWithArgs:(NSDictionary *)args;
+- (BKRTestExpectedResult *)HTTPBinPostRequest;
 
 @end
