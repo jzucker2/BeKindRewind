@@ -7,10 +7,15 @@
 //
 
 #import <BeKindRewind/BKRVCR.h>
+#import <BeKindRewind/BKRFilePathHelper.h>
+#import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
+#import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
+#import "XCTestCase+BKRAdditions.h"
 #import "BKRBaseTestCase.h"
 
 @interface BKRVCRTestCase : BKRBaseTestCase
 @property (nonatomic, strong) BKRVCR *vcr;
+@property (nonatomic, copy) NSString *testRecordingFilePath;
 @end
 
 @implementation BKRVCRTestCase
