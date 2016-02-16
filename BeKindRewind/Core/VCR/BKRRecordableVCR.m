@@ -220,13 +220,14 @@
             case BKRVCRStatePaused:
             case BKRVCRStateRecording:
             {
-                [BKRRecorder sharedInstance].enabled = NO;
+//                [BKRRecorder sharedInstance].enabled = NO;
                 self->_state = BKRVCRStateStopped;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
+//                if (completionBlock) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completionBlock();
+//                    });
+//                }
             }
                 break;
             case BKRVCRStateStopped:
@@ -246,13 +247,14 @@
                 break;
             case BKRVCRStateRecording:
             {
-                [BKRRecorder sharedInstance].enabled = NO;
+//                [BKRRecorder sharedInstance].enabled = NO;
                 self->_state = BKRVCRStatePaused;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
+//                if (completionBlock) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completionBlock();
+//                    });
+//                }
             }
                 break;
             case BKRVCRStatePaused:

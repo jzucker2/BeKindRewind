@@ -63,9 +63,15 @@
     return self.editor.isEnabled;
 }
 
-- (void)reset {
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     self.currentCassette = nil;
-    self.enabled = NO;
+    [self.editor setEnabled:NO withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        if (completionBlock) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
+    }];
 }
 
 @end

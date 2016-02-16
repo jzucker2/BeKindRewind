@@ -59,7 +59,7 @@
  *  Reset the player's enabled state along with before 
  *  and after playback blocks
  */
-- (void)reset;
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock;
 
 /**
  *  Ordered array of BKRPlayableScene objects from current cassette

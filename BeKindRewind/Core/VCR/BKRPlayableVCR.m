@@ -208,7 +208,7 @@
         self->_state = BKRVCRStateStopped; // this is redundant from the `stopWithCompletionBlock:` call up above
         finalPath = self->_cassetteFilePath;
         self->_cassetteFilePath = nil;
-        [self->_player reset]; // removes cassette
+        [self->_player resetWithCompletionBlock:nil]; // removes cassette
         finalResult = YES;
     });
     if (completionBlock) {
@@ -227,14 +227,18 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        [self->_player reset];
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
-        if (completionBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_player resetWithCompletionBlock:^{
+            if (completionBlock) {
                 completionBlock();
-            });
-        }
+            }
+        }];
+//        if (completionBlock) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                completionBlock();
+//            });
+//        }
     });
 }
 
