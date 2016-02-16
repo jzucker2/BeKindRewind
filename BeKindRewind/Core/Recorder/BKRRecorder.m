@@ -8,7 +8,7 @@
 
 #import "BKRRecordingEditor.h"
 #import "BKRRecorder.h"
-#import "BKRRecordableCassette.h"
+#import "BKRCassette+Recordable.h"
 #import "BKRRawFrame+Recordable.h"
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRScene+Recordable.h"
@@ -44,12 +44,12 @@
     return self.editor.plistDictionary;
 }
 
-- (void)setCurrentCassette:(BKRRecordableCassette *)currentCassette {
+- (void)setCurrentCassette:(BKRCassette *)currentCassette {
     self.editor.currentCassette = currentCassette;
 }
 
-- (BKRRecordableCassette *)currentCassette {
-    return (BKRRecordableCassette *)self.editor.currentCassette;
+- (BKRCassette *)currentCassette {
+    return self.editor.currentCassette;
 }
 
 - (NSArray<BKRScene *> *)allScenes {
@@ -61,7 +61,6 @@
 }
 
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
-//    [self.editor setEnabled:enabled withCompletionHandler:completionBlock];
     [self.editor setEnabled:enabled withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
         if (completionBlock) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -91,21 +90,6 @@
             });
         }
     }];
-//    [self.editor resetHandledRecording];
-//    BKRWeakify(self);
-//    [self setEnabled:NO withCompletionHandler:^{
-//        BKRStrongify(self);
-//        [self.editor updateRecordingStartTime];
-//        if (completionBlock) {
-//            if ([NSThread isMainThread]) {
-//                completionBlock();
-//            } else {
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    completionBlock();
-//                });
-//            }
-//        }
-//    }];
 }
 
 #pragma mark - BKRVCRRecording

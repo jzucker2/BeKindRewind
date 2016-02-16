@@ -9,7 +9,7 @@
 #import "BKRRequestMatching.h"
 #import "BKRConstants.h"
 
-@class BKRPlayableCassette;
+@class BKRCassette;
 @class BKRScene;
 
 /**
@@ -47,7 +47,7 @@
  *  Current cassette used as a source for stubs. If this is nil,
  *  then no recordings are loaded as stubs for playback.
  */
-@property (nonatomic, strong) BKRPlayableCassette *currentCassette;
+@property (nonatomic, strong) BKRCassette *currentCassette;
 
 /**
  *  Instance of matcher class created from class parameter used 

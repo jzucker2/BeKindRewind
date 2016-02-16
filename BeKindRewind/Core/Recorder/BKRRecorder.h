@@ -11,7 +11,7 @@
 #import "BKRVCRActions.h"
 #import "BKRPlistSerializing.h"
 
-@class BKRRecordableCassette;
+@class BKRCassette;
 @class BKRScene;
 
 /**
@@ -33,7 +33,7 @@
  *  Current cassette used to store network requests. If this is nil,
  *  then no recordings are stored.
  */
-@property (nonatomic, strong) BKRRecordableCassette *currentCassette;
+@property (nonatomic, strong) BKRCassette *currentCassette;
 
 /**
  *  Ordered array of BKRRecordableScene objects from current cassette

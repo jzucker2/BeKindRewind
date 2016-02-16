@@ -15,6 +15,8 @@
  */
 @interface BKRCassette : NSObject
 
++ (instancetype)cassette;
+
 /**
  *  Date when this recording session is first created
  */

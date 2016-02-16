@@ -7,7 +7,7 @@
 //
 
 #import "BKRRecordingEditor.h"
-#import "BKRRecordableCassette.h"
+#import "BKRCassette+Recordable.h"
 #import "BKRRawFrame+Recordable.h"
 #import "BKRConstants.h"
 
@@ -31,14 +31,6 @@
     return self;
 }
 
-//- (void)resetHandledRecording {
-//    BKRWeakify(self);
-//    dispatch_barrier_async(self.editingQueue, ^{
-//        BKRStrongify(self);
-//        self->_handledRecording = NO;
-//    });
-//}
-
 - (void)reset {
     BKRWeakify(self);
     dispatch_barrier_async(self.editingQueue, ^{
@@ -59,40 +51,13 @@
     return recordingTime;
 }
 
-//- (void)setRecordingStartTime:(NSDate *)recordingStartTime {
-//    __weak typeof(self) wself = self;
-//    dispatch_barrier_async(self.editingQueue, ^{
-//        __strong typeof(wself) sself = wself;
-//        sself->_recordingStartTime = recordingStartTime;
-//    });
-//}
-
 - (void)_updateRecordingStartTimeWithEnabled:(BOOL)currentEnabled {
-//    if (self.isEnabled) {
-//        self.recordingStartTime = [NSDate date];
-//    } else {
-//        self.recordingStartTime = nil;
-//    }
     if (currentEnabled) {
         self->_recordingStartTime = [NSDate date];
     } else {
         self->_recordingStartTime = nil;
     }
 }
-
-//- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
-////    [super setEnabled:enabled withCompletionHandler:nil];
-////    [self updateRecordingStartTime];
-////    if (completionBlock) {
-////        if ([NSThread isMainThread]) {
-////            completionBlock();
-////        } else {
-////            dispatch_async(dispatch_get_main_queue(), ^{
-////                completionBlock();
-////            });
-////        }
-////    }
-//}
 
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock {
     BKRWeakify(self);
@@ -110,20 +75,19 @@
 }
 
 - (void)addFrame:(BKRRawFrame *)frame {
-    __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
-    if (!cassette) {
+    BKRWeakify(self);
+    [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        BKRStrongify(self);
         NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
-        return;
-    }
-    __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        if (![sself _shouldRecord:frame]) {
+        if (!cassette) {
             return;
         }
-        sself->_handledRecording = YES;
+        if (![self _shouldRecord:frame]) {
+            return;
+        }
+        self->_handledRecording = YES;
         [cassette addFrame:frame];
-    });
+    }];
 }
 
 - (BOOL)_shouldRecord:(BKRRawFrame *)rawFrame {
@@ -151,10 +115,12 @@
     BKRBeginRecordingTaskBlock currentBeginRecordingBlock = self.beginRecordingBlock;
     if (currentBeginRecordingBlock) {
         if ([NSThread isMainThread]) {
+            NSLog(@"main queue");
             currentBeginRecordingBlock(task);
         } else {
             // if recorder was called from a background queue, then make sure this is called on the main queue
             dispatch_async(dispatch_get_main_queue(), ^{
+                NSLog(@"schedule on main queue");
                 currentBeginRecordingBlock(task);
             });
         }
@@ -162,23 +128,26 @@
 }
 
 - (void)executeEndRecordingBlockWithTask:(NSURLSessionTask *)task {
-    __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
-    BKREndRecordingTaskBlock currentEndRecordingTaskBlock = self.endRecordingBlock;
-    if (!currentEndRecordingTaskBlock) {
-        return;
-    }
-    dispatch_barrier_async(self.editingQueue, ^{
+    BKRWeakify(self);
+    [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        BKRStrongify(self);
+        BKREndRecordingTaskBlock currentEndRecordingTaskBlock = self->_endRecordingBlock;
+        if (
+            !cassette ||
+            !currentEndRecordingTaskBlock
+            ) {
+            return;
+        }
         [cassette executeEndTaskRecordingBlock:currentEndRecordingTaskBlock withTask:task];
-    });
+    }];
 }
 
 - (NSDictionary *)plistDictionary {
     __block NSDictionary *dictionary = nil;
-    BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
     // this is dispatch sync so that it occurs after any queued writes (adding frames)
-    dispatch_barrier_sync(self.editingQueue, ^{
+    [self editCassetteSynchronously:^(BOOL updatedEnabled, BKRCassette *cassette) {
         dictionary = cassette.plistDictionary;
-    });
+    }];
     return dictionary;
 }
 

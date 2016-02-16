@@ -7,7 +7,7 @@
 //
 
 #import <BeKindRewind/BKRPlayer.h>
-#import <BeKindRewind/BKRPlayableCassette.h>
+#import <BeKindRewind/BKRCassette+Playable.h>
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
@@ -39,7 +39,7 @@
     sceneBuilder.shouldCompareRequestHeaderFields = NO;
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRCassette *testCassette = [[BKRCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
@@ -145,7 +145,7 @@
     sceneBuilder.shouldCompareRequestHeaderFields = NO;
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRCassette *testCassette = [[BKRCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
@@ -258,7 +258,7 @@
                                                        };
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRCassette *testCassette = [[BKRCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
@@ -315,7 +315,7 @@
                                                        };
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRCassette *testCassette = [[BKRCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
@@ -373,7 +373,7 @@
     BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRCassette *testCassette = [[BKRCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
@@ -444,7 +444,7 @@
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
     __block NSError *taskError = nil;
-    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRCassette *testCassette = [[BKRCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 2, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
@@ -539,7 +539,7 @@
                                              };
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
     __block BKRScene *scene = nil;
-    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRCassette *testCassette = [[BKRCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
@@ -596,7 +596,7 @@
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
     __block BKRScene *firstScene = nil;
     __block BKRScene *secondScene = nil;
-    __block BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    __block BKRCassette *testCassette = [[BKRCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 2);
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"First scene should have 4 frames");
     XCTAssertEqual(testCassette.allScenes.lastObject.allFrames.count, 4, @"Second (last scene) should have 4 frames");
@@ -732,7 +732,7 @@
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[firstSceneBuilder, secondSceneBuilder]];
     __block BKRScene *firstScene = nil;
     __block BKRScene *secondScene = nil;
-    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    BKRCassette *testCassette = [[BKRCassette alloc] initFromPlistDictionary:expectedCassetteDict];
     XCTAssertEqual(testCassette.allScenes.count, 2, @"testCassette should have one valid scene right now");
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1st scene");
     XCTAssertEqual(testCassette.allScenes.lastObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 2nd scene");
