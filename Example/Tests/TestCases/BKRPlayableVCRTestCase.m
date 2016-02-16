@@ -13,7 +13,7 @@
 #import "XCTestCase+BKRAdditions.h"
 
 @interface BKRPlayableVCRTestCase : BKRBaseTestCase
-@property (nonatomic, copy) NSString *testRecordingFilePath;
+@property (nonatomic, copy) NSString *testPlayingFilePath;
 @property (nonatomic, strong) BKRPlayableVCR *vcr;
 @end
 
@@ -24,18 +24,18 @@
     // Put setup code here. This method is called before the invocation of each test method in the class.
     NSString *fileName = [NSStringFromSelector(self.invocation.selector) stringByAppendingPathExtension:@"plist"];
     XCTAssertNotNil(fileName);
-    self.testRecordingFilePath = [BKRFilePathHelper findPathForFile:fileName inBundleForClass:self.class];
-    XCTAssertNotNil(self.testRecordingFilePath);
-    XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
+    self.testPlayingFilePath = [BKRFilePathHelper findPathForFile:fileName inBundleForClass:self.class];
+    XCTAssertNotNil(self.testPlayingFilePath);
+    XCTAssertTrue([BKRFilePathHelper filePathExists:self.testPlayingFilePath]);
     
-    NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:self.testRecordingFilePath];
+    NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:self.testPlayingFilePath];
     XCTAssertNotNil(cassetteDictionary);
     
     self.vcr = [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
     XCTAssertNotNil(self.vcr);
     
     __block XCTestExpectation *insertExpectation = [self expectationWithDescription:@"insert expectation"];
-    XCTAssertTrue([self.vcr insert:self.testRecordingFilePath completionHandler:^(BOOL result, NSString *filePath) {
+    XCTAssertTrue([self.vcr insert:self.testPlayingFilePath completionHandler:^(BOOL result, NSString *filePath) {
         [insertExpectation fulfill];
         insertExpectation = nil;
     }]);
