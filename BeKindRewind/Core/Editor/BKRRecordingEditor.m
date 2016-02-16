@@ -88,20 +88,6 @@
         self->_handledRecording = YES;
         [cassette addFrame:frame];
     }];
-//    __block BKRCassette *cassette = self.currentCassette;
-//    if (!cassette) {
-//        NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
-//        return;
-//    }
-//    __weak typeof(self) wself = self;
-//    dispatch_barrier_async(self.editingQueue, ^{
-//        __strong typeof(wself) sself = wself;
-//        if (![sself _shouldRecord:frame]) {
-//            return;
-//        }
-//        sself->_handledRecording = YES;
-//        [cassette addFrame:frame];
-//    });
 }
 
 - (BOOL)_shouldRecord:(BKRRawFrame *)rawFrame {
@@ -142,14 +128,6 @@
 }
 
 - (void)executeEndRecordingBlockWithTask:(NSURLSessionTask *)task {
-//    __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
-//    BKREndRecordingTaskBlock currentEndRecordingTaskBlock = self.endRecordingBlock;
-//    if (!currentEndRecordingTaskBlock) {
-//        return;
-//    }
-//    dispatch_barrier_async(self.editingQueue, ^{
-//        [cassette executeEndTaskRecordingBlock:currentEndRecordingTaskBlock withTask:task];
-//    });
     BKRWeakify(self);
     [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
@@ -165,14 +143,6 @@
 }
 
 - (NSDictionary *)plistDictionary {
-//    __block NSDictionary *dictionary = nil;
-//    BKRCassette *cassette = self.currentCassette;
-//    // this is dispatch sync so that it occurs after any queued writes (adding frames)
-//    dispatch_barrier_sync(self.editingQueue, ^{
-//        dictionary = cassette.plistDictionary;
-//    });
-//    return dictionary;
-    
     __block NSDictionary *dictionary = nil;
     // this is dispatch sync so that it occurs after any queued writes (adding frames)
     [self editCassetteSynchronously:^(BOOL updatedEnabled, BKRCassette *cassette) {
