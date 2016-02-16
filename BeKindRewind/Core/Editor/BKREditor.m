@@ -30,16 +30,6 @@
 }
 
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock {
-//    BKRWeakify(self);
-//    dispatch_barrier_async(self.editingQueue, ^{
-//        BKRStrongify(self);
-//        self->_enabled = enabled;
-//        if (completionBlock) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                completionBlock();
-//            });
-//        }
-//    });
     BKRWeakify(self);
     dispatch_barrier_async(self.editingQueue, ^{
         BKRStrongify(self);

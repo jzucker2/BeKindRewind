@@ -31,14 +31,6 @@
     return self;
 }
 
-//- (void)resetHandledRecording {
-//    BKRWeakify(self);
-//    dispatch_barrier_async(self.editingQueue, ^{
-//        BKRStrongify(self);
-//        self->_handledRecording = NO;
-//    });
-//}
-
 - (void)reset {
     BKRWeakify(self);
     dispatch_barrier_async(self.editingQueue, ^{
@@ -59,40 +51,13 @@
     return recordingTime;
 }
 
-//- (void)setRecordingStartTime:(NSDate *)recordingStartTime {
-//    __weak typeof(self) wself = self;
-//    dispatch_barrier_async(self.editingQueue, ^{
-//        __strong typeof(wself) sself = wself;
-//        sself->_recordingStartTime = recordingStartTime;
-//    });
-//}
-
 - (void)_updateRecordingStartTimeWithEnabled:(BOOL)currentEnabled {
-//    if (self.isEnabled) {
-//        self.recordingStartTime = [NSDate date];
-//    } else {
-//        self.recordingStartTime = nil;
-//    }
     if (currentEnabled) {
         self->_recordingStartTime = [NSDate date];
     } else {
         self->_recordingStartTime = nil;
     }
 }
-
-//- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
-////    [super setEnabled:enabled withCompletionHandler:nil];
-////    [self updateRecordingStartTime];
-////    if (completionBlock) {
-////        if ([NSThread isMainThread]) {
-////            completionBlock();
-////        } else {
-////            dispatch_async(dispatch_get_main_queue(), ^{
-////                completionBlock();
-////            });
-////        }
-////    }
-//}
 
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock {
     BKRWeakify(self);
@@ -151,10 +116,12 @@
     BKRBeginRecordingTaskBlock currentBeginRecordingBlock = self.beginRecordingBlock;
     if (currentBeginRecordingBlock) {
         if ([NSThread isMainThread]) {
+            NSLog(@"main queue");
             currentBeginRecordingBlock(task);
         } else {
             // if recorder was called from a background queue, then make sure this is called on the main queue
             dispatch_async(dispatch_get_main_queue(), ^{
+                NSLog(@"schedule on main queue");
                 currentBeginRecordingBlock(task);
             });
         }
