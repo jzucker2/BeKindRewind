@@ -16,6 +16,10 @@
 @property (nonatomic, strong) NSData *HTTPBody;
 @property (nonatomic, strong) NSData *receivedData;
 @property (nonatomic, strong) NSDictionary *receivedJSON;
+@property (nonatomic, assign) BOOL hasResponse;
+@property (nonatomic, assign) NSInteger errorCode;
+@property (nonatomic, strong) NSDictionary *errorUserInfo;
+@property (nonatomic, copy) NSString *errorDomain;
 + (instancetype)result;
 @end
 
@@ -25,5 +29,11 @@ typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, N
 @interface XCTestCase (BKRHelpers)
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
+
+#pragma mark - HTTPBin helpers
+
+- (BKRTestExpectedResult *)cancelledRequest;
+- (BKRTestExpectedResult *)getRequest;
+- (BKRTestExpectedResult *)postRequest;
 
 @end
