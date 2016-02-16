@@ -14,7 +14,6 @@
 
 @interface BKRRecordableVCR ()
 @property (nonatomic) dispatch_queue_t accessQueue;
-@property (nonatomic, assign, readwrite) BOOL shouldSaveEmptyCassette; // no by default
 @end
 
 @implementation BKRRecordableVCR
@@ -24,7 +23,7 @@
 @synthesize beginRecordingBlock = _beginRecordingBlock;
 @synthesize endRecordingBlock = _endRecordingBlock;
 
-- (instancetype)initWithEmptyCassetteOption:(BOOL)shouldSaveEmptyCassette {
+- (instancetype)initWithEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
     self = [super init];
     if (self) {
         [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil];
@@ -36,12 +35,12 @@
     return self;
 }
 
-+ (instancetype)vcrWithCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
-    return [[self alloc] initWithEmptyCassetteOption:shouldSaveEmptyCassette];
++ (instancetype)vcrWithEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
+    return [[self alloc] initWithEmptyCassetteSavingOption:shouldSaveEmptyCassette];
 }
 
 + (instancetype)vcr {
-    return [self vcrWithCassetteSavingOption:NO];
+    return [self vcrWithEmptyCassetteSavingOption:NO];
 }
 
 #pragma mark - BKRVCRRecording

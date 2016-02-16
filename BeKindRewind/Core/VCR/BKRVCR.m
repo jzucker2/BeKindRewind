@@ -9,54 +9,46 @@
 #import "BKRVCR.h"
 #import "BKRCassette.h"
 #import "BKRFilePathHelper.h"
+#import "BKRRecordableVCR.h"
+#import "BKRPlayableVCR.h"
 
 @interface BKRVCR ()
-//@property (nonatomic, strong) BKRPlayer *player;
 @property (nonatomic) dispatch_queue_t accessQueue;
-@property (nonatomic) Class<BKRRequestMatching> matcherClass;
+//@property (nonatomic) Class<BKRRequestMatching> matcherClass;
 @property (nonatomic, strong) id<BKRVCRActions> internalVCR;
-//@property (nonatomic, strong, readwrite) BKRCassette *currentCassette;
-//@property (nonatomic, assign, readwrite) BKRVCRState state;
-//@property (nonatomic, copy, readwrite) NSString *cassetteFilePath;
+@property (nonatomic, strong) BKRRecordableVCR *recordableVCR;
+@property (nonatomic, strong) BKRPlayableVCR *playableVCR;
 @end
 
 @implementation BKRVCR
-//@synthesize currentCassette = _currentCassette;
 @synthesize cassetteFilePath = _cassetteFilePath;
 @synthesize state = _state;
-@synthesize matcherClass = _matcherClass;
 @synthesize internalVCR = _internalVCR;
-//@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
-//@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
-//@synthesize beginRecordingBlock = _beginRecordingBlock;
-//@synthesize endRecordingBlock = _endRecordingBlock;
+@synthesize beginRecordingBlock = _beginRecordingBlock;
+@synthesize endRecordingBlock = _endRecordingBlock;
+@synthesize recordableVCR = _recordableVCR;
+@synthesize playableVCR = _playableVCR;
 
-- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
+- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
     self = [super init];
     if (self) {
-//        _player = [BKRPlayer playerWithMatcherClass:matcherClass];
-//        _player.enabled = NO;
-//        [BKRRecorder sharedInstance].enabled = NO;
-        _matcherClass = matcherClass;
         _accessQueue = dispatch_queue_create("com.BKR.VCR.processingQueue", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
         _cassetteFilePath = nil;
         _internalVCR = nil;
-//        _currentCassette = nil;
-//        _cassetteFilePath = nil;
-//        _disabled = NO;
-//        _recording = NO;
+        _shouldSaveEmptyCassette = shouldSaveEmptyCassette;
+        _playableVCR = [BKRPlayableVCR vcrWithMatcherClass:matcherClass];
+        _recordableVCR = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:shouldSaveEmptyCassette];
     }
     return self;
 }
 
-+ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
-    return [[self alloc] initWithMatcherClass:matcherClass];
++ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
+    return [[self alloc] initWithMatcherClass:matcherClass andEmptyCassetteSavingOption:shouldSaveEmptyCassette];
 }
 
 - (id<BKRRequestMatching>)matcher {
-//    return self.player.matcher;
-    return nil;
+    return self.playableVCR.matcher;
 }
 
 #pragma mark - helpers
@@ -80,12 +72,11 @@
 #pragma mark - BKRVCRActions
 
 - (void)playWithCompletionBlock:(void (^)(void))completionBlock {
-//    BKRWeakify(self);
-    
+    [self.internalVCR playWithCompletionBlock:completionBlock];
 }
 
 - (void)pauseWithCompletionBlock:(void (^)(void))completionBlock {
-    
+    [self.internalVCR pauseWithCompletionBlock:completionBlock];
 }
 
 - (void)stopWithCompletionBlock:(void (^)(void))completionBlock {
@@ -93,7 +84,7 @@
 }
 
 - (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
-    
+    [self.internalVCR recordWithCompletionBlock:completionBlock];
 }
 
 - (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {

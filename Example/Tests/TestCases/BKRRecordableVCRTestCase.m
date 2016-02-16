@@ -40,9 +40,9 @@
     XCTAssertFalse([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     
     if (self.invocation.selector == @selector(testFileCreatedWhenRecordingDisabledAndDefaultOverriddenInInit)) {
-        self.vcr = [BKRRecordableVCR vcrWithCassetteSavingOption:YES];
+        self.vcr = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:YES];
     } else if (self.invocation.selector == @selector(testNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
-        self.vcr = [BKRRecordableVCR vcrWithCassetteSavingOption:NO];
+        self.vcr = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:NO];
     } else {
         self.vcr = [BKRRecordableVCR vcr];
     }
