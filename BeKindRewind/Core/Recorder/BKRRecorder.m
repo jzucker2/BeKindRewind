@@ -61,7 +61,14 @@
 }
 
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
-    [self.editor setEnabled:enabled withCompletionHandler:completionBlock];
+//    [self.editor setEnabled:enabled withCompletionHandler:completionBlock];
+    [self.editor setEnabled:enabled withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        if (completionBlock) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
+    }];
 }
 
 - (BOOL)isEnabled {
@@ -76,21 +83,29 @@
     self.currentCassette = nil;
     self.beginRecordingBlock = nil;
     self.endRecordingBlock = nil;
-    [self.editor resetHandledRecording];
-    BKRWeakify(self);
-    [self setEnabled:NO withCompletionHandler:^{
-        BKRStrongify(self);
-        [self.editor updateRecordingStartTime];
+    [self.editor reset];
+    [self.editor editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         if (completionBlock) {
-            if ([NSThread isMainThread]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 completionBlock();
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completionBlock();
-                });
-            }
+            });
         }
     }];
+//    [self.editor resetHandledRecording];
+//    BKRWeakify(self);
+//    [self setEnabled:NO withCompletionHandler:^{
+//        BKRStrongify(self);
+//        [self.editor updateRecordingStartTime];
+//        if (completionBlock) {
+//            if ([NSThread isMainThread]) {
+//                completionBlock();
+//            } else {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    completionBlock();
+//                });
+//            }
+//        }
+//    }];
 }
 
 #pragma mark - BKRVCRRecording

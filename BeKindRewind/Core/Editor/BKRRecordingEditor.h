@@ -7,7 +7,6 @@
 //
 
 #import "BKREditor.h"
-#import "BKRConstants.h"
 #import "BKRPlistSerializing.h"
 #import "BKRVCRActions.h"
 
@@ -25,10 +24,12 @@
 
 @property (nonatomic, assign, readonly) BOOL handledRecording;
 
+- (void)reset;
+
 /**
  *  Update the recordingStartTime to now or set it to nil if BKRRecordingEditor is not enabled
  */
-- (void)updateRecordingStartTime;
+//- (void)updateRecordingStartTimeWithEnabled:(BOOL)desiredEnabled;
 
 /**
  *  Add raw recordable frame representing a component of a network request to the current cassette
@@ -47,6 +48,6 @@
  */
 - (void)executeEndRecordingBlockWithTask:(NSURLSessionTask *)task;
 
-- (void)resetHandledRecording;
+//- (void)resetHandledRecording;
 
 @end

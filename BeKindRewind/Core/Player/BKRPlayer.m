@@ -49,7 +49,14 @@
 }
 
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
-    [self.editor setEnabled:enabled withCompletionHandler:completionBlock];
+//    [self.editor setEnabled:enabled withCompletionHandler:completionBlock];
+    [self.editor setEnabled:enabled withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        if (completionBlock) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
+    }];
 }
 
 - (BOOL)isEnabled {

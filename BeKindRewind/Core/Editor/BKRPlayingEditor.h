@@ -29,9 +29,9 @@
  *  @param matcher         object used to construct stubs for playback, contains rules for stubbing
  *  @param afterStubsBlock block to execute on main queue after all stubs are added
  */
-- (void)addStubsForMatcher;
+//- (void)addStubsForMatcher;
 
-- (void)removeAllStubs;
+//- (void)removeAllStubs;
 
 
 @end

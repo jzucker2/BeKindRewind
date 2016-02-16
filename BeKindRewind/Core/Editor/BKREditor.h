@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRConstants.h"
 
 @class BKRCassette;
 @class BKRScene;
@@ -29,7 +30,8 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
-- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock;
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock;
+- (void)editCassette:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
 /**
  *  Separate queue for processing editing actions
