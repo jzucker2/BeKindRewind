@@ -8,8 +8,10 @@
 
 #import <BeKindRewind/BKRPlayer.h>
 #import <BeKindRewind/BKRRecorder.h>
+#import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import <BeKindRewind/BKRScene.h>
+#import <BeKindRewind/BKRFrame.h>
 #import "XCTestCase+BKRHelpers.h"
 
 @implementation BKRTestExpectedResult
@@ -19,6 +21,7 @@
     if (self) {
         _shouldCancel = NO;
     }
+    return self;
 }
 
 + (instancetype)result {
@@ -81,7 +84,7 @@
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning);
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended);
         } else {
-            XCTAssertEqual(task.state, NSURLSessionTaskStateCompleted);
+            XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted);
         }
         XCTAssertNotNil(executingTask.originalRequest);
         XCTAssertNotNil(executingTask.currentRequest);
@@ -184,11 +187,11 @@
 }
 
 - (BKRTestExpectedResult *)HTTPBinGetRequestWithArgs:(NSDictionary *)args {
-    
+    return nil;
 }
 
 - (BKRTestExpectedResult *)HTTPBinPostRequest {
-    
+    return nil;
 }
 
 @end
