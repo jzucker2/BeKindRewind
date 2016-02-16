@@ -1,8 +1,8 @@
 //
-//  BKRPlayableScene.h
+//  BKRScene+Playable.h
 //  Pods
 //
-//  Created by Jordan Zucker on 1/21/16.
+//  Created by Jordan Zucker on 2/12/16.
 //
 //
 
@@ -13,7 +13,7 @@
  *  This object represents the data associated with a network
  *  request and is intended to be used for stubbing.
  */
-@interface BKRPlayableScene : BKRScene <BKRPlistDeserializer>
+@interface BKRScene (Playable) <BKRPlistDeserializer>
 
 /**
  *  Data associated with a network request

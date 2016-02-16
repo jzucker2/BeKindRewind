@@ -12,14 +12,14 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRErrorFrame.h>
-#import <BeKindRewind/BKRRecordableRawFrame.h>
-#import <BeKindRewind/BKRPlayableRawFrame.h>
+#import <BeKindRewind/BKRRawFrame+Recordable.h>
+#import <BeKindRewind/BKRRawFrame+Playable.h>
 #import <BeKindRewind/BKRPlayableCassette.h>
 #import <BeKindRewind/BKRRecordableCassette.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/BKRRecordingEditor.h>
 #import <BeKindRewind/BKRRecorder.h>
-#import <BeKindRewind/BKRRecordableScene.h>
+#import <BeKindRewind/BKRScene+Recordable.h>
 #import <BeKindRewind/BKRPlayer.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 
@@ -34,6 +34,7 @@
     if (self) {
         _hasCurrentRequest = YES;
         _hasResponse = YES;
+        _shouldCompareRequestHeaderFields = YES;
     }
     return self;
 }
@@ -132,7 +133,7 @@
     
     taskTimeoutCompletionHandler localTimeoutHandler = ^void(NSURLSessionTask *task, NSError *error) {
         if (expectedRecording.checkAgainstRecorder) {
-            BKRRecordableScene *expectedScene = [BKRRecorder sharedInstance].allScenes[expectedRecording.expectedSceneNumber];
+            BKRScene *expectedScene = [BKRRecorder sharedInstance].allScenes[expectedRecording.expectedSceneNumber];
             XCTAssertNotNil(expectedScene);
             XCTAssertEqual(expectedScene.allFrames.count, expectedRecording.expectedNumberOfFrames);
             NSURLRequest *originalRequest = task.originalRequest;
@@ -315,8 +316,10 @@
         NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
         expectedOriginalRequestDict[@"URL"] = expectedPlistBuilder.URLString;
         expectedOriginalRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-        if (expectedPlistBuilder.originalRequestAllHTTPHeaderFields) {
-            expectedOriginalRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.originalRequestAllHTTPHeaderFields;
+        if (expectedPlistBuilder.shouldCompareRequestHeaderFields) {
+            if (expectedPlistBuilder.originalRequestAllHTTPHeaderFields) {
+                expectedOriginalRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.originalRequestAllHTTPHeaderFields;
+            }
         }
         if (expectedPlistBuilder.HTTPMethod) {
             expectedOriginalRequestDict[@"HTTPMethod"] = expectedPlistBuilder.HTTPMethod;
@@ -327,7 +330,10 @@
             NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
             expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
             expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-            if (expectedPlistBuilder.currentRequestAllHTTPHeaderFields) {
+            if (
+                (expectedPlistBuilder.currentRequestAllHTTPHeaderFields) &&
+                expectedPlistBuilder.shouldCompareRequestHeaderFields
+                ) {
                 expectedCurrentRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.currentRequestAllHTTPHeaderFields;
             }
             if (expectedPlistBuilder.HTTPMethod) {
@@ -426,19 +432,19 @@
 }
 
 - (void)addTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error toRecordingEditor:(BKRRecordingEditor *)editor {
-    BKRRecordableRawFrame *originalRequestRawFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *originalRequestRawFrame = [BKRRawFrame frameWithTask:task];
     originalRequestRawFrame.item = task.originalRequest;
     [editor addFrame:originalRequestRawFrame];
     
-    BKRRecordableRawFrame *currentRequestRawFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *currentRequestRawFrame = [BKRRawFrame frameWithTask:task];
     currentRequestRawFrame.item = task.currentRequest;
     [editor addFrame:currentRequestRawFrame];
     
-    BKRRecordableRawFrame *responseRawFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *responseRawFrame = [BKRRawFrame frameWithTask:task];
     responseRawFrame.item = response;
     [editor addFrame:responseRawFrame];
     
-    BKRRecordableRawFrame *dataRawFrame = [BKRRecordableRawFrame frameWithTask:task];
+    BKRRawFrame *dataRawFrame = [BKRRawFrame frameWithTask:task];
     dataRawFrame.item = data;
     [editor addFrame:dataRawFrame];
 }
@@ -446,21 +452,21 @@
 - (NSArray *)framesArrayWithTask:(NSURLSessionTask *)task data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error {
     NSMutableArray *frames = [NSMutableArray array];
     
-    BKRPlayableRawFrame *originalRequestFrame = [BKRPlayableRawFrame frameWithTask:task];
+    BKRRawFrame *originalRequestFrame = [BKRRawFrame frameWithTask:task];
     originalRequestFrame.item = task.originalRequest;
-    [frames addObject:originalRequestFrame.editedFrame];
+    [frames addObject:originalRequestFrame.editedPlaying];
     
-    BKRPlayableRawFrame *currentRequestFrame = [BKRPlayableRawFrame frameWithTask:task];
+    BKRRawFrame *currentRequestFrame = [BKRRawFrame frameWithTask:task];
     currentRequestFrame.item = task.currentRequest;
-    [frames addObject:currentRequestFrame.editedFrame];
+    [frames addObject:currentRequestFrame.editedPlaying];
     
-    BKRPlayableRawFrame *responseFrame = [BKRPlayableRawFrame frameWithTask:task];
+    BKRRawFrame *responseFrame = [BKRRawFrame frameWithTask:task];
     responseFrame.item = response;
-    [frames addObject:responseFrame.editedFrame];
+    [frames addObject:responseFrame.editedPlaying];
     
-    BKRPlayableRawFrame *dataFrame = [BKRPlayableRawFrame frameWithTask:task];
+    BKRRawFrame *dataFrame = [BKRRawFrame frameWithTask:task];
     dataFrame.item = data;
-    [frames addObject:dataFrame.editedFrame];
+    [frames addObject:dataFrame.editedPlaying];
     
     return frames.copy;
 }
@@ -476,18 +482,14 @@
     }
 }
 
-- (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *, NSURLRequest *))assertions {
+- (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest ignoreHeaderFields:(BOOL)shouldIgnoreHeaderFields extraAssertions:(void (^)(BKRRequestFrame *, NSURLRequest *))assertions {
     XCTAssertNotNil(request);
     XCTAssertNotNil(otherRequest);
     XCTAssertEqual(request.HTTPShouldHandleCookies, otherRequest.HTTPShouldHandleCookies);
     XCTAssertEqual(request.HTTPShouldUsePipelining, otherRequest.HTTPShouldUsePipelining);
-//    NSLog(@"request: %@", request.allHTTPHeaderFields);
-//    NSLog(@"otherRequest: %@", otherRequest.allHTTPHeaderFields);
-    XCTAssertEqualObjects(request.allHTTPHeaderFields, otherRequest.allHTTPHeaderFields);
-//    if (request.allHTTPHeaderFields.allKeys.count) {
-//        NSLog(@"%d", [request.allHTTPHeaderFields.allKeys.firstObject isEqual:otherRequest.allHTTPHeaderFields.allKeys.firstObject]);
-//        NSLog(@"%d", [request.allHTTPHeaderFields.allValues.firstObject isEqual:otherRequest.allHTTPHeaderFields.allValues.firstObject]);
-//    }
+    if (!shouldIgnoreHeaderFields) {
+        XCTAssertEqualObjects(request.allHTTPHeaderFields, otherRequest.allHTTPHeaderFields);
+    }
     XCTAssertEqualObjects(request.URL, otherRequest.URL);
     XCTAssertEqual(request.timeoutInterval, otherRequest.timeoutInterval);
     XCTAssertEqualObjects(request.HTTPMethod, otherRequest.HTTPMethod);
@@ -495,6 +497,10 @@
     if (assertions) {
         assertions(request, otherRequest);
     }
+}
+
+- (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *, NSURLRequest *))assertions {
+    [self assertRequest:request withRequest:otherRequest ignoreHeaderFields:NO extraAssertions:assertions];
 }
 
 - (void)assertResponse:(BKRResponseFrame *)response withResponse:(NSURLResponse *)otherResponse extraAssertions:(void (^)(BKRResponseFrame *, NSURLResponse *))assertions {
@@ -683,19 +689,19 @@
 }
 
 - (void)setWithExpectationsPlayableCassette:(BKRPlayableCassette *)cassette inPlayer:(BKRPlayer *)player {
-    __block XCTestExpectation *stubsExpectation;
-    BKRWeakify(self);
-    player.beforeAddingStubsBlock = ^void(void) {
-        BKRStrongify(self);
-        stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
-    };
-    player.afterAddingStubsBlock = ^void(void) {
-        [stubsExpectation fulfill];
-    };
+//    __block XCTestExpectation *stubsExpectation;
+//    BKRWeakify(self);
+//    player.beforeAddingStubsBlock = ^void(void) {
+//        BKRStrongify(self);
+//        stubsExpectation = [self expectationWithDescription:@"setting up stubs"];
+//    };
+//    player.afterAddingStubsBlock = ^void(void) {
+//        [stubsExpectation fulfill];
+//    };
     player.currentCassette = cassette;
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-    }];
+//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+//        XCTAssertNil(error);
+//    }];
 }
 
 - (void)assertCassettePath:(NSString *)cassettePath matchesExpectedRecordings:(NSArray<BKRExpectedRecording *> *)expectedRecordings {

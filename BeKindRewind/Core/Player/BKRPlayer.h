@@ -8,16 +8,15 @@
 
 #import "BKRRequestMatching.h"
 #import "BKRConstants.h"
-#import "BKRVCRActions.h"
 
 @class BKRPlayableCassette;
-@class BKRPlayableScene;
+@class BKRScene;
 
 /**
  *  This class manages playing back stubs for network requests at
  *  a high level.
  */
-@interface BKRPlayer : NSObject <BKRVCRPlaying>
+@interface BKRPlayer : NSObject
 
 /**
  *  Designated initializer for BKRPlayer
@@ -42,6 +41,8 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock;
+
 /**
  *  Current cassette used as a source for stubs. If this is nil,
  *  then no recordings are loaded as stubs for playback.
@@ -58,27 +59,13 @@
  *  Reset the player's enabled state along with before 
  *  and after playback blocks
  */
-- (void)reset;
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock;
 
 /**
  *  Ordered array of BKRPlayableScene objects from current cassette
  *
  *  @return ordered array by creation date of each scene or nil if no current cassette
  */
-- (NSArray<BKRPlayableScene *> *)allScenes;
-
-///**
-// *  Block is executed on the main thread before all stubs for a
-// *  playback session are added
-// *  @note make sure not to deadlock or execute slow code in this block
-// */
-//@property (nonatomic, copy) BKRBeforeAddingStubs beforeAddingStubsBlock;
-//
-///**
-// *  Block is executed on the main thread after all stubs for a
-// *  playback session are added
-// *  @note make sure not to deadlock or execute slow code in this block
-// */
-//@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock;
+- (NSArray<BKRScene *> *)allScenes;
 
 @end

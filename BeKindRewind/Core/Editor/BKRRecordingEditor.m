@@ -8,7 +8,8 @@
 
 #import "BKRRecordingEditor.h"
 #import "BKRRecordableCassette.h"
-#import "BKRRecordableRawFrame.h"
+#import "BKRRawFrame+Recordable.h"
+#import "BKRConstants.h"
 
 @interface BKRRecordingEditor ()
 @property (nonatomic, assign, readwrite) BOOL handledRecording;
@@ -25,9 +26,28 @@
     self = [super init];
     if (self) {
         _handledRecording = NO;
+        _recordingStartTime = nil;
     }
     return self;
 }
+
+//- (void)resetHandledRecording {
+//    BKRWeakify(self);
+//    dispatch_barrier_async(self.editingQueue, ^{
+//        BKRStrongify(self);
+//        self->_handledRecording = NO;
+//    });
+//}
+
+- (void)reset {
+    BKRWeakify(self);
+    dispatch_barrier_async(self.editingQueue, ^{
+        BKRStrongify(self);
+        self->_handledRecording = NO;
+        self->_recordingStartTime = nil;
+    });
+}
+
 
 - (NSDate *)recordingStartTime {
     __block NSDate *recordingTime = nil;
@@ -39,28 +59,57 @@
     return recordingTime;
 }
 
-- (void)setRecordingStartTime:(NSDate *)recordingStartTime {
-    __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        sself->_recordingStartTime = recordingStartTime;
-    });
-}
+//- (void)setRecordingStartTime:(NSDate *)recordingStartTime {
+//    __weak typeof(self) wself = self;
+//    dispatch_barrier_async(self.editingQueue, ^{
+//        __strong typeof(wself) sself = wself;
+//        sself->_recordingStartTime = recordingStartTime;
+//    });
+//}
 
-- (void)updateRecordingStartTime {
-    if (self.isEnabled) {
-        self.recordingStartTime = [NSDate date];
+- (void)_updateRecordingStartTimeWithEnabled:(BOOL)currentEnabled {
+//    if (self.isEnabled) {
+//        self.recordingStartTime = [NSDate date];
+//    } else {
+//        self.recordingStartTime = nil;
+//    }
+    if (currentEnabled) {
+        self->_recordingStartTime = [NSDate date];
     } else {
-        self.recordingStartTime = nil;
+        self->_recordingStartTime = nil;
     }
 }
 
-- (void)setEnabled:(BOOL)enabled {
-    [super setEnabled:enabled];
-    [self updateRecordingStartTime];
+//- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
+////    [super setEnabled:enabled withCompletionHandler:nil];
+////    [self updateRecordingStartTime];
+////    if (completionBlock) {
+////        if ([NSThread isMainThread]) {
+////            completionBlock();
+////        } else {
+////            dispatch_async(dispatch_get_main_queue(), ^{
+////                completionBlock();
+////            });
+////        }
+////    }
+//}
+
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock {
+    BKRWeakify(self);
+    [super setEnabled:enabled withCompletionHandler:^void(BOOL updatedEnabled, BKRCassette *cassette) {
+        BKRStrongify(self);
+        [self _updateRecordingStartTimeWithEnabled:enabled];
+        if (editingBlock) {
+            editingBlock(updatedEnabled, cassette);
+        }
+    }];
 }
 
-- (void)addFrame:(BKRRecordableRawFrame *)frame {
+- (void)setEnabled:(BOOL)enabled {
+    [self setEnabled:enabled withCompletionHandler:nil];
+}
+
+- (void)addFrame:(BKRRawFrame *)frame {
     __block BKRRecordableCassette *cassette = (BKRRecordableCassette *)self.currentCassette;
     if (!cassette) {
         NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
@@ -77,7 +126,7 @@
     });
 }
 
-- (BOOL)_shouldRecord:(BKRRecordableRawFrame *)rawFrame {
+- (BOOL)_shouldRecord:(BKRRawFrame *)rawFrame {
     if (
         !self->_recordingStartTime ||
         !rawFrame

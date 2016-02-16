@@ -9,7 +9,7 @@
 #import "BKRPlayer.h"
 #import "BKRPlayableCassette.h"
 #import "BKRPlayingEditor.h"
-#import "BKRPlayableScene.h"
+#import "BKRScene+Playable.h"
 
 @interface BKRPlayer ()
 @property (nonatomic, strong) BKRPlayingEditor *editor;
@@ -17,23 +17,17 @@
 @end
 
 @implementation BKRPlayer
-@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
-@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
 
-- (void)_init {
-    _editor = [BKRPlayingEditor editor];
-}
-
-- (NSArray<BKRPlayableScene *> *)allScenes {
-    return (NSArray<BKRPlayableScene *> *)self.editor.allScenes;
+- (NSArray<BKRScene *> *)allScenes {
+    return self.editor.allScenes;
 }
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
     NSParameterAssert(matcherClass);
     self = [super init];
     if (self) {
-        [self _init];
         _matcher = [matcherClass matcher];
+        _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
     }
     return self;
 }
@@ -44,10 +38,6 @@
 
 - (void)setCurrentCassette:(BKRPlayableCassette *)currentCassette {
     self.editor.currentCassette = currentCassette;
-    if (currentCassette) {
-        [self _addStubs];
-    }
-//    [self _addStubs];
 }
 
 - (BKRPlayableCassette *)currentCassette {
@@ -55,55 +45,33 @@
 }
 
 - (void)setEnabled:(BOOL)enabled {
-    self.editor.enabled = enabled;
+    [self setEnabled:enabled withCompletionHandler:nil];
+}
+
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
+//    [self.editor setEnabled:enabled withCompletionHandler:completionBlock];
+    [self.editor setEnabled:enabled withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        if (completionBlock) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
+    }];
 }
 
 - (BOOL)isEnabled {
     return self.editor.isEnabled;
 }
 
-// TODO: probably should add before stubs on the editor's queue
-- (void)_addStubs {
-//    // make sure this executes on the main thread
-//    if (self.beforeAddingStubsBlock) {
-//        if ([NSThread isMainThread]) {
-//            self.beforeAddingStubsBlock();
-//        } else {
-//            // if player is called from a background queue, make sure this happens on main queue
-//            __weak typeof(self) wself = self;
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                __strong typeof(wself) sself = wself;
-//                sself.beforeAddingStubsBlock();
-//            });
-//        }
-//    }
-    [self.editor addStubsForMatcher:self.matcher];
-}
-
-- (void)reset {
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     self.currentCassette = nil;
-    self.enabled = NO;
-    [self.editor removeAllStubs];
-    self.beforeAddingStubsBlock = nil;
-    self.afterAddingStubsBlock = nil;
-}
-
-#pragma mark - BKRVCRPlaying
-
-- (void)setAfterAddingStubsBlock:(BKRAfterAddingStubs)afterAddingStubsBlock {
-    self.editor.afterAddingStubsBlock = afterAddingStubsBlock;
-}
-
-- (BKRAfterAddingStubs)afterAddingStubsBlock {
-    return self.editor.afterAddingStubsBlock;
-}
-
-- (void)setBeforeAddingStubsBlock:(BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    self.editor.beforeAddingStubsBlock = beforeAddingStubsBlock;
-}
-
-- (BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    return self.editor.beforeAddingStubsBlock;
+    [self.editor setEnabled:NO withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        if (completionBlock) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock();
+            });
+        }
+    }];
 }
 
 @end

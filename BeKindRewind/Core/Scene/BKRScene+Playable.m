@@ -1,26 +1,24 @@
 //
-//  BKRPlayableScene.m
+//  BKRScene+Playable.m
 //  Pods
 //
-//  Created by Jordan Zucker on 1/21/16.
+//  Created by Jordan Zucker on 2/12/16.
 //
 //
 
-#import "BKRPlayableScene.h"
-#import "BKRPlayableRawFrame.h"
+#import "BKRScene+Playable.h"
+#import "BKRRawFrame+Playable.h"
 #import "BKRResponseFrame.h"
 #import "BKRErrorFrame.h"
 #import "BKRDataFrame.h"
 #import "BKRRequestFrame.h"
+#import "BKRConstants.h"
 
-@interface BKRPlayableScene ()
-@end
-
-@implementation BKRPlayableScene
+@implementation BKRScene (Playable)
 
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
     NSParameterAssert(dictionary);
-    self = [super init];
+    self = [self init];
     if (self) {
         self.uniqueIdentifier = dictionary[@"uniqueIdentifier"];
         [self _addEditedFrames:dictionary[@"frames"]];
@@ -29,12 +27,12 @@
 }
 
 - (void)_addEditedFrames:(NSArray<NSDictionary *> *)rawFrames {
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_queue_t editingQueue = dispatch_queue_create("com.BKRPlayableScene.editingQueue", DISPATCH_QUEUE_CONCURRENT);
     dispatch_apply(rawFrames.count, editingQueue, ^(size_t iteration) {
-        __strong typeof(wself) sself = wself;
-        BKRPlayableRawFrame *rawFrame = [[BKRPlayableRawFrame alloc] initFromPlistDictionary:rawFrames[iteration]];
-        [sself addFrameToFramesArray:rawFrame.editedFrame];
+        BKRStrongify(self);
+        BKRRawFrame *rawFrame = [[BKRRawFrame alloc] initFromPlistDictionary:rawFrames[iteration]];
+        [self addFrameToFramesArray:rawFrame.editedPlaying];
     });
 }
 

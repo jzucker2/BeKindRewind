@@ -1,21 +1,18 @@
 //
-//  BKRRecordableScene.m
+//  BKRScene+Recordable.m
 //  Pods
 //
-//  Created by Jordan Zucker on 1/21/16.
+//  Created by Jordan Zucker on 2/12/16.
 //
 //
 
-#import "BKRRecordableScene.h"
-#import "BKRRecordableRawFrame.h"
+#import "BKRScene+Recordable.h"
+#import "BKRRawFrame+Recordable.h"
 
-@interface BKRRecordableScene ()
-@end
+@implementation BKRScene (Recordable)
 
-@implementation BKRRecordableScene
-
-- (instancetype)initFromFrame:(BKRRecordableRawFrame *)frame {
-    self = [super init];
+- (instancetype)initFromFrame:(BKRRawFrame *)frame {
+    self = [self init];
     if (self) {
         self.uniqueIdentifier = frame.uniqueIdentifier;
         [self addFrame:frame];
@@ -23,12 +20,12 @@
     return self;
 }
 
-+ (instancetype)sceneFromFrame:(BKRRecordableRawFrame *)frame {
++ (instancetype)sceneFromFrame:(BKRRawFrame *)frame {
     return [[self alloc] initFromFrame:frame];
 }
 
-- (void)addFrame:(BKRRecordableRawFrame *)frame {
-    [self addFrameToFramesArray:frame.editedFrame];
+- (void)addFrame:(BKRRawFrame *)frame {
+    [self addFrameToFramesArray:frame.editedRecording];
 }
 
 - (NSDictionary *)plistDictionary {

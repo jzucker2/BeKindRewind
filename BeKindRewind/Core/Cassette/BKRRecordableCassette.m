@@ -7,11 +7,11 @@
 //
 
 #import "BKRRecordableCassette.h"
-#import "BKRRecordableRawFrame.h"
-#import "BKRRecordableScene.h"
+#import "BKRRawFrame+Recordable.h"
+#import "BKRScene+Recordable.h"
 
 @interface BKRRecordableCassette ()
-@property (nonatomic, strong) NSMutableDictionary<NSString *, BKRRecordableScene*> *scenes;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, BKRScene*> *scenes;
 @end
 
 @implementation BKRRecordableCassette
@@ -33,22 +33,22 @@
 
 // frames and scenes share unique identifiers, this comes from the recorded task
 // if the frame matches a scene unique identifier, then add it to the scene
-- (void)addFrame:(BKRRecordableRawFrame *)frame {
+- (void)addFrame:(BKRRawFrame *)frame {
     if (!frame.item) {
         // Can't add a blank frame!
         return;
     }
     NSParameterAssert(frame);
-    __weak typeof (self) wself = self;
+    BKRWeakify(self);
     dispatch_barrier_async(self.processingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        NSDictionary *currentDictionary = sself.scenesDictionary;
+        BKRStrongify(self);
+        NSDictionary *currentDictionary = self.scenesDictionary;
         if (currentDictionary[frame.uniqueIdentifier]) {
-            BKRRecordableScene *existingScene = currentDictionary[frame.uniqueIdentifier];
+            BKRScene *existingScene = currentDictionary[frame.uniqueIdentifier];
             [existingScene addFrame:frame];
         } else {
-            BKRRecordableScene *newScene = [BKRRecordableScene sceneFromFrame:frame];
-            [sself addSceneToScenesDictionary:newScene];
+            BKRScene *newScene = [BKRScene sceneFromFrame:frame];
+            [self addSceneToScenesDictionary:newScene];
         }
     });
 }
@@ -63,7 +63,7 @@
 
 - (NSDictionary *)plistDictionary {
     NSMutableArray *plistArray = [NSMutableArray array];
-    for (BKRRecordableScene *scene in self.allScenes) {
+    for (BKRScene *scene in self.allScenes) {
         [plistArray addObject:scene.plistDictionary];
     }
     NSMutableDictionary *plistDict = [@{

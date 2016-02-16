@@ -47,24 +47,6 @@ typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
 
 @class BKRCassette;
 
-@protocol BKRVCRPlaying <NSObject>
-
-/**
- *  Block is executed on the main thread before all stubs for a
- *  playback session are added
- *  @note make sure not to deadlock or execute slow code in this block
- */
-@property (nonatomic, copy) BKRBeforeAddingStubs beforeAddingStubsBlock;
-
-/**
- *  Block is executed on the main thread after all stubs for a
- *  playback session are added
- *  @note make sure not to deadlock or execute slow code in this block
- */
-@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock;
-
-@end
-
 @protocol BKRVCRRecording <NSObject>
 
 /**

@@ -1,20 +1,20 @@
 //
-//  BKRRecordableRawFrame.m
+//  BKRRawFrame+Recordable.m
 //  Pods
 //
-//  Created by Jordan Zucker on 1/22/16.
+//  Created by Jordan Zucker on 2/12/16.
 //
 //
 
-#import "BKRRecordableRawFrame.h"
+#import "BKRRawFrame+Recordable.h"
 #import "BKRDataFrame.h"
 #import "BKRResponseFrame.h"
 #import "BKRRequestFrame.h"
 #import "BKRErrorFrame.h"
 
-@implementation BKRRecordableRawFrame
+@implementation BKRRawFrame (Recordable)
 
-- (BKRFrame *)editedFrame {
+- (BKRFrame *)editedRecording {
     if ([self.item isKindOfClass:[NSData class]]) {
         BKRDataFrame *dataFrame = [BKRDataFrame frameFromFrame:self];
         [dataFrame addData:self.item];

@@ -27,7 +27,7 @@
 - (instancetype)initWithEmptyCassetteOption:(BOOL)shouldSaveEmptyCassette {
     self = [super init];
     if (self) {
-        [[BKRRecorder sharedInstance] reset];
+        [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil];
         _accessQueue = dispatch_queue_create("com.BKR.RecordableVCR", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
         _cassetteFilePath = nil;
@@ -113,13 +113,8 @@
             case BKRVCRStatePaused:
             case BKRVCRStateStopped:
             {
-                [BKRRecorder sharedInstance].enabled = YES;
                 self->_state = BKRVCRStateRecording;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+                [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:completionBlock];
             }
                 break;
         }
@@ -178,6 +173,8 @@
             (!self->_shouldSaveEmptyCassette) &&
             (![BKRRecorder sharedInstance].didRecord)
             ) {
+            self->_cassetteFilePath = nil;
+            [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil];
             return;
         }
         NSString *currentFilePath = self->_cassetteFilePath;
@@ -192,11 +189,11 @@
             ) {
             NSDictionary *cassetteDictionary = [BKRRecorder sharedInstance].plistDictionary;
             finalPath = currentFilePath;
+            NSLog(@"trying to write cassette to: %@", currentFilePath);
             finalResult = [BKRFilePathHelper writeDictionary:cassetteDictionary toFile:currentFilePath];
-            NSLog(@"writing result to: %@", finalPath);
             self->_state = BKRVCRStateStopped; // somewhat unnecessary
             self->_cassetteFilePath = nil; // remove the cassette file path
-            [[BKRRecorder sharedInstance] reset]; // reset the recorder (removes cassette)
+            [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil]; // reset the recorder (removes cassette)
         }
     });
     if (completionBlock) {
@@ -223,13 +220,14 @@
             case BKRVCRStatePaused:
             case BKRVCRStateRecording:
             {
-                [BKRRecorder sharedInstance].enabled = NO;
+//                [BKRRecorder sharedInstance].enabled = NO;
                 self->_state = BKRVCRStateStopped;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
+//                if (completionBlock) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completionBlock();
+//                    });
+//                }
             }
                 break;
             case BKRVCRStateStopped:
@@ -249,13 +247,14 @@
                 break;
             case BKRVCRStateRecording:
             {
-                [BKRRecorder sharedInstance].enabled = NO;
+//                [BKRRecorder sharedInstance].enabled = NO;
                 self->_state = BKRVCRStatePaused;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
+//                if (completionBlock) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completionBlock();
+//                    });
+//                }
             }
                 break;
             case BKRVCRStatePaused:
@@ -269,24 +268,10 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        [[BKRRecorder sharedInstance] reset];
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
-        if (completionBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock();
-            });
-        }
+        [[BKRRecorder sharedInstance] resetWithCompletionBlock:completionBlock];
     });
-//    if (completionBlock) {
-//        if ([NSThread isMainThread]) {
-//            completionBlock();
-//        } else {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                completionBlock();
-//            });
-//        }
-//    }
 }
 
 - (BKRVCRState)state {

@@ -23,6 +23,9 @@ _Pragma("clang diagnostic pop") \
 
 #define XOR(x,y) (((x) && !(y)) || (!(x) && (y)))
 
+@class BKRCassette;
+typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *cassette);
+
 
 /**
  *  Block for code execution before stubs are added for playback

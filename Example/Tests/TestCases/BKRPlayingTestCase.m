@@ -14,7 +14,7 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
 #import <BeKindRewind/BKROHHTTPStubsWrapper.h>
-#import <BeKindRewind/BKRPlayableScene.h>
+#import <BeKindRewind/BKRScene+Playable.h>
 #import "XCTestCase+BKRAdditions.h"
 #import "BKRBaseTestCase.h"
 
@@ -34,6 +34,341 @@
     [super tearDown];
 }
 
+- (void)testSwitchPlayingOffThenOn {
+    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
+    sceneBuilder.shouldCompareRequestHeaderFields = NO;
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    __block BKRScene *scene = nil;
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
+    __block XCTestExpectation *disabledExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:NO withCompletionHandler:^{
+        [disabledExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        
+        //        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertNotNil(castedResponse.allHeaderFields[@"Date"]);
+        XCTAssertNotEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response matches a stub");
+        
+        // now current cassette in recoder should have one scene with data matching this
+        
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
+        XCTAssertTrue(scene.allFrames.count > 0);
+        XCTAssertEqual(scene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
+        //        [self assertData:dataFrame withData:data extraAssertions:nil];
+//        XCTAssertNotEqualObjects(dataFrame.JSONConvertedObject, dataDict, @"Deserialized data objects not equal. [[Data frame: %@]]. [[dataDict: %@]]",dataFrame.JSONConvertedObject, dataDict);
+        XCTAssertNotNil(dataDict, @"dataDict: %@", dataDict.description);
+        XCTAssertNotNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
+        XCTAssertNotNil(data, @"data: %@", data);
+        XCTAssertNotNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
+        XCTAssertEqual(scene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        //        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(scene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest ignoreHeaderFields:YES extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
+        [self assertRequest:scene.currentRequest withRequest:task.currentRequest ignoreHeaderFields:YES extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
+    }];
+    
+    __block XCTestExpectation *enabledExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:YES withCompletionHandler:^{
+        [enabledExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        
+        //        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
+        
+        // now current cassette in recoder should have one scene with data matching this
+        
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
+        XCTAssertTrue(scene.allFrames.count > 0);
+        XCTAssertEqual(scene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqualObjects(dataFrame.JSONConvertedObject, dataDict, @"Deserialized data objects not equal. [[Data frame: %@]]. [[dataDict: %@]]",dataFrame.JSONConvertedObject, dataDict);
+        XCTAssertNotNil(dataDict, @"dataDict: %@", dataDict.description);
+        XCTAssertNotNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
+        XCTAssertNotNil(data, @"data: %@", data);
+        XCTAssertNotNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
+        XCTAssertEqual(scene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(scene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest ignoreHeaderFields:YES extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
+        [self assertRequest:scene.currentRequest withRequest:task.currentRequest ignoreHeaderFields:YES extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
+    }];
+}
+
+- (void)testSwitchPlayerOnThenOff {
+    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
+    sceneBuilder.shouldCompareRequestHeaderFields = NO;
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    __block BKRScene *scene = nil;
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
+    __block XCTestExpectation *enableExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:YES withCompletionHandler:^{
+        [enableExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        
+        //        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response is different");
+        
+        // now current cassette in recoder should have one scene with data matching this
+        
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
+        XCTAssertTrue(scene.allFrames.count > 0);
+        XCTAssertEqual(scene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
+        [self assertData:dataFrame withData:data extraAssertions:nil];
+        XCTAssertEqualObjects(dataFrame.JSONConvertedObject, dataDict, @"Deserialized data objects not equal. [[Data frame: %@]]. [[dataDict: %@]]",dataFrame.JSONConvertedObject, dataDict);
+        XCTAssertNotNil(dataDict, @"dataDict: %@", dataDict.description);
+        XCTAssertNotNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
+        XCTAssertNotNil(data, @"data: %@", data);
+        XCTAssertNotNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
+        XCTAssertEqual(scene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(scene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest ignoreHeaderFields:YES extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
+        [self assertRequest:scene.currentRequest withRequest:task.currentRequest ignoreHeaderFields:YES extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
+    }];
+    
+    __block XCTestExpectation *disableExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:NO withCompletionHandler:^{
+        [disableExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        
+        //        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertNotNil(castedResponse.allHeaderFields[@"Date"]);
+        XCTAssertNotEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response matches a stub");
+        
+        // now current cassette in recoder should have one scene with data matching this
+        
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
+        XCTAssertTrue(scene.allFrames.count > 0);
+        XCTAssertEqual(scene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
+        //        [self assertData:dataFrame withData:data extraAssertions:nil];
+//        XCTAssertNotEqualObjects(dataFrame.JSONConvertedObject, dataDict, @"Deserialized data objects not equal. [[Data frame: %@]]. [[dataDict: %@]]",dataFrame.JSONConvertedObject, dataDict);
+        XCTAssertNotNil(dataDict, @"dataDict: %@", dataDict.description);
+        XCTAssertNotNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
+        XCTAssertNotNil(data, @"data: %@", data);
+        XCTAssertNotNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
+        XCTAssertEqual(scene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        //        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(scene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest ignoreHeaderFields:YES extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
+        [self assertRequest:scene.currentRequest withRequest:task.currentRequest ignoreHeaderFields:YES extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
+    }];
+    
+}
+
+- (void)testNoMockingWhenPlayerEnabledIsNotExplicitlySet {
+    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
+    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
+                                                       @"Accept": @"*/*",
+                                                       @"Accept-Encoding": @"gzip, deflate",
+                                                       @"Accept-Language": @"en-us"
+                                                       };
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    __block BKRScene *scene = nil;
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
+    
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        
+        //        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertNotNil(castedResponse.allHeaderFields[@"Date"]);
+        XCTAssertNotEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response matches a stub");
+        
+        // now current cassette in recoder should have one scene with data matching this
+        
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
+        XCTAssertTrue(scene.allFrames.count > 0);
+        XCTAssertEqual(scene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
+        //        [self assertData:dataFrame withData:data extraAssertions:nil];
+//        XCTAssertEqualObjects(dataFrame.JSONConvertedObject, dataDict, @"Deserialized data objects not equal. [[Data frame: %@]]. [[dataDict: %@]]",dataFrame.JSONConvertedObject, dataDict);
+        XCTAssertNotNil(dataDict, @"dataDict: %@", dataDict.description);
+        XCTAssertNotNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
+        XCTAssertNotNil(data, @"data: %@", data);
+        XCTAssertNotNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
+        XCTAssertEqual(scene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+        //        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(scene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
+        [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
+    }];
+}
+
+- (void)testNoMockingWhenPlayerIsExplicitlyNotEnabled {
+    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
+    sceneBuilder.currentRequestAllHTTPHeaderFields = @{
+                                                       @"Accept": @"*/*",
+                                                       @"Accept-Encoding": @"gzip, deflate",
+                                                       @"Accept-Language": @"en-us"
+                                                       };
+    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
+    __block BKRScene *scene = nil;
+    BKRPlayableCassette *testCassette = [[BKRPlayableCassette alloc] initFromPlistDictionary:expectedCassetteDict];
+    XCTAssertEqual(testCassette.allScenes.count, 1, @"testCassette should have one valid scene right now");
+    XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
+    __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
+    __block XCTestExpectation *enabledExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:NO withCompletionHandler:^{
+        [enabledExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        // ensure that result from network is as expected
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
+        
+        //        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], 200);
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqual(castedResponse.statusCode, 200);
+        XCTAssertNotNil(castedResponse.allHeaderFields[@"Date"]);
+        XCTAssertNotEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 22 Jan 2016 20:36:26 GMT", @"actual received response matches a stub");
+        
+        // now current cassette in recoder should have one scene with data matching this
+        
+        XCTAssertNotNil(player.currentCassette);
+        XCTAssertEqual(player.allScenes.count, 1);
+        scene = (BKRScene *)player.allScenes.firstObject;
+        XCTAssertTrue(scene.allFrames.count > 0);
+        XCTAssertEqual(scene.allDataFrames.count, 1);
+        BKRDataFrame *dataFrame = scene.allDataFrames.firstObject;
+//        [self assertData:dataFrame withData:data extraAssertions:nil];
+//        XCTAssertEqualObjects(dataFrame.JSONConvertedObject, dataDict, @"Deserialized data objects not equal. [[Data frame: %@]]. [[dataDict: %@]]",dataFrame.JSONConvertedObject, dataDict);
+        XCTAssertNotNil(dataDict, @"dataDict: %@", dataDict.description);
+        XCTAssertNotNil(dataFrame.JSONConvertedObject, @"dataFrame: %@", [dataFrame.JSONConvertedObject description]);
+        XCTAssertNotNil(data, @"data: %@", data);
+        XCTAssertNotNil(dataFrame.rawData, @"dataFrame: %@", dataFrame.rawData);
+        XCTAssertEqual(scene.allResponseFrames.count, 1);
+        BKRResponseFrame *responseFrame = scene.allResponseFrames.firstObject;
+        XCTAssertEqual(responseFrame.statusCode, 200);
+//        [self assertResponse:responseFrame withResponse:response extraAssertions:nil];
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual(scene.allRequestFrames.count, 2);
+        NSURLRequest *originalRequest = task.originalRequest;
+        BKRRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        [self assertRequest:originalRequestFrame withRequest:originalRequest extraAssertions:nil];
+        XCTAssertNotNil(scene.currentRequest);
+        [self assertRequest:scene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
+        [self assertFramesOrder:scene extraAssertions:nil];
+    }];
+}
+
 - (void)testPlayingOneGETRequest {
     BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
     NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
@@ -43,7 +378,13 @@
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 4, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
     [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
-    player.enabled = YES;
+    __block XCTestExpectation *enabledExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:YES withCompletionHandler:^{
+        [enabledExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNotNil(data);
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
@@ -108,7 +449,13 @@
     XCTAssertEqual(testCassette.allScenes.firstObject.allFrames.count, 2, @"testCassette should have 4 frames for it's 1 scene");
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
     [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
-    player.enabled = YES;
+    __block XCTestExpectation *enabledExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:YES withCompletionHandler:^{
+        [enabledExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     [self cancellingGetTaskWithURLString:@"https://httpbin.org/delay/10" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         // ensure that result from network is as expected
         // now current cassette in recoder should have one scene with data matching this
@@ -198,7 +545,13 @@
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
 //    player.currentCassette = testCassette;
     [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
-    player.enabled = YES;
+    __block XCTestExpectation *enabledExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:YES withCompletionHandler:^{
+        [enabledExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     [self postJSON:sceneBuilder.sentJSON withURLString:@"https://httpbin.org/post" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(data);
@@ -250,8 +603,13 @@
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
 //    player.currentCassette = testCassette;
     [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
-    player.enabled = YES;
-    
+    __block XCTestExpectation *enabledExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:YES withCompletionHandler:^{
+        [enabledExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     [self getTaskWithURLString:firstSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(data);
@@ -381,7 +739,13 @@
     __block BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
 //    player.currentCassette = testCassette;
     [self setWithExpectationsPlayableCassette:testCassette inPlayer:player];
-    player.enabled = YES;
+    __block XCTestExpectation *enabledExpectation = [self expectationWithDescription:@"enable expectation"];
+    [player setEnabled:YES withCompletionHandler:^{
+        [enabledExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     [self getTaskWithURLString:firstSceneBuilder.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(data);

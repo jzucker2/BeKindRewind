@@ -1,22 +1,22 @@
 //
-//  BKRRecordableScene.h
+//  BKRScene+Recordable.h
 //  Pods
 //
-//  Created by Jordan Zucker on 1/21/16.
+//  Created by Jordan Zucker on 2/12/16.
 //
 //
 
-#import "BKRPlistSerializing.h"
 #import "BKRScene.h"
+#import "BKRPlistSerializing.h"
 
-@class BKRRecordableRawFrame;
+@class BKRRawFrame;
 
 /**
  *  This contains all of the data associated with a single,
  *  specific NSURLSessionTask, with each portion represented
  *  by a single BKRFrame
  */
-@interface BKRRecordableScene : BKRScene <BKRPlistSerializer>
+@interface BKRScene (Recordable) <BKRPlistSerializer>
 
 /**
  *  Designated initializer for a recordable scene created from
@@ -26,7 +26,7 @@
  *
  *  @return instance of a recordable scene
  */
-- (instancetype)initFromFrame:(BKRRecordableRawFrame *)frame;
+- (instancetype)initFromFrame:(BKRRawFrame *)frame;
 
 /**
  *  Convenience initializer for a recordable scene created from
@@ -36,13 +36,13 @@
  *
  *  @return instance of a recordable scene
  */
-+ (instancetype)sceneFromFrame:(BKRRecordableRawFrame *)frame;
++ (instancetype)sceneFromFrame:(BKRRawFrame *)frame;
 
 /**
  *  Add component of a network request as a frame
  *
  *  @param frame component of network request
  */
-- (void)addFrame:(BKRRecordableRawFrame *)frame;
+- (void)addFrame:(BKRRawFrame *)frame;
 
 @end

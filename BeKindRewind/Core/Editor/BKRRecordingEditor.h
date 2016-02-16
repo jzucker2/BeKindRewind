@@ -7,11 +7,10 @@
 //
 
 #import "BKREditor.h"
-#import "BKRConstants.h"
 #import "BKRPlistSerializing.h"
 #import "BKRVCRActions.h"
 
-@class BKRRecordableRawFrame;
+@class BKRRawFrame;
 
 /**
  *  This subclass is for turning network request components into cassettes in a thread-safe manner.
@@ -25,17 +24,19 @@
 
 @property (nonatomic, assign, readonly) BOOL handledRecording;
 
+- (void)reset;
+
 /**
  *  Update the recordingStartTime to now or set it to nil if BKRRecordingEditor is not enabled
  */
-- (void)updateRecordingStartTime;
+//- (void)updateRecordingStartTimeWithEnabled:(BOOL)desiredEnabled;
 
 /**
  *  Add raw recordable frame representing a component of a network request to the current cassette
  *
  *  @param frame component of a network request
  */
-- (void)addFrame:(BKRRecordableRawFrame *)frame;
+- (void)addFrame:(BKRRawFrame *)frame;
 
 - (void)executeBeginRecordingBlockWithTask:(NSURLSessionTask *)task;
 
@@ -46,5 +47,7 @@
  *  @param task              task that was being recorded
  */
 - (void)executeEndRecordingBlockWithTask:(NSURLSessionTask *)task;
+
+//- (void)resetHandledRecording;
 
 @end

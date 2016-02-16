@@ -19,8 +19,6 @@
 
 @implementation BKRPlayableVCR
 
-@synthesize beforeAddingStubsBlock = _beforeAddingStubsBlock;
-@synthesize afterAddingStubsBlock = _afterAddingStubsBlock;
 @synthesize state = _state;
 @synthesize cassetteFilePath = _cassetteFilePath;
 
@@ -37,45 +35,6 @@
 
 + (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
     return [[self alloc] initWithMatcherClass:matcherClass];
-}
-
-#pragma mark - BKRVCRPlaying
-
-- (void)setBeforeAddingStubsBlock:(BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    BKRWeakify(self);
-    dispatch_barrier_async(self.accessQueue, ^{
-        BKRStrongify(self);
-        self->_player.beforeAddingStubsBlock = beforeAddingStubsBlock;
-    });
-}
-
-- (BKRBeforeAddingStubs)beforeAddingStubsBlock {
-    __block BKRBeforeAddingStubs stubsBlock = nil;
-    BKRWeakify(self);
-    dispatch_sync(self.accessQueue, ^{
-        BKRStrongify(self);
-        stubsBlock = self->_player.beforeAddingStubsBlock;
-    });
-    return stubsBlock;
-}
-
-- (void)setAfterAddingStubsBlock:(BKRAfterAddingStubs)afterAddingStubsBlock {
-    BKRWeakify(self);
-    dispatch_barrier_async(self.accessQueue, ^{
-        BKRStrongify(self);
-        self->_player.afterAddingStubsBlock = afterAddingStubsBlock;
-    });
-
-}
-
-- (BKRAfterAddingStubs)afterAddingStubsBlock {
-    __block BKRAfterAddingStubs stubsBlock = nil;
-    BKRWeakify(self);
-    dispatch_sync(self.accessQueue, ^{
-        BKRStrongify(self);
-        stubsBlock = self->_player.afterAddingStubsBlock;
-    });
-    return stubsBlock;
 }
 
 #pragma mark - BKRActions
@@ -108,13 +67,8 @@
             case BKRVCRStatePaused:
             case BKRVCRStateStopped:
             {
-                self->_player.enabled = YES;
                 self->_state = BKRVCRStatePlaying;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+                [self->_player setEnabled:YES withCompletionHandler:completionBlock];
             }
                 break;
             case BKRVCRStateUnknown:
@@ -147,13 +101,14 @@
                 break;
             case BKRVCRStatePlaying:
             {
-                self->_player.enabled = NO;
+//                self->_player.enabled = NO;
                 self->_state = BKRVCRStateStopped;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+//                if (completionBlock) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completionBlock();
+//                    });
+//                }
+                [self->_player setEnabled:NO withCompletionHandler:completionBlock];
             }
                 break;
             case BKRVCRStatePaused:
@@ -176,13 +131,20 @@
                 break;
             case BKRVCRStatePlaying:
             {
-                self->_player.enabled = NO;
+//                self->_player.enabled = NO;
+//                self->_state = BKRVCRStatePaused;
+//                if (completionBlock) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completionBlock();
+//                    });
+//                }
                 self->_state = BKRVCRStatePaused;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+                //                if (completionBlock) {
+                //                    dispatch_async(dispatch_get_main_queue(), ^{
+                //                        completionBlock();
+                //                    });
+                //                }
+                [self->_player setEnabled:NO withCompletionHandler:completionBlock];
             }
                 break;
             case BKRVCRStateStopped:
@@ -246,7 +208,7 @@
         self->_state = BKRVCRStateStopped; // this is redundant from the `stopWithCompletionBlock:` call up above
         finalPath = self->_cassetteFilePath;
         self->_cassetteFilePath = nil;
-        [self->_player reset]; // removes cassette
+        [self->_player resetWithCompletionBlock:nil]; // removes cassette
         finalResult = YES;
     });
     if (completionBlock) {
@@ -265,24 +227,19 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        [self->_player reset];
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
-        if (completionBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_player resetWithCompletionBlock:^{
+            if (completionBlock) {
                 completionBlock();
-            });
-        }
-    });
-//    if (completionBlock) {
-//        if ([NSThread isMainThread]) {
-//            completionBlock();
-//        } else {
+            }
+        }];
+//        if (completionBlock) {
 //            dispatch_async(dispatch_get_main_queue(), ^{
 //                completionBlock();
 //            });
 //        }
-//    }
+    });
 }
 
 - (BKRVCRState)state {

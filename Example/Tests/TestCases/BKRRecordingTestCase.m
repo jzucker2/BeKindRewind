@@ -12,7 +12,6 @@
 #import <BeKindRewind/BKRDataFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
-#import <BeKindRewind/BKRNSURLSessionSwizzling.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import "XCTestCase+BKRAdditions.h"
@@ -26,10 +25,17 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    [BKRNSURLSessionSwizzling swizzleForRecording];
     BKRRecordableCassette *cassette = [[BKRRecordableCassette alloc] init];
     [BKRRecorder sharedInstance].currentCassette = cassette;
-    [BKRRecorder sharedInstance].enabled = YES;
+    if (self.invocation.selector != @selector(testNotRecordingGETRequestWhenRecorderIsNotExplicitlyEnabled)) {
+        __block XCTestExpectation *enableExpectation = [self expectationWithDescription:@"enable expectation"];
+        [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:^{
+            [enableExpectation fulfill];
+        }];
+        [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+            XCTAssertNil(error);
+        }];
+    }
 
     [BKRRecorder sharedInstance].beginRecordingBlock = ^void(NSURLSessionTask *task) {
         NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
@@ -43,8 +49,67 @@
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [[BKRRecorder sharedInstance] reset];
+    __block XCTestExpectation *resetExpectation = [self expectationWithDescription:@"reset expectation"];
+    [[BKRRecorder sharedInstance] resetWithCompletionBlock:^{
+        [resetExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
     [super tearDown];
+}
+
+- (void)testNotRecordingGETRequestWhenRecorderIsNotExplicitlyEnabled {
+    BKRExpectedRecording *expectedRecording = [BKRExpectedRecording recording];
+    expectedRecording.URLString = @"https://httpbin.org/get?test=test";
+    expectedRecording.receivedJSON = @{
+                                       @"test": @"test"
+                                       };
+    expectedRecording.responseStatusCode = 200;
+    expectedRecording.expectedSceneNumber = 0;
+    expectedRecording.expectedNumberOfFrames = 4;
+    
+    [self getTaskWithURLString:expectedRecording.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        XCTAssertNotNil(dataDict);
+        XCTAssertEqualObjects(expectedRecording.receivedJSON, dataDict[@"args"]);
+        XCTAssertNil(error);
+        XCTAssertNotNil(response);
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 0);
+    }];
+}
+
+- (void)testNotRecordingGETRequestWhenRecorderIsExplicitlyDisabled {
+    __block XCTestExpectation *enableExpectation = [self expectationWithDescription:@"enable expectation"];
+    [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:^{
+        [enableExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    BKRExpectedRecording *expectedRecording = [BKRExpectedRecording recording];
+    expectedRecording.URLString = @"https://httpbin.org/get?test=test";
+    expectedRecording.receivedJSON = @{
+                                       @"test": @"test"
+                                       };
+    expectedRecording.responseStatusCode = 200;
+    expectedRecording.expectedSceneNumber = 0;
+    expectedRecording.expectedNumberOfFrames = 4;
+    
+    [self getTaskWithURLString:expectedRecording.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        XCTAssertNotNil(dataDict);
+        XCTAssertEqualObjects(expectedRecording.receivedJSON, dataDict[@"args"]);
+        XCTAssertNil(error);
+        XCTAssertNotNil(response);
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 0);
+    }];
 }
 
 - (void)testRecordingOneGETRequest {
@@ -60,6 +125,86 @@
     } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
+}
+
+- (void)testSwitchRecordingOffThenOn {
+    __block XCTestExpectation *disableExpecation = [self expectationWithDescription:@"enable expectation"];
+    [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:^{
+        [disableExpecation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    BKRExpectedRecording *expectedRecording = [BKRExpectedRecording recording];
+    expectedRecording.URLString = @"https://httpbin.org/get?test=test";
+    expectedRecording.receivedJSON = @{
+                                       @"test": @"test"
+                                       };
+    expectedRecording.responseStatusCode = 200;
+    expectedRecording.expectedSceneNumber = 0;
+    expectedRecording.expectedNumberOfFrames = 4;
+    
+    [self getTaskWithURLString:expectedRecording.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        XCTAssertNotNil(dataDict);
+        XCTAssertEqualObjects(expectedRecording.receivedJSON, dataDict[@"args"]);
+        XCTAssertNil(error);
+        XCTAssertNotNil(response);
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 0);
+    }];
+    
+    __block XCTestExpectation *enableExpectation = [self expectationWithDescription:@"enable expectation"];
+    [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:^{
+        [enableExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    
+    [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+    }];
+}
+
+- (void)testSwitchRecordingOnThenOff {
+    BKRExpectedRecording *expectedRecording = [BKRExpectedRecording recording];
+    expectedRecording.URLString = @"https://httpbin.org/get?test=test";
+    expectedRecording.receivedJSON = @{
+                                       @"test": @"test"
+                                       };
+    expectedRecording.responseStatusCode = 200;
+    expectedRecording.expectedSceneNumber = 0;
+    expectedRecording.expectedNumberOfFrames = 4;
+    [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+    }];
+    
+    __block XCTestExpectation *enableExpectation = [self expectationWithDescription:@"enable expectation"];
+    [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:^{
+        [enableExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    
+    [self getTaskWithURLString:expectedRecording.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        XCTAssertNotNil(dataDict);
+        XCTAssertEqualObjects(expectedRecording.receivedJSON, dataDict[@"args"]);
+        XCTAssertNil(error);
+        XCTAssertNotNil(response);
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+    }];
+    
+    
 }
 
 - (void)testRecordingOneCancelledGETRequest {

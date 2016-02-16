@@ -1,30 +1,28 @@
 //
-//  BKRVCRRecordableVCRTestCase.m
+//  BKRRecordableVCRTestCase.m
 //  BeKindRewind
 //
-//  Created by Jordan Zucker on 2/12/16.
+//  Created by Jordan Zucker on 2/15/16.
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
 #import <BeKindRewind/BKRRecordableVCR.h>
-#import <BeKindRewind/BKRNSURLSessionSwizzling.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRAdditions.h"
 
-@interface BKRVCRRecordableVCRTestCase : XCTestCase
+@interface BKRRecordableVCRTestCase : BKRBaseTestCase
 @property (nonatomic, copy) NSString *testRecordingFilePath;
 @property (nonatomic, strong) BKRRecordableVCR *vcr;
 @end
 
-@implementation BKRVCRRecordableVCRTestCase
+@implementation BKRRecordableVCRTestCase
 
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    [BKRNSURLSessionSwizzling swizzleForRecording];
     NSString *baseDirectory = [BKRFilePathHelper documentsDirectory];
     NSString *fileName = [NSStringFromSelector(self.invocation.selector) stringByAppendingPathExtension:@"plist"];
     self.testRecordingFilePath = [baseDirectory stringByAppendingPathComponent:fileName];
@@ -41,7 +39,13 @@
     
     XCTAssertFalse([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     
-    self.vcr = [BKRRecordableVCR vcr];
+    if (self.invocation.selector == @selector(testFileCreatedWhenRecordingDisabledAndDefaultOverriddenInInit)) {
+        self.vcr = [BKRRecordableVCR vcrWithCassetteSavingOption:YES];
+    } else if (self.invocation.selector == @selector(testNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
+        self.vcr = [BKRRecordableVCR vcrWithCassetteSavingOption:NO];
+    } else {
+        self.vcr = [BKRRecordableVCR vcr];
+    }
     XCTAssertNotNil(self.vcr);
     
     BKRWeakify(self);
@@ -65,12 +69,6 @@
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    //    [self.vcr reset];
-    //    NSError *testResultRemovalError = nil;
-    //    BOOL removeTestResults = [[NSFileManager defaultManager] removeItemAtPath:self.testRecordingFilePath error:&testResultRemovalError];
-    //    XCTAssertTrue(removeTestResults);
-    //    XCTAssertNil(testResultRemovalError, @"Couldn't remove test results: %@", testResultRemovalError.localizedDescription);
     __block XCTestExpectation *resetExpectation = [self expectationWithDescription:@"reset expectation"];
     [self.vcr resetWithCompletionBlock:^{
         [resetExpectation fulfill];
@@ -81,9 +79,171 @@
     [super tearDown];
 }
 
+- (void)testNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff {
+    BKRExpectedRecording *expectedRecording = [BKRExpectedRecording recording];
+    expectedRecording.URLString = @"https://httpbin.org/get?test=test";
+    expectedRecording.receivedJSON = @{
+                                       @"test": @"test"
+                                       };
+    expectedRecording.responseStatusCode = 200;
+    expectedRecording.expectedSceneNumber = 0;
+    expectedRecording.expectedNumberOfFrames = 4;
+    expectedRecording.checkAgainstRecorder = NO;
+    
+    [self getTaskWithURLString:expectedRecording.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        XCTAssertNotNil(dataDict);
+        XCTAssertEqualObjects(expectedRecording.receivedJSON, dataDict[@"args"]);
+        XCTAssertNil(error);
+        XCTAssertNotNil(response);
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+    }];
+    
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    BOOL result = [self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+        XCTAssertFalse(result);
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    XCTAssertFalse(result);
+    XCTAssertFalse([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
+}
+
+- (void)testFileCreatedWhenRecordingDisabledAndDefaultOverriddenInInit {
+    BKRExpectedRecording *expectedRecording = [BKRExpectedRecording recording];
+    expectedRecording.URLString = @"https://httpbin.org/get?test=test";
+    expectedRecording.receivedJSON = @{
+                                       @"test": @"test"
+                                       };
+    expectedRecording.responseStatusCode = 200;
+    expectedRecording.expectedSceneNumber = 0;
+    expectedRecording.expectedNumberOfFrames = 4;
+    expectedRecording.checkAgainstRecorder = NO;
+    
+    [self getTaskWithURLString:expectedRecording.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        XCTAssertNotNil(dataDict);
+        XCTAssertEqualObjects(expectedRecording.receivedJSON, dataDict[@"args"]);
+        XCTAssertNil(error);
+        XCTAssertNotNil(response);
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+    }];
+    
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+    }]);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[]];
+}
+
+- (void)testOffThenOn {
+    BKRExpectedRecording *expectedRecording = [BKRExpectedRecording recording];
+    expectedRecording.URLString = @"https://httpbin.org/get?test=test";
+    expectedRecording.receivedJSON = @{
+                                       @"test": @"test"
+                                       };
+    expectedRecording.responseStatusCode = 200;
+    expectedRecording.expectedSceneNumber = 0;
+    expectedRecording.expectedNumberOfFrames = 4;
+    expectedRecording.checkAgainstRecorder = NO;
+    
+    [self getTaskWithURLString:expectedRecording.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        XCTAssertNotNil(dataDict);
+        XCTAssertEqualObjects(expectedRecording.receivedJSON, dataDict[@"args"]);
+        XCTAssertNil(error);
+        XCTAssertNotNil(response);
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+    }];
+    
+    __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
+    [self.vcr recordWithCompletionBlock:^{
+        [startRecordingExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
+    
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+    }]);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[expectedRecording]];
+}
+
+- (void)testOnThenOff {
+    BKRExpectedRecording *expectedRecording = [BKRExpectedRecording recording];
+    expectedRecording.URLString = @"https://httpbin.org/get?test=test";
+    expectedRecording.receivedJSON = @{
+                                       @"test": @"test"
+                                       };
+    expectedRecording.responseStatusCode = 200;
+    expectedRecording.expectedSceneNumber = 0;
+    expectedRecording.expectedNumberOfFrames = 4;
+    expectedRecording.checkAgainstRecorder = NO;
+    __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
+    [self.vcr recordWithCompletionBlock:^{
+        [startRecordingExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    [self recordingTaskForHTTPBinWithExpectedRecording:expectedRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+        
+    }];
+    
+    __block XCTestExpectation *stopRecordingExpectation = [self expectationWithDescription:@"stop recording"];
+    [self.vcr stopWithCompletionBlock:^{
+        [stopRecordingExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    
+    [self getTaskWithURLString:expectedRecording.URLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        XCTAssertNotNil(dataDict);
+        XCTAssertEqualObjects(expectedRecording.receivedJSON, dataDict[@"args"]);
+        XCTAssertNil(error);
+        XCTAssertNotNil(response);
+        XCTAssertEqual([(NSHTTPURLResponse *)response statusCode], expectedRecording.responseStatusCode);
+    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
+    }];
+    
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+    }]);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[expectedRecording]];
+}
+
 - (void)testRecordingOneGETRequest {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
     BKRExpectedRecording *expectedRecording = [BKRExpectedRecording recording];
     expectedRecording.URLString = @"https://httpbin.org/get?test=test";
     expectedRecording.receivedJSON = @{

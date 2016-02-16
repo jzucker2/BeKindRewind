@@ -8,7 +8,7 @@
 
 #import <OHHTTPStubs/OHHTTPStubs.h>
 #import "BKROHHTTPStubsWrapper.h"
-#import "BKRPlayableScene.h"
+#import "BKRScene+Playable.h"
 
 @implementation BKROHHTTPStubsWrapper
 
@@ -16,7 +16,7 @@
     [OHHTTPStubs removeAllStubs];
 }
 
-+ (OHHTTPStubsResponse *)_responseForScene:(BKRPlayableScene *)scene {
++ (OHHTTPStubsResponse *)_responseForScene:(BKRScene *)scene {
     if (scene.responseError) {
         return [OHHTTPStubsResponse responseWithError:scene.responseError];
     }

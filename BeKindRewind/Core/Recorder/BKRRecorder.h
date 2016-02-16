@@ -12,7 +12,7 @@
 #import "BKRPlistSerializing.h"
 
 @class BKRRecordableCassette;
-@class BKRRecordableScene;
+@class BKRScene;
 
 /**
  *  This object is responsible for collecting and storing all information associated
@@ -25,6 +25,8 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock;
+
 @property (nonatomic, assign, readonly) BOOL didRecord;
 
 /**
@@ -33,30 +35,12 @@
  */
 @property (nonatomic, strong) BKRRecordableCassette *currentCassette;
 
-///**
-// *  This block executes on the main queue before any network request
-// *  begins. Make sure not to deadlock or execute slow code. It passes in
-// *  the NSURLSessionTask associated with this recording.
-// *
-// *  @note this block is executed synchronously on the main queue
-// */
-//@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
-//
-///**
-// *  This block executes on the main queue after any network request
-// *  begins. Make sure not to deadlock or execute slow code. It passes in
-// *  the NSURLSessionTask associated with this recording.
-// *
-// *  @note this block is executed asynchronously on the main queue
-// */
-//@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
-
 /**
  *  Ordered array of BKRRecordableScene objects from current cassette
  *
  *  @return ordered array by creation date of each scene or nil if no current cassette
  */
-- (NSArray<BKRRecordableScene *> *)allScenes;
+- (NSArray<BKRScene *> *)allScenes;
 
 /**
  *  Singleton instance is used because we cannot pass in a
@@ -70,7 +54,7 @@
  *  Reset all recorded values and before and after recording
  *  task blocks
  */
-- (void)reset;
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock;
 
 /**
  *  Called by networking swizzled classes to begin recording

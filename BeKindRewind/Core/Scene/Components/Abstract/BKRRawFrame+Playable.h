@@ -1,19 +1,20 @@
 //
-//  BKRPlayableRawFrame.h
+//  BKRRawFrame+Playable.h
 //  Pods
 //
-//  Created by Jordan Zucker on 1/22/16.
+//  Created by Jordan Zucker on 2/12/16.
 //
 //
 
 #import "BKRRawFrame.h"
-#import "BKREditable.h"
 
 /**
  *  This is a raw network component from a plist dictionary that needs
  *  to be normalized into a concrete BKRFrame subclass for proper handling
  *  by the BKRPlayer instance
  */
-@interface BKRPlayableRawFrame : BKRRawFrame <BKRPlistDeserializer, BKREditable>
+@interface BKRRawFrame (Playable) <BKRPlistDeserializer>
+
+- (BKRFrame *)editedPlaying;
 
 @end

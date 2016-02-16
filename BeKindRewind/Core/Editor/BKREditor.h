@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRConstants.h"
 
 @class BKRCassette;
 @class BKRScene;
@@ -28,6 +29,9 @@
  *  Determines whether editor should be executing
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
+
+- (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock;
+- (void)editCassette:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
 /**
  *  Separate queue for processing editing actions

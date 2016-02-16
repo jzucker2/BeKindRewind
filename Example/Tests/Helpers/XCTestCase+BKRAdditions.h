@@ -18,6 +18,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 @property (nonatomic, strong) id sentJSON;
 @property (nonatomic, strong) id receivedJSON; // receivedJSON gets precedence (only 1 will be called)
 @property (nonatomic, strong) NSData *receivedData; // receivedJSON gets precedence (need receivedJSON to be nil if you want this to be used)
+@property (nonatomic) BOOL shouldCompareRequestHeaderFields; // default is YES
 @property (nonatomic) BOOL hasCurrentRequest;
 @property (nonatomic) BOOL hasResponse;
 @property (nonatomic) NSInteger errorCode; // code and domain are required for this object to have an error frame
@@ -78,6 +79,7 @@ typedef void (^taskTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *er
 
 - (void)assertFramesOrder:(BKRScene *)scene extraAssertions:(void (^)(BKRScene *scene))assertions;
 
+- (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest ignoreHeaderFields:(BOOL)shouldIgnoreHeaderFields extraAssertions:(void (^)(BKRRequestFrame *request, NSURLRequest *otherRequest))assertions;
 - (void)assertRequest:(BKRRequestFrame *)request withRequest:(NSURLRequest *)otherRequest extraAssertions:(void (^)(BKRRequestFrame *request, NSURLRequest *otherRequest))assertions;
 - (void)assertResponse:(BKRResponseFrame *)response withResponse:(NSURLResponse *)otherResponse extraAssertions:(void (^)(BKRResponseFrame *response, NSURLResponse *otherResponse))assertions;
 - (void)assertData:(BKRDataFrame *)data withData:(NSData *)otherData extraAssertions:(void (^)(BKRDataFrame *data, NSData *otherData))assertions;
