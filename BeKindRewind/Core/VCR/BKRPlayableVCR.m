@@ -101,13 +101,14 @@
                 break;
             case BKRVCRStatePlaying:
             {
-                self->_player.enabled = NO;
+//                self->_player.enabled = NO;
                 self->_state = BKRVCRStateStopped;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+//                if (completionBlock) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completionBlock();
+//                    });
+//                }
+                [self->_player setEnabled:NO withCompletionHandler:completionBlock];
             }
                 break;
             case BKRVCRStatePaused:
@@ -130,13 +131,20 @@
                 break;
             case BKRVCRStatePlaying:
             {
-                self->_player.enabled = NO;
+//                self->_player.enabled = NO;
+//                self->_state = BKRVCRStatePaused;
+//                if (completionBlock) {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        completionBlock();
+//                    });
+//                }
                 self->_state = BKRVCRStatePaused;
-                if (completionBlock) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completionBlock();
-                    });
-                }
+                //                if (completionBlock) {
+                //                    dispatch_async(dispatch_get_main_queue(), ^{
+                //                        completionBlock();
+                //                    });
+                //                }
+                [self->_player setEnabled:NO withCompletionHandler:completionBlock];
             }
                 break;
             case BKRVCRStateStopped:
