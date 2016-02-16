@@ -1,8 +1,8 @@
 //
-//  BKRVCRRecordableVCRTestCase.m
+//  BKRRecordableVCRTestCase.m
 //  BeKindRewind
 //
-//  Created by Jordan Zucker on 2/12/16.
+//  Created by Jordan Zucker on 2/15/16.
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
@@ -13,12 +13,12 @@
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRAdditions.h"
 
-@interface BKRVCRRecordableVCRTestCase : BKRBaseTestCase
+@interface BKRRecordableVCRTestCase : BKRBaseTestCase
 @property (nonatomic, copy) NSString *testRecordingFilePath;
 @property (nonatomic, strong) BKRRecordableVCR *vcr;
 @end
 
-@implementation BKRVCRRecordableVCRTestCase
+@implementation BKRRecordableVCRTestCase
 
 - (void)setUp {
     [super setUp];
