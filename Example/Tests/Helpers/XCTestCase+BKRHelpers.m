@@ -20,6 +20,9 @@
     self = [super init];
     if (self) {
         _shouldCancel = NO;
+        _expectedNumberOfFrames = 0;
+        _expectedSceneNumber = 0;
+        _responseCode = -1;
     }
     return self;
 }
@@ -63,6 +66,17 @@
     }
     __block XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network call expectation"];
     __block NSURLSessionTask *executingTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (expectedResult.shouldCancel) {
+            XCTAssertNotNil(error);
+            XCTAssertEqual(expectedResult.errorCode, error.code);
+            XCTAssertEqualObjects(expectedResult.errorDomain, error.domain);
+            XCTAssertEqualObjects(expectedResult.errorUserInfo, error.userInfo);
+        } else {
+            XCTAssertNil(error);
+            XCTAssertNotNil(data);
+            XCTAssertNotNil(response);
+            XCTAssertEqual(expectedResult.responseCode, [(NSHTTPURLResponse *)response statusCode]);
+        }
         if (networkCompletionAssertions) {
             networkCompletionAssertions(executingTask, data, response, error);
         }
@@ -90,6 +104,34 @@
         XCTAssertNotNil(executingTask.currentRequest);
         if (timeoutAssertions) {
             timeoutAssertions(executingTask, error);
+        }
+    }];
+}
+
+- (void)BKRTest_executeHTTPBinNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
+    [self BKRTest_executeNetworkCallWithExpectedResult:expectedResult withTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        if (expectedResult.shouldCancel) {
+            
+        } else {
+            NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+            if ([expectedResult.HTTPMethod isEqualToString:@"POST"]) {
+                NSDictionary *formDict = dataDict[@"form"];
+                // for this service, need to fish out the data sent
+                NSArray *formKeys = formDict.allKeys;
+                NSString *rawReceivedDataString = formKeys.firstObject;
+                NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                // ensure that result from network is as expected
+                XCTAssertEqualObjects(expectedResult.HTTPBodyJSON, receivedDataDictionary);
+            } else {
+                XCTAssertEqualObjects(dataDict[@"args"], expectedResult.receivedJSON);
+            }
+        }
+        if (networkCompletionAssertions) {
+            networkCompletionAssertions(task, data, response, error);
+        }
+    } taskTimeoutHandler:^(NSURLSessionTask *task, NSError *error) {
+        if (timeoutAssertions) {
+            timeoutAssertions(task, error);
         }
     }];
 }
@@ -177,6 +219,8 @@
     expectedResult.URLString = @"https://httpbin.org/delay/10";
     expectedResult.shouldCancel = YES;
     expectedResult.errorCode = -999;
+    expectedResult.expectedNumberOfFrames = 2;
+    expectedResult.expectedSceneNumber = 0;
     expectedResult.errorDomain = NSURLErrorDomain;
     expectedResult.errorUserInfo = @{
                                      NSURLErrorFailingURLErrorKey: [NSURL URLWithString:expectedResult.URLString],
@@ -186,12 +230,37 @@
     return expectedResult;
 }
 
-- (BKRTestExpectedResult *)HTTPBinGetRequestWithArgs:(NSDictionary *)args {
-    return nil;
+- (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString {
+    NSString *finalQueryItemString = nil;
+    NSMutableDictionary *argsDict = nil;
+    if (queryString) {
+        finalQueryItemString = [@"?" stringByAppendingString:queryString];
+        NSURLComponents *components = [NSURLComponents componentsWithString:finalQueryItemString];
+        NSArray<NSURLQueryItem *> *queryItems = [components queryItems];
+        argsDict = [NSMutableDictionary dictionary];
+        for (NSURLQueryItem *item in queryItems) {
+            argsDict[item.name] = item.value;
+        }
+    }
+    BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
+    expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/get%@", (finalQueryItemString ? finalQueryItemString : @"")];
+    expectedResult.responseCode = 200;
+    expectedResult.expectedNumberOfFrames = 4;
+    expectedResult.receivedJSON = argsDict.copy;
+    return expectedResult;
 }
 
 - (BKRTestExpectedResult *)HTTPBinPostRequest {
-    return nil;
+    BKRTestExpectedResult *result = [BKRTestExpectedResult result];
+    result.URLString = @"https://httpbin.org/post";
+    result.HTTPMethod = @"POST";
+    result.HTTPBodyJSON = @{
+                            @"foo": @"bar"
+                            };
+    result.responseCode = 200;
+    result.expectedSceneNumber = 0;
+    result.expectedNumberOfFrames = 4;
+    return result;
 }
 
 @end

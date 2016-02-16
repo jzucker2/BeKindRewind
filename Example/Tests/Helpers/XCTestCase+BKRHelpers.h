@@ -20,6 +20,9 @@
 @property (nonatomic, assign) NSInteger errorCode;
 @property (nonatomic, strong) NSDictionary *errorUserInfo;
 @property (nonatomic, copy) NSString *errorDomain;
+@property (nonatomic, assign) NSInteger responseCode;
+@property (nonatomic, assign) NSInteger expectedSceneNumber;
+@property (nonatomic, assign) NSInteger expectedNumberOfFrames;
 + (instancetype)result;
 @end
 
@@ -46,8 +49,10 @@ typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, N
 
 #pragma mark - HTTPBin helpers
 
+- (void)BKRTest_executeHTTPBinNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
+
 - (BKRTestExpectedResult *)HTTPBinCancelledRequest;
-- (BKRTestExpectedResult *)HTTPBinGetRequestWithArgs:(NSDictionary *)args;
+- (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString;
 - (BKRTestExpectedResult *)HTTPBinPostRequest;
 
 @end

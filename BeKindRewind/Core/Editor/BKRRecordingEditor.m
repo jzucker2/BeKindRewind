@@ -78,8 +78,8 @@
     BKRWeakify(self);
     [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
-        NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
         if (!cassette) {
+            NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
             return;
         }
         if (![self _shouldRecord:frame]) {
