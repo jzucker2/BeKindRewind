@@ -13,6 +13,7 @@
 @property (nonatomic, copy) NSString *HTTPMethod; // nil by default
 @property (nonatomic, assign) BOOL shouldCancel; // no by default
 @property (nonatomic, strong) NSDictionary *HTTPBodyJSON;
+@property (nonatomic, copy) NSString *taskUniqueIdentifier;
 @property (nonatomic, strong) NSData *HTTPBody;
 @property (nonatomic, strong) NSData *receivedData;
 @property (nonatomic, strong) NSDictionary *receivedJSON;
@@ -29,12 +30,18 @@
 typedef void (^BKRTestNetworkCompletionHandler)(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error);
 
-@class BKRScene, BKRPlayer;
+@class BKRScene, BKRPlayer, BKRCassette;
 @interface XCTestCase (BKRHelpers)
+
+- (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
 
+- (void)BKRTest_executeHTTPBinNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
+
 - (void)assertFramesOrderForScene:(BKRScene *)scene;
+
+- (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 
 - (void)setRecorderToEnabledWithExpectation:(BOOL)enabled;
 - (void)setPlayer:(BKRPlayer *)player toEnabledWithExpectation:(BOOL)enabled;
@@ -49,7 +56,7 @@ typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, N
 
 #pragma mark - HTTPBin helpers
 
-- (void)BKRTest_executeHTTPBinNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
+//- (void)BKRTest_executeHTTPBinNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
 
 - (BKRTestExpectedResult *)HTTPBinCancelledRequest;
 - (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString;

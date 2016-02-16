@@ -12,6 +12,7 @@
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRFrame.h>
+#import <BeKindRewind/BKRCassette.h>
 #import "XCTestCase+BKRHelpers.h"
 
 @implementation BKRTestExpectedResult
@@ -23,6 +24,7 @@
         _expectedNumberOfFrames = 0;
         _expectedSceneNumber = 0;
         _responseCode = -1;
+        _taskUniqueIdentifier = [NSUUID UUID].UUIDString;
     }
     return self;
 }
@@ -108,6 +110,22 @@
     }];
 }
 
+- (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
+    for (NSInteger i=0; i < expectedResults.count; i++) {
+        BKRTestExpectedResult *expectedResult = expectedResults[i];
+        [self BKRTest_executeNetworkCallWithExpectedResult:expectedResult withTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+            if (networkCompletionAssertions) {
+                networkCompletionAssertions(task, data, response, error);
+            }
+        } taskTimeoutHandler:^(NSURLSessionTask *task, NSError *error) {
+            XCTAssertEqual(expectedResult.expectedSceneNumber, i);
+            if (timeoutAssertions) {
+                timeoutAssertions(task, error);
+            }
+        }];
+    }
+}
+
 - (void)BKRTest_executeHTTPBinNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
     [self BKRTest_executeNetworkCallWithExpectedResult:expectedResult withTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         if (expectedResult.shouldCancel) {
@@ -167,6 +185,83 @@
     [BKRRecorder sharedInstance].endRecordingBlock = ^void(NSURLSessionTask *task) {
         [task.recordingExpectation fulfill];
     };
+}
+
+- (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
+    NSDate *expectedCassetteDictCreationDate = [NSDate date];
+    NSMutableArray *expectedResultSceneDicts = [NSMutableArray array];
+    for (BKRTestExpectedResult *expectedResult in expectedResults) {
+        NSMutableArray *framesArray = [NSMutableArray array];
+        NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
+        expectedOriginalRequestDict[@"URL"] = expectedResult.URLString;
+        expectedOriginalRequestDict[@"uniqueIdentifier"] = expectedResult.taskUniqueIdentifier;
+//        if (expectedResult.shouldCompareRequestHeaderFields) {
+//            if (expectedResult.originalRequestAllHTTPHeaderFields) {
+//                expectedOriginalRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.originalRequestAllHTTPHeaderFields;
+//            }
+        }
+//        if (expectedResult.HTTPMethod) {
+//            expectedOriginalRequestDict[@"HTTPMethod"] = expectedResult.HTTPMethod;
+//        }
+//        [framesArray addObject:expectedOriginalRequestDict];
+    
+//        if (expectedResult.hasCurrentRequest) {
+//            NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
+//            expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
+//            expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+//            if (
+//                (expectedPlistBuilder.currentRequestAllHTTPHeaderFields) &&
+//                expectedPlistBuilder.shouldCompareRequestHeaderFields
+//                ) {
+//                expectedCurrentRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.currentRequestAllHTTPHeaderFields;
+//            }
+//            if (expectedPlistBuilder.HTTPMethod) {
+//                expectedCurrentRequestDict[@"HTTPMethod"] = expectedPlistBuilder.HTTPMethod;
+//            }
+//            [framesArray addObject:expectedCurrentRequestDict];
+//        }
+        
+//        if (expectedPlistBuilder.hasResponse) {
+//            NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
+//            expectedResponseDict[@"URL"] = expectedPlistBuilder.URLString;
+//            expectedResponseDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+//            expectedResponseDict[@"allHeaderFields"] = expectedPlistBuilder.responseAllHeaderFields;
+//            [framesArray addObject:expectedResponseDict];
+//        }
+//        
+//        if (
+//            expectedPlistBuilder.receivedJSON ||
+//            expectedPlistBuilder.receivedData
+//            ) {
+//            NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
+//            expectedDataDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
+//            if (expectedPlistBuilder.receivedJSON) {
+//                expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedPlistBuilder.receivedJSON options:kNilOptions error:nil];
+//            } else {
+//                expectedDataDict[@"data"] = expectedPlistBuilder.receivedData;
+//            }
+//            [framesArray addObject:expectedDataDict];
+//        }
+//        
+//        if (expectedPlistBuilder.errorCode && expectedPlistBuilder.errorDomain) {
+//            NSMutableDictionary *expectedErrorDict = [self standardErrorDictionary];
+//            expectedErrorDict[@"code"] = @(expectedPlistBuilder.errorCode);
+//            expectedErrorDict[@"domain"] = expectedPlistBuilder.errorDomain;
+//            if (expectedPlistBuilder.errorUserInfo) {
+//                expectedErrorDict[@"userInfo"] = expectedPlistBuilder.errorUserInfo;
+//            }
+//            [framesArray addObject:expectedErrorDict];
+//        }
+//        
+//        NSDictionary *sceneDict = @{
+//                                    @"uniqueIdentifier": expectedPlistBuilder.taskUniqueIdentifier,
+//                                    @"frames": framesArray.copy
+//                                    };
+//        [expectedPlistSceneDicts addObject:sceneDict];
+//    }
+    
+//    return [self expectedCassetteDictionaryWithCreationDate:expectedCassetteDictCreationDate sceneDictionaries:expectedPlistSceneDicts];
+    return nil;
 }
 
 - (void)assertFramesOrderForScene:(BKRScene *)scene {
