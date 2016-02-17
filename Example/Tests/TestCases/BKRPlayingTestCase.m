@@ -9,13 +9,7 @@
 #import <BeKindRewind/BKRPlayer.h>
 #import <BeKindRewind/BKRCassette+Playable.h>
 #import <BeKindRewind/BKRScene.h>
-#import <BeKindRewind/BKRDataFrame.h>
-#import <BeKindRewind/BKRResponseFrame.h>
-#import <BeKindRewind/BKRRequestFrame.h>
-#import <BeKindRewind/BKRPlayheadMatcher.h>
-#import <BeKindRewind/BKROHHTTPStubsWrapper.h>
-#import <BeKindRewind/BKRScene+Playable.h>
-#import "XCTestCase+BKRAdditions.h"
+#import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
 @interface BKRPlayingTestCase : BKRBaseTestCase
@@ -370,6 +364,14 @@
 //}
 
 - (void)testPlayingOneGETRequest {
+    BKRTestExpectedResult *getResult = [self HTTPBinGetRequestWithQueryString:@"test=test"];
+    __block BKRPlayer *player = [self playerWithExpectedResults:@[getResult]];
+    [self setPlayer:player withExpectationToEnabled:YES];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
+        
+    }];
 //    BKRExpectedScenePlistDictionaryBuilder *sceneBuilder = [self standardGETRequestDictionaryBuilderForHTTPBinWithQueryItemString:@"test=test" contentLength:nil];
 //    NSDictionary *expectedCassetteDict = [self expectedCassetteDictionaryWithSceneBuilders:@[sceneBuilder]];
 //    __block BKRScene *scene = nil;

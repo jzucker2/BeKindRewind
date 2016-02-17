@@ -10,9 +10,11 @@
 #import <BeKindRewind/BKRRecorder.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
+#import <BeKindRewind/BKRPlayheadMatcher.h>
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRFrame.h>
 #import <BeKindRewind/BKRCassette.h>
+#import <BeKindRewind/BKRCassette+Playable.h>
 #import "XCTestCase+BKRHelpers.h"
 
 @implementation BKRTestExpectedResult
@@ -24,13 +26,32 @@
         _expectedNumberOfFrames = 0;
         _expectedSceneNumber = 0;
         _responseCode = -1;
+        _errorCode = 1;
+        _hasCurrentRequest = NO;
         _taskUniqueIdentifier = [NSUUID UUID].UUIDString;
+        _shouldCompareCurrentRequestHTTPHeaderFields = NO;
     }
     return self;
 }
 
 + (instancetype)result {
     return [[self alloc] init];
+}
+
+- (void)setResponseCode:(NSInteger)responseCode {
+    _responseCode = responseCode;
+    if (_responseCode >= 0) {
+        _hasResponse = YES;
+    } else {
+        _hasResponse = NO;
+    }
+}
+
+- (BOOL)hasError {
+    return (
+            (self.errorCode < 0) &&
+            (self.errorDomain.length)
+            );
 }
 
 - (void)setHTTPBody:(NSData *)HTTPBody {
@@ -51,6 +72,15 @@
 - (void)setReceivedJSON:(NSDictionary *)receivedJSON {
     _receivedJSON = receivedJSON;
     _receivedData = [NSJSONSerialization dataWithJSONObject:receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
+}
+
+- (void)setCurrentRequestAllHTTPHeaderFields:(NSDictionary *)currentRequestAllHTTPHeaderFields {
+    _currentRequestAllHTTPHeaderFields = currentRequestAllHTTPHeaderFields;
+    if (_currentRequestAllHTTPHeaderFields) {
+        self.hasCurrentRequest = YES;
+    } else {
+        self.hasCurrentRequest = NO;
+    }
 }
 
 @end
@@ -127,31 +157,6 @@
 }
 
 - (void)BKRTest_executeHTTPBinNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
-//    [self BKRTest_executeNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        if (expectedResult.shouldCancel) {
-//            
-//        } else {
-//            NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-//            if ([expectedResult.HTTPMethod isEqualToString:@"POST"]) {
-//                NSDictionary *formDict = dataDict[@"form"];
-//                // for this service, need to fish out the data sent
-//                NSArray *formKeys = formDict.allKeys;
-//                NSString *rawReceivedDataString = formKeys.firstObject;
-//                NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-//                // ensure that result from network is as expected
-//                XCTAssertEqualObjects(expectedResult.HTTPBodyJSON, receivedDataDictionary);
-//            } else {
-//                XCTAssertEqualObjects(dataDict[@"args"], expectedResult.receivedJSON);
-//            }
-//        }
-//        if (networkCompletionAssertions) {
-//            networkCompletionAssertions(task, data, response, error);
-//        }
-//    } taskTimeoutHandler:^(NSURLSessionTask *task, NSError *error) {
-//        if (timeoutAssertions) {
-//            timeoutAssertions(task, error);
-//        }
-//    }];
     [self BKRTest_executeNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         if (result.shouldCancel) {
             
@@ -190,7 +195,7 @@
     }];
 }
 
-- (void)setPlayer:(BKRPlayer *)player toEnabledWithExpectation:(BOOL)enabled {
+- (void)setPlayer:(BKRPlayer *)player withExpectationToEnabled:(BOOL)enabled {
     __block XCTestExpectation *enableChangeExpectation = [self expectationWithDescription:@"enable expectation"];
     [player setEnabled:enabled withCompletionHandler:^{
         [enableChangeExpectation fulfill];
@@ -212,81 +217,84 @@
     };
 }
 
+- (BKRPlayer *)playerWithExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
+    BKRCassette *cassette = [self cassetteFromExpectedResults:expectedResults];
+    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    player.currentCassette = cassette;
+    return player;
+}
+
 - (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
     NSDate *expectedCassetteDictCreationDate = [NSDate date];
-    NSMutableArray *expectedResultSceneDicts = [NSMutableArray array];
-    for (BKRTestExpectedResult *expectedResult in expectedResults) {
-        NSMutableArray *framesArray = [NSMutableArray array];
+    NSMutableArray<NSDictionary *> *expectedResultSceneDicts = [NSMutableArray array];
+    for (BKRTestExpectedResult *result in expectedResults) {
+        NSMutableArray<NSDictionary *> *framesArray = [NSMutableArray array];
         NSMutableDictionary *expectedOriginalRequestDict = [self standardRequestDictionary];
-        expectedOriginalRequestDict[@"URL"] = expectedResult.URLString;
-        expectedOriginalRequestDict[@"uniqueIdentifier"] = expectedResult.taskUniqueIdentifier;
-//        if (expectedResult.shouldCompareRequestHeaderFields) {
-//            if (expectedResult.originalRequestAllHTTPHeaderFields) {
-//                expectedOriginalRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.originalRequestAllHTTPHeaderFields;
-//            }
+        expectedOriginalRequestDict[@"URL"] = result.URLString;
+        expectedOriginalRequestDict[@"uniqueIdentifier"] = result.taskUniqueIdentifier;
+        if (result.HTTPMethod) {
+            expectedOriginalRequestDict[@"HTTPMethod"] = result.HTTPMethod;
         }
-//        if (expectedResult.HTTPMethod) {
-//            expectedOriginalRequestDict[@"HTTPMethod"] = expectedResult.HTTPMethod;
-//        }
-//        [framesArray addObject:expectedOriginalRequestDict];
-    
-//        if (expectedResult.hasCurrentRequest) {
-//            NSMutableDictionary *expectedCurrentRequestDict = [self standardRequestDictionary];
-//            expectedCurrentRequestDict[@"URL"] = expectedPlistBuilder.URLString;
-//            expectedCurrentRequestDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-//            if (
-//                (expectedPlistBuilder.currentRequestAllHTTPHeaderFields) &&
-//                expectedPlistBuilder.shouldCompareRequestHeaderFields
-//                ) {
-//                expectedCurrentRequestDict[@"allHTTPHeaderFields"] = expectedPlistBuilder.currentRequestAllHTTPHeaderFields;
-//            }
-//            if (expectedPlistBuilder.HTTPMethod) {
-//                expectedCurrentRequestDict[@"HTTPMethod"] = expectedPlistBuilder.HTTPMethod;
-//            }
-//            [framesArray addObject:expectedCurrentRequestDict];
-//        }
+        if (result.HTTPBody) {
+            expectedOriginalRequestDict[@"HTTPBody"] = result.HTTPBody;
+        }
+        NSMutableDictionary *expectedCurrentRequestDict = nil;
+        if (result.hasCurrentRequest) {
+            expectedCurrentRequestDict = expectedOriginalRequestDict.mutableCopy;
+            if (
+                result.currentRequestAllHTTPHeaderFields &&
+                result.shouldCompareCurrentRequestHTTPHeaderFields
+                ) {
+                expectedCurrentRequestDict[@"allHTTPHeaderFields"] = result.currentRequestAllHTTPHeaderFields;
+            }
+        }
+        if (result.originalRequestAllHTTPHeaderFields) {
+            expectedOriginalRequestDict[@"allHTTPHeaderFields"] = result.originalRequestAllHTTPHeaderFields;
+        }
+        [framesArray addObject:expectedOriginalRequestDict.copy];
         
-//        if (expectedPlistBuilder.hasResponse) {
-//            NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
-//            expectedResponseDict[@"URL"] = expectedPlistBuilder.URLString;
-//            expectedResponseDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-//            expectedResponseDict[@"allHeaderFields"] = expectedPlistBuilder.responseAllHeaderFields;
-//            [framesArray addObject:expectedResponseDict];
-//        }
-//        
-//        if (
-//            expectedPlistBuilder.receivedJSON ||
-//            expectedPlistBuilder.receivedData
-//            ) {
-//            NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
-//            expectedDataDict[@"uniqueIdentifier"] = expectedPlistBuilder.taskUniqueIdentifier;
-//            if (expectedPlistBuilder.receivedJSON) {
-//                expectedDataDict[@"data"] = [NSJSONSerialization dataWithJSONObject:expectedPlistBuilder.receivedJSON options:kNilOptions error:nil];
-//            } else {
-//                expectedDataDict[@"data"] = expectedPlistBuilder.receivedData;
-//            }
-//            [framesArray addObject:expectedDataDict];
-//        }
-//        
-//        if (expectedPlistBuilder.errorCode && expectedPlistBuilder.errorDomain) {
-//            NSMutableDictionary *expectedErrorDict = [self standardErrorDictionary];
-//            expectedErrorDict[@"code"] = @(expectedPlistBuilder.errorCode);
-//            expectedErrorDict[@"domain"] = expectedPlistBuilder.errorDomain;
-//            if (expectedPlistBuilder.errorUserInfo) {
-//                expectedErrorDict[@"userInfo"] = expectedPlistBuilder.errorUserInfo;
-//            }
-//            [framesArray addObject:expectedErrorDict];
-//        }
-//        
-//        NSDictionary *sceneDict = @{
-//                                    @"uniqueIdentifier": expectedPlistBuilder.taskUniqueIdentifier,
-//                                    @"frames": framesArray.copy
-//                                    };
-//        [expectedPlistSceneDicts addObject:sceneDict];
-//    }
-    
-//    return [self expectedCassetteDictionaryWithCreationDate:expectedCassetteDictCreationDate sceneDictionaries:expectedPlistSceneDicts];
-    return nil;
+        if (expectedCurrentRequestDict) {
+            if (
+                result.currentRequestAllHTTPHeaderFields &&
+                result.shouldCompareCurrentRequestHTTPHeaderFields
+                ) {
+                expectedCurrentRequestDict[@"allHTTPHeaderFields"] = result.currentRequestAllHTTPHeaderFields;
+            }
+            [framesArray addObject:expectedCurrentRequestDict.copy];
+        }
+        if (result.hasResponse) {
+            NSMutableDictionary *expectedResponseDict = [self standardResponseDictionary];
+            expectedResponseDict[@"URL"] = result.URLString;
+            expectedResponseDict[@"uniqueIdentifier"] = result.taskUniqueIdentifier;
+            expectedResponseDict[@"allHeaderFields"] = result.responseAllHeaderFields;
+            [framesArray addObject:expectedResponseDict.copy];
+        }
+        if (result.receivedData) {
+            NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
+            expectedDataDict[@"uniqueIdentifier"] = result.taskUniqueIdentifier;
+            expectedDataDict[@"data"] = result.receivedData;
+            [framesArray addObject:expectedDataDict.copy];
+        }
+        if (result.hasError) {
+            NSMutableDictionary *expectedErrorDict = [self standardErrorDictionary];
+            expectedErrorDict[@"code"] = @(result.errorCode);
+            expectedErrorDict[@"domain"] = result.errorDomain;
+            if (result.errorUserInfo) {
+                expectedErrorDict[@"userInfo"] = result.errorUserInfo;
+            }
+            [framesArray addObject:expectedErrorDict.copy];
+        }
+        NSDictionary *sceneDict = @{
+                                    @"uniqueIdentifier": result.taskUniqueIdentifier,
+                                    @"frames": framesArray.copy
+                                    };
+        [expectedResultSceneDicts addObject:sceneDict];
+    }
+    NSDictionary *cassetteDictionary = @{
+                                         @"creationDate": expectedCassetteDictCreationDate,
+                                         @"scenes": expectedResultSceneDicts.copy
+                                         };
+    return [BKRCassette cassetteFromDictionary:cassetteDictionary];
 }
 
 - (void)assertFramesOrderForScene:(BKRScene *)scene {
