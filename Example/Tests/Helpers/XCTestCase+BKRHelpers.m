@@ -110,46 +110,71 @@
     }];
 }
 
-- (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
+- (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
     for (NSInteger i=0; i < expectedResults.count; i++) {
         BKRTestExpectedResult *expectedResult = expectedResults[i];
         [self BKRTest_executeNetworkCallWithExpectedResult:expectedResult withTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
             if (networkCompletionAssertions) {
-                networkCompletionAssertions(task, data, response, error);
+                networkCompletionAssertions(expectedResult, task, data, response, error);
             }
         } taskTimeoutHandler:^(NSURLSessionTask *task, NSError *error) {
             XCTAssertEqual(expectedResult.expectedSceneNumber, i);
             if (timeoutAssertions) {
-                timeoutAssertions(task, error);
+                timeoutAssertions(expectedResult, task, error);
             }
         }];
     }
 }
 
-- (void)BKRTest_executeHTTPBinNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
-    [self BKRTest_executeNetworkCallWithExpectedResult:expectedResult withTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-        if (expectedResult.shouldCancel) {
+- (void)BKRTest_executeHTTPBinNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
+//    [self BKRTest_executeNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+//        if (expectedResult.shouldCancel) {
+//            
+//        } else {
+//            NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+//            if ([expectedResult.HTTPMethod isEqualToString:@"POST"]) {
+//                NSDictionary *formDict = dataDict[@"form"];
+//                // for this service, need to fish out the data sent
+//                NSArray *formKeys = formDict.allKeys;
+//                NSString *rawReceivedDataString = formKeys.firstObject;
+//                NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+//                // ensure that result from network is as expected
+//                XCTAssertEqualObjects(expectedResult.HTTPBodyJSON, receivedDataDictionary);
+//            } else {
+//                XCTAssertEqualObjects(dataDict[@"args"], expectedResult.receivedJSON);
+//            }
+//        }
+//        if (networkCompletionAssertions) {
+//            networkCompletionAssertions(task, data, response, error);
+//        }
+//    } taskTimeoutHandler:^(NSURLSessionTask *task, NSError *error) {
+//        if (timeoutAssertions) {
+//            timeoutAssertions(task, error);
+//        }
+//    }];
+    [self BKRTest_executeNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        if (result.shouldCancel) {
             
         } else {
             NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-            if ([expectedResult.HTTPMethod isEqualToString:@"POST"]) {
+            if ([result.HTTPMethod isEqualToString:@"POST"]) {
                 NSDictionary *formDict = dataDict[@"form"];
                 // for this service, need to fish out the data sent
                 NSArray *formKeys = formDict.allKeys;
                 NSString *rawReceivedDataString = formKeys.firstObject;
                 NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
                 // ensure that result from network is as expected
-                XCTAssertEqualObjects(expectedResult.HTTPBodyJSON, receivedDataDictionary);
+                XCTAssertEqualObjects(result.HTTPBodyJSON, receivedDataDictionary);
             } else {
-                XCTAssertEqualObjects(dataDict[@"args"], expectedResult.receivedJSON);
+                XCTAssertEqualObjects(dataDict[@"args"], result.receivedJSON);
             }
         }
         if (networkCompletionAssertions) {
-            networkCompletionAssertions(task, data, response, error);
+            networkCompletionAssertions(result, task, data, response, error);
         }
-    } taskTimeoutHandler:^(NSURLSessionTask *task, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
         if (timeoutAssertions) {
-            timeoutAssertions(task, error);
+            timeoutAssertions(result, task, error);
         }
     }];
 }
