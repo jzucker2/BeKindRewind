@@ -165,7 +165,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             if (receivedResponse) {
                 [self _assertResponseFrame:scene.allResponseFrames.firstObject withResponse:receivedResponse];
             }
-            if (receivedData) {
+            if (
+                receivedData &&
+                !expectedResult.shouldCancel
+                ) {
                 [self _assertDataFrame:scene.allDataFrames.firstObject withData:receivedData];
             }
             if (receivedError) {
