@@ -14,8 +14,14 @@
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRFrame.h>
 #import <BeKindRewind/BKRCassette.h>
+#import <BeKindRewind/BKRDataFrame.h>
+#import <BeKindRewind/BKRErrorFrame.h>
+#import <BeKindRewind/BKRRequestFrame.h>
+#import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRCassette+Playable.h>
 #import "XCTestCase+BKRHelpers.h"
+
+static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2016 18:18:46 GMT";
 
 @implementation BKRTestExpectedResult
 
@@ -31,7 +37,7 @@
         _taskUniqueIdentifier = [NSUUID UUID].UUIDString;
         _shouldCompareCurrentRequestHTTPHeaderFields = NO;
         _isRecording = NO;
-        _automaticallyAssignSceneNumberForAssertion = NO;
+        _automaticallyAssignSceneNumberForAssertion = YES;
     }
     return self;
 }
@@ -99,7 +105,13 @@
         request.HTTPBody = expectedResult.HTTPBody;
     }
     __block XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network call expectation"];
+    __block NSData *receivedData = nil;
+    __block NSURLResponse *receivedResponse = nil;
+    __block NSError *receivedError = nil;
     __block NSURLSessionTask *executingTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        receivedData = data;
+        receivedResponse = response;
+        receivedError = error;
         if (expectedResult.shouldCancel) {
             XCTAssertNotNil(error);
             XCTAssertEqual(expectedResult.errorCode, error.code);
@@ -109,7 +121,10 @@
             XCTAssertNil(error);
             XCTAssertNotNil(data);
             XCTAssertNotNil(response);
-            XCTAssertEqual(expectedResult.responseCode, [(NSHTTPURLResponse *)response statusCode]);
+            if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+                NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+                XCTAssertEqual(expectedResult.responseCode, castedResponse.statusCode);
+            }
         }
         if (networkCompletionAssertions) {
             networkCompletionAssertions(executingTask, data, response, error);
@@ -135,11 +150,53 @@
             XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted);
         }
         XCTAssertNotNil(executingTask.originalRequest);
-        XCTAssertNotNil(executingTask.currentRequest);
+        if (expectedResult.hasCurrentRequest) {
+            XCTAssertNotNil(executingTask.currentRequest);
+            
+        }
+        
+        BKRTestSceneAssertionHandler sceneAssertions = ^void (BKRScene *scene) {
+            [self _assertRequestFrame:scene.originalRequest withRequest:executingTask.originalRequest andIgnoreHeaderFields:YES];
+            if (expectedResult.hasCurrentRequest) {
+                // when we are playing, OHHTTPStubs does not mock adjusting the currentRequest to have different headers like a server would with a live NSURLSessionTask
+                [self _assertRequestFrame:scene.currentRequest withRequest:executingTask.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
+            }
+            if (receivedResponse) {
+                [self _assertResponseFrame:scene.allResponseFrames.firstObject withResponse:receivedResponse];
+            }
+            if (receivedData) {
+                [self _assertDataFrame:scene.allDataFrames.firstObject withData:receivedData];
+            }
+            if (receivedError) {
+                [self _assertErrorFrame:scene.allErrorFrames.firstObject withError:receivedError];
+            }
+            [self assertFramesOrderForScene:scene];
+        };
+        
         if (timeoutAssertions) {
-            timeoutAssertions(executingTask, error);
+            timeoutAssertions(executingTask, error, sceneAssertions);
         }
     }];
+}
+
+- (void)_assertHTTPBinExpectedResult:(BKRTestExpectedResult *)expectedResult withActualResponseHeaderFields:(NSDictionary *)actualResponseHeaderFields {
+    XCTAssertEqual(expectedResult.responseAllHeaderFields.count, actualResponseHeaderFields.count);
+    NSArray *actualResponseKeysArray = actualResponseHeaderFields.allKeys;
+    for (NSInteger i=0; i<actualResponseHeaderFields.count; i++) {
+        NSString *actualResponseKey = actualResponseKeysArray[i];
+        XCTAssertNotNil(expectedResult.responseAllHeaderFields[actualResponseKey]);
+        if ([actualResponseKey isEqualToString:@"Date"]) {
+            if (expectedResult.isRecording) {
+                XCTAssertNotEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
+                XCTAssertNotEqualObjects(actualResponseHeaderFields[actualResponseKey], kBKRTestHTTPBinResponseDateStringValue);
+            } else {
+                XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
+                XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], kBKRTestHTTPBinResponseDateStringValue);
+            }
+        } else {
+            XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
+        }
+    }
 }
 
 - (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
@@ -152,10 +209,15 @@
             if (networkCompletionAssertions) {
                 networkCompletionAssertions(expectedResult, task, data, response, error);
             }
-        } taskTimeoutHandler:^(NSURLSessionTask *task, NSError *error) {
+        } taskTimeoutHandler:^(NSURLSessionTask *task, NSError *error, BKRTestSceneAssertionHandler sceneAssertions) {
             XCTAssertEqual(expectedResult.expectedSceneNumber, i);
+            BKRTestBatchSceneAssertionHandler batchSceneAssertions = ^void (NSArray<BKRScene *> *scenes) {
+                if (scenes[i]) {
+                    sceneAssertions(scenes[i]);
+                }
+            };
             if (timeoutAssertions) {
-                timeoutAssertions(expectedResult, task, error);
+                timeoutAssertions(expectedResult, task, error, batchSceneAssertions);
             }
         }];
     }
@@ -166,6 +228,7 @@
         if (result.shouldCancel) {
             
         } else {
+            [self _assertHTTPBinExpectedResult:result withActualResponseHeaderFields:[(NSHTTPURLResponse *)response allHeaderFields]];
             NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
             if ([result.HTTPMethod isEqualToString:@"POST"]) {
                 NSDictionary *formDict = dataDict[@"form"];
@@ -187,9 +250,9 @@
         if (networkCompletionAssertions) {
             networkCompletionAssertions(result, task, data, response, error);
         }
-    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         if (timeoutAssertions) {
-            timeoutAssertions(result, task, error);
+            timeoutAssertions(result, task, error, batchSceneAssertions);
         }
     }];
 }
@@ -229,6 +292,15 @@
 
 - (BKRPlayer *)playerWithExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
     BKRCassette *cassette = [self cassetteFromExpectedResults:expectedResults];
+    NSArray<BKRScene *> *scenes = cassette.allScenes.copy;
+    XCTAssertEqual(scenes.count, expectedResults.count, @"testCassette should have one valid scene right now");
+    // assert on scene creation in cassette
+    for (NSInteger i=0; i<expectedResults.count; i++) {
+        BKRTestExpectedResult *result = [expectedResults objectAtIndex:i];
+        BKRScene *scene = [scenes objectAtIndex:i];
+        XCTAssertEqual(result.expectedNumberOfFrames, scene.allFrames.count);
+        
+    }
     BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
     player.currentCassette = cassette;
     return player;
@@ -290,7 +362,12 @@
             expectedErrorDict[@"code"] = @(result.errorCode);
             expectedErrorDict[@"domain"] = result.errorDomain;
             if (result.errorUserInfo) {
-                expectedErrorDict[@"userInfo"] = result.errorUserInfo;
+                NSMutableDictionary *adjustedUserInfo = result.errorUserInfo.mutableCopy;
+                if (result.errorUserInfo[NSURLErrorFailingURLErrorKey]) {
+                    NSURL *expectedErrorURLValue = result.errorUserInfo[NSURLErrorFailingURLErrorKey];
+                    adjustedUserInfo[NSURLErrorFailingURLErrorKey] = expectedErrorURLValue.absoluteString;
+                }
+                expectedErrorDict[@"userInfo"] = adjustedUserInfo.copy;
             }
             [framesArray addObject:expectedErrorDict.copy];
         }
@@ -310,7 +387,9 @@
 - (void)assertFramesOrderForScene:(BKRScene *)scene {
     NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:0];
     for (BKRFrame *frame in scene.allFrames) {
-        XCTAssertEqual([lastDate compare:frame.creationDate], NSOrderedAscending);
+        // can't just assert that creation dates are in order, in case they have the same creation date for whatever reason (likely a result of mocking)
+        // so just assert that they are in increasing order or equal (not in decreasing order)
+        XCTAssertNotEqual([lastDate compare:frame.creationDate], NSOrderedDescending);
         lastDate = frame.creationDate;
     }
 }
@@ -350,6 +429,25 @@
               } mutableCopy];
 }
 
+- (NSDictionary *)_HTTPBinCurrentRequestAllHTTPHeaderFields {
+    return @{
+             @"Accept": @"*/*",
+             @"Accept-Encoding": @"gzip, deflate",
+             @"Accept-Language": @"en-us"
+             };
+}
+
+- (NSDictionary *)_HTTPBinResponseAllHeaderFieldsWithContentLength:(NSString *)contentLengthString {
+    return @{
+             @"Access-Control-Allow-Origin": @"*",
+             @"Content-Length": contentLengthString,
+             @"Content-Type": @"application/json",
+             @"Date": kBKRTestHTTPBinResponseDateStringValue,
+             @"Server": @"nginx",
+             @"access-control-allow-credentials": @"true"
+             };
+}
+
 #pragma mark - HTTPBin helpers
 
 - (BKRTestExpectedResult *)HTTPBinCancelledRequestWithRecording:(BOOL)isRecording {
@@ -357,8 +455,10 @@
     expectedResult.isRecording = isRecording;
     expectedResult.URLString = @"https://httpbin.org/delay/10";
     expectedResult.shouldCancel = YES;
+    expectedResult.hasCurrentRequest = NO;
     expectedResult.errorCode = -999;
     expectedResult.expectedNumberOfFrames = 2;
+//    expectedResult.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
     expectedResult.expectedSceneNumber = 0;
     expectedResult.errorDomain = NSURLErrorDomain;
     expectedResult.errorUserInfo = @{
@@ -383,8 +483,11 @@
     }
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
     expectedResult.isRecording = isRecording;
+    expectedResult.hasCurrentRequest = YES;
     expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/get%@", (finalQueryItemString ? finalQueryItemString : @"")];
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
+    expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"338"];
     expectedResult.expectedNumberOfFrames = 4;
     expectedResult.receivedJSON = @{
                                     @"args": argsDict.copy,
@@ -404,15 +507,79 @@
 - (BKRTestExpectedResult *)HTTPBinPostRequestWithRecording:(BOOL)isRecording {
     BKRTestExpectedResult *result = [BKRTestExpectedResult result];
     result.isRecording = isRecording;
+    result.hasCurrentRequest = YES;
+    result.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
     result.URLString = @"https://httpbin.org/post";
     result.HTTPMethod = @"POST";
+    result.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"496"];
     result.HTTPBodyJSON = @{
                             @"foo": @"bar"
+                            };
+    result.receivedJSON = @{
+                            @"args": @{
+                                    },
+                            @"data": @"",
+                            @"files": @{
+                                    },
+                            @"form": @{
+                                    @"{\n  \"foo\" : \"bar\"\n}": @""
+                                    },
+                            @"headers": @{
+                                    @"Accept": @"*/*",
+                                    @"Accept-Encoding": @"gzip, deflate",
+                                    @"Accept-Language": @"en-us",
+                                    @"Host": @"httpbin.org",
+                                    @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0"
+                                    },
+                            @"json": @"<null>",
+                            @"origin": @"67.180.11.233",
+                            @"url": @"https://httpbin.org/post"
                             };
     result.responseCode = 200;
     result.expectedSceneNumber = 0;
     result.expectedNumberOfFrames = 4;
     return result;
+}
+
+- (void)_assertDataFrame:(BKRDataFrame *)dataFrame withData:(NSData *)data {
+    XCTAssertNotNil(dataFrame);
+    XCTAssertNotNil(data);
+    XCTAssertNotNil(dataFrame.rawData);
+    XCTAssertEqualObjects(dataFrame.rawData, data);
+}
+
+- (void)_assertResponseFrame:(BKRResponseFrame *)responseFrame withResponse:(NSURLResponse *)response {
+    XCTAssertNotNil(responseFrame);
+    XCTAssertNotNil(response);
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSHTTPURLResponse *castedDataTaskResponse = (NSHTTPURLResponse *)response;
+        XCTAssertEqualObjects(responseFrame.allHeaderFields, castedDataTaskResponse.allHeaderFields);
+        XCTAssertEqual(responseFrame.statusCode, castedDataTaskResponse.statusCode);
+    }
+}
+
+- (void)_assertRequestFrame:(BKRRequestFrame *)requestFrame withRequest:(NSURLRequest *)request andIgnoreHeaderFields:(BOOL)shouldIgnoreHeaderFields {
+    XCTAssertNotNil(requestFrame);
+    XCTAssertNotNil(request);
+    XCTAssertEqual(requestFrame.HTTPShouldHandleCookies, request.HTTPShouldHandleCookies);
+    XCTAssertEqual(requestFrame.HTTPShouldUsePipelining, request.HTTPShouldUsePipelining);
+    if (!shouldIgnoreHeaderFields) {
+        XCTAssertEqualObjects(requestFrame.allHTTPHeaderFields, request.allHTTPHeaderFields);
+    }
+    XCTAssertEqualObjects(requestFrame.URL, request.URL);
+    XCTAssertEqual(requestFrame.timeoutInterval, request.timeoutInterval);
+    XCTAssertEqualObjects(requestFrame.HTTPMethod, request.HTTPMethod);
+    XCTAssertEqual(requestFrame.allowsCellularAccess, request.allowsCellularAccess);
+}
+
+- (void)_assertErrorFrame:(BKRErrorFrame *)errorFrame withError:(NSError *)error {
+    XCTAssertNotNil(errorFrame);
+    XCTAssertNotNil(error);
+    XCTAssertEqual(errorFrame.code, error.code);
+    XCTAssertEqualObjects(errorFrame.domain, error.domain);
+    if (errorFrame.userInfo || error.userInfo) {
+        XCTAssertEqualObjects(errorFrame.userInfo, error.userInfo);
+    }
 }
 
 @end

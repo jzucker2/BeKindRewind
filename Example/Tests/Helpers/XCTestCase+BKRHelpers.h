@@ -26,7 +26,7 @@
 @property (nonatomic, strong) NSDictionary *responseAllHeaderFields; // if this is set, then hasResponse is automatically set to YES, expects responseCode to be set if this is set
 @property (nonatomic, assign) NSInteger expectedSceneNumber;
 @property (nonatomic, assign) NSInteger expectedNumberOfFrames;
-@property (nonatomic, assign) BOOL automaticallyAssignSceneNumberForAssertion;
+@property (nonatomic, assign) BOOL automaticallyAssignSceneNumberForAssertion; // YES by default
 @property (nonatomic, assign) BOOL hasCurrentRequest; // default NO
 @property (nonatomic, strong) NSDictionary *originalRequestAllHTTPHeaderFields;
 @property (nonatomic, assign) BOOL isRecording; // no by default
@@ -35,13 +35,17 @@
 + (instancetype)result;
 @end
 
+@class BKRScene;
+typedef void (^BKRTestSceneAssertionHandler)(BKRScene *scene);
+typedef void (^BKRTestBatchSceneAssertionHandler)(NSArray<BKRScene *> *scenes);
+
 typedef void (^BKRTestNetworkCompletionHandler)(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
-typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error);
+typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error, BKRTestSceneAssertionHandler sceneAssertions);
 
 typedef void (^BKRTestBatchNetworkCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
-typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error);
+typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions);
 
-@class BKRScene, BKRPlayer, BKRCassette;
+@class BKRPlayer, BKRCassette;
 @interface XCTestCase (BKRHelpers)
 
 - (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
