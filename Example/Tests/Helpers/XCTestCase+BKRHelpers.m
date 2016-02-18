@@ -19,6 +19,7 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRCassette+Playable.h>
+#import <BeKindRewind/BKRFilePathHelper.h>
 #import "XCTestCase+BKRHelpers.h"
 
 static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2016 18:18:46 GMT";
@@ -193,6 +194,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
                 XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], kBKRTestHTTPBinResponseDateStringValue);
             }
+        } else if ([actualResponseKey isEqualToString:@"Content-Length"]) {
+            XCTAssertEqualWithAccuracy([actualResponseHeaderFields[actualResponseKey] integerValue], [expectedResult.responseAllHeaderFields[actualResponseKey] integerValue], 5);
         } else {
             XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
         }
@@ -580,6 +583,100 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     if (errorFrame.userInfo || error.userInfo) {
         XCTAssertEqualObjects(errorFrame.userInfo, error.userInfo);
     }
+}
+
+- (void)assertCassettePath:(NSString *)cassetteFilePath matchesExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
+    XCTAssertTrue([BKRFilePathHelper filePathExists:cassetteFilePath]);
+    NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
+    XCTAssertTrue([cassetteDictionary isKindOfClass:[NSDictionary class]]);
+    XCTAssertTrue([cassetteDictionary[@"creationDate"] isKindOfClass:[NSDate class]]);
+    NSArray *scenes = cassetteDictionary[@"scenes"];
+    XCTAssertEqual(expectedResults.count, scenes.count);
+    // if there are no expected recordings, then there are no more comparisons left
+    if (!expectedResults.count) {
+        return;
+    }
+    
+}
+
+#pragma mark - VCR helpers
+
+- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr {
+    vcr.beginRecordingBlock = ^void(NSURLSessionTask *task) {
+        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
+        task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
+    };
+    
+    vcr.endRecordingBlock = ^void(NSURLSessionTask *task) {
+        [task.recordingExpectation fulfill];
+    };
+}
+
+- (void)insertCassetteFilePath:(NSString *)cassetteFilePath intoVCR:(id<BKRVCRActions>)vcr {
+    XCTAssertNotNil(cassetteFilePath);
+    XCTAssertNotNil(vcr);
+    __block XCTestExpectation *insertExpectation = [self expectationWithDescription:@"insert expectation"];
+    XCTAssertTrue([vcr insert:cassetteFilePath completionHandler:^(BOOL result, NSString *filePath) {
+        [insertExpectation fulfill];
+        insertExpectation = nil;
+    }]);
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)resetVCR:(id<BKRVCRActions>)vcr {
+    __block XCTestExpectation *resetExpectation = [self expectationWithDescription:@"reset expectation"];
+    [vcr resetWithCompletionBlock:^{
+        [resetExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (BOOL)ejectCassetteFromVCR:(id<BKRVCRActions>)vcr {
+    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
+    BOOL result = [vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
+        [ejectExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    return result;
+}
+
+- (void)playVCR:(id<BKRVCRActions>)vcr {
+    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
+    [vcr playWithCompletionBlock:^{
+        [playExpectation fulfill];
+        playExpectation = nil;
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)recordVCR:(id<BKRVCRActions>)vcr {
+    __block XCTestExpectation *recordExpectation = [self expectationWithDescription:@"start recording expectation"];
+    [vcr recordWithCompletionBlock:^{
+        [recordExpectation fulfill];
+        recordExpectation = nil;
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)stopVCR:(id<BKRVCRActions>)vcr {
+    __block XCTestExpectation *stopExpectation = [self expectationWithDescription:@"stop vcr expectation"];
+    [vcr stopWithCompletionBlock:^{
+        [stopExpectation fulfill];
+        stopExpectation = nil;
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
 }
 
 @end
