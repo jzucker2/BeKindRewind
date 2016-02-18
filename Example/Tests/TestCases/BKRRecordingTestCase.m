@@ -41,8 +41,8 @@
 }
 
 - (void)testNotRecordingGETRequestWhenRecorderIsNotExplicitlyEnabled {
-    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test"];
-    [self BKRTest_executeNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 0);
     }];
 }
@@ -50,14 +50,14 @@
 - (void)testNotRecordingGETRequestWhenRecorderIsExplicitlyDisabled {
     [self setRecorderToEnabledWithExpectation:NO];
     
-    BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:@"test=test"];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[result] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 0);
     }];
 }
 
 - (void)testRecordingOneGETRequest {
-    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test"];
+    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
@@ -65,7 +65,7 @@
 
 - (void)testSwitchRecordingOffThenOn {
     [self setRecorderToEnabledWithExpectation:NO];
-    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test"];
+    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 0);
     }];
@@ -78,7 +78,7 @@
 }
 
 - (void)testSwitchRecordingOnThenOff {
-    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test"];
+    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
@@ -91,22 +91,22 @@
 }
 
 - (void)testRecordingOneCancelledGETRequest {
-    BKRTestExpectedResult *cancelledResult = [self HTTPBinCancelledRequest];
+    BKRTestExpectedResult *cancelledResult = [self HTTPBinCancelledRequestWithRecording:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[cancelledResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
 }
 
 - (void)testRecordingOnePOSTRequest {
-    BKRTestExpectedResult *result = [self HTTPBinPostRequest];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[result] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinPostRequestWithRecording:YES];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
 }
 
 - (void)testRecordingMultipleGETRequests {
-    BKRTestExpectedResult *firstResult = [self HTTPBinGetRequestWithQueryString:@"test=test"];
-    BKRTestExpectedResult *secondResult = [self HTTPBinGetRequestWithQueryString:@"test=test2"];
+    BKRTestExpectedResult *firstResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
+    BKRTestExpectedResult *secondResult = [self HTTPBinGetRequestWithQueryString:@"test=test2" withRecording:YES];
 
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error) {
         if (result == firstResult) {

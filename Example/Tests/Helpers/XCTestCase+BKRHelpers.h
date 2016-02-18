@@ -26,8 +26,10 @@
 @property (nonatomic, strong) NSDictionary *responseAllHeaderFields; // if this is set, then hasResponse is automatically set to YES, expects responseCode to be set if this is set
 @property (nonatomic, assign) NSInteger expectedSceneNumber;
 @property (nonatomic, assign) NSInteger expectedNumberOfFrames;
+@property (nonatomic, assign) BOOL automaticallyAssignSceneNumberForAssertion;
 @property (nonatomic, assign) BOOL hasCurrentRequest; // default NO
 @property (nonatomic, strong) NSDictionary *originalRequestAllHTTPHeaderFields;
+@property (nonatomic, assign) BOOL isRecording; // no by default
 @property (nonatomic, assign) BOOL shouldCompareCurrentRequestHTTPHeaderFields; // default is NO
 @property (nonatomic, strong) NSDictionary *currentRequestAllHTTPHeaderFields; // setting this turns hasCurrentRequest to YES automatically
 + (instancetype)result;
@@ -68,8 +70,8 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 //- (void)BKRTest_executeHTTPBinNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
 
-- (BKRTestExpectedResult *)HTTPBinCancelledRequest;
-- (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString;
-- (BKRTestExpectedResult *)HTTPBinPostRequest;
+- (BKRTestExpectedResult *)HTTPBinCancelledRequestWithRecording:(BOOL)isRecording;
+- (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString withRecording:(BOOL)isRecording;
+- (BKRTestExpectedResult *)HTTPBinPostRequestWithRecording:(BOOL)isRecording;
 
 @end

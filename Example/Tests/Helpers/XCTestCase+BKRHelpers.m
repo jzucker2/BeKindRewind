@@ -30,6 +30,8 @@
         _hasCurrentRequest = NO;
         _taskUniqueIdentifier = [NSUUID UUID].UUIDString;
         _shouldCompareCurrentRequestHTTPHeaderFields = NO;
+        _isRecording = NO;
+        _automaticallyAssignSceneNumberForAssertion = NO;
     }
     return self;
 }
@@ -143,6 +145,9 @@
 - (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
     for (NSInteger i=0; i < expectedResults.count; i++) {
         BKRTestExpectedResult *expectedResult = expectedResults[i];
+        if (expectedResult.automaticallyAssignSceneNumberForAssertion) {
+            expectedResult.expectedSceneNumber = i;
+        }
         [self BKRTest_executeNetworkCallWithExpectedResult:expectedResult withTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
             if (networkCompletionAssertions) {
                 networkCompletionAssertions(expectedResult, task, data, response, error);
@@ -171,7 +176,12 @@
                 // ensure that result from network is as expected
                 XCTAssertEqualObjects(result.HTTPBodyJSON, receivedDataDictionary);
             } else {
-                XCTAssertEqualObjects(dataDict[@"args"], result.receivedJSON);
+                if (result.isRecording) {
+                    XCTAssertEqualObjects(dataDict[@"args"], result.receivedJSON[@"args"]);
+                    XCTAssertEqualObjects(dataDict[@"url"], result.receivedJSON[@"url"]);
+                } else {
+                    XCTAssertEqualObjects(dataDict, result.receivedJSON);
+                }
             }
         }
         if (networkCompletionAssertions) {
@@ -342,8 +352,9 @@
 
 #pragma mark - HTTPBin helpers
 
-- (BKRTestExpectedResult *)HTTPBinCancelledRequest {
+- (BKRTestExpectedResult *)HTTPBinCancelledRequestWithRecording:(BOOL)isRecording {
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
+    expectedResult.isRecording = isRecording;
     expectedResult.URLString = @"https://httpbin.org/delay/10";
     expectedResult.shouldCancel = YES;
     expectedResult.errorCode = -999;
@@ -358,7 +369,7 @@
     return expectedResult;
 }
 
-- (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString {
+- (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString withRecording:(BOOL)isRecording {
     NSString *finalQueryItemString = nil;
     NSMutableDictionary *argsDict = nil;
     if (queryString) {
@@ -371,15 +382,28 @@
         }
     }
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
+    expectedResult.isRecording = isRecording;
     expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/get%@", (finalQueryItemString ? finalQueryItemString : @"")];
     expectedResult.responseCode = 200;
     expectedResult.expectedNumberOfFrames = 4;
-    expectedResult.receivedJSON = argsDict.copy;
+    expectedResult.receivedJSON = @{
+                                    @"args": argsDict.copy,
+                                    @"headers": @{
+                                            @"Accept": @"*/*",
+                                            @"Accept-Endcoding": @"gzip, deflate",
+                                            @"Accept-Language": @"en-us",
+                                            @"Host": @"httpbin.org",
+                                            @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0",
+                                            },
+                                    @"origin": @"98.210.195.88",
+                                    @"url": expectedResult.URLString,
+                                    };
     return expectedResult;
 }
 
-- (BKRTestExpectedResult *)HTTPBinPostRequest {
+- (BKRTestExpectedResult *)HTTPBinPostRequestWithRecording:(BOOL)isRecording {
     BKRTestExpectedResult *result = [BKRTestExpectedResult result];
+    result.isRecording = isRecording;
     result.URLString = @"https://httpbin.org/post";
     result.HTTPMethod = @"POST";
     result.HTTPBodyJSON = @{

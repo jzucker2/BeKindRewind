@@ -364,7 +364,7 @@
 //}
 
 - (void)testPlayingOneGETRequest {
-    BKRTestExpectedResult *getResult = [self HTTPBinGetRequestWithQueryString:@"test=test"];
+    BKRTestExpectedResult *getResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
     __block BKRPlayer *player = [self playerWithExpectedResults:@[getResult]];
     [self setPlayer:player withExpectationToEnabled:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
