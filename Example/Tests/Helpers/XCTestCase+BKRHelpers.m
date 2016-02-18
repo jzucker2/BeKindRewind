@@ -596,7 +596,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     if (!expectedResults.count) {
         return;
     }
-    
 }
 
 #pragma mark - VCR helpers
