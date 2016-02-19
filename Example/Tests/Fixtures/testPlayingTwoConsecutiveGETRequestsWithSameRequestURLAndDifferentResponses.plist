@@ -76,9 +76,9 @@
 						<key>Content-Length</key>
 						<string>19</string>
 						<key>Content-Type</key>
-						<string>text/javascript; charset="UTF-8"</string>
+						<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 						<key>Date</key>
-						<string>Fri, 12 Feb 2016 00:29:20 GMT</string>
+						<string>Thu, 18 Feb 2016 18:18:46 GMT</string>
 					</dict>
 					<key>class</key>
 					<string>BKRResponseFrame</string>
@@ -95,9 +95,7 @@
 					<key>creationDate</key>
 					<date>2016-02-12T00:29:20Z</date>
 					<key>data</key>
-					<data>
-					WzE0NTUyMzY5NjA5NDMxMTE4XQ==
-					</data>
+					<data>WzE0NTUyMzY5NjA5NDMxMTE4XQ==</data>
 					<key>uniqueIdentifier</key>
 					<string>0B573EE1-CBB1-4756-9549-F00C8E0A165A</string>
 				</dict>
@@ -175,9 +173,9 @@
 						<key>Content-Length</key>
 						<string>19</string>
 						<key>Content-Type</key>
-						<string>text/javascript; charset="UTF-8"</string>
+						<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 						<key>Date</key>
-						<string>Fri, 12 Feb 2016 00:29:21 GMT</string>
+						<string>Thu, 18 Feb 2016 18:18:46 GMT</string>
 					</dict>
 					<key>class</key>
 					<string>BKRResponseFrame</string>
@@ -194,9 +192,7 @@
 					<key>creationDate</key>
 					<date>2016-02-12T00:29:21Z</date>
 					<key>data</key>
-					<data>
-					WzE0NTUyMzY5NjEwMzAwNjYyXQ==
-					</data>
+					<data>WzE0NTUyMzY5NjEwMzAwNjYyXQ==</data>
 					<key>uniqueIdentifier</key>
 					<string>B705C7C7-8FF0-4C1F-B07B-FBFA72065BB2</string>
 				</dict>
