@@ -72,7 +72,7 @@
 						<key>Content-Type</key>
 						<string>application/json</string>
 						<key>Date</key>
-						<string>Fri, 12 Feb 2016 00:29:19 GMT</string>
+						<string>Thu, 18 Feb 2016 18:18:46 GMT</string>
 						<key>Server</key>
 						<string>nginx</string>
 						<key>access-control-allow-credentials</key>
@@ -93,21 +93,7 @@
 					<key>creationDate</key>
 					<date>2016-02-12T00:29:19Z</date>
 					<key>data</key>
-					<data>
-					ewogICJhcmdzIjogewogICAgInRlc3QiOiAi
-					dGVzdCIKICB9LCAKICAiaGVhZGVycyI6IHsK
-					ICAgICJBY2NlcHQiOiAiKi8qIiwgCiAgICAi
-					QWNjZXB0LUVuY29kaW5nIjogImd6aXAsIGRl
-					ZmxhdGUiLCAKICAgICJBY2NlcHQtTGFuZ3Vh
-					Z2UiOiAiZW4tdXMiLCAKICAgICJIb3N0Ijog
-					Imh0dHBiaW4ub3JnIiwgCiAgICAiVXNlci1B
-					Z2VudCI6ICJ4Y3Rlc3QgKHVua25vd24gdmVy
-					c2lvbikgQ0ZOZXR3b3JrLzc1OC4xLjYgRGFy
-					d2luLzE1LjMuMCIKICB9LCAKICAib3JpZ2lu
-					IjogIjE5OC4wLjIwOS4yMzgiLCAKICAidXJs
-					IjogImh0dHBzOi8vaHR0cGJpbi5vcmcvZ2V0
-					P3Rlc3Q9dGVzdCIKfQo=
-					</data>
+					<data>ewogICJhcmdzIjogewogICAgInRlc3QiOiAidGVzdCIKICB9LCAKICAiaGVhZGVycyI6IHsKICAgICJBY2NlcHQiOiAiKi8qIiwgCiAgICAiQWNjZXB0LUVuY29kaW5nIjogImd6aXAsIGRlZmxhdGUiLCAKICAgICJBY2NlcHQtTGFuZ3VhZ2UiOiAiZW4tdXMiLCAKICAgICJIb3N0IjogImh0dHBiaW4ub3JnIiwgCiAgICAiVXNlci1BZ2VudCI6ICJ4Y3Rlc3QgKHVua25vd24gdmVyc2lvbikgQ0ZOZXR3b3JrLzc1OC4xLjYgRGFyd2luLzE1LjMuMCIKICB9LCAKICAib3JpZ2luIjogIjE5OC4wLjIwOS4yMzgiLCAKICAidXJsIjogImh0dHBzOi8vaHR0cGJpbi5vcmcvZ2V0P3Rlc3Q9dGVzdCIKfQo=</data>
 					<key>uniqueIdentifier</key>
 					<string>B12A4CFB-DE4D-48C9-82EC-05836986D2DC</string>
 				</dict>
@@ -181,7 +167,7 @@
 						<key>Content-Type</key>
 						<string>application/json</string>
 						<key>Date</key>
-						<string>Fri, 12 Feb 2016 00:29:19 GMT</string>
+						<string>Thu, 18 Feb 2016 18:18:46 GMT</string>
 						<key>Server</key>
 						<string>nginx</string>
 						<key>access-control-allow-credentials</key>
@@ -202,21 +188,7 @@
 					<key>creationDate</key>
 					<date>2016-02-12T00:29:19Z</date>
 					<key>data</key>
-					<data>
-					ewogICJhcmdzIjogewogICAgInRlc3QiOiAi
-					dGVzdDIiCiAgfSwgCiAgImhlYWRlcnMiOiB7
-					CiAgICAiQWNjZXB0IjogIiovKiIsIAogICAg
-					IkFjY2VwdC1FbmNvZGluZyI6ICJnemlwLCBk
-					ZWZsYXRlIiwgCiAgICAiQWNjZXB0LUxhbmd1
-					YWdlIjogImVuLXVzIiwgCiAgICAiSG9zdCI6
-					ICJodHRwYmluLm9yZyIsIAogICAgIlVzZXIt
-					QWdlbnQiOiAieGN0ZXN0ICh1bmtub3duIHZl
-					cnNpb24pIENGTmV0d29yay83NTguMS42IERh
-					cndpbi8xNS4zLjAiCiAgfSwgCiAgIm9yaWdp
-					biI6ICIxOTguMC4yMDkuMjM4IiwgCiAgInVy
-					bCI6ICJodHRwczovL2h0dHBiaW4ub3JnL2dl
-					dD90ZXN0PXRlc3QyIgp9Cg==
-					</data>
+					<data>ewogICJhcmdzIjogewogICAgInRlc3QiOiAidGVzdDIiCiAgfSwgCiAgImhlYWRlcnMiOiB7CiAgICAiQWNjZXB0IjogIiovKiIsIAogICAgIkFjY2VwdC1FbmNvZGluZyI6ICJnemlwLCBkZWZsYXRlIiwgCiAgICAiQWNjZXB0LUxhbmd1YWdlIjogImVuLXVzIiwgCiAgICAiSG9zdCI6ICJodHRwYmluLm9yZyIsIAogICAgIlVzZXItQWdlbnQiOiAieGN0ZXN0ICh1bmtub3duIHZlcnNpb24pIENGTmV0d29yay83NTguMS42IERhcndpbi8xNS4zLjAiCiAgfSwgCiAgIm9yaWdpbiI6ICIxOTguMC4yMDkuMjM4IiwgCiAgInVybCI6ICJodHRwczovL2h0dHBiaW4ub3JnL2dldD90ZXN0PXRlc3QyIgp9Cg==</data>
 					<key>uniqueIdentifier</key>
 					<string>364ABED2-A8BD-4BDB-9552-B96BA5590715</string>
 				</dict>

@@ -78,8 +78,8 @@
     BKRWeakify(self);
     [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
-        NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
         if (!cassette) {
+            NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
             return;
         }
         if (![self _shouldRecord:frame]) {
@@ -115,12 +115,10 @@
     BKRBeginRecordingTaskBlock currentBeginRecordingBlock = self.beginRecordingBlock;
     if (currentBeginRecordingBlock) {
         if ([NSThread isMainThread]) {
-            NSLog(@"main queue");
             currentBeginRecordingBlock(task);
         } else {
             // if recorder was called from a background queue, then make sure this is called on the main queue
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSLog(@"schedule on main queue");
                 currentBeginRecordingBlock(task);
             });
         }
