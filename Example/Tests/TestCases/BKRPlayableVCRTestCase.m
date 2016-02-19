@@ -44,117 +44,37 @@
 }
 
 // the fixture for this exists, and is asserted in the setUp
-// this fixture is an exact copy of `testPlayingOneGETRequest` so assert that the date is different, because rest of the test should be about the same
-// TODO: fix
-//- (void)DISABLE_testNoMockingWhenVCRIsNotSentPlay {
-//    BKRWeakify(self);
-//    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        BKRStrongify(self);
-//        XCTAssertNotNil(data);
-//        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertNotNil(castedResponse.allHeaderFields[@"Date"]);
-//        XCTAssertNotEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:20 GMT", @"actual received response is different");
-//        
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
-//}
-//
-//- (void)testOffThenOn {
-//    NSString *expectedHeaderFieldDateString = @"Fri, 12 Feb 2016 23:27:29 GMT";
-//    BKRWeakify(self);
-//    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        BKRStrongify(self);
-//        XCTAssertNotNil(data);
-//        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertNotNil(castedResponse.allHeaderFields[@"Date"]);
-//        XCTAssertNotEqualObjects(castedResponse.allHeaderFields[@"Date"], expectedHeaderFieldDateString, @"actual received response is different");
-//        
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
-//    
-//    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
-//    [self.vcr playWithCompletionBlock:^{
-//        [playExpectation fulfill];
-//        playExpectation = nil;
-//    }];
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//    }];
-//    
-//    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        BKRStrongify(self);
-//        XCTAssertNotNil(data);
-//        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], expectedHeaderFieldDateString, @"actual received response is different");
-//        
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
-//}
-//
-//- (void)testOnThenOff {
-//    NSString *expectedHeaderFieldDateString = @"Fri, 12 Feb 2016 23:27:29 GMT";
-//    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
-//    [self.vcr playWithCompletionBlock:^{
-//        [playExpectation fulfill];
-//        playExpectation = nil;
-//    }];
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//    }];
-//    BKRWeakify(self);
-//    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        BKRStrongify(self);
-//        XCTAssertNotNil(data);
-//        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], expectedHeaderFieldDateString, @"actual received response is different");
-//        
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
-//    
-//    __block XCTestExpectation *stopExpectation = [self expectationWithDescription:@"stop playing expectation"];
-//    [self.vcr stopWithCompletionBlock:^{
-//        [stopExpectation fulfill];
-//        stopExpectation = nil;
-//    }];
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//    }];
-//    
-//    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        BKRStrongify(self);
-//        XCTAssertNotNil(data);
-//        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertNotNil(castedResponse.allHeaderFields[@"Date"]);
-//        XCTAssertNotEqualObjects(castedResponse.allHeaderFields[@"Date"], expectedHeaderFieldDateString, @"actual received response is different");
-//        
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
-//}
+- (void)testNoMockingWhenVCRIsNotSentPlay {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+}
+
+- (void)testOffThenOn {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+    expectedResult.isRecording = NO;
+    [self playVCR:self.vcr];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+}
+
+- (void)testOnThenOff {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
+    [self playVCR:self.vcr];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+    expectedResult.isRecording = YES;
+    [self stopVCR:self.vcr];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+}
 
 - (void)testPlayingOneGETRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
@@ -170,27 +90,6 @@
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[cancelledRequest] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
-//    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
-//    [self.vcr playWithCompletionBlock:^{
-//        [playExpectation fulfill];
-//        playExpectation = nil;
-//    }];
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//    }];
-////    BKRWeakify(self);
-//    [self cancellingGetTaskWithURLString:@"https://httpbin.org/delay/10" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        XCTAssertEqual(error.code, -999);
-//        XCTAssertEqualObjects(error.domain, NSURLErrorDomain);
-//        NSDictionary *expectedErrorUserInfo = @{
-//                                                NSURLErrorFailingURLErrorKey: [NSURL URLWithString:@"https://httpbin.org/delay/10"],
-//                                                NSURLErrorFailingURLStringErrorKey: @"https://httpbin.org/delay/10",
-//                                                NSLocalizedDescriptionKey: @"cancelled"
-//                                                };
-//        XCTAssertEqualObjects(error.userInfo, expectedErrorUserInfo);
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
 }
 
 - (void)testPlayingOnePOSTRequest {
@@ -199,36 +98,6 @@
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[postResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
-//    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
-//    [self.vcr playWithCompletionBlock:^{
-//        [playExpectation fulfill];
-//        playExpectation = nil;
-//    }];
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//    }];
-//    
-//    NSDictionary *sendingJSON = @{@"foo":@"bar"};
-//    
-//    [self postJSON:sendingJSON withURLString:@"https://httpbin.org/post" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        XCTAssertNil(error);
-//        XCTAssertNotNil(data);
-//        // ensure that data returned is same as data posted
-//        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-//        NSDictionary *formDict = dataDict[@"form"];
-//        // for this service, need to fish out the data sent
-//        NSArray *formKeys = formDict.allKeys;
-//        NSString *rawReceivedDataString = formKeys.firstObject;
-//        NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-//        // ensure that result from network is as expected
-//        XCTAssertEqualObjects(sendingJSON, receivedDataDictionary);
-//        
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:20 GMT", @"actual received response is different");
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
 }
 
 - (void)testPlayingMultipleGETRequests {
@@ -238,42 +107,6 @@
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
-//    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
-//    [self.vcr playWithCompletionBlock:^{
-//        [playExpectation fulfill];
-//        playExpectation = nil;
-//    }];
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//    }];
-//    BKRWeakify(self);
-//    [self getTaskWithURLString:@"https://httpbin.org/get?test=test" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        BKRStrongify(self);
-//        XCTAssertNotNil(data);
-//        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test"});
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:19 GMT", @"actual received response is different");
-//        
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
-//    
-//    [self getTaskWithURLString:@"https://httpbin.org/get?test=test2" taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        BKRStrongify(self);
-//        XCTAssertNotNil(data);
-//        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertEqualObjects(dataDict[@"args"], @{@"test": @"test2"});
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:19 GMT", @"actual received response is different");
-//        
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
 }
 
 //- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
