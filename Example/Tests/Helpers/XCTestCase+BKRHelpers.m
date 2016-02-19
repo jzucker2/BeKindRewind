@@ -398,6 +398,21 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }
 }
 
+- (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes {
+    NSParameterAssert(numberOfScenes);
+    NSMutableArray<BKRTestExpectedResult *> *results = [NSMutableArray array];
+    for (NSUInteger i=0; i < numberOfScenes; i++) {
+        NSString *queryString = [NSString stringWithFormat:@"scene=%ld", (long)i];
+        BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:queryString withRecording:NO];
+        XCTAssertNotNil(result);
+        [results addObject:result];
+    }
+    XCTAssertEqual(results.count, numberOfScenes);
+    BKRCassette *cassette = [self cassetteFromExpectedResults:results.copy];
+    XCTAssertNotNil(cassette);
+    XCTAssertEqual(cassette.allScenes.count, numberOfScenes);
+}
+
 - (NSMutableDictionary *)standardDataDictionary {
     return [@{
               @"class": @"BKRDataFrame",

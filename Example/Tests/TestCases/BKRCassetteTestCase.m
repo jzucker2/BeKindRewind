@@ -9,7 +9,7 @@
 #import <BeKindRewind/BKRCassette+Playable.h>
 #import <BeKindRewind/BKRCassette+Recordable.h>
 #import "BKRBaseTestCase.h"
-#import "XCTestCase+BKRAdditions.h"
+#import "XCTestCase+BKRHelpers.h"
 
 @interface BKRCassetteTestCase : BKRBaseTestCase
 
