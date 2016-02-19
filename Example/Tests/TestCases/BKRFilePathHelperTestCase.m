@@ -8,7 +8,6 @@
 
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import <XCTest/XCTest.h>
-#import "XCTestCase+BKRAdditions.h"
 
 @interface BKRFilePathHelperTestCase : XCTestCase
 
