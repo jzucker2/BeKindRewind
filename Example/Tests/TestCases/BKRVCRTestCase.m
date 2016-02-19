@@ -11,7 +11,7 @@
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
-#import "XCTestCase+BKRAdditions.h"
+#import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
 @interface BKRVCRTestCase : BKRBaseTestCase
