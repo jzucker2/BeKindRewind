@@ -21,6 +21,7 @@
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRCassette+Playable.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
+#import <BeKindRewind/BKRVCR.h>
 #import "XCTestCase+BKRHelpers.h"
 
 static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2016 18:18:46 GMT";
@@ -124,6 +125,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher {
     return [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
+}
+
+- (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption {
+    return [BKRVCR vcrWithMatcherClass:[BKRPlayheadMatcher class] andEmptyCassetteSavingOption:cassetteSavingOption];
 }
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
