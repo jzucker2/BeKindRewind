@@ -8,7 +8,6 @@
 
 #import <BeKindRewind/BKRPlayableVCR.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
-#import <BeKindRewind/BKRPlayheadMatcher.h>
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRHelpers.h"
 
@@ -31,7 +30,7 @@
     NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:self.testPlayingFilePath];
     XCTAssertNotNil(cassetteDictionary);
     
-    self.vcr = [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
+    self.vcr = [self playableVCRWithPlayheadMatcher];
     
     [self insertCassetteFilePath:self.testPlayingFilePath intoVCR:self.vcr];
     

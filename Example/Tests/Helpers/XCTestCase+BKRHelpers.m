@@ -8,6 +8,7 @@
 
 #import <BeKindRewind/BKRPlayer.h>
 #import <BeKindRewind/BKRRecorder.h>
+#import <BeKindRewind/BKRPlayableVCR.h>
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
@@ -115,6 +116,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)insertNewCassetteInRecorder {
     BKRCassette *cassette = [BKRCassette cassette];
     [BKRRecorder sharedInstance].currentCassette = cassette;
+}
+
+- (BKRPlayableVCR *)playableVCRWithPlayheadMatcher {
+    return [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
 }
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
