@@ -708,6 +708,95 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         return;
     }
 #warning finish this!
+    for (NSInteger i=0; i < expectedResults.count; i++) {
+        NSDictionary *scene = [scenes objectAtIndex:i];
+        XCTAssertTrue([scene isKindOfClass:[NSDictionary class]]);
+        NSString *uniqueIdentifier = scene[@"uniqueIdentifier"];
+        XCTAssertNotNil(uniqueIdentifier);
+        BKRTestExpectedResult *recording = [expectedResults objectAtIndex:i];
+        XCTAssertEqual(recording.expectedSceneNumber, i);
+        XCTAssertNotNil(recording);
+        NSArray *frames = scene[@"frames"];
+        XCTAssertNotNil(frames);
+        NSInteger numberOfRequestChecks = 0;
+        XCTAssertEqual(recording.expectedNumberOfFrames, frames.count, @"frames: %@", frames);
+        for (NSDictionary *frame in frames) {
+            XCTAssertEqualObjects(frame[@"uniqueIdentifier"], uniqueIdentifier);
+            XCTAssertTrue([frame[@"creationDate"] isKindOfClass:[NSDate class]]);
+            NSString *frameClass = frame[@"class"];
+            XCTAssertNotNil(frameClass);
+            if ([frameClass isEqualToString:@"BKRErrorFrame"]) {
+                XCTAssertEqual([frame[@"code"] integerValue], recording.errorCode);
+                XCTAssertEqualObjects(frame[@"domain"], recording.errorDomain);
+                NSDictionary *finalUserInfo;
+                if (recording.errorUserInfo) {
+                    NSMutableDictionary *comparingDictionary = recording.errorUserInfo.mutableCopy;
+                    if (comparingDictionary[NSURLErrorFailingURLErrorKey]) {
+                        comparingDictionary[NSURLErrorFailingURLErrorKey] = [recording.errorUserInfo[NSURLErrorFailingURLErrorKey] absoluteString];
+                    }
+                    finalUserInfo = comparingDictionary.copy;
+                }
+                XCTAssertEqualObjects(frame[@"userInfo"], finalUserInfo);
+            } else if ([frameClass isEqualToString:@"BKRDataFrame"]) {
+                if (recording.receivedData) {
+//                    XCTAssertEqualObjects(recording.receivedData, frame[@"data"]);
+                    
+                    
+                }
+//                //                NSData *data = [NSJSONSerialization dataWithJSONObject:recording.receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
+//                if (recording.receivedJSON) {
+//                    NSData *savedData = frame[@"data"];
+//                    XCTAssertNotNil(savedData);
+//                    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:savedData options:NSJSONReadingAllowFragments error:nil];
+//                    XCTAssertEqualObjects(recording.receivedJSON, dictionary[@"args"]);
+//                }
+            } else if ([frameClass isEqualToString:@"BKRResponseFrame"]) {
+                XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+                XCTAssertNotNil(frame[@"MIMEType"]);
+                XCTAssertEqual([frame[@"statusCode"] integerValue], recording.responseCode);
+                // check response header fields
+                [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHeaderFields"]];
+            } else if ([frameClass isEqualToString:@"BKRRequestFrame"]) {
+                XCTAssertTrue(numberOfRequestChecks < 2, @"only expecting an original request and a current request");
+                XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+                XCTAssertNotNil(frame[@"timeoutInterval"]);
+                XCTAssertNotNil(frame[@"allowsCellularAccess"]);
+                XCTAssertNotNil(frame[@"HTTPShouldHandleCookies"]);
+                XCTAssertNotNil(frame[@"HTTPShouldUsePipelining"]);
+                if (recording.HTTPMethod) {
+                    XCTAssertEqualObjects(recording.HTTPMethod, frame[@"HTTPMethod"]);
+                }
+                if (recording.HTTPBody) {
+                    XCTAssertEqualObjects(recording.HTTPBody, frame[@"HTTPBody"]);
+                }
+                if (numberOfRequestChecks == 0) {
+                    // should assert on headers too
+                    if (recording.originalRequestAllHTTPHeaderFields) {
+                        XCTAssertEqualObjects(recording.originalRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
+                    }
+                } else if (numberOfRequestChecks == 1) {
+                    if (recording.currentRequestAllHTTPHeaderFields) {
+                        XCTAssertEqualObjects(recording.currentRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
+                    }
+                } else {
+                    XCTFail(@"not expecting to have more than 2 requests: %@", frame);
+                }
+//                // should assert on headers too
+//                if (recording.originalRequestAllHTTPHeaderFields) {
+//                    XCTAssertEqualObjects(recording.originalRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
+//                }
+//                if (recording.currentRequestAllHTTPHeaderFields) {
+//                    XCTAssertEqualObjects(recording.currentRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
+//                }
+                
+                numberOfRequestChecks++;
+                
+            } else {
+                XCTFail(@"frameClass is unknown type: %@", frameClass);
+            }
+        }
+        // assert order of frames and scenes
+    }
 }
 
 #pragma mark - VCR helpers
