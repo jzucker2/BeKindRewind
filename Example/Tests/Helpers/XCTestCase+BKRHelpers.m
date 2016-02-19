@@ -215,13 +215,60 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (void)_assertExpectedResult:(BKRTestExpectedResult *)expectedResult withData:(NSData *)data {
-#warning finish this
+    NSError *JSONError = nil;
+    id JSONObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&JSONError];
+    XCTAssertNil(JSONError, @"Failed to convert data to JSON: %@", JSONError.localizedDescription);
     if ([expectedResult.URL.host isEqualToString:@"httpbin.org"]) {
-        
+        NSDictionary *dataDict = (NSDictionary *)JSONObject;
+        XCTAssertTrue([dataDict isKindOfClass:[NSDictionary class]]);
+        if ([expectedResult.HTTPMethod isEqualToString:@"POST"]) {
+            NSDictionary *formDict = dataDict[@"form"];
+            // for this service, need to fish out the data sent
+            NSArray *formKeys = formDict.allKeys;
+            NSString *rawReceivedDataString = formKeys.firstObject;
+            NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+            // ensure that result from network is as expected
+            XCTAssertEqualObjects(expectedResult.HTTPBodyJSON, receivedDataDictionary);
+        } else if (
+                   !expectedResult.HTTPMethod ||
+                   [expectedResult.HTTPMethod isEqualToString:@"GET"]
+                   ) {
+            XCTAssertEqualObjects(dataDict[@"args"], expectedResult.receivedJSON[@"args"]);
+            XCTAssertEqualObjects(dataDict[@"url"], expectedResult.receivedJSON[@"url"]);
+            XCTAssertNotNil(dataDict[@"headers"]);
+            XCTAssertNotNil(dataDict[@"origin"]);
+        } else {
+            XCTFail(@"not prepared to handle this type of request: %@", expectedResult.HTTPMethod);
+        }
     } else if ([expectedResult.URL.host isEqualToString:@"pubsub.pubnub.com"]) {
-        
+        NSArray *dataArray = (NSArray *)JSONObject;
+        XCTAssertTrue([dataArray isKindOfClass:[NSArray class]]);
+        // ensure that result from network is as expected
+        XCTAssertNotNil(dataArray);
+        NSNumber *firstTimetoken = dataArray.firstObject;
+        XCTAssertNotNil(firstTimetoken);
+        XCTAssertTrue([firstTimetoken isKindOfClass:[NSNumber class]]);
+        if (expectedResult.isRecording) {
+            NSTimeInterval firstTimeTokenAsUnix = [self _unixTimestampForPubNubTimetoken:firstTimetoken];
+            NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
+            XCTAssertEqualWithAccuracy(firstTimeTokenAsUnix, currentUnixTimestamp, 5);
+        }
     } else {
         XCTFail(@"not prepared to handle URL: %@ for expected result: %@", expectedResult.URLString, expectedResult);
+    }
+}
+
+- (void)_assertExpectedResult:(BKRTestExpectedResult *)expectedResult withActualCurrentRequestHeaderFields:(NSDictionary *)actualHeaderFields {
+    XCTAssertEqual(expectedResult.currentRequestAllHTTPHeaderFields.count, actualHeaderFields.count);
+    NSArray *actualResponseKeysArray = actualHeaderFields.allKeys;
+    for (NSInteger i=0; i<actualHeaderFields.count; i++) {
+        NSString *actualResponseKey = actualResponseKeysArray[i];
+        XCTAssertNotNil(expectedResult.currentRequestAllHTTPHeaderFields[actualResponseKey]);
+        if ([actualResponseKey isEqualToString:@"Content-Length"]) {
+            XCTAssertEqualWithAccuracy([actualHeaderFields[actualResponseKey] integerValue], [expectedResult.currentRequestAllHTTPHeaderFields[actualResponseKey] integerValue], 5);
+        } else {
+            XCTAssertEqualObjects(actualHeaderFields[actualResponseKey], expectedResult.currentRequestAllHTTPHeaderFields[actualResponseKey]);
+        }
     }
 }
 
@@ -529,11 +576,21 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
               } mutableCopy];
 }
 
-- (NSDictionary *)_expectedCurrentRequestAllHTTPHeaderFields {
+- (NSDictionary *)_expectedGETCurrentRequestAllHTTPHeaderFields {
     return @{
              @"Accept": @"*/*",
              @"Accept-Encoding": @"gzip, deflate",
              @"Accept-Language": @"en-us"
+             };
+}
+
+- (NSDictionary *)_expectedPOSTCurrentRequestAllHTTPHeaderFieldsWithContentLength:(NSString *)contentLength {
+    return @{
+             @"Accept": @"*/*",
+             @"Accept-Encoding": @"gzip, deflate",
+             @"Accept-Language": @"en-us",
+             @"Content-Length": contentLength,
+             @"Content-Type": @"application/x-www-form-urlencoded"
              };
 }
 
@@ -597,7 +654,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.isRecording = isRecording;
     expectedResult.hasCurrentRequest = YES;
     expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/get%@", (finalQueryItemString ? finalQueryItemString : @"")];
-    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedCurrentRequestAllHTTPHeaderFields];
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"338"];
     expectedResult.expectedNumberOfFrames = 4;
@@ -620,7 +677,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BKRTestExpectedResult *result = [BKRTestExpectedResult result];
     result.isRecording = isRecording;
     result.hasCurrentRequest = YES;
-    result.currentRequestAllHTTPHeaderFields = [self _expectedCurrentRequestAllHTTPHeaderFields];
+    result.currentRequestAllHTTPHeaderFields = [self _expectedPOSTCurrentRequestAllHTTPHeaderFieldsWithContentLength:@"20"];
     result.URLString = @"https://httpbin.org/post";
     result.HTTPMethod = @"POST";
     result.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"496"];
@@ -660,7 +717,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.isRecording = isRecording;
     expectedResult.hasCurrentRequest = YES;
     expectedResult.URLString = @"https://pubsub.pubnub.com/time/0";
-    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedCurrentRequestAllHTTPHeaderFields];
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.responseAllHeaderFields = [self _PNResponseAllHeaderFieldsWithContentLength:@"19"];
     expectedResult.expectedNumberOfFrames = 4;
@@ -770,17 +827,20 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 if (recording.HTTPMethod) {
                     XCTAssertEqualObjects(recording.HTTPMethod, frame[@"HTTPMethod"]);
                 }
-                if (recording.HTTPBody) {
-                    XCTAssertEqualObjects(recording.HTTPBody, frame[@"HTTPBody"]);
-                }
                 if (numberOfRequestChecks == 0) {
+                    // original request has the upload data, the current request does not
+                    if (recording.HTTPBody) {
+                        XCTAssertEqualObjects(recording.HTTPBody, frame[@"HTTPBody"]);
+                    }
                     // should assert on headers too
                     if (recording.originalRequestAllHTTPHeaderFields) {
                         XCTAssertEqualObjects(recording.originalRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
                     }
                 } else if (numberOfRequestChecks == 1) {
                     if (recording.currentRequestAllHTTPHeaderFields) {
-                        XCTAssertEqualObjects(recording.currentRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
+                        [self _assertExpectedResult:recording withActualCurrentRequestHeaderFields:frame[@"allHTTPHeaderFields"]];
+//                        [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHTTPHeaderFields"]];
+//                        XCTAssertEqualObjects(recording.currentRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
                     }
                 } else {
                     XCTFail(@"not expecting to have more than 2 requests: %@", frame);
