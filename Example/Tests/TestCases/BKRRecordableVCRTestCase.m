@@ -8,8 +8,6 @@
 
 #import <BeKindRewind/BKRRecordableVCR.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
-#import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
-#import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import <BeKindRewind/BKRCassette.h>
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRHelpers.h"

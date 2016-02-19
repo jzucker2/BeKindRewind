@@ -7,7 +7,6 @@
 //
 
 #import <BeKindRewind/BKRRecorder.h>
-#import <BeKindRewind/BKRCassette+Recordable.h>
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
@@ -19,8 +18,7 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    BKRCassette *cassette = [BKRCassette cassette];
-    [BKRRecorder sharedInstance].currentCassette = cassette;
+    [self insertNewCassetteInRecorder];
     if (self.invocation.selector != @selector(testNotRecordingGETRequestWhenRecorderIsNotExplicitlyEnabled)) {
         [self setRecorderToEnabledWithExpectation:YES];
     }

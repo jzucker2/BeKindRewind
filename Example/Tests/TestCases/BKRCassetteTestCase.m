@@ -6,8 +6,6 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <BeKindRewind/BKRCassette+Playable.h>
-#import <BeKindRewind/BKRCassette+Recordable.h>
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRHelpers.h"
 
@@ -29,14 +27,6 @@
 
 - (void)testCreatePlayableCassetteWithManyScenes {
     [self assertCreationOfPlayableCassetteWithNumberOfScenes:20];
-}
-
-- (void)DISABLE_testCreatePlayableCasssetteWithManyScenesPerformance {
-    __weak typeof(self) wself = self;
-    [self measureBlock:^{
-        __strong typeof(wself) sself = wself;
-        [sself assertCreationOfPlayableCassetteWithNumberOfScenes:50];
-    }];
 }
 
 @end

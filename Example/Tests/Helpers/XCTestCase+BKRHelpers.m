@@ -112,6 +112,11 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 @implementation XCTestCase (BKRHelpers)
 
+- (void)insertNewCassetteInRecorder {
+    BKRCassette *cassette = [BKRCassette cassette];
+    [BKRRecorder sharedInstance].currentCassette = cassette;
+}
+
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
     NSURL *requestURL = [NSURL URLWithString:expectedResult.URLString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
