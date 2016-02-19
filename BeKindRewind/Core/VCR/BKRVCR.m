@@ -14,7 +14,6 @@
 
 @interface BKRVCR ()
 @property (nonatomic) dispatch_queue_t accessQueue;
-//@property (nonatomic) Class<BKRRequestMatching> matcherClass;
 @property (nonatomic, strong) id<BKRVCRActions> internalVCR;
 @property (nonatomic, strong) BKRRecordableVCR *recordableVCR;
 @property (nonatomic, strong) BKRPlayableVCR *playableVCR;
@@ -32,11 +31,10 @@
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
     self = [super init];
     if (self) {
-        _accessQueue = dispatch_queue_create("com.BKR.VCR.processingQueue", DISPATCH_QUEUE_CONCURRENT);
+        _accessQueue = dispatch_queue_create("com.BKR.VCR.accessQueue", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
         _cassetteFilePath = nil;
         _internalVCR = nil;
-        _shouldSaveEmptyCassette = shouldSaveEmptyCassette;
         _playableVCR = [BKRPlayableVCR vcrWithMatcherClass:matcherClass];
         _recordableVCR = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:shouldSaveEmptyCassette];
     }
@@ -49,6 +47,10 @@
 
 - (id<BKRRequestMatching>)matcher {
     return self.playableVCR.matcher;
+}
+
+- (BOOL)shouldSaveEmptyCassette {
+    return self.recordableVCR.shouldSaveEmptyCassette;
 }
 
 #pragma mark - helpers
@@ -117,6 +119,8 @@
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     // this is weird, double completion blocks?
+    // set a block variable for 0, count up for each completion shop,
+    // run the block on main queue when you hit 2
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -129,15 +133,6 @@
             });
         }
     });
-//    if (completionBlock) {
-//        if ([NSThread isMainThread]) {
-//            completionBlock();
-//        } else {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                completionBlock();
-//            });
-//        }
-//    }
 }
 
 - (BKRVCRState)state {
@@ -149,6 +144,5 @@
     });
     return currentState;
 }
-
 
 @end
