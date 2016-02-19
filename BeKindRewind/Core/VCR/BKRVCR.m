@@ -59,7 +59,7 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        self->_currentVCR = internalVCR;
+        self->_currentVCR = currentVCR;
     });
 }
 
@@ -74,6 +74,9 @@
 #pragma mark - BKRVCRActions
 
 - (void)playWithCompletionBlock:(void (^)(void))completionBlock {
+    if (!self.currentVCR) {
+        self.currentVCR = self.playableVCR;
+    }
     [self.currentVCR playWithCompletionBlock:completionBlock];
 }
 
@@ -82,10 +85,14 @@
 }
 
 - (void)stopWithCompletionBlock:(void (^)(void))completionBlock {
-    
+    [self.currentVCR stopWithCompletionBlock:completionBlock];
+    self.currentVCR = nil;
 }
 
 - (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
+    if (!self.currentVCR) {
+        self.currentVCR = self.recordableVCR;
+    }
     [self.currentVCR recordWithCompletionBlock:completionBlock];
 }
 
