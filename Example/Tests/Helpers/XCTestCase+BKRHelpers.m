@@ -48,6 +48,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     return [[self alloc] init];
 }
 
+- (NSURL *)URL {
+    return [NSURL URLWithString:self.URLString];
+}
+
 - (void)setResponseCode:(NSInteger)responseCode {
     _responseCode = responseCode;
     if (_responseCode >= 0) {
@@ -123,8 +127,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
-    NSURL *requestURL = [NSURL URLWithString:expectedResult.URLString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:expectedResult.URL];
     if (expectedResult.HTTPMethod) {
         request.HTTPMethod = expectedResult.HTTPMethod;
     }
@@ -147,6 +150,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         } else {
             XCTAssertNil(error);
             XCTAssertNotNil(data);
+            [self _assertExpectedResult:expectedResult withData:data];
             XCTAssertNotNil(response);
             if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
                 NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
@@ -208,6 +212,17 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             timeoutAssertions(executingTask, error, sceneAssertions);
         }
     }];
+}
+
+- (void)_assertExpectedResult:(BKRTestExpectedResult *)expectedResult withData:(NSData *)data {
+#warning finish this
+    if ([expectedResult.URL.host isEqualToString:@"httpbin.org"]) {
+        
+    } else if ([expectedResult.URL.host isEqualToString:@"pubsub.pubnub.com"]) {
+        
+    } else {
+        XCTFail(@"not prepared to handle URL: %@ for expected result: %@", expectedResult.URLString, expectedResult);
+    }
 }
 
 - (void)_assertExpectedResult:(BKRTestExpectedResult *)expectedResult withActualResponseHeaderFields:(NSDictionary *)actualResponseHeaderFields {
@@ -707,7 +722,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     if (!expectedResults.count) {
         return;
     }
-#warning finish this!
     for (NSInteger i=0; i < expectedResults.count; i++) {
         NSDictionary *scene = [scenes objectAtIndex:i];
         XCTAssertTrue([scene isKindOfClass:[NSDictionary class]]);
@@ -738,18 +752,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 }
                 XCTAssertEqualObjects(frame[@"userInfo"], finalUserInfo);
             } else if ([frameClass isEqualToString:@"BKRDataFrame"]) {
-                if (recording.receivedData) {
-//                    XCTAssertEqualObjects(recording.receivedData, frame[@"data"]);
-                    
-                    
-                }
-//                //                NSData *data = [NSJSONSerialization dataWithJSONObject:recording.receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
-//                if (recording.receivedJSON) {
-//                    NSData *savedData = frame[@"data"];
-//                    XCTAssertNotNil(savedData);
-//                    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:savedData options:NSJSONReadingAllowFragments error:nil];
-//                    XCTAssertEqualObjects(recording.receivedJSON, dictionary[@"args"]);
-//                }
+                XCTAssertNotNil(recording.receivedData, @"How can we have a data frame but not expect data?");
+                [self _assertExpectedResult:recording withData:frame[@"data"]];
             } else if ([frameClass isEqualToString:@"BKRResponseFrame"]) {
                 XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
                 XCTAssertNotNil(frame[@"MIMEType"]);
@@ -781,14 +785,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 } else {
                     XCTFail(@"not expecting to have more than 2 requests: %@", frame);
                 }
-//                // should assert on headers too
-//                if (recording.originalRequestAllHTTPHeaderFields) {
-//                    XCTAssertEqualObjects(recording.originalRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
-//                }
-//                if (recording.currentRequestAllHTTPHeaderFields) {
-//                    XCTAssertEqualObjects(recording.currentRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
-//                }
-                
                 numberOfRequestChecks++;
                 
             } else {

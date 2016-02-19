@@ -18,6 +18,7 @@
 @property (nonatomic, strong) NSData *HTTPBody;
 @property (nonatomic, strong) NSData *receivedData;
 @property (nonatomic, strong) id receivedJSON;
+@property (nonatomic, strong, readonly) NSURL *URL; // can't be set, fetched from URLString
 @property (nonatomic, assign) BOOL hasResponse;
 @property (nonatomic, assign, readonly) BOOL hasError; // calculated by having errorCode and errorDomain
 @property (nonatomic, assign) NSInteger errorCode;
