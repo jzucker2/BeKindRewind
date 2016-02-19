@@ -39,11 +39,6 @@
     [super setEnabled:enabled withCompletionHandler:^void(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         if (updatedEnabled) {
-            NSArray<BKRScene *> *currentScenes = (NSArray<BKRScene *> *)cassette.allScenes;
-            NSDate *now = [NSDate date];
-            NSLog(@"%s", __PRETTY_FUNCTION__);
-            NSLog(@"now: %@ stubbingCassette: %@", now, cassette);
-            NSLog(@"now: %@ currentScenes: %@", now, currentScenes);
             [self _addStubsForMatcher:self.matcher forCassette:cassette withCompletionHandler:editingBlock];
         } else {
             [self _removeAllStubs];
