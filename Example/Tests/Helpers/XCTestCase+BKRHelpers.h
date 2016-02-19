@@ -17,7 +17,7 @@
 @property (nonatomic, copy) NSString *taskUniqueIdentifier;
 @property (nonatomic, strong) NSData *HTTPBody;
 @property (nonatomic, strong) NSData *receivedData;
-@property (nonatomic, strong) NSDictionary *receivedJSON;
+@property (nonatomic, strong) id receivedJSON;
 @property (nonatomic, assign) BOOL hasResponse;
 @property (nonatomic, assign, readonly) BOOL hasError; // calculated by having errorCode and errorDomain
 @property (nonatomic, assign) NSInteger errorCode;
@@ -55,6 +55,8 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 - (void)BKRTest_executeHTTPBinNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
 
+- (void)BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
+
 - (void)assertFramesOrderForScene:(BKRScene *)scene;
 
 - (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
@@ -91,5 +93,9 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 - (BKRTestExpectedResult *)HTTPBinCancelledRequestWithRecording:(BOOL)isRecording;
 - (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString withRecording:(BOOL)isRecording;
 - (BKRTestExpectedResult *)HTTPBinPostRequestWithRecording:(BOOL)isRecording;
+
+#pragma mark - PN Helpers
+
+- (BKRTestExpectedResult *)PNGetTimeTokenWithRecording:(BOOL)isRecording;
 
 @end

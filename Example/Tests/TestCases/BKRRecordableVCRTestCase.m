@@ -188,68 +188,26 @@
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
 }
 
-//- (void)testRecordingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
-//    BKRExpectedRecording *firstRecording = [BKRExpectedRecording recording];
-//    firstRecording.URLString = @"https://pubsub.pubnub.com/time/0";
-//    firstRecording.responseStatusCode = 200;
-//    firstRecording.expectedSceneNumber = 0;
-//    firstRecording.expectedNumberOfFrames = 4;
-//    firstRecording.checkAgainstRecorder = NO;
-//    
-//    BKRExpectedRecording *secondRecording = [BKRExpectedRecording recording];
-//    secondRecording.URLString = firstRecording.URLString;
-//    secondRecording.responseStatusCode = 200;
-//    secondRecording.expectedSceneNumber = 1;
-//    secondRecording.expectedNumberOfFrames = 4;
-//    secondRecording.checkAgainstRecorder = NO;
-//    
-//    __block XCTestExpectation *startRecordingExpectation = [self expectationWithDescription:@"start recording"];
-//    [self.vcr recordWithCompletionBlock:^{
-//        [startRecordingExpectation fulfill];
-//    }];
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//    }];
-//    __block NSNumber *firstTimetoken = nil;
-//    [self recordingTaskWithExpectedRecording:firstRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertNotNil(dataArray);
-//        firstTimetoken = dataArray.firstObject;
-//        XCTAssertNotNil(firstTimetoken);
-//        XCTAssertTrue([firstTimetoken isKindOfClass:[NSNumber class]]);
-//        NSTimeInterval firstTimeTokenAsUnix = [self unixTimestampForPubNubTimetoken:firstTimetoken];
-//        NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
-//        XCTAssertEqualWithAccuracy(firstTimeTokenAsUnix, currentUnixTimestamp, 5);
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        //        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
-//    }];
-//    
-//    [self recordingTaskWithExpectedRecording:secondRecording taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertNotNil(dataArray);
-//        NSNumber *secondTimetoken = dataArray.firstObject;
-//        XCTAssertNotNil(secondTimetoken);
-//        XCTAssertTrue([secondTimetoken isKindOfClass:[NSNumber class]]);
-//        NSTimeInterval secondTimeTokenAsUnix = [self unixTimestampForPubNubTimetoken:secondTimetoken];
-//        NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
-//        XCTAssertEqualWithAccuracy(secondTimeTokenAsUnix, currentUnixTimestamp, 5);
-//        // also make sure that the two time tokens returned are different
-//        XCTAssertNotEqualObjects(firstTimetoken, secondTimetoken);
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        //        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
-//    }];
-//    
-//    __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
-//    XCTAssertTrue([self.vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
-//        [ejectExpectation fulfill];
-//    }]);
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//    }];
-//    XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
-//    [self assertCassettePath:self.testRecordingFilePath matchesExpectedRecordings:@[firstRecording, secondRecording]];
-//}
+- (void)testRecordingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+    BKRTestExpectedResult *firstResult = [self PNGetTimeTokenWithRecording:YES];
+    BKRTestExpectedResult *secondResult = [self PNGetTimeTokenWithRecording:YES];
+    [self recordVCR:self.vcr];
+    
+    BKRWeakify(self);
+    [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.vcr.currentCassette.allScenes);
+        NSInteger totalScenes = 0;
+        if (result == firstResult) {
+            totalScenes = 1;
+        } else if (result == secondResult) {
+            totalScenes = 2;
+        }
+        XCTAssertEqual(self.vcr.currentCassette.allScenes.count, totalScenes);
+    }];
+    XCTAssertTrue([self ejectCassetteFromVCR:self.vcr]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
+}
 
 @end

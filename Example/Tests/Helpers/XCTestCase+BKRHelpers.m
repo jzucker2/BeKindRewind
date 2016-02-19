@@ -65,30 +65,46 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (void)setHTTPBody:(NSData *)HTTPBody {
     _HTTPBody = HTTPBody;
-    _HTTPBodyJSON = [NSJSONSerialization JSONObjectWithData:HTTPBody options:NSJSONReadingAllowFragments error:nil];
+    if (_HTTPBody) {
+        _HTTPBodyJSON = [NSJSONSerialization JSONObjectWithData:HTTPBody options:NSJSONReadingAllowFragments error:nil];
+    } else {
+        _HTTPBodyJSON = nil;
+    }
 }
 
 - (void)setHTTPBodyJSON:(NSDictionary *)HTTPBodyJSON {
     _HTTPBodyJSON = HTTPBodyJSON;
-    _HTTPBody = [NSJSONSerialization dataWithJSONObject:HTTPBodyJSON options:NSJSONWritingPrettyPrinted error:nil];
+    if (_HTTPBodyJSON) {
+        _HTTPBody = [NSJSONSerialization dataWithJSONObject:HTTPBodyJSON options:NSJSONWritingPrettyPrinted error:nil];
+    } else {
+        _HTTPBody = nil;
+    }
 }
 
 - (void)setReceivedData:(NSData *)receivedData {
     _receivedData = receivedData;
-    _receivedJSON = [NSJSONSerialization JSONObjectWithData:receivedData options:NSJSONReadingAllowFragments error:nil];
+    if (_receivedData) {
+        _receivedJSON = [NSJSONSerialization JSONObjectWithData:receivedData options:NSJSONReadingAllowFragments error:nil];
+    } else {
+        _receivedJSON = nil;
+    }
 }
 
-- (void)setReceivedJSON:(NSDictionary *)receivedJSON {
+- (void)setReceivedJSON:(id)receivedJSON {
     _receivedJSON = receivedJSON;
-    _receivedData = [NSJSONSerialization dataWithJSONObject:receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
+    if (receivedJSON) {
+        _receivedData = [NSJSONSerialization dataWithJSONObject:receivedJSON options:NSJSONWritingPrettyPrinted error:nil];
+    } else {
+        _receivedData = nil;
+    }
 }
 
 - (void)setCurrentRequestAllHTTPHeaderFields:(NSDictionary *)currentRequestAllHTTPHeaderFields {
     _currentRequestAllHTTPHeaderFields = currentRequestAllHTTPHeaderFields;
     if (_currentRequestAllHTTPHeaderFields) {
-        self.hasCurrentRequest = YES;
+        _hasCurrentRequest = YES;
     } else {
-        self.hasCurrentRequest = NO;
+        _hasCurrentRequest = NO;
     }
 }
 
@@ -183,7 +199,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }];
 }
 
-- (void)_assertHTTPBinExpectedResult:(BKRTestExpectedResult *)expectedResult withActualResponseHeaderFields:(NSDictionary *)actualResponseHeaderFields {
+- (void)_assertExpectedResult:(BKRTestExpectedResult *)expectedResult withActualResponseHeaderFields:(NSDictionary *)actualResponseHeaderFields {
     XCTAssertEqual(expectedResult.responseAllHeaderFields.count, actualResponseHeaderFields.count);
     NSArray *actualResponseKeysArray = actualResponseHeaderFields.allKeys;
     for (NSInteger i=0; i<actualResponseHeaderFields.count; i++) {
@@ -234,7 +250,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         if (result.shouldCancel) {
             
         } else {
-            [self _assertHTTPBinExpectedResult:result withActualResponseHeaderFields:[(NSHTTPURLResponse *)response allHeaderFields]];
+            [self _assertExpectedResult:result withActualResponseHeaderFields:[(NSHTTPURLResponse *)response allHeaderFields]];
             NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
             if ([result.HTTPMethod isEqualToString:@"POST"]) {
                 NSDictionary *formDict = dataDict[@"form"];
@@ -259,6 +275,45 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             timeoutAssertions(result, task, error, batchSceneAssertions);
         }
     }];
+}
+
+- (void)BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
+    __block NSMutableSet<NSNumber *> *allReceivedTimetokens = [NSMutableSet set];
+    [self BKRTest_executeNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        if (result.shouldCancel) {
+            
+        } else {
+            [self _assertExpectedResult:result withActualResponseHeaderFields:[(NSHTTPURLResponse *)response allHeaderFields]];
+            NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+            // ensure that result from network is as expected
+            XCTAssertNotNil(dataArray);
+            NSNumber *firstTimetoken = dataArray.firstObject;
+            XCTAssertNotNil(firstTimetoken);
+            XCTAssertTrue([firstTimetoken isKindOfClass:[NSNumber class]]);
+            XCTAssertFalse([allReceivedTimetokens containsObject:firstTimetoken], @"This time token should have never been received before: %@ but we received these: %@", firstTimetoken, allReceivedTimetokens);
+            [allReceivedTimetokens addObject:firstTimetoken];
+            NSTimeInterval firstTimeTokenAsUnix = [self _unixTimestampForPubNubTimetoken:firstTimetoken];
+            NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
+            XCTAssertEqualWithAccuracy(firstTimeTokenAsUnix, currentUnixTimestamp, 5);
+        }
+        if (networkCompletionAssertions) {
+            networkCompletionAssertions(result, task, data, response, error);
+        }
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        if (timeoutAssertions) {
+            timeoutAssertions(result, task, error, batchSceneAssertions);
+        }
+    }];
+}
+
+- (NSTimeInterval)_unixTimestampForPubNubTimetoken:(NSNumber *)timetoken {
+    NSTimeInterval rawTimetoken = [timetoken doubleValue];
+    return rawTimetoken/pow(10, 7);
+}
+
+- (double)_timeIntervalForCurrentUnixTimestamp {
+    NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
+    return currentUnixTimestamp;
 }
 
 - (void)setRecorderToEnabledWithExpectation:(BOOL)enabled {
@@ -448,7 +503,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
               } mutableCopy];
 }
 
-- (NSDictionary *)_HTTPBinCurrentRequestAllHTTPHeaderFields {
+- (NSDictionary *)_expectedCurrentRequestAllHTTPHeaderFields {
     return @{
              @"Accept": @"*/*",
              @"Accept-Encoding": @"gzip, deflate",
@@ -464,6 +519,18 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
              @"Date": kBKRTestHTTPBinResponseDateStringValue,
              @"Server": @"nginx",
              @"access-control-allow-credentials": @"true"
+             };
+}
+
+- (NSDictionary *)_PNResponseAllHeaderFieldsWithContentLength:(NSString *)contentLengthString {
+    return @{
+             @"Access-Control-Allow-Methods": @"GET",
+             @"Access-Control-Allow-Origin": @"*",
+             @"Cache-Control": @"no-cache",
+             @"Connection": @"keep-alive",
+             @"Content-Length": @"19",
+             @"Content-Type": @"text/javascript; charset=\"UTF-8\"",
+             @"Date": kBKRTestHTTPBinResponseDateStringValue
              };
 }
 
@@ -504,7 +571,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.isRecording = isRecording;
     expectedResult.hasCurrentRequest = YES;
     expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/get%@", (finalQueryItemString ? finalQueryItemString : @"")];
-    expectedResult.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"338"];
     expectedResult.expectedNumberOfFrames = 4;
@@ -527,7 +594,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BKRTestExpectedResult *result = [BKRTestExpectedResult result];
     result.isRecording = isRecording;
     result.hasCurrentRequest = YES;
-    result.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
+    result.currentRequestAllHTTPHeaderFields = [self _expectedCurrentRequestAllHTTPHeaderFields];
     result.URLString = @"https://httpbin.org/post";
     result.HTTPMethod = @"POST";
     result.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"496"];
@@ -558,6 +625,23 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     result.expectedSceneNumber = 0;
     result.expectedNumberOfFrames = 4;
     return result;
+}
+
+#pragma mark - PNHelpers
+
+- (BKRTestExpectedResult *)PNGetTimeTokenWithRecording:(BOOL)isRecording {
+    BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
+    expectedResult.isRecording = isRecording;
+    expectedResult.hasCurrentRequest = YES;
+    expectedResult.URLString = @"https://pubsub.pubnub.com/time/0";
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedCurrentRequestAllHTTPHeaderFields];
+    expectedResult.responseCode = 200;
+    expectedResult.responseAllHeaderFields = [self _PNResponseAllHeaderFieldsWithContentLength:@"19"];
+    expectedResult.expectedNumberOfFrames = 4;
+    expectedResult.receivedJSON = @[
+                                    @"what"
+                                    ];
+    return expectedResult;
 }
 
 - (void)_assertDataFrame:(BKRDataFrame *)dataFrame withData:(NSData *)data {
