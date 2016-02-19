@@ -109,7 +109,15 @@
     }];
 }
 
-//- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+    BKRTestExpectedResult *firstResult = [self PNGetTimeTokenWithRecording:NO];
+    BKRTestExpectedResult *secondResult = [self PNGetTimeTokenWithRecording:NO];
+    
+    [self playVCR:self.vcr];
+    
+    [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
 //    NSString *getTaskURLString = @"https://pubsub.pubnub.com/time/0";
 //    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
 //    [self.vcr playWithCompletionBlock:^{
@@ -160,6 +168,6 @@
 //    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
 //        
 //    }];
-//}
+}
 
 @end

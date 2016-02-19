@@ -141,6 +141,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
                 NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
                 XCTAssertEqual(expectedResult.responseCode, castedResponse.statusCode);
+                [self _assertExpectedResult:expectedResult withActualResponseHeaderFields:castedResponse.allHeaderFields];
             }
         }
         if (networkCompletionAssertions) {
@@ -250,7 +251,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         if (result.shouldCancel) {
             
         } else {
-            [self _assertExpectedResult:result withActualResponseHeaderFields:[(NSHTTPURLResponse *)response allHeaderFields]];
             NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
             if ([result.HTTPMethod isEqualToString:@"POST"]) {
                 NSDictionary *formDict = dataDict[@"form"];
@@ -283,7 +283,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         if (result.shouldCancel) {
             
         } else {
-            [self _assertExpectedResult:result withActualResponseHeaderFields:[(NSHTTPURLResponse *)response allHeaderFields]];
             NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
             // ensure that result from network is as expected
             XCTAssertNotNil(dataArray);
@@ -292,9 +291,11 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             XCTAssertTrue([firstTimetoken isKindOfClass:[NSNumber class]]);
             XCTAssertFalse([allReceivedTimetokens containsObject:firstTimetoken], @"This time token should have never been received before: %@ but we received these: %@", firstTimetoken, allReceivedTimetokens);
             [allReceivedTimetokens addObject:firstTimetoken];
-            NSTimeInterval firstTimeTokenAsUnix = [self _unixTimestampForPubNubTimetoken:firstTimetoken];
-            NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
-            XCTAssertEqualWithAccuracy(firstTimeTokenAsUnix, currentUnixTimestamp, 5);
+            if (result.isRecording) {
+                NSTimeInterval firstTimeTokenAsUnix = [self _unixTimestampForPubNubTimetoken:firstTimetoken];
+                NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
+                XCTAssertEqualWithAccuracy(firstTimeTokenAsUnix, currentUnixTimestamp, 5);
+            }
         }
         if (networkCompletionAssertions) {
             networkCompletionAssertions(result, task, data, response, error);
@@ -639,7 +640,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.responseAllHeaderFields = [self _PNResponseAllHeaderFieldsWithContentLength:@"19"];
     expectedResult.expectedNumberOfFrames = 4;
     expectedResult.receivedJSON = @[
-                                    @"what"
+                                    @([[NSDate date] timeIntervalSince1970])
                                     ];
     return expectedResult;
 }

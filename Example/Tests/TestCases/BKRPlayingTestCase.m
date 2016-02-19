@@ -130,7 +130,18 @@
     }];
 }
 
-//- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
+    BKRTestExpectedResult *firstResult = [self PNGetTimeTokenWithRecording:NO];
+    BKRTestExpectedResult *secondResult = [self PNGetTimeTokenWithRecording:NO];
+    
+    __block BKRPlayer *player = [self playerWithExpectedResults:@[firstResult, secondResult]];
+    XCTAssertEqual(player.allScenes.count, 2);
+    [self setPlayer:player withExpectationToEnabled:YES];
+    
+    [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions(player.allScenes);
+    }];
 //    NSString *URLString = @"https://pubsub.pubnub.com/time/0";
 //    NSString *firstTaskUniqueIdentifier = [NSUUID UUID].UUIDString;
 //    BKRExpectedScenePlistDictionaryBuilder *firstSceneBuilder = [BKRExpectedScenePlistDictionaryBuilder builder];
@@ -263,6 +274,6 @@
 //        [self assertRequest:secondScene.currentRequest withRequest:task.currentRequest extraAssertions:nil];
 //        [self assertFramesOrder:secondScene extraAssertions:nil];
 //    }];
-//}
+}
 
 @end

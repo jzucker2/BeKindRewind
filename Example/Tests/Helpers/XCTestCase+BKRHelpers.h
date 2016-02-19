@@ -96,6 +96,6 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 #pragma mark - PN Helpers
 
-- (BKRTestExpectedResult *)PNGetTimeTokenWithRecording:(BOOL)isRecording;
+- (BKRTestExpectedResult *)PNGetTimeTokenWithRecording:(BOOL)isRecording; // when isRecording is NO, the timetoken is set to current unix time
 
 @end
