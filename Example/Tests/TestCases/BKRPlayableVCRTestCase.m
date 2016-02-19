@@ -118,56 +118,6 @@
     [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
-//    NSString *getTaskURLString = @"https://pubsub.pubnub.com/time/0";
-//    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
-//    [self.vcr playWithCompletionBlock:^{
-//        [playExpectation fulfill];
-//        playExpectation = nil;
-//    }];
-//    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-//        XCTAssertNil(error);
-//    }];
-////    BKRWeakify(self);
-//    __block NSNumber *firstTimetoken = nil;
-//    [self getTaskWithURLString:getTaskURLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertNotNil(dataArray);
-//        firstTimetoken = dataArray.firstObject;
-//        XCTAssertNotNil(firstTimetoken);
-//        XCTAssertTrue([firstTimetoken isKindOfClass:[NSNumber class]]);
-//        NSTimeInterval firstTimeTokenAsUnix = [self unixTimestampForPubNubTimetoken:firstTimetoken];
-//        NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
-//        XCTAssertNotEqualWithAccuracy(firstTimeTokenAsUnix, currentUnixTimestamp, 5);
-//        
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:20 GMT", @"actual received response is different");
-//        
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
-//    
-//    [self getTaskWithURLString:getTaskURLString taskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-//        NSArray *dataArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-//        // ensure that result from network is as expected
-//        XCTAssertNotNil(dataArray);
-//        NSNumber *secondTimetoken = dataArray.firstObject;
-//        XCTAssertNotNil(secondTimetoken);
-//        XCTAssertTrue([secondTimetoken isKindOfClass:[NSNumber class]]);
-//        NSTimeInterval secondTimeTokenAsUnix = [self unixTimestampForPubNubTimetoken:secondTimetoken];
-//        NSTimeInterval currentUnixTimestamp = [[NSDate date] timeIntervalSince1970];
-//        XCTAssertNotEqualWithAccuracy(secondTimeTokenAsUnix, currentUnixTimestamp, 5);
-//        // also make sure that the two time tokens returned are different
-//        XCTAssertNotEqualObjects(firstTimetoken, secondTimetoken);
-//        
-//        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//        XCTAssertEqual(castedResponse.statusCode, 200);
-//        XCTAssertEqualObjects(castedResponse.allHeaderFields[@"Date"], @"Fri, 12 Feb 2016 00:29:21 GMT", @"actual received response is different");
-//        
-//    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
-//        
-//    }];
 }
 
 @end
