@@ -14,7 +14,7 @@
 
 @interface BKRVCR ()
 @property (nonatomic) dispatch_queue_t accessQueue;
-@property (nonatomic, strong) id<BKRVCRActions> internalVCR;
+@property (nonatomic, strong) id<BKRVCRActions> currentVCR;
 @property (nonatomic, strong) BKRRecordableVCR *recordableVCR;
 @property (nonatomic, strong) BKRPlayableVCR *playableVCR;
 @end
@@ -22,7 +22,7 @@
 @implementation BKRVCR
 @synthesize cassetteFilePath = _cassetteFilePath;
 @synthesize state = _state;
-@synthesize internalVCR = _internalVCR;
+@synthesize currentVCR = _currentVCR;
 @synthesize beginRecordingBlock = _beginRecordingBlock;
 @synthesize endRecordingBlock = _endRecordingBlock;
 @synthesize recordableVCR = _recordableVCR;
@@ -34,7 +34,7 @@
         _accessQueue = dispatch_queue_create("com.BKR.VCR.accessQueue", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
         _cassetteFilePath = nil;
-        _internalVCR = nil;
+        _currentVCR = nil;
         _playableVCR = [BKRPlayableVCR vcrWithMatcherClass:matcherClass];
         _recordableVCR = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:shouldSaveEmptyCassette];
     }
@@ -55,18 +55,18 @@
 
 #pragma mark - helpers
 
-- (void)setInternalVCR:(id<BKRVCRActions>)internalVCR {
+- (void)setCurrentVCR:(id<BKRVCRActions>)currentVCR {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        self->_internalVCR = internalVCR;
+        self->_currentVCR = internalVCR;
     });
 }
 
 - (id<BKRVCRActions>)internalVCR {
     __block id<BKRVCRActions> currentInternalVCR = nil;
     dispatch_sync(self.accessQueue, ^{
-        currentInternalVCR = self->_internalVCR;
+        currentInternalVCR = self->_currentVCR;
     });
     return currentInternalVCR;
 }
@@ -74,11 +74,11 @@
 #pragma mark - BKRVCRActions
 
 - (void)playWithCompletionBlock:(void (^)(void))completionBlock {
-    [self.internalVCR playWithCompletionBlock:completionBlock];
+    [self.currentVCR playWithCompletionBlock:completionBlock];
 }
 
 - (void)pauseWithCompletionBlock:(void (^)(void))completionBlock {
-    [self.internalVCR pauseWithCompletionBlock:completionBlock];
+    [self.currentVCR pauseWithCompletionBlock:completionBlock];
 }
 
 - (void)stopWithCompletionBlock:(void (^)(void))completionBlock {
@@ -86,7 +86,7 @@
 }
 
 - (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
-    [self.internalVCR recordWithCompletionBlock:completionBlock];
+    [self.currentVCR recordWithCompletionBlock:completionBlock];
 }
 
 - (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
@@ -102,7 +102,8 @@
     BKRWeakify(self);
     dispatch_sync(self.accessQueue, ^{
         BKRStrongify(self);
-        cassette = [self->_internalVCR currentCassette];
+        // technically this shouldn't matter, both cassettes should be the same
+        cassette = [self->_currentVCR currentCassette];
     });
     return cassette;
 }
@@ -124,14 +125,33 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        [self->_internalVCR resetWithCompletionBlock:nil];
+        __block NSInteger completionBlockCount = 0;
+        [self->_recordableVCR resetWithCompletionBlock:^{
+            completionBlockCount++;
+            if (
+                completionBlock &&
+                (completionBlockCount == 2)
+                ) {
+                completionBlock();
+            }
+        }];
+        [self->_playableVCR resetWithCompletionBlock:^{
+            completionBlockCount++;
+            if (
+                completionBlock &&
+                (completionBlockCount == 2)
+                ) {
+                completionBlock();
+            }
+        }];
+        self->_currentVCR = nil;
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
-        if (completionBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock();
-            });
-        }
+//        if (completionBlock) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                completionBlock();
+//            });
+//        }
     });
 }
 
