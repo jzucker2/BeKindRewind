@@ -157,10 +157,19 @@
 //}
 
 - (void)testPlayingOneGETRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
     [self playVCR:self.vcr];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
 }
 
-//- (void)testPlayingOneCancelledGETRequest {
+- (void)testPlayingOneCancelledGETRequest {
+    BKRTestExpectedResult *cancelledRequest = [self HTTPBinCancelledRequestWithRecording:NO];
+    [self playVCR:self.vcr];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[cancelledRequest] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
 //    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
 //    [self.vcr playWithCompletionBlock:^{
 //        [playExpectation fulfill];
@@ -182,9 +191,14 @@
 //    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
 //        
 //    }];
-//}
-//
-//- (void)testPlayingOnePOSTRequest {
+}
+
+- (void)testPlayingOnePOSTRequest {
+    BKRTestExpectedResult *postResult = [self HTTPBinPostRequestWithRecording:NO];
+    [self playVCR:self.vcr];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[postResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
 //    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
 //    [self.vcr playWithCompletionBlock:^{
 //        [playExpectation fulfill];
@@ -215,9 +229,15 @@
 //    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
 //        
 //    }];
-//}
-//
-//- (void)testPlayingMultipleGETRequests {
+}
+
+- (void)testPlayingMultipleGETRequests {
+    BKRTestExpectedResult *firstResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
+    BKRTestExpectedResult *secondResult = [self HTTPBinGetRequestWithQueryString:@"test=test2" withRecording:NO];
+    [self playVCR:self.vcr];
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
 //    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
 //    [self.vcr playWithCompletionBlock:^{
 //        [playExpectation fulfill];
@@ -254,10 +274,8 @@
 //    } taskTimeoutAssertions:^(NSURLSessionTask *task, NSError *error) {
 //        
 //    }];
-//    
-//    
-//}
-//
+}
+
 //- (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
 //    NSString *getTaskURLString = @"https://pubsub.pubnub.com/time/0";
 //    __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];

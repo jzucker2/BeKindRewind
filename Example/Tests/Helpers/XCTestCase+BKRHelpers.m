@@ -245,12 +245,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 // ensure that result from network is as expected
                 XCTAssertEqualObjects(result.HTTPBodyJSON, receivedDataDictionary);
             } else {
-                if (result.isRecording) {
-                    XCTAssertEqualObjects(dataDict[@"args"], result.receivedJSON[@"args"]);
-                    XCTAssertEqualObjects(dataDict[@"url"], result.receivedJSON[@"url"]);
-                } else {
-                    XCTAssertEqualObjects(dataDict, result.receivedJSON);
-                }
+                XCTAssertEqualObjects(dataDict[@"args"], result.receivedJSON[@"args"]);
+                XCTAssertEqualObjects(dataDict[@"url"], result.receivedJSON[@"url"]);
+                XCTAssertNotNil(dataDict[@"headers"]);
+                XCTAssertNotNil(dataDict[@"origin"]);
             }
         }
         if (networkCompletionAssertions) {
@@ -599,6 +597,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     if (!expectedResults.count) {
         return;
     }
+#warning finish this!
 }
 
 #pragma mark - VCR helpers
