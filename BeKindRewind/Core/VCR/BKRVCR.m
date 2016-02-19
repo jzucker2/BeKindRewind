@@ -63,7 +63,7 @@
     });
 }
 
-- (id<BKRVCRActions>)internalVCR {
+- (id<BKRVCRActions>)currentVCR {
     __block id<BKRVCRActions> currentInternalVCR = nil;
     dispatch_sync(self.accessQueue, ^{
         currentInternalVCR = self->_currentVCR;

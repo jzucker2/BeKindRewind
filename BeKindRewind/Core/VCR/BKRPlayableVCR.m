@@ -211,11 +211,7 @@
         BKRStrongify(self);
         self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
-        [self->_player resetWithCompletionBlock:^{
-            if (completionBlock) {
-                completionBlock();
-            }
-        }];
+        [self->_player resetWithCompletionBlock:completionBlock];
     });
 }
 

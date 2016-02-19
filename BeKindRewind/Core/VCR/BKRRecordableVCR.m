@@ -78,7 +78,7 @@
 - (BKRCassette *)currentCassette {
     __block BKRCassette *cassette = nil;
     dispatch_sync(self.accessQueue, ^{
-        cassette = (BKRCassette *)[BKRRecorder sharedInstance].currentCassette;
+        cassette = [BKRRecorder sharedInstance].currentCassette;
     });
     return cassette;
 }
