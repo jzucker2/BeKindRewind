@@ -113,7 +113,7 @@
     // can't insert a cassette if you already have one
     if (self.currentCassette) {
         NSLog(@"Already contains a cassette");
-        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:nil onMainQueue:completionBlock];
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO onMainQueue:completionBlock];
         return NO;
     }
     __block BOOL finalResult = NO;
@@ -128,14 +128,14 @@
         finalResult = (loadingCassette ? YES : NO);
         [BKRRecorder sharedInstance].currentCassette = loadingCassette;
     });
-    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:nil onMainQueue:completionBlock];
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult onMainQueue:completionBlock];
     return finalResult;
 }
 
 - (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     if (!self.currentCassette) {
         NSLog(@"no cassette contained");
-        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:nil onMainQueue:completionBlock];
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO onMainQueue:completionBlock];
         return NO;
     }
     __block BOOL finalResult = NO;
@@ -182,7 +182,7 @@
         self->_state = BKRVCRStateStopped; // somewhat unnecessary
         [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil]; // reset the recorder (removes cassette)
     });
-    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:nil onMainQueue:completionBlock];
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult onMainQueue:completionBlock];
     return finalResult;
 }
 

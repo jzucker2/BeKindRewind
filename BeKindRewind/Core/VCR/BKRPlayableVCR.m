@@ -129,7 +129,7 @@
     // can't insert a cassette if you already have one
     if (self.currentCassette) {
         NSLog(@"Already contains a cassette");
-        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:nil onMainQueue:completionBlock];
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO onMainQueue:completionBlock];
         return NO;
     }
 
@@ -148,14 +148,14 @@
         finalResult = (loadingCassette ? YES : NO);
         self->_player.currentCassette = loadingCassette;
     });
-    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:nil onMainQueue:completionBlock];
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult onMainQueue:completionBlock];
     return finalResult;
 }
 
 - (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     if (!self.currentCassette) {
         NSLog(@"no cassette contained");
-        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:nil onMainQueue:completionBlock];
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO onMainQueue:completionBlock];
         return NO;
     }
     __block BOOL finalResult = NO;
@@ -171,7 +171,7 @@
         [self->_player resetWithCompletionBlock:nil]; // removes cassette
         finalResult = YES;
     });
-    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:nil onMainQueue:completionBlock];
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult onMainQueue:completionBlock];
     return finalResult;
 }
 

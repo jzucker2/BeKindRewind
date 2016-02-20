@@ -11,6 +11,6 @@
 
 @interface NSObject (BKRVCRAdditions)
 
-- (void)BKR_executeCassetteHandlingBlockWithFinalResult:(BOOL)finalResult andCassetteFilePath:(NSString *)cassetteFilePath onMainQueue:(BKRCassetteHandlingBlock)cassetteHandlingBlock;
+- (void)BKR_executeCassetteHandlingBlockWithFinalResult:(BOOL)finalResult onMainQueue:(BKRCassetteHandlingBlock)cassetteHandlingBlock;
 
 @end

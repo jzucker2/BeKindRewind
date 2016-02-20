@@ -10,7 +10,7 @@
 
 @implementation NSObject (BKRVCRAdditions)
 
-- (void)BKR_executeCassetteHandlingBlockWithFinalResult:(BOOL)finalResult andCassetteFilePath:(NSString *)cassetteFilePath onMainQueue:(BKRCassetteHandlingBlock)cassetteHandlingBlock {
+- (void)BKR_executeCassetteHandlingBlockWithFinalResult:(BOOL)finalResult onMainQueue:(BKRCassetteHandlingBlock)cassetteHandlingBlock {
     if (cassetteHandlingBlock) {
         if ([NSThread isMainThread]) {
             cassetteHandlingBlock(finalResult);
