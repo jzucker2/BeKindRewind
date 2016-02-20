@@ -26,10 +26,7 @@
     self.testPlayingFilePath = [BKRFilePathHelper findPathForFile:fileName inBundleForClass:self.class];
     XCTAssertNotNil(self.testPlayingFilePath);
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testPlayingFilePath]);
-    
-//    NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:self.testPlayingFilePath];
-//    XCTAssertNotNil(cassetteDictionary);
-    
+        
     self.vcr = [self playableVCRWithPlayheadMatcher];
     
     [self insertCassetteFilePath:self.testPlayingFilePath intoVCR:self.vcr];

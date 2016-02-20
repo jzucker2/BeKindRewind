@@ -890,19 +890,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     XCTAssertNotNil(cassetteFilePath);
     XCTAssertNotNil(vcr);
     __block XCTestExpectation *insertExpectation = [self expectationWithDescription:@"insert expectation"];
-//    XCTAssertTrue([vcr insert:cassetteFilePath completionHandler:^(BOOL result, NSString *filePath) {
-//        [insertExpectation fulfill];
-//        insertExpectation = nil;
-//    }]);
     XCTAssertTrue([vcr insert:^BKRCassette *{
         NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
         BKRCassette *cassette = nil;
         cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
-//        if (cassetteDictionary) {
-//            cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
-//        } else {
-//            cassette = [BKRCassette cassette];
-//        }
         return cassette;
     } completionHandler:^(BOOL result) {
         [insertExpectation fulfill];
@@ -925,9 +916,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *ejectExpectation = [self expectationWithDescription:@"eject"];
-//    BOOL result = [vcr eject:YES completionHandler:^(BOOL result, NSString *filePath) {
-//        [ejectExpectation fulfill];
-//    }];
     BOOL result = [vcr eject:^NSString *(BKRCassette *cassette) {
         return cassetteFilePath;
     } completionHandler:^(BOOL result) {
