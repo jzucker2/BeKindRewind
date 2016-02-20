@@ -234,7 +234,6 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-//        self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
         [[BKRRecorder sharedInstance] resetWithCompletionBlock:completionBlock];
     });
