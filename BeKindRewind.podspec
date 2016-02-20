@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '9.0'
   s.osx.deployment_target = '10.9'
   s.requires_arc = true
-  s.dependency 'OHHTTPStubs', '~> 4.7.0'
+  s.dependency 'OHHTTPStubs', '~> 4.7.1'
   s.framework = 'XCTest'
   s.source_files = 'BeKindRewind/Core/**/*'
 #  s.prefix_header_contents = '#import "BKRConstants.h"'
