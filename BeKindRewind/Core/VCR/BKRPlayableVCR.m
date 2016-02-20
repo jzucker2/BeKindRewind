@@ -21,7 +21,6 @@
 @implementation BKRPlayableVCR
 
 @synthesize state = _state;
-//@synthesize cassetteFilePath = _cassetteFilePath;
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
     self = [super init];
@@ -29,7 +28,6 @@
         _player = [BKRPlayer playerWithMatcherClass:matcherClass];
         _accessQueue = dispatch_queue_create("com.BKR.BKRPlayableVCR", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
-//        _cassetteFilePath = nil;
     }
     return self;
 }
@@ -49,16 +47,6 @@
     });
     return cassette;
 }
-
-//- (NSString *)cassetteFilePath {
-//    __block NSString *currentCassetteFilePath = nil;
-//    BKRWeakify(self);
-//    dispatch_sync(self.accessQueue, ^{
-//        BKRStrongify(self);
-//        currentCassetteFilePath = self->_cassetteFilePath;
-//    });
-//    return currentCassetteFilePath;
-//}
 
 - (void)playWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
@@ -144,14 +132,7 @@
         [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:nil onMainQueue:completionBlock];
         return NO;
     }
-//    NSParameterAssert(cassetteFilePath);
-//    NSParameterAssert([cassetteFilePath.pathExtension isEqualToString:@"plist"]);
-//    if (![BKRFilePathHelper filePathExists:cassetteFilePath]) {
-//        NSLog(@"There is no file at this location");
-//        // should we throw an exception here too??
-//        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
-//        return NO;
-//    }
+
     __block BOOL finalResult = NO;
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
@@ -160,9 +141,6 @@
             finalResult = NO;
             return;
         }
-//         if no cassette dictionary is fetched, then return NO
-//        self->_player.currentCassette = cassetteLoadingBlock();
-//        finalResult = YES;
         
         BKRCassette *loadingCassette = cassetteLoadingBlock();
         NSLog(@"loading cassette: %@", loadingCassette);
@@ -174,48 +152,6 @@
     return finalResult;
 }
 
-//- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
-//    NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
-//    BKRCassette *cassette = nil;
-//    if (cassetteDictionary) {
-//        cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
-//    } else {
-//        cassette = [BKRCassette cassette];
-//    }
-//    [self insert:cassette withFilePath:cassetteFilePath completionHandler:completionBlock];
-//    // can't insert a cassette if you already have one
-//    if (self.cassetteFilePath) {
-//        NSLog(@"Already contains a cassette");
-//        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
-//        return NO;
-//    }
-//    NSParameterAssert(cassetteFilePath);
-//    NSParameterAssert([cassetteFilePath.pathExtension isEqualToString:@"plist"]);
-//    if (![BKRFilePathHelper filePathExists:cassetteFilePath]) {
-//        NSLog(@"There is no file at this location");
-//        // should we throw an exception here too??
-//        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
-//        return NO;
-//    }
-//    __block BOOL finalResult = NO;
-//    __block NSString *finalPath = nil;
-//    BKRWeakify(self);
-//    dispatch_barrier_sync(self.accessQueue, ^{
-//        BKRStrongify(self);
-//        NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
-//        if (cassetteDictionary) {
-//            // if no cassette dictionary is fetched, then return NO
-//            self->_cassetteFilePath = cassetteFilePath;
-//            finalPath = self->_cassetteFilePath;
-//            BKRCassette *cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
-//            self->_player.currentCassette = cassette;
-//            finalResult = YES;
-//        }
-//    });
-//    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:finalPath onMainQueue:completionBlock];
-//    return finalResult;
-//}
-
 - (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     if (!self.currentCassette) {
         NSLog(@"no cassette contained");
@@ -223,7 +159,6 @@
         return NO;
     }
     __block BOOL finalResult = NO;
-//    __block NSString *finalPath = nil;
     [self stopWithCompletionBlock:nil]; // no completion block to call
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
@@ -233,21 +168,17 @@
             return;
         }
         self->_state = BKRVCRStateStopped; // this is redundant from the `stopWithCompletionBlock:` call up above
-//        finalPath = self->_cassetteFilePath;
-//        self->_cassetteFilePath = nil;
         [self->_player resetWithCompletionBlock:nil]; // removes cassette
         finalResult = YES;
     });
     [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:nil onMainQueue:completionBlock];
     return finalResult;
-//    return NO;
 }
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-//        self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
         [self->_player resetWithCompletionBlock:completionBlock];
     });
