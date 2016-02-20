@@ -38,9 +38,9 @@
     
     XCTAssertFalse([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     
-    if (self.invocation.selector == @selector(testFileCreatedWhenRecordingDisabledAndDefaultOverriddenInInit)) {
+    if (self.invocation.selector == @selector(testRecordingFileCreatedWhenRecordingDisabledAndDefaultOverriddenInInit)) {
         self.vcr = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:YES];
-    } else if (self.invocation.selector == @selector(testNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
+    } else if (self.invocation.selector == @selector(testRecordingNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
         self.vcr = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:NO];
     } else {
         self.vcr = [BKRRecordableVCR vcr];
@@ -56,7 +56,7 @@
     [super tearDown];
 }
 
-- (void)testNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff {
+- (void)testRecordingNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff {
     BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[result] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
@@ -66,7 +66,7 @@
     XCTAssertFalse([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
 }
 
-- (void)testFileCreatedWhenRecordingDisabledAndDefaultOverriddenInInit {
+- (void)testRecordingFileCreatedWhenRecordingDisabledAndDefaultOverriddenInInit {
     BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[result] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
@@ -77,7 +77,7 @@
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[]];
 }
 
-- (void)testOffThenOn {
+- (void)testRecordingOffThenOn {
     BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[result] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
@@ -97,7 +97,7 @@
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[result]];
 }
 
-- (void)testOnThenOff {
+- (void)testRecordingOnThenOff {
     BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     [self recordVCR:self.vcr];
     BKRWeakify(self);
