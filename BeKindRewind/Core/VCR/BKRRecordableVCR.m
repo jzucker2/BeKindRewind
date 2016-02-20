@@ -11,6 +11,7 @@
 #import "BKRCassette+Recordable.h"
 #import "BKRFilePathHelper.h"
 #import "BKRRecorder.h"
+#import "NSObject+BKRVCRAdditions.h"
 
 @interface BKRRecordableVCR ()
 @property (nonatomic) dispatch_queue_t accessQueue;
@@ -120,10 +121,11 @@
     });
 }
 
-- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+- (BOOL)insert:(BKRCassetteLoadingBlock)loadCassetteBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     // can't insert a cassette if you already have one
     if (self.cassetteFilePath) {
         NSLog(@"Already contains a cassette");
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
         return NO;
     }
     NSParameterAssert(cassetteFilePath);
@@ -139,21 +141,38 @@
         [BKRRecorder sharedInstance].currentCassette = [BKRCassette cassette];
         finalResult = YES;
     });
-    if (completionBlock) {
-        if ([NSThread isMainThread]) {
-            completionBlock(finalResult, finalPath);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock(finalResult, finalPath);
-            });
-        }
-    }
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:finalPath onMainQueue:completionBlock];
     return finalResult;
 }
+
+//- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+//    // can't insert a cassette if you already have one
+//    if (self.cassetteFilePath) {
+//        NSLog(@"Already contains a cassette");
+//        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
+//        return NO;
+//    }
+//    NSParameterAssert(cassetteFilePath);
+//    NSParameterAssert([cassetteFilePath.pathExtension isEqualToString:@"plist"]);
+//    __block BOOL finalResult = NO;
+//    __block NSString *finalPath = nil;
+//    BKRWeakify(self);
+//    dispatch_barrier_sync(self.accessQueue, ^{
+//        BKRStrongify(self);
+//        NSLog(@"loading cassette at: %@", cassetteFilePath);
+//        self->_cassetteFilePath = cassetteFilePath;
+//        finalPath = self->_cassetteFilePath;
+//        [BKRRecorder sharedInstance].currentCassette = [BKRCassette cassette];
+//        finalResult = YES;
+//    });
+//    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:finalPath onMainQueue:completionBlock];
+//    return finalResult;
+//}
 
 - (BOOL)eject:(BOOL)shouldOverwrite completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     if (!self.cassetteFilePath) {
         NSLog(@"no cassette contained");
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:nil onMainQueue:completionBlock];
         return NO;
     }
     __block BOOL finalResult = NO;
@@ -195,15 +214,7 @@
             [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil]; // reset the recorder (removes cassette)
         }
     });
-    if (completionBlock) {
-        if ([NSThread isMainThread]) {
-            completionBlock(finalResult, finalPath);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock(finalResult, finalPath);
-            });
-        }
-    }
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:finalPath onMainQueue:completionBlock];
     return finalResult;
 }
 

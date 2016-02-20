@@ -10,6 +10,7 @@
 #import "BKRPlayer.h"
 #import "BKRCassette+Playable.h"
 #import "BKRFilePathHelper.h"
+#import "NSObject+BKRVCRAdditions.h"
 
 @interface BKRPlayableVCR ()
 @property (nonatomic, strong) BKRPlayer *player;
@@ -136,10 +137,11 @@
     });
 }
 
-- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+- (BOOL)insert:(BKRCassette *)cassette withFilePath:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     // can't insert a cassette if you already have one
     if (self.cassetteFilePath) {
         NSLog(@"Already contains a cassette");
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
         return NO;
     }
     NSParameterAssert(cassetteFilePath);
@@ -147,38 +149,68 @@
     if (![BKRFilePathHelper filePathExists:cassetteFilePath]) {
         NSLog(@"There is no file at this location");
         // should we throw an exception here too??
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
         return NO;
     }
     __block BOOL finalResult = NO;
-    __block NSString *finalPath = nil;
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
-        NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
-        if (cassetteDictionary) {
-            // if no cassette dictionary is fetched, then return NO
-            self->_cassetteFilePath = cassetteFilePath;
-            finalPath = self->_cassetteFilePath;
-            BKRCassette *cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
-            self->_player.currentCassette = cassette;
-            finalResult = YES;
-        }
+        // if no cassette dictionary is fetched, then return NO
+        self->_cassetteFilePath = cassetteFilePath;
+        self->_player.currentCassette = cassette;
+        finalResult = YES;
     });
-    if (completionBlock) {
-        if ([NSThread isMainThread]) {
-            completionBlock(finalResult, finalPath);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock(finalResult, finalPath);
-            });
-        }
-    }
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
     return finalResult;
+}
+
+- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+    NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
+    BKRCassette *cassette = nil;
+    if (cassetteDictionary) {
+        cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
+    } else {
+        cassette = [BKRCassette cassette];
+    }
+    [self insert:cassette withFilePath:cassetteFilePath completionHandler:completionBlock];
+//    // can't insert a cassette if you already have one
+//    if (self.cassetteFilePath) {
+//        NSLog(@"Already contains a cassette");
+//        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
+//        return NO;
+//    }
+//    NSParameterAssert(cassetteFilePath);
+//    NSParameterAssert([cassetteFilePath.pathExtension isEqualToString:@"plist"]);
+//    if (![BKRFilePathHelper filePathExists:cassetteFilePath]) {
+//        NSLog(@"There is no file at this location");
+//        // should we throw an exception here too??
+//        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:cassetteFilePath onMainQueue:completionBlock];
+//        return NO;
+//    }
+//    __block BOOL finalResult = NO;
+//    __block NSString *finalPath = nil;
+//    BKRWeakify(self);
+//    dispatch_barrier_sync(self.accessQueue, ^{
+//        BKRStrongify(self);
+//        NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
+//        if (cassetteDictionary) {
+//            // if no cassette dictionary is fetched, then return NO
+//            self->_cassetteFilePath = cassetteFilePath;
+//            finalPath = self->_cassetteFilePath;
+//            BKRCassette *cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
+//            self->_player.currentCassette = cassette;
+//            finalResult = YES;
+//        }
+//    });
+//    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:finalPath onMainQueue:completionBlock];
+//    return finalResult;
 }
 
 - (BOOL)eject:(BOOL)shouldOverwrite completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     if (!self.cassetteFilePath) {
         NSLog(@"no cassette contained");
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO andCassetteFilePath:nil onMainQueue:completionBlock];
         return NO;
     }
     __block BOOL finalResult = NO;
@@ -193,15 +225,7 @@
         [self->_player resetWithCompletionBlock:nil]; // removes cassette
         finalResult = YES;
     });
-    if (completionBlock) {
-        if ([NSThread isMainThread]) {
-            completionBlock(finalResult, finalPath);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock(finalResult, finalPath);
-            });
-        }
-    }
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult andCassetteFilePath:finalPath onMainQueue:completionBlock];
     return finalResult;
 }
 

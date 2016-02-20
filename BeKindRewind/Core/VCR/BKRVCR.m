@@ -152,15 +152,16 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
             }
         }];
         
-        BOOL playableResult = [self.playableVCR insert:cassetteFilePath completionHandler:^(BOOL result, NSString *filePath) {
-            completionBlockCount++;
-            if (
-                completionBlock &&
-                (completionBlockCount == 2)
-                ) {
-                completionBlock(result, filePath);
-            }
-        }];
+        BOOL playableResult = YES;
+//        BOOL playableResult = [self.playableVCR insert:cassetteFilePath completionHandler:^(BOOL result, NSString *filePath) {
+//            completionBlockCount++;
+//            if (
+//                completionBlock &&
+//                (completionBlockCount == 2)
+//                ) {
+//                completionBlock(result, filePath);
+//            }
+//        }];
         
         finalResult = recordableResult && playableResult;
     });
@@ -184,15 +185,16 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
             }
         }];
         
-        BOOL playableResult = [self.playableVCR eject:shouldOverwrite completionHandler:^(BOOL result, NSString *filePath) {
-            completionBlockCount++;
-            if (
-                completionBlock &&
-                (completionBlockCount == 2)
-                ) {
-                completionBlock(result, filePath);
-            }
-        }];
+        BOOL playableResult = YES;
+//        BOOL playableResult = [self.playableVCR eject:shouldOverwrite completionHandler:^(BOOL result, NSString *filePath) {
+//            completionBlockCount++;
+//            if (
+//                completionBlock &&
+//                (completionBlockCount == 2)
+//                ) {
+//                completionBlock(result, filePath);
+//            }
+//        }];
         
         finalResult = recordableResult && playableResult;
     });

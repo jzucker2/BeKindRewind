@@ -69,8 +69,8 @@ typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
 
 @end
 
-//typedef returnType (^TypeName)(parameterTypes);
 typedef void (^BKRCassetteHandlingBlock)(BOOL result, NSString *filePath);
+typedef BKRCassette *(^BKRCassetteLoadingBlock)(void);
 
 @protocol BKRVCRActions <NSObject>
 
@@ -78,7 +78,7 @@ typedef void (^BKRCassetteHandlingBlock)(BOOL result, NSString *filePath);
 - (void)pauseWithCompletionBlock:(void (^)(void))completionBlock; // is there a difference between stop and pause?
 - (void)stopWithCompletionBlock:(void (^)(void))completionBlock; // is there a difference between stop and pause?
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock; // reset to start of cassette
-- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock; // must end in .plist
+- (BOOL)insert:(BKRCassetteLoadingBlock)loadCassetteBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock; // must end in .plist
 /**
  *  This "ejects" the current cassette, saving the results to the location specified by filePath
  */
