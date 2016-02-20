@@ -76,9 +76,10 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 #pragma mark - VCR helpers
 
+- (void)insertBlankCassetteIntoVCR:(id<BKRVCRActions>)vcr;
 - (void)insertCassetteFilePath:(NSString *)cassetteFilePath intoVCR:(id<BKRVCRActions>)vcr;
 - (void)resetVCR:(id<BKRVCRActions>)vcr;
-- (BOOL)ejectCassetteFromVCR:(id<BKRVCRActions>)vcr; // returns result of eject message
+- (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromVCR:(id<BKRVCRActions>)vcr; // returns result of eject message
 - (void)playVCR:(id<BKRVCRActions>)vcr;
 - (void)stopVCR:(id<BKRVCRActions>)vcr;
 - (void)recordVCR:(id<BKRVCRActions>)vcr;

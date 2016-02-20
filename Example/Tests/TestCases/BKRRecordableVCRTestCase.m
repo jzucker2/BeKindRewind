@@ -47,7 +47,8 @@
     }
     
     [self setVCRBeginAndEndRecordingBlocks:self.vcr];
-    [self insertCassetteFilePath:self.testRecordingFilePath intoVCR:self.vcr];
+//    [self insertCassetteFilePath:self.testRecordingFilePath intoVCR:self.vcr];
+    [self insertBlankCassetteIntoVCR:self.vcr];
 }
 
 - (void)tearDown {
@@ -61,7 +62,7 @@
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
-    XCTAssertFalse([self ejectCassetteFromVCR:self.vcr]);
+    XCTAssertFalse([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     XCTAssertFalse([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
 }
 
@@ -71,7 +72,7 @@
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
-    XCTAssertTrue([self ejectCassetteFromVCR:self.vcr]);
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[]];
 }
@@ -92,7 +93,7 @@
         batchSceneAssertions(self.vcr.currentCassette.allScenes);
         XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
     }];
-    XCTAssertTrue([self ejectCassetteFromVCR:self.vcr]);
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[result]];
 }
 
@@ -115,7 +116,7 @@
         BKRStrongify(self);
         XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
     }];
-    XCTAssertTrue([self ejectCassetteFromVCR:self.vcr]);
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[result]];
 }
 
@@ -130,7 +131,7 @@
         batchSceneAssertions(self.vcr.currentCassette.allScenes);
         XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
     }];
-    XCTAssertTrue([self ejectCassetteFromVCR:self.vcr]);
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[expectedResult]];
 }
 
@@ -145,7 +146,7 @@
         batchSceneAssertions(self.vcr.currentCassette.allScenes);
         XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
     }];
-    XCTAssertTrue([self ejectCassetteFromVCR:self.vcr]);
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[cancelledResult]];
 }
 
@@ -160,7 +161,7 @@
         batchSceneAssertions(self.vcr.currentCassette.allScenes);
         XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
     }];
-    XCTAssertTrue([self ejectCassetteFromVCR:self.vcr]);
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[postResult]];
 }
 
@@ -182,7 +183,7 @@
         }
         XCTAssertEqual(self.vcr.currentCassette.allScenes.count, totalScenes);
     }];
-    XCTAssertTrue([self ejectCassetteFromVCR:self.vcr]);
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
 }
 
@@ -204,7 +205,7 @@
         }
         XCTAssertEqual(self.vcr.currentCassette.allScenes.count, totalScenes);
     }];
-    XCTAssertTrue([self ejectCassetteFromVCR:self.vcr]);
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
 }
 

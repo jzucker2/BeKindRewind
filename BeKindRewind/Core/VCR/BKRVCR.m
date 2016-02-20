@@ -25,7 +25,7 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
 @end
 
 @implementation BKRVCR
-@synthesize cassetteFilePath = _cassetteFilePath;
+//@synthesize cassetteFilePath = _cassetteFilePath;
 @synthesize state = _state;
 @synthesize currentVCR = _currentVCR;
 @synthesize lastVCR = _lastVCR;
@@ -39,7 +39,7 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
     if (self) {
         _accessQueue = dispatch_queue_create("com.BKR.VCR.accessQueue", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
-        _cassetteFilePath = nil;
+//        _cassetteFilePath = nil;
         _currentVCR = nil;
         _lastVCR = nil;
         _playableVCR = [BKRPlayableVCR vcrWithMatcherClass:matcherClass];
@@ -136,24 +136,13 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
     }];
 }
 
-- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
-    __block BOOL finalResult = NO;
-    BKRWeakify(self);
-    dispatch_barrier_sync(self.accessQueue, ^{
-        __block NSInteger completionBlockCount = 0;
-        BKRStrongify(self);
-        BOOL recordableResult = [self.recordableVCR insert:cassetteFilePath completionHandler:^(BOOL result, NSString *filePath) {
-            completionBlockCount++;
-            if (
-                completionBlock &&
-                (completionBlockCount == 2)
-                ) {
-                completionBlock(result, filePath);
-            }
-        }];
-        
-        BOOL playableResult = YES;
-//        BOOL playableResult = [self.playableVCR insert:cassetteFilePath completionHandler:^(BOOL result, NSString *filePath) {
+- (BOOL)insert:(BKRVCRCassetteLoadingBlock)cassetteLoadingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+//    __block BOOL finalResult = NO;
+//    BKRWeakify(self);
+//    dispatch_barrier_sync(self.accessQueue, ^{
+//        __block NSInteger completionBlockCount = 0;
+//        BKRStrongify(self);
+//        BOOL recordableResult = [self.recordableVCR insert:cassetteFilePath completionHandler:^(BOOL result, NSString *filePath) {
 //            completionBlockCount++;
 //            if (
 //                completionBlock &&
@@ -162,31 +151,32 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
 //                completionBlock(result, filePath);
 //            }
 //        }];
-        
-        finalResult = recordableResult && playableResult;
-    });
-    
-    return finalResult;
+//        
+//        BOOL playableResult = YES;
+////        BOOL playableResult = [self.playableVCR insert:cassetteFilePath completionHandler:^(BOOL result, NSString *filePath) {
+////            completionBlockCount++;
+////            if (
+////                completionBlock &&
+////                (completionBlockCount == 2)
+////                ) {
+////                completionBlock(result, filePath);
+////            }
+////        }];
+//        
+//        finalResult = recordableResult && playableResult;
+//    });
+//    
+//    return finalResult;
+    return NO;
 }
 
-- (BOOL)eject:(BOOL)shouldOverwrite completionHandler:(BKRCassetteHandlingBlock)completionBlock {
-    __block BOOL finalResult = NO;
-    BKRWeakify(self);
-    dispatch_barrier_sync(self.accessQueue, ^{
-        __block NSInteger completionBlockCount = 0;
-        BKRStrongify(self);
-        BOOL recordableResult = [self.recordableVCR eject:shouldOverwrite completionHandler:^(BOOL result, NSString *filePath) {
-            completionBlockCount++;
-            if (
-                completionBlock &&
-                (completionBlockCount == 2)
-                ) {
-                completionBlock(result, filePath);
-            }
-        }];
-        
-        BOOL playableResult = YES;
-//        BOOL playableResult = [self.playableVCR eject:shouldOverwrite completionHandler:^(BOOL result, NSString *filePath) {
+- (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+//    __block BOOL finalResult = NO;
+//    BKRWeakify(self);
+//    dispatch_barrier_sync(self.accessQueue, ^{
+//        __block NSInteger completionBlockCount = 0;
+//        BKRStrongify(self);
+//        BOOL recordableResult = [self.recordableVCR eject:shouldOverwrite completionHandler:^(BOOL result, NSString *filePath) {
 //            completionBlockCount++;
 //            if (
 //                completionBlock &&
@@ -195,11 +185,23 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
 //                completionBlock(result, filePath);
 //            }
 //        }];
-        
-        finalResult = recordableResult && playableResult;
-    });
-    
-    return finalResult;
+//        
+//        BOOL playableResult = YES;
+////        BOOL playableResult = [self.playableVCR eject:shouldOverwrite completionHandler:^(BOOL result, NSString *filePath) {
+////            completionBlockCount++;
+////            if (
+////                completionBlock &&
+////                (completionBlockCount == 2)
+////                ) {
+////                completionBlock(result, filePath);
+////            }
+////        }];
+//        
+//        finalResult = recordableResult && playableResult;
+//    });
+//    
+//    return finalResult;
+    return NO;
 }
 
 - (BKRCassette *)currentCassette {
@@ -217,15 +219,15 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
     return cassette;
 }
 
-- (NSString *)cassetteFilePath {
-    __block NSString *currentCassetteFilePath = nil;
-    BKRWeakify(self);
-    dispatch_sync(self.accessQueue, ^{
-        BKRStrongify(self);
-        currentCassetteFilePath = self->_cassetteFilePath;
-    });
-    return currentCassetteFilePath;
-}
+//- (NSString *)cassetteFilePath {
+//    __block NSString *currentCassetteFilePath = nil;
+//    BKRWeakify(self);
+//    dispatch_sync(self.accessQueue, ^{
+//        BKRStrongify(self);
+//        currentCassetteFilePath = self->_cassetteFilePath;
+//    });
+//    return currentCassetteFilePath;
+//}
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     // this is weird, double completion blocks?
@@ -255,7 +257,7 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
         }];
         self->_currentVCR = nil;
         self->_lastVCR = nil;
-        self->_cassetteFilePath = nil;
+//        self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
     });
 }

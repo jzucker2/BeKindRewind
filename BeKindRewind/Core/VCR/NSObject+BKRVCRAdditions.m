@@ -13,10 +13,10 @@
 - (void)BKR_executeCassetteHandlingBlockWithFinalResult:(BOOL)finalResult andCassetteFilePath:(NSString *)cassetteFilePath onMainQueue:(BKRCassetteHandlingBlock)cassetteHandlingBlock {
     if (cassetteHandlingBlock) {
         if ([NSThread isMainThread]) {
-            cassetteHandlingBlock(finalResult, cassetteFilePath);
+            cassetteHandlingBlock(finalResult);
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                cassetteHandlingBlock(finalResult, cassetteFilePath);
+                cassetteHandlingBlock(finalResult);
             });
         }
     }

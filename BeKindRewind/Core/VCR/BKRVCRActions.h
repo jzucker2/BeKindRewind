@@ -69,8 +69,9 @@ typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
 
 @end
 
-typedef void (^BKRCassetteHandlingBlock)(BOOL result, NSString *filePath);
-typedef BKRCassette *(^BKRCassetteLoadingBlock)(void);
+typedef void (^BKRCassetteHandlingBlock)(BOOL result);
+typedef BKRCassette *(^BKRVCRCassetteLoadingBlock)(void);
+typedef NSString *(^BKRVCRCassetteSavingBlock)(BKRCassette *cassette);
 
 @protocol BKRVCRActions <NSObject>
 
@@ -78,11 +79,11 @@ typedef BKRCassette *(^BKRCassetteLoadingBlock)(void);
 - (void)pauseWithCompletionBlock:(void (^)(void))completionBlock; // is there a difference between stop and pause?
 - (void)stopWithCompletionBlock:(void (^)(void))completionBlock; // is there a difference between stop and pause?
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock; // reset to start of cassette
-- (BOOL)insert:(BKRCassetteLoadingBlock)loadCassetteBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock; // must end in .plist
+- (BOOL)insert:(BKRVCRCassetteLoadingBlock)cassetteLoadingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock; // must end in .plist
 /**
  *  This "ejects" the current cassette, saving the results to the location specified by filePath
  */
-- (BOOL)eject:(BOOL)shouldOverwrite completionHandler:(BKRCassetteHandlingBlock)completionBlock; // consider making BOOLEAN with something like force, etc, returns success or failure
+- (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock; // consider making BOOLEAN with something like force, etc, returns success or failure
 
 /**
  *  Record network
@@ -97,7 +98,7 @@ typedef BKRCassette *(^BKRCassetteLoadingBlock)(void);
 
 @property (nonatomic, assign, readonly) BKRVCRState state;
 
-@property (nonatomic, copy, readonly) NSString *cassetteFilePath;
+//@property (nonatomic, copy, readonly) NSString *cassetteFilePath;
 
 ///**
 // *  Block is executed on the main thread before all stubs for a
