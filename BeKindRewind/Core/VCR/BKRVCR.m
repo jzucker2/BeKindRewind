@@ -12,23 +12,18 @@
 #import "BKRRecordableVCR.h"
 #import "BKRPlayableVCR.h"
 
-//typedef returnType (^TypeName)(parameterTypes);
-//TypeName blockName = ^returnType(parameters) {...};
 typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
 
 @interface BKRVCR ()
 @property (nonatomic) dispatch_queue_t accessQueue;
 @property (nonatomic, strong) id<BKRVCRActions> currentVCR;
-@property (nonatomic, strong) id<BKRVCRActions> lastVCR;
 @property (nonatomic, strong) BKRRecordableVCR *recordableVCR;
 @property (nonatomic, strong) BKRPlayableVCR *playableVCR;
 @end
 
 @implementation BKRVCR
-//@synthesize cassetteFilePath = _cassetteFilePath;
 @synthesize state = _state;
 @synthesize currentVCR = _currentVCR;
-@synthesize lastVCR = _lastVCR;
 @synthesize beginRecordingBlock = _beginRecordingBlock;
 @synthesize endRecordingBlock = _endRecordingBlock;
 @synthesize recordableVCR = _recordableVCR;
@@ -39,9 +34,7 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
     if (self) {
         _accessQueue = dispatch_queue_create("com.BKR.VCR.accessQueue", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
-//        _cassetteFilePath = nil;
         _currentVCR = nil;
-        _lastVCR = nil;
         _playableVCR = [BKRPlayableVCR vcrWithMatcherClass:matcherClass];
         _recordableVCR = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:shouldSaveEmptyCassette];
     }
@@ -66,7 +59,6 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        self->_lastVCR = self->_currentVCR; // also save the last VCR
         self->_currentVCR = currentVCR;
     });
 }
@@ -81,30 +73,18 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
     return currentInternalVCR;
 }
 
-- (id<BKRVCRActions>)lastVCR {
-    __block id<BKRVCRActions> previousVCR = nil;
-    BKRWeakify(self);
-    dispatch_sync(self.accessQueue, ^{
-        BKRStrongify(self);
-        previousVCR = self->_lastVCR;
-    });
-    return previousVCR;
-}
-
 - (void)executeForVCR:(id<BKRVCRActions>)desiredVCR clearCurrentVCRAtEnd:(BOOL)clearAfter withVCRAction:(BKRVCRActionProcessingBlock)vcrActionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         // if the currentVCR is nil, then set it with the desiredVCR value
         if (!self->_currentVCR) {
-            self->_lastVCR = self->_currentVCR; // save the last VCR used
             self->_currentVCR = desiredVCR; // set the new current VCR
         }
         if (vcrActionBlock) {
             vcrActionBlock(self->_currentVCR);
         }
         if (clearAfter) {
-            self->_lastVCR = self->_currentVCR;
             self->_currentVCR = nil;
         }
     });
@@ -210,24 +190,15 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
     dispatch_sync(self.accessQueue, ^{
         BKRStrongify(self);
         // technically this shouldn't matter, both cassettes should be the same
-        // but if stop is called, then current vcr is nil, try returning lastVCR if one was used
-        cassette = [self->_currentVCR currentCassette];
-        if (!cassette) {
-            cassette = [self->_lastVCR currentCassette];
-        }
+        // but if stop is called, then return the cassette from recorder
+//        cassette = [self->_currentVCR currentCassette];
+//        if (!cassette) {
+//            cassette = [self->_lastVCR currentCassette];
+//        }
+        cassette = self->_recordableVCR.currentCassette;
     });
     return cassette;
 }
-
-//- (NSString *)cassetteFilePath {
-//    __block NSString *currentCassetteFilePath = nil;
-//    BKRWeakify(self);
-//    dispatch_sync(self.accessQueue, ^{
-//        BKRStrongify(self);
-//        currentCassetteFilePath = self->_cassetteFilePath;
-//    });
-//    return currentCassetteFilePath;
-//}
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     // this is weird, double completion blocks?
@@ -256,8 +227,6 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
             }
         }];
         self->_currentVCR = nil;
-        self->_lastVCR = nil;
-//        self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
     });
 }
