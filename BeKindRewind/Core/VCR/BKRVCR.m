@@ -85,27 +85,68 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
 
 #pragma mark - BKRVCRActions
 
-- (void)playWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)playWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
+    BKRWeakify(self);
     [self executeForVCR:self.playableVCR clearCurrentVCRAtEnd:NO withVCRAction:^(id<BKRVCRActions> vcr) {
-        [vcr playWithCompletionBlock:completionBlock];
+//        [vcr playWithCompletionBlock:completionBlock];
+        [vcr playWithCompletionBlock:^(BOOL result) {
+            BKRStrongify(self);
+            if (result) {
+                self->_state = BKRVCRStatePlaying;
+            }
+            if (completionBlock) {
+                completionBlock(result);
+            }
+        }];
+        
     }];
 }
 
-- (void)pauseWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)pauseWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
+    BKRWeakify(self);
     [self executeForVCR:self.playableVCR clearCurrentVCRAtEnd:NO withVCRAction:^(id<BKRVCRActions> vcr) {
-        [vcr pauseWithCompletionBlock:completionBlock];
+//        [vcr pauseWithCompletionBlock:completionBlock];
+        [vcr pauseWithCompletionBlock:^(BOOL result) {
+            BKRStrongify(self);
+            if (result) {
+                self->_state = BKRVCRStatePaused;
+            }
+            if (completionBlock) {
+                completionBlock(result);
+            }
+        }];
     }];
 }
 
-- (void)stopWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)stopWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
+    BKRWeakify(self);
     [self executeForVCR:self.playableVCR clearCurrentVCRAtEnd:YES withVCRAction:^(id<BKRVCRActions> vcr) {
-        [vcr stopWithCompletionBlock:completionBlock];
+        [vcr stopWithCompletionBlock:^(BOOL result) {
+            BKRStrongify(self);
+            if (result) {
+                self->_state = BKRVCRStateStopped;
+            }
+            if (completionBlock) {
+                completionBlock(result);
+            }
+        }];
+//        [vcr stopWithCompletionBlock:completionBlock];
     }];
 }
 
-- (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)recordWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
+    BKRWeakify(self);
     [self executeForVCR:self.recordableVCR clearCurrentVCRAtEnd:NO withVCRAction:^(id<BKRVCRActions> vcr) {
-        [vcr recordWithCompletionBlock:completionBlock];
+//        [vcr recordWithCompletionBlock:completionBlock];
+        [vcr recordWithCompletionBlock:^(BOOL result) {
+            BKRStrongify(self);
+            if (result) {
+                self->_state = BKRVCRStateRecording;
+            }
+            if (completionBlock) {
+                completionBlock(result);
+            }
+        }];
     }];
 }
 
@@ -150,6 +191,7 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
 
 - (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     __block BOOL finalResult = NO;
+    [self stopWithCompletionBlock:nil]; // call a stop, no completion necessary, not done yet
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         __block NSInteger completionBlockCount = 0;
@@ -187,7 +229,7 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
                 completionBlock(result);
             }
         }];
-        
+        self->_state = BKRVCRStateStopped; // redundant because of stop call above
         finalResult = recordableResult && playableResult;
     });
     
@@ -206,7 +248,7 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
     return cassette;
 }
 
-- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)resetWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     // this is weird, double completion blocks?
     // set a block variable for 0, count up for each completion shop,
     // run the block on main queue when you hit 2
@@ -214,22 +256,22 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         __block NSInteger completionBlockCount = 0;
-        [self->_recordableVCR resetWithCompletionBlock:^{
+        [self->_recordableVCR resetWithCompletionBlock:^(BOOL result) {
             completionBlockCount++;
             if (
                 completionBlock &&
                 (completionBlockCount == 2)
                 ) {
-                completionBlock();
+                completionBlock(YES);
             }
         }];
-        [self->_playableVCR resetWithCompletionBlock:^{
+        [self->_playableVCR resetWithCompletionBlock:^(BOOL result) {
             completionBlockCount++;
             if (
                 completionBlock &&
                 (completionBlockCount == 2)
                 ) {
-                completionBlock();
+                completionBlock(YES);
             }
         }];
         self->_currentVCR = nil;
