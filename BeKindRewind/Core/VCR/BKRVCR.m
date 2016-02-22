@@ -13,6 +13,7 @@
 #import "BKRPlayableVCR.h"
 
 typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
+typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
 
 @interface BKRVCR ()
 @property (nonatomic) dispatch_queue_t accessQueue;
@@ -54,14 +55,6 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
 }
 
 #pragma mark - helpers
-
-- (void)setCurrentVCR:(id<BKRVCRActions>)currentVCR {
-    BKRWeakify(self);
-    dispatch_barrier_async(self.accessQueue, ^{
-        BKRStrongify(self);
-        self->_currentVCR = currentVCR;
-    });
-}
 
 - (id<BKRVCRActions>)currentVCR {
     __block id<BKRVCRActions> currentInternalVCR = nil;
@@ -149,16 +142,6 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
                 completionBlock(result);
             }
         }];
-//        BOOL playableResult = [self.playableVCR insert:cassetteFilePath completionHandler:^(BOOL result, NSString *filePath) {
-//            completionBlockCount++;
-//            if (
-//                completionBlock &&
-//                (completionBlockCount == 2)
-//                ) {
-//                completionBlock(result, filePath);
-//            }
-//        }];
-        
         finalResult = recordableResult && playableResult;
     });
     
@@ -167,12 +150,17 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
 
 - (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     __block BOOL finalResult = NO;
-    __block BKRCassette *lastCassette = self.currentCassette;
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         __block NSInteger completionBlockCount = 0;
         BKRStrongify(self);
         if (!cassetteSavingBlock) {
+            finalResult = NO;
+            return;
+        }
+        // take from the recordableVCR because that's being added to
+        BKRCassette *lastCassette = self->_recordableVCR.currentCassette;
+        if (!lastCassette) {
             finalResult = NO;
             return;
         }
@@ -199,15 +187,6 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
                 completionBlock(result);
             }
         }];
-//        BOOL playableResult = [self.playableVCR eject:shouldOverwrite completionHandler:^(BOOL result, NSString *filePath) {
-//            completionBlockCount++;
-//            if (
-//                completionBlock &&
-//                (completionBlockCount == 2)
-//                ) {
-//                completionBlock(result, filePath);
-//            }
-//        }];
         
         finalResult = recordableResult && playableResult;
     });
@@ -222,10 +201,6 @@ typedef void (^BKRVCRActionProcessingBlock)(id<BKRVCRActions> vcr);
         BKRStrongify(self);
         // technically this shouldn't matter, both cassettes should be the same
         // but if stop is called, then return the cassette from recorder
-//        cassette = [self->_currentVCR currentCassette];
-//        if (!cassette) {
-//            cassette = [self->_lastVCR currentCassette];
-//        }
         cassette = self->_recordableVCR.currentCassette;
     });
     return cassette;
