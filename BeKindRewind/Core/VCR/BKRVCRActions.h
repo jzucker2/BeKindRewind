@@ -36,15 +36,6 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
     BKRVCRStatePaused = 3,
 };
 
-// what would i use this for?
-typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
-    BKRVCRConfigurationEmpty            = 0,
-    BKRVCRConfigurationHasCassette      = 1 << 0,
-    BKRVCRConfigurationHasCassettePath  = 1 << 1,
-    BKRVCRConfigurationIsRecording      = 1 << 2,
-    BKRVCRConfigurationIsPlaying        = 1 << 3,
-};
-
 @class BKRCassette;
 
 @protocol BKRVCRRecording <NSObject>

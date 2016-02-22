@@ -6,12 +6,12 @@
 //
 //
 
-#import "BKRVCR.h"
+#import "BKRTestVCR.h"
 #import "BKRTestCase.h"
 #import "BKRPlayheadMatcher.h"
 
 @interface BKRTestCase ()
-@property (nonatomic) BKRVCR *vcr;
+@property (nonatomic, strong, readwrite) id<BKRTestVCRActions>vcr;
 @end
 
 @implementation BKRTestCase
