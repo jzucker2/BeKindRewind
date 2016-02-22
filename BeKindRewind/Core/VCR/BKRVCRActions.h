@@ -54,7 +54,8 @@ typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
  *  begins. Make sure not to deadlock or execute slow code. It passes in
  *  the NSURLSessionTask associated with this recording.
  *
- *  @note this block is executed synchronously on the main queue
+ *  @note this block is executed synchronously on the main queue. Make sure
+ *        to not block the main queue
  */
 @property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
 
