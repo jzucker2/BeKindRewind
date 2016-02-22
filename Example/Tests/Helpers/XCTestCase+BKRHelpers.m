@@ -397,8 +397,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)setRecorderToEnabledWithExpectation:(BOOL)enabled {
     __block XCTestExpectation *enableChangeExpectation = [self expectationWithDescription:@"enable expectation"];
     [[BKRRecorder sharedInstance] setEnabled:enabled withCompletionHandler:^{
-        [enableChangeExpectation fulfill];
-        enableChangeExpectation = nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [enableChangeExpectation fulfill];
+            enableChangeExpectation = nil;
+        });
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
@@ -408,8 +410,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)setPlayer:(BKRPlayer *)player withExpectationToEnabled:(BOOL)enabled {
     __block XCTestExpectation *enableChangeExpectation = [self expectationWithDescription:@"enable expectation"];
     [player setEnabled:enabled withCompletionHandler:^{
-        [enableChangeExpectation fulfill];
-        enableChangeExpectation = nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [enableChangeExpectation fulfill];
+            enableChangeExpectation = nil;
+        });
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
@@ -878,12 +882,15 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     XCTAssertTrue([vcr insert:^BKRCassette *{
         return [BKRCassette cassette];
     } completionHandler:^(BOOL result) {
-        [insertExpectation fulfill];
-        insertExpectation = nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [insertExpectation fulfill];
+            insertExpectation = nil;
+        });
     }]);
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
 }
 
 - (void)insertCassetteFilePath:(NSString *)cassetteFilePath intoVCR:(id<BKRVCRActions>)vcr {
@@ -894,24 +901,33 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
         BKRCassette *cassette = nil;
         cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
+        XCTAssertNotNil(cassette, @"not trying to insert a nil cassette");
         return cassette;
     } completionHandler:^(BOOL result) {
-        [insertExpectation fulfill];
-        insertExpectation = nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [insertExpectation fulfill];
+            insertExpectation = nil;
+        });
     }]);
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
 }
 
 - (void)resetVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *resetExpectation = [self expectationWithDescription:@"reset expectation"];
-    [vcr resetWithCompletionBlock:^{
-        [resetExpectation fulfill];
+    [vcr resetWithCompletionBlock:^(BOOL result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            XCTAssertTrue(result);
+            [resetExpectation fulfill];
+            resetExpectation = nil;
+        });
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
 }
 
 - (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromVCR:(id<BKRVCRActions>)vcr {
@@ -919,46 +935,61 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BOOL result = [vcr eject:^NSString *(BKRCassette *cassette) {
         return cassetteFilePath;
     } completionHandler:^(BOOL result) {
-        [ejectExpectation fulfill];
-        ejectExpectation = nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [ejectExpectation fulfill];
+            ejectExpectation = nil;
+        });
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
     return result;
 }
 
 - (void)playVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
-    [vcr playWithCompletionBlock:^{
-        [playExpectation fulfill];
-        playExpectation = nil;
+    [vcr playWithCompletionBlock:^(BOOL result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            XCTAssertTrue(result);
+            [playExpectation fulfill];
+            playExpectation = nil;
+        });
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+    XCTAssertEqual(vcr.state, BKRVCRStatePlaying);
 }
 
 - (void)recordVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *recordExpectation = [self expectationWithDescription:@"start recording expectation"];
-    [vcr recordWithCompletionBlock:^{
-        [recordExpectation fulfill];
-        recordExpectation = nil;
+    [vcr recordWithCompletionBlock:^(BOOL result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            XCTAssertTrue(result);
+            [recordExpectation fulfill];
+            recordExpectation = nil;
+        });
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+    XCTAssertEqual(vcr.state, BKRVCRStateRecording);
 }
 
 - (void)stopVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *stopExpectation = [self expectationWithDescription:@"stop vcr expectation"];
-    [vcr stopWithCompletionBlock:^{
-        [stopExpectation fulfill];
-        stopExpectation = nil;
+    [vcr stopWithCompletionBlock:^(BOOL result) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            XCTAssertTrue(result);
+            [stopExpectation fulfill];
+            stopExpectation = nil;
+        });
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
 }
 
 @end

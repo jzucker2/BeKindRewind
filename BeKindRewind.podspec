@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "Jordan Zucker" => "jordan.zucker@gmail.com" }
   s.source           = { :git => "https://github.com/jzucker2/BeKindRewind.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/jzucker'
+  s.social_media_url = 'https://twitter.com/jzucker'
 
   s.ios.deployment_target = '8.0'
   s.tvos.deployment_target = '9.0'

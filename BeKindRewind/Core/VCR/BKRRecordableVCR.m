@@ -82,12 +82,17 @@
     return cassette;
 }
 
-- (void)playWithCompletionBlock:(void (^)(void))completionBlock {
-    // no-op
+- (void)playWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     NSLog(@"recording VCR can't play a cassette");
+    if (!completionBlock) {
+        return;
+    }
+    dispatch_barrier_async(self.accessQueue, ^{
+        completionBlock(NO);
+    });
 }
 
-- (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)recordWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -102,9 +107,17 @@
             case BKRVCRStateStopped:
             {
                 self->_state = BKRVCRStateRecording;
-                [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:completionBlock];
+                [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:^{
+                    if (completionBlock) {
+                        completionBlock(YES);
+                    }
+                }];
+                return;
             }
                 break;
+        }
+        if (completionBlock) {
+            completionBlock(NO);
         }
     });
 }
@@ -186,7 +199,7 @@
     return finalResult;
 }
 
-- (void)stopWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)stopWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -199,16 +212,24 @@
             case BKRVCRStateRecording:
             {
                 self->_state = BKRVCRStateStopped;
-                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
+                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:^{
+                    if (completionBlock) {
+                        completionBlock(YES);
+                    }
+                }];
+                return;
             }
                 break;
             case BKRVCRStateStopped:
                 break;
         }
+        if (completionBlock) {
+            completionBlock(NO);
+        }
     });
 }
 
-- (void)pauseWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)pauseWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -220,22 +241,34 @@
             case BKRVCRStateRecording:
             {
                 self->_state = BKRVCRStatePaused;
-                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
+                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:^{
+                    if (completionBlock) {
+                        completionBlock(YES);
+                    }
+                }];
+                return;
             }
                 break;
             case BKRVCRStatePaused:
             case BKRVCRStateStopped:
                 break;
         }
+        if (completionBlock) {
+            completionBlock(NO);
+        }
     });
 }
 
-- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)resetWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         self->_state = BKRVCRStateStopped;
-        [[BKRRecorder sharedInstance] resetWithCompletionBlock:completionBlock];
+        [[BKRRecorder sharedInstance] resetWithCompletionBlock:^{
+            if (completionBlock) {
+                completionBlock(YES);
+            }
+        }];
     });
 }
 

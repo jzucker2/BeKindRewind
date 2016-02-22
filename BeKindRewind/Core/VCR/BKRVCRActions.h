@@ -45,7 +45,8 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
  *  begins. Make sure not to deadlock or execute slow code. It passes in
  *  the NSURLSessionTask associated with this recording.
  *
- *  @note this block is executed synchronously on the main queue
+ *  @note this block is executed synchronously on the main queue. Make sure
+ *        to not block the main queue
  */
 @property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
 
@@ -63,23 +64,23 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
 typedef void (^BKRCassetteHandlingBlock)(BOOL result);
 typedef BKRCassette *(^BKRVCRCassetteLoadingBlock)(void);
 typedef NSString *(^BKRVCRCassetteSavingBlock)(BKRCassette *cassette);
+typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
 
 @protocol BKRVCRActions <NSObject>
 
-- (void)playWithCompletionBlock:(void (^)(void))completionBlock;
-- (void)pauseWithCompletionBlock:(void (^)(void))completionBlock; // is there a difference between stop and pause?
-- (void)stopWithCompletionBlock:(void (^)(void))completionBlock; // is there a difference between stop and pause?
-- (void)resetWithCompletionBlock:(void (^)(void))completionBlock; // reset to start of cassette
+- (void)playWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock;
+- (void)pauseWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock; // is there a difference between stop and pause?
+- (void)stopWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock; // is there a difference between stop and pause?
+- (void)resetWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock; // reset to start of cassette
+/**
+ *  Record network
+ */
+- (void)recordWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock;
 - (BOOL)insert:(BKRVCRCassetteLoadingBlock)cassetteLoadingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock; // must end in .plist
 /**
  *  This "ejects" the current cassette, saving the results to the location specified by filePath
  */
 - (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock; // consider making BOOLEAN with something like force, etc, returns success or failure
-
-/**
- *  Record network
- */
-- (void)recordWithCompletionBlock:(void (^)(void))completionBlock;
 
 ///**
 // *  Recordings or stubbings for a session are contained in this object. If this
