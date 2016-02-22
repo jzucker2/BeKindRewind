@@ -104,7 +104,6 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
 - (void)pauseWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     [self executeForVCR:self.playableVCR clearCurrentVCRAtEnd:NO withVCRAction:^(id<BKRVCRActions> vcr) {
-//        [vcr pauseWithCompletionBlock:completionBlock];
         [vcr pauseWithCompletionBlock:^(BOOL result) {
             BKRStrongify(self);
             if (result) {

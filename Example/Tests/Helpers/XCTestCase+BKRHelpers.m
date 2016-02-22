@@ -397,8 +397,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)setRecorderToEnabledWithExpectation:(BOOL)enabled {
     __block XCTestExpectation *enableChangeExpectation = [self expectationWithDescription:@"enable expectation"];
     [[BKRRecorder sharedInstance] setEnabled:enabled withCompletionHandler:^{
-//        [enableChangeExpectation fulfill];
-//        enableChangeExpectation = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             [enableChangeExpectation fulfill];
             enableChangeExpectation = nil;
@@ -412,8 +410,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)setPlayer:(BKRPlayer *)player withExpectationToEnabled:(BOOL)enabled {
     __block XCTestExpectation *enableChangeExpectation = [self expectationWithDescription:@"enable expectation"];
     [player setEnabled:enabled withCompletionHandler:^{
-//        [enableChangeExpectation fulfill];
-//        enableChangeExpectation = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             [enableChangeExpectation fulfill];
             enableChangeExpectation = nil;
@@ -890,8 +886,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             [insertExpectation fulfill];
             insertExpectation = nil;
         });
-//        [insertExpectation fulfill];
-//        insertExpectation = nil;
     }]);
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
@@ -910,8 +904,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertNotNil(cassette, @"not trying to insert a nil cassette");
         return cassette;
     } completionHandler:^(BOOL result) {
-//        [insertExpectation fulfill];
-//        insertExpectation = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             [insertExpectation fulfill];
             insertExpectation = nil;
@@ -926,8 +918,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)resetVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *resetExpectation = [self expectationWithDescription:@"reset expectation"];
     [vcr resetWithCompletionBlock:^(BOOL result) {
-//        XCTAssertTrue(result);
-//        [resetExpectation fulfill];
         dispatch_async(dispatch_get_main_queue(), ^{
             XCTAssertTrue(result);
             [resetExpectation fulfill];
@@ -945,8 +935,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BOOL result = [vcr eject:^NSString *(BKRCassette *cassette) {
         return cassetteFilePath;
     } completionHandler:^(BOOL result) {
-//        [ejectExpectation fulfill];
-//        ejectExpectation = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             [ejectExpectation fulfill];
             ejectExpectation = nil;
@@ -962,9 +950,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)playVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *playExpectation = [self expectationWithDescription:@"start playing expectation"];
     [vcr playWithCompletionBlock:^(BOOL result) {
-//        XCTAssertTrue(result);
-//        [playExpectation fulfill];
-//        playExpectation = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             XCTAssertTrue(result);
             [playExpectation fulfill];
@@ -980,9 +965,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)recordVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *recordExpectation = [self expectationWithDescription:@"start recording expectation"];
     [vcr recordWithCompletionBlock:^(BOOL result) {
-//        XCTAssertTrue(result);
-//        [recordExpectation fulfill];
-//        recordExpectation = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             XCTAssertTrue(result);
             [recordExpectation fulfill];
@@ -998,9 +980,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)stopVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *stopExpectation = [self expectationWithDescription:@"stop vcr expectation"];
     [vcr stopWithCompletionBlock:^(BOOL result) {
-//        XCTAssertTrue(result);
-//        [stopExpectation fulfill];
-//        stopExpectation = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             XCTAssertTrue(result);
             [stopExpectation fulfill];

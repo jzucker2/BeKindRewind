@@ -35,7 +35,9 @@
 }
 
 - (void)executeEndTaskRecordingBlock:(BKREndRecordingTaskBlock)endTaskBlock withTask:(NSURLSessionTask *)task {
+    // needs to happen on processingQueue so it happens after everything already being recorded
     dispatch_barrier_async(self.processingQueue, ^{
+        // needs to happen on main queue (as per documentation) so it can be used in testing
         dispatch_async(dispatch_get_main_queue(), ^{
             endTaskBlock(task);
         });
