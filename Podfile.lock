@@ -20,10 +20,10 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   BeKindRewind:
-    :path: "."
+    :path: .
 
 SPEC CHECKSUMS:
-  BeKindRewind: adc190ad516afd341af67275c6d45ecaec720caf
+  BeKindRewind: 8fa455d36c78dff2b0d0cf211e60968e9c691c23
   OHHTTPStubs: f7d1604d04d37d055460c0ef9af01bb249ded0fa
 
 COCOAPODS: 0.39.0
