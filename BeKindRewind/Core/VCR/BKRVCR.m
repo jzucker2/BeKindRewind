@@ -88,7 +88,6 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
 - (void)playWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     [self executeForVCR:self.playableVCR clearCurrentVCRAtEnd:NO withVCRAction:^(id<BKRVCRActions> vcr) {
-//        [vcr playWithCompletionBlock:completionBlock];
         [vcr playWithCompletionBlock:^(BOOL result) {
             BKRStrongify(self);
             if (result) {
@@ -130,14 +129,12 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
                 completionBlock(result);
             }
         }];
-//        [vcr stopWithCompletionBlock:completionBlock];
     }];
 }
 
 - (void)recordWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     [self executeForVCR:self.recordableVCR clearCurrentVCRAtEnd:NO withVCRAction:^(id<BKRVCRActions> vcr) {
-//        [vcr recordWithCompletionBlock:completionBlock];
         [vcr recordWithCompletionBlock:^(BOOL result) {
             BKRStrongify(self);
             if (result) {

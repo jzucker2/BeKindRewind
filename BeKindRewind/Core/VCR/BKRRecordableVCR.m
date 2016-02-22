@@ -83,7 +83,6 @@
 }
 
 - (void)playWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
-    // no-op
     NSLog(@"recording VCR can't play a cassette");
     if (!completionBlock) {
         return;
@@ -108,7 +107,6 @@
             case BKRVCRStateStopped:
             {
                 self->_state = BKRVCRStateRecording;
-//                [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:completionBlock];
                 [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:^{
                     if (completionBlock) {
                         completionBlock(YES);
@@ -214,7 +212,6 @@
             case BKRVCRStateRecording:
             {
                 self->_state = BKRVCRStateStopped;
-//                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
                 [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:^{
                     if (completionBlock) {
                         completionBlock(YES);
@@ -244,7 +241,6 @@
             case BKRVCRStateRecording:
             {
                 self->_state = BKRVCRStatePaused;
-//                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
                 [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:^{
                     if (completionBlock) {
                         completionBlock(YES);
@@ -268,7 +264,6 @@
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         self->_state = BKRVCRStateStopped;
-//        [[BKRRecorder sharedInstance] resetWithCompletionBlock:completionBlock];
         [[BKRRecorder sharedInstance] resetWithCompletionBlock:^{
             if (completionBlock) {
                 completionBlock(YES);
