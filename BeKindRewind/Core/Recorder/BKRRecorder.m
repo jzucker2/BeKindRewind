@@ -63,9 +63,10 @@
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock {
     [self.editor setEnabled:enabled withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
         if (completionBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock();
-            });
+            completionBlock();
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                completionBlock();
+//            });
         }
     }];
 }
@@ -85,9 +86,10 @@
     [self.editor reset];
     [self.editor editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         if (completionBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock();
-            });
+            completionBlock();
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                completionBlock();
+//            });
         }
     }];
 }
