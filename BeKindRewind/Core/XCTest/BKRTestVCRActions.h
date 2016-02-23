@@ -11,8 +11,8 @@
 @class BKRCassette;
 @class XCTestCase;
 
-typedef BKRCassette *(^BKRTestVCRCassetteLoadingBlock)(XCTestCase *testCase);
-typedef NSString *(^BKRTestVCRCassetteSavingBlock)(BKRCassette *cassette, XCTestCase *testCase);
+//typedef BKRCassette *(^BKRTestVCRCassetteLoadingBlock)(XCTestCase *testCase);
+//typedef NSString *(^BKRTestVCRCassetteSavingBlock)(BKRCassette *cassette, XCTestCase *testCase);
 
 @protocol BKRTestVCRActions <NSObject>
 
@@ -20,13 +20,13 @@ typedef NSString *(^BKRTestVCRCassetteSavingBlock)(BKRCassette *cassette, XCTest
 - (void)pause;
 - (void)stop;
 - (void)reset;
-- (BOOL)insert:(BKRTestVCRCassetteLoadingBlock)cassetteLoadingBlock;
-- (BOOL)eject:(BKRTestVCRCassetteSavingBlock)cassetteSavingBlock;
+- (BOOL)insert:(BKRVCRCassetteLoadingBlock)cassetteLoadingBlock;
+- (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock;
 - (void)record;
 
 /**
  *  The test case that needs to have its network operations recorded or stubbed.
  */
-@property (nonatomic, strong) XCTestCase *currentTestCase;
+@property (nonatomic, strong, readonly) XCTestCase *currentTestCase;
 
 @end
