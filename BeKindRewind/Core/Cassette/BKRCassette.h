@@ -10,6 +10,12 @@
 
 @class BKRScene;
 
+//typedef returnType (^TypeName)(parameterTypes);
+//TypeName blockName = ^returnType(parameters) {...};
+typedef void (^BKRCassetteSceneDictionaryAccessBlock)(NSDictionary<NSString *, BKRScene *> *currentScenesDictionary);
+typedef void (^BKRCassetteAllScenesProcessingBlock)(NSDate *cassetteCreationDate, NSArray<BKRScene *> *currentAllScenes);
+typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryForIteration);
+
 /**
  *  Contains the BKRScene objects associated with a networking session
  */
@@ -46,10 +52,17 @@
 /**
  *  Used to add a BKRScene to the cassette's dictionary in a thread
  *  safe manner.
+ *  
+ *  @note this directly accesses ivar pointers and should only be used
+ *        inside a dispatch_barrier_async or dispatch_barrier_sync block
  *
  *  @param scene represents the recorded or stubbed data associated with
  *  a network request
  */
 - (void)addSceneToScenesDictionary:(BKRScene *)scene;
+
+- (void)addBatchOfScenes:(NSArray<NSDictionary *> *)rawSceneDictionaries toCassetteWithBlock:(BKRCassetteBatchSceneAddingBlock)batchAddingBlock;
+- (void)editScenesDictionary:(BKRCassetteSceneDictionaryAccessBlock)sceneDictionaryAccessBlock;
+- (void)processScenes:(BKRCassetteAllScenesProcessingBlock)allScenesProcessingBlock; // synchronous not async
 
 @end

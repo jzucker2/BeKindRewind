@@ -23,45 +23,78 @@
     }
     NSParameterAssert(frame);
     BKRWeakify(self);
-    dispatch_barrier_async(self.processingQueue, ^{
+//    dispatch_barrier_async(self.processingQueue, ^{
+//        NSLog(@"%@: barrier async block frame (%@)", self, frame.debugDescription);
+//        BKRStrongify(self);
+//        NSDictionary *currentDictionary = self.scenesDictionary;
+//        if (currentDictionary[frame.uniqueIdentifier]) {
+//            BKRScene *existingScene = currentDictionary[frame.uniqueIdentifier];
+//            [existingScene addFrame:frame];
+//        } else {
+//            BKRScene *newScene = [BKRScene sceneFromFrame:frame];
+//            [self addSceneToScenesDictionary:newScene];
+//        }
+//    });
+    
+    [self editScenesDictionary:^(NSDictionary<NSString *,BKRScene *> *currentScenesDictionary) {
         NSLog(@"%@: barrier async block frame (%@)", self, frame.debugDescription);
         BKRStrongify(self);
-        NSDictionary *currentDictionary = self.scenesDictionary;
-        if (currentDictionary[frame.uniqueIdentifier]) {
-            BKRScene *existingScene = currentDictionary[frame.uniqueIdentifier];
+        if (!currentScenesDictionary) {
+            return;
+        }
+        if (currentScenesDictionary[frame.uniqueIdentifier]) {
+            BKRScene *existingScene = currentScenesDictionary[frame.uniqueIdentifier];
             [existingScene addFrame:frame];
         } else {
             BKRScene *newScene = [BKRScene sceneFromFrame:frame];
             [self addSceneToScenesDictionary:newScene];
         }
-    });
+    }];
 }
 
 - (void)executeEndTaskRecordingBlock:(BKREndRecordingTaskBlock)endTaskBlock withTask:(NSURLSessionTask *)task {
-    // needs to happen on processingQueue so it happens after everything already being recorded
-    dispatch_barrier_async(self.processingQueue, ^{
+//    // needs to happen on processingQueue so it happens after everything already being recorded
+//    dispatch_barrier_async(self.processingQueue, ^{
+//        // needs to happen on main queue (as per documentation) so it can be used in testing
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            endTaskBlock(task);
+//        });
+//    });
+    
+    // needs to happen on accessingQueue so it happens after everything already being recorded
+    [self editScenesDictionary:^(NSDictionary<NSString *,BKRScene *> *currentScenesDictionary) {
         // needs to happen on main queue (as per documentation) so it can be used in testing
         dispatch_async(dispatch_get_main_queue(), ^{
             endTaskBlock(task);
         });
-    });
+    }];
 }
 
 - (NSDictionary *)plistDictionary {
     __block NSDictionary *finalPlistDictionary = nil;
-    BKRWeakify(self);
-    dispatch_barrier_sync(self.processingQueue, ^{
-        BKRStrongify(self);
+    [self processScenes:^(NSDate *cassetteCreationDate, NSArray<BKRScene *> *currentAllScenes) {
         NSMutableArray *plistArray = [NSMutableArray array];
-        for (BKRScene *scene in self.allScenes) {
+        for (BKRScene *scene in currentAllScenes) {
             [plistArray addObject:scene.plistDictionary];
         }
         NSMutableDictionary *plistDict = [@{
                                             @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]
                                             } mutableCopy];
-        plistDict[@"creationDate"] = self.creationDate.copy;
+        plistDict[@"creationDate"] = cassetteCreationDate.copy;
         finalPlistDictionary = [[NSDictionary alloc] initWithDictionary:plistDict.copy copyItems:YES];
-    });
+    }];
+//    dispatch_barrier_sync(self.processingQueue, ^{
+//        BKRStrongify(self);
+//        NSMutableArray *plistArray = [NSMutableArray array];
+//        for (BKRScene *scene in self.allScenes) {
+//            [plistArray addObject:scene.plistDictionary];
+//        }
+//        NSMutableDictionary *plistDict = [@{
+//                                            @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]
+//                                            } mutableCopy];
+//        plistDict[@"creationDate"] = self.creationDate.copy;
+//        finalPlistDictionary = [[NSDictionary alloc] initWithDictionary:plistDict.copy copyItems:YES];
+//    });
     return finalPlistDictionary;
 //    NSMutableArray *plistArray = [NSMutableArray array];
 //    for (BKRScene *scene in self.allScenes) {
