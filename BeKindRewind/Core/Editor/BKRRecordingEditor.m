@@ -43,10 +43,10 @@
 
 - (NSDate *)recordingStartTime {
     __block NSDate *recordingTime = nil;
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_sync(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        recordingTime = sself->_recordingStartTime;
+        BKRStrongify(self);
+        recordingTime = self->_recordingStartTime;
     });
     return recordingTime;
 }
@@ -76,16 +76,19 @@
 
 - (void)addFrame:(BKRRawFrame *)frame {
     BKRWeakify(self);
+    NSLog(@"%@ addFrame: %@", self, frame);
     [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         if (!cassette) {
             NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
             return;
         }
+        NSLog(@"%@ see if you can record", self);
         if (![self _shouldRecord:frame]) {
             return;
         }
         self->_handledRecording = YES;
+        NSLog(@"%@: add frame to cassette %@", self, frame);
         [cassette addFrame:frame];
     }];
 }
@@ -102,10 +105,10 @@
 
 - (BOOL)handledRecording {
     __block BOOL currentHandledRecording;
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_sync(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        currentHandledRecording = sself->_handledRecording;
+        BKRStrongify(self);
+        currentHandledRecording = self->_handledRecording;
     });
     return currentHandledRecording;
 }

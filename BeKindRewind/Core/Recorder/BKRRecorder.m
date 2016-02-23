@@ -109,10 +109,12 @@
 #pragma mark - NSURLSession recording
 
 - (void)beginRecording:(NSURLSessionTask *)task {
+    NSLog(@"%@ begin recording: %@", self, task);
     [self.editor executeBeginRecordingBlockWithTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
+    NSLog(@"%@ end recording: %@", self, task);
     [self.editor executeEndRecordingBlockWithTask:task];
 }
 
