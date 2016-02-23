@@ -27,21 +27,11 @@
 
 - (void)_addEditedScenes:(NSArray<NSDictionary *> *)rawScenes {
     BKRWeakify(self);
-//    [self editScenesDictionary:^(NSDictionary<NSString *,BKRScene *> *currentScenesDictionary) {
-//        BKRStrongify(self);
-//        BKRScene *scene = [[BKRScene alloc] initFromPlistDictionary:rawScenes[iteration]];
-//        [self addSceneToScenesDictionary:scene];
-//    }];
     [self addBatchOfScenes:rawScenes toCassetteWithBlock:^(NSDictionary *sceneDictionaryForIteration) {
         BKRStrongify(self);
         BKRScene *scene = [[BKRScene alloc] initFromPlistDictionary:sceneDictionaryForIteration];
         [self addSceneToScenesDictionary:scene];
     }];
-//    dispatch_apply(rawScenes.count, self.processingQueue, ^(size_t iteration) {
-//        BKRStrongify(self);
-//        BKRScene *scene = [[BKRScene alloc] initFromPlistDictionary:rawScenes[iteration]];
-//        [self addSceneToScenesDictionary:scene];
-//    });
 }
 
 @end

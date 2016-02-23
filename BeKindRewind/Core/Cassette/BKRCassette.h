@@ -29,11 +29,6 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
 @property (nonatomic) NSDate *creationDate;
 
 /**
- *  Concurrent queue used to process BKRScene objects
- */
-@property (nonatomic) dispatch_queue_t processingQueue;
-
-/**
  *  All BKRScene objects stored in this cassette
  *
  *  @return array of BKRScene objects sorted in order of creation
