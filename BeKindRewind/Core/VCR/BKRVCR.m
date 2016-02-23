@@ -133,12 +133,15 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
 
 - (void)recordWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
+    NSLog(@"%@: start recording", self);
     [self executeForVCR:self.recordableVCR clearCurrentVCRAtEnd:NO withVCRAction:^(id<BKRVCRActions> vcr) {
+        NSLog(@"%@ record", self);
         [vcr recordWithCompletionBlock:^(BOOL result) {
             BKRStrongify(self);
             if (result) {
                 self->_state = BKRVCRStateRecording;
             }
+            NSLog(@"%@ run recording completionblock", self);
             if (completionBlock) {
                 completionBlock(result);
             }
@@ -259,26 +262,26 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
         BKRStrongify(self);
         __block NSInteger completionBlockCount = 0;
         [self->_recordableVCR resetWithCompletionBlock:^(BOOL result) {
-            NSLog(@"recordable resetCompletionBlock: %ld", (long)completionBlockCount);
+            NSLog(@"%@: recordable resetCompletionBlock: %ld", self, (long)completionBlockCount);
             completionBlockCount++;
-            NSLog(@"recordable resetCompletionBlock: %ld", (long)completionBlockCount);
+            NSLog(@"%@: recordable resetCompletionBlock: %ld", self, (long)completionBlockCount);
             if (
                 completionBlock &&
                 (completionBlockCount == 2)
                 ) {
-                NSLog(@"recordable run completion block");
+                NSLog(@"%@: recordable run completion block", self);
                 completionBlock(YES);
             }
         }];
         [self->_playableVCR resetWithCompletionBlock:^(BOOL result) {
-            NSLog(@"playable resetCompletionBlock: %ld", (long)completionBlockCount);
+            NSLog(@"%@: playable resetCompletionBlock: %ld", self, (long)completionBlockCount);
             completionBlockCount++;
-            NSLog(@"playable resetCompletionBlock: %ld", (long)completionBlockCount);
+            NSLog(@"%@: playable resetCompletionBlock: %ld", self, (long)completionBlockCount);
             if (
                 completionBlock &&
                 (completionBlockCount == 2)
                 ) {
-                NSLog(@"playable run completion block");
+                NSLog(@"%@: playable run completion block", self);
                 completionBlock(YES);
             }
         }];
