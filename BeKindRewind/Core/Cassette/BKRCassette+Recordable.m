@@ -40,6 +40,10 @@
 }
 
 - (void)executeEndTaskRecordingBlock:(BKREndRecordingTaskBlock)endTaskBlock withTask:(NSURLSessionTask *)task {
+    // just make sure there's no block before we schedule it to run
+    if (!endTaskBlock) {
+        return;
+    }
     // needs to happen on accessingQueue so it happens after everything already being recorded
     [self editScenesDictionary:^(NSDictionary<NSString *,BKRScene *> *currentScenesDictionary) {
         // needs to happen on main queue (as per documentation) so it can be used in testing
