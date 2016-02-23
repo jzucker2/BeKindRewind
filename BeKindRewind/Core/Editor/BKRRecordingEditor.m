@@ -76,7 +76,7 @@
 
 - (void)addFrame:(BKRRawFrame *)frame {
     BKRWeakify(self);
-    NSLog(@"%@ addFrame: %@", self, frame);
+    NSLog(@"%@ addFrame: %@", self, frame.debugDescription);
     [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         if (!cassette) {
@@ -88,7 +88,7 @@
             return;
         }
         self->_handledRecording = YES;
-        NSLog(@"%@: add frame to cassette %@", self, frame);
+        NSLog(@"%@: should record YES add frame to cassette %@", self, frame.debugDescription);
         [cassette addFrame:frame];
     }];
 }
@@ -98,9 +98,12 @@
         !self->_recordingStartTime ||
         !rawFrame
         ) {
+        NSLog(@"%@: don't record frame because no recording start time or rawFrame is nil: %@", self, rawFrame.debugDescription);
         return NO;
     }
-    return [rawFrame.creationDate compare:self->_recordingStartTime];
+    NSLog(@"%@: for frame (%@) comparing frame creation date (%@) with recording start time (%@)", self, rawFrame.debugDescription, rawFrame.creationDate, self->_recordingStartTime);
+    // need to ensure that rawFrame.creationDate is not earlier than self->_recordingStartTime
+    return ([rawFrame.creationDate compare:self->_recordingStartTime] != NSOrderedAscending);
 }
 
 - (BOOL)handledRecording {
@@ -146,9 +149,13 @@
 - (NSDictionary *)plistDictionary {
     __block NSDictionary *dictionary = nil;
     // this is dispatch sync so that it occurs after any queued writes (adding frames)
+    NSLog(@"%@ (plistDictionary): start of edit synchronously", self);
     [self editCassetteSynchronously:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        NSLog(@"%@ (plistDictionary): start of synch block", self);
         dictionary = cassette.plistDictionary;
+        NSLog(@"%@ (plistDictionary): end of getting plist dict in synch block", self);
     }];
+    NSLog(@"%@ (plistDictionary): now return dictionary", self);
     return dictionary;
 }
 

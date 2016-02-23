@@ -15,13 +15,16 @@
 // frames and scenes share unique identifiers, this comes from the recorded task
 // if the frame matches a scene unique identifier, then add it to the scene
 - (void)addFrame:(BKRRawFrame *)frame {
+    NSLog(@"%@: adding frame: %@", self, frame.debugDescription);
     if (!frame.item) {
         // Can't add a blank frame!
+        NSLog(@"%@: can't add blank frame: %@", self, frame.debugDescription);
         return;
     }
     NSParameterAssert(frame);
     BKRWeakify(self);
     dispatch_barrier_async(self.processingQueue, ^{
+        NSLog(@"%@: barrier async block frame (%@)", self, frame.debugDescription);
         BKRStrongify(self);
         NSDictionary *currentDictionary = self.scenesDictionary;
         if (currentDictionary[frame.uniqueIdentifier]) {
@@ -45,15 +48,30 @@
 }
 
 - (NSDictionary *)plistDictionary {
-    NSMutableArray *plistArray = [NSMutableArray array];
-    for (BKRScene *scene in self.allScenes) {
-        [plistArray addObject:scene.plistDictionary];
-    }
-    NSMutableDictionary *plistDict = [@{
-                                        @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]
-                                        } mutableCopy];
-    plistDict[@"creationDate"] = self.creationDate.copy;
-    return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
+    __block NSDictionary *finalPlistDictionary = nil;
+    BKRWeakify(self);
+    dispatch_barrier_sync(self.processingQueue, ^{
+        BKRStrongify(self);
+        NSMutableArray *plistArray = [NSMutableArray array];
+        for (BKRScene *scene in self.allScenes) {
+            [plistArray addObject:scene.plistDictionary];
+        }
+        NSMutableDictionary *plistDict = [@{
+                                            @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]
+                                            } mutableCopy];
+        plistDict[@"creationDate"] = self.creationDate.copy;
+        finalPlistDictionary = [[NSDictionary alloc] initWithDictionary:plistDict.copy copyItems:YES];
+    });
+    return finalPlistDictionary;
+//    NSMutableArray *plistArray = [NSMutableArray array];
+//    for (BKRScene *scene in self.allScenes) {
+//        [plistArray addObject:scene.plistDictionary];
+//    }
+//    NSMutableDictionary *plistDict = [@{
+//                                        @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]
+//                                        } mutableCopy];
+//    plistDict[@"creationDate"] = self.creationDate.copy;
+//    return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
 }
 
 @end
