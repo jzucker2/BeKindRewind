@@ -56,7 +56,7 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
  */
 - (void)addSceneToScenesDictionary:(BKRScene *)scene;
 
-- (void)addBatchOfScenes:(NSArray<NSDictionary *> *)rawSceneDictionaries toCassetteWithBlock:(BKRCassetteBatchSceneAddingBlock)batchAddingBlock;
+- (void)addBatchOfScenes:(NSArray<NSDictionary *> *)rawSceneDictionaries toCassetteWithBlock:(BKRCassetteBatchSceneAddingBlock)batchAddingBlock; // this is synchronous and blocking due to underlying dispatch_apply
 - (void)editScenesDictionary:(BKRCassetteSceneDictionaryAccessBlock)sceneDictionaryAccessBlock;
 - (void)processScenes:(BKRCassetteAllScenesProcessingBlock)allScenesProcessingBlock; // synchronous not async
 

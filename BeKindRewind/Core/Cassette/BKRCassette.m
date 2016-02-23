@@ -55,8 +55,13 @@
         ) {
         return;
     }
-    dispatch_apply(rawSceneDictionaries.count, self.accessingQueue, ^(size_t iteration) {
-        batchAddingBlock(rawSceneDictionaries[iteration]);
+    // this queue only exists for the dispatch apply performed here
+    dispatch_queue_t processingQueue = dispatch_queue_create("com.BKR.cassetteProcessingQueue", DISPATCH_QUEUE_CONCURRENT);
+    // dispatch apply is synchronous so this should block until it finishes
+    dispatch_apply(rawSceneDictionaries.count, processingQueue, ^(size_t iteration) {
+        dispatch_barrier_async(self.accessingQueue, ^{
+            batchAddingBlock(rawSceneDictionaries[iteration]);
+        });
     });
 }
 
