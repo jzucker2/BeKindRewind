@@ -19,6 +19,7 @@
 #import <BeKindRewind/BKRErrorFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
+#import <BeKindRewind/BKRConfiguration.h>
 #import <BeKindRewind/BKRCassette+Playable.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import <BeKindRewind/BKRVCR.h>
@@ -118,17 +119,27 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 @implementation XCTestCase (BKRHelpers)
 
+- (BKRConfiguration *)defaultConfiguration {
+    BKRConfiguration *configuration = [BKRConfiguration defaultConfiguration];
+    [self _setBeginAndEndRecordingBlocksForConfiguration:configuration];
+    return configuration;
+}
+
 - (void)insertNewCassetteInRecorder {
     BKRCassette *cassette = [BKRCassette cassette];
     [BKRRecorder sharedInstance].currentCassette = cassette;
 }
 
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher {
-    return [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
+//    return [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
+    return [BKRPlayableVCR defaultVCR];
 }
 
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption {
-    return [BKRVCR vcrWithMatcherClass:[BKRPlayheadMatcher class] andEmptyCassetteSavingOption:cassetteSavingOption];
+    BKRConfiguration *configuration = [self defaultConfiguration];
+    configuration.shouldSaveEmptyCassette = cassetteSavingOption;
+    return [BKRVCR vcrWithConfiguration:configuration];
+//    return [BKRVCR vcrWithMatcherClass:[BKRPlayheadMatcher class] andEmptyCassetteSavingOption:cassetteSavingOption];
 }
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
@@ -867,13 +878,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 #pragma mark - VCR helpers
 
-- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr {
-    vcr.beginRecordingBlock = ^void(NSURLSessionTask *task) {
+//- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr {
+- (void)_setBeginAndEndRecordingBlocksForConfiguration:(BKRConfiguration *)configuration {
+    configuration.beginRecordingBlock = ^void(NSURLSessionTask *task) {
         NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
         task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
     };
     
-    vcr.endRecordingBlock = ^void(NSURLSessionTask *task) {
+    configuration.endRecordingBlock = ^void(NSURLSessionTask *task) {
         [task.recordingExpectation fulfill];
     };
 }

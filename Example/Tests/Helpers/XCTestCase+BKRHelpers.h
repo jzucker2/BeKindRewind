@@ -47,9 +47,10 @@ typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, N
 typedef void (^BKRTestBatchNetworkCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions);
 
-@class BKRPlayer, BKRCassette, BKRPlayableVCR, BKRVCR;
+@class BKRPlayer, BKRCassette, BKRPlayableVCR, BKRVCR, BKRConfiguration;
 @interface XCTestCase (BKRHelpers)
 
+- (BKRConfiguration *)defaultConfiguration;
 - (void)insertNewCassetteInRecorder;
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher;
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption;
@@ -83,7 +84,7 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 - (void)playVCR:(id<BKRVCRActions>)vcr;
 - (void)stopVCR:(id<BKRVCRActions>)vcr;
 - (void)recordVCR:(id<BKRVCRActions>)vcr;
-- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr;
+//- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr;
 
 #pragma mark - Plist builders
 
