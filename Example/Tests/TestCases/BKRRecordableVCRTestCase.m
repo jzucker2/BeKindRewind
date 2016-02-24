@@ -41,20 +41,15 @@
     
     BKRConfiguration *configuration = [self defaultConfiguration];
     if (self.invocation.selector == @selector(testRecordingFileCreatedWhenRecordingDisabledAndDefaultOverriddenInInit)) {
-//        self.vcr = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:YES];
         configuration.shouldSaveEmptyCassette = YES;
         self.vcr = [BKRRecordableVCR vcrWithConfiguration:configuration];
     } else if (self.invocation.selector == @selector(testRecordingNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
-//        self.vcr = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:NO];
         configuration.shouldSaveEmptyCassette = NO;
         self.vcr = [BKRRecordableVCR vcrWithConfiguration:configuration];
     } else {
-//        self.vcr = [BKRRecordableVCR vcr];
         self.vcr = [BKRRecordableVCR defaultVCR];
     }
     
-//    [self setVCRBeginAndEndRecordingBlocks:self.vcr];
-//    [self insertCassetteFilePath:self.testRecordingFilePath intoVCR:self.vcr];
     [self insertBlankCassetteIntoVCR:self.vcr];
 }
 
