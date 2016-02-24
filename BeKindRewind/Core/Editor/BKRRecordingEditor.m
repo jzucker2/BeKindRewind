@@ -43,10 +43,10 @@
 
 - (NSDate *)recordingStartTime {
     __block NSDate *recordingTime = nil;
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_sync(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        recordingTime = sself->_recordingStartTime;
+        BKRStrongify(self);
+        recordingTime = self->_recordingStartTime;
     });
     return recordingTime;
 }
@@ -97,15 +97,16 @@
         ) {
         return NO;
     }
-    return [rawFrame.creationDate compare:self->_recordingStartTime];
+    // need to ensure that rawFrame.creationDate is not earlier than self->_recordingStartTime
+    return ([rawFrame.creationDate compare:self->_recordingStartTime] != NSOrderedAscending);
 }
 
 - (BOOL)handledRecording {
     __block BOOL currentHandledRecording;
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_sync(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        currentHandledRecording = sself->_handledRecording;
+        BKRStrongify(self);
+        currentHandledRecording = self->_handledRecording;
     });
     return currentHandledRecording;
 }

@@ -11,37 +11,35 @@
 #import "BKRCassette+Recordable.h"
 #import "BKRFilePathHelper.h"
 #import "BKRRecorder.h"
+#import "NSObject+BKRVCRAdditions.h"
 
 @interface BKRRecordableVCR ()
 @property (nonatomic) dispatch_queue_t accessQueue;
-@property (nonatomic, assign, readwrite) BOOL shouldSaveEmptyCassette; // no by default
 @end
 
 @implementation BKRRecordableVCR
 
 @synthesize state = _state;
-@synthesize cassetteFilePath = _cassetteFilePath;
 @synthesize beginRecordingBlock = _beginRecordingBlock;
 @synthesize endRecordingBlock = _endRecordingBlock;
 
-- (instancetype)initWithEmptyCassetteOption:(BOOL)shouldSaveEmptyCassette {
+- (instancetype)initWithEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
     self = [super init];
     if (self) {
         [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil];
         _accessQueue = dispatch_queue_create("com.BKR.RecordableVCR", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
-        _cassetteFilePath = nil;
         _shouldSaveEmptyCassette = shouldSaveEmptyCassette;
     }
     return self;
 }
 
-+ (instancetype)vcrWithCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
-    return [[self alloc] initWithEmptyCassetteOption:shouldSaveEmptyCassette];
++ (instancetype)vcrWithEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
+    return [[self alloc] initWithEmptyCassetteSavingOption:shouldSaveEmptyCassette];
 }
 
 + (instancetype)vcr {
-    return [self vcrWithCassetteSavingOption:NO];
+    return [self vcrWithEmptyCassetteSavingOption:NO];
 }
 
 #pragma mark - BKRVCRRecording
@@ -79,27 +77,22 @@
 - (BKRCassette *)currentCassette {
     __block BKRCassette *cassette = nil;
     dispatch_sync(self.accessQueue, ^{
-        cassette = (BKRCassette *)[BKRRecorder sharedInstance].currentCassette;
+        cassette = [BKRRecorder sharedInstance].currentCassette;
     });
     return cassette;
 }
 
-- (NSString *)cassetteFilePath {
-    __block NSString *currentCassetteFilePath = nil;
-    BKRWeakify(self);
-    dispatch_sync(self.accessQueue, ^{
-        BKRStrongify(self);
-        currentCassetteFilePath = self->_cassetteFilePath;
-    });
-    return currentCassetteFilePath;
-}
-
-- (void)playWithCompletionBlock:(void (^)(void))completionBlock {
-    // no-op
+- (void)playWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     NSLog(@"recording VCR can't play a cassette");
+    if (!completionBlock) {
+        return;
+    }
+    dispatch_barrier_async(self.accessQueue, ^{
+        completionBlock(NO);
+    });
 }
 
-- (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)recordWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -114,53 +107,54 @@
             case BKRVCRStateStopped:
             {
                 self->_state = BKRVCRStateRecording;
-                [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:completionBlock];
+                [[BKRRecorder sharedInstance] setEnabled:YES withCompletionHandler:^{
+                    if (completionBlock) {
+                        completionBlock(YES);
+                    }
+                }];
+                return;
             }
                 break;
         }
+        if (completionBlock) {
+            completionBlock(NO);
+        }
     });
 }
 
-- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+- (BOOL)insert:(BKRVCRCassetteLoadingBlock)cassetteLoadingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     // can't insert a cassette if you already have one
-    if (self.cassetteFilePath) {
+    if (self.currentCassette) {
         NSLog(@"Already contains a cassette");
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO onMainQueue:completionBlock];
         return NO;
     }
-    NSParameterAssert(cassetteFilePath);
-    NSParameterAssert([cassetteFilePath.pathExtension isEqualToString:@"plist"]);
     __block BOOL finalResult = NO;
-    __block NSString *finalPath = nil;
-    BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
-        BKRStrongify(self);
-        NSLog(@"loading cassette at: %@", cassetteFilePath);
-        self->_cassetteFilePath = cassetteFilePath;
-        finalPath = self->_cassetteFilePath;
-        [BKRRecorder sharedInstance].currentCassette = [BKRCassette cassette];
-        finalResult = YES;
-    });
-    if (completionBlock) {
-        if ([NSThread isMainThread]) {
-            completionBlock(finalResult, finalPath);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock(finalResult, finalPath);
-            });
+        if (!cassetteLoadingBlock) {
+            finalResult = NO;
+            return;
         }
-    }
+        BKRCassette *loadingCassette = cassetteLoadingBlock();
+        // if no cassette dictionary is fetched, then return NO
+        finalResult = (loadingCassette ? YES : NO);
+        [BKRRecorder sharedInstance].currentCassette = loadingCassette;
+    });
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult onMainQueue:completionBlock];
     return finalResult;
 }
 
-- (BOOL)eject:(BOOL)shouldOverwrite completionHandler:(BKRCassetteHandlingBlock)completionBlock {
-    if (!self.cassetteFilePath) {
-        NSLog(@"no cassette contained");
+- (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+    if (!self.currentCassette) {
+        NSLog(@"%@ no cassette contained", self);
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO onMainQueue:completionBlock];
         return NO;
     }
     __block BOOL finalResult = NO;
     __block NSString *finalPath = nil;
     [self stopWithCompletionBlock:nil]; // call a stop, no completion necessary, not done yet
     BKRWeakify(self);
+    BKRCassette *lastCassette = self.currentCassette;
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
         // if current VCR state is unknown, then let's log an error and stop
@@ -173,42 +167,38 @@
             (!self->_shouldSaveEmptyCassette) &&
             (![BKRRecorder sharedInstance].didRecord)
             ) {
-            self->_cassetteFilePath = nil;
             [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil];
             return;
         }
-        NSString *currentFilePath = self->_cassetteFilePath;
-        if (!currentFilePath) {
-            NSLog(@"there is not path to save a file to! How did we get here? Open a GitHub issue with repro steps");
+        // if there's no lastCassette or saving block then stop
+        if (!lastCassette) {
+            NSLog(@"There's no cassette in the vcr");
+            finalResult = NO;
             return;
         }
-        BOOL fileExists = [BKRFilePathHelper filePathExists:currentFilePath];
-        if (
-            !fileExists || // if the file path does not exist, then just save it!
-            (fileExists && shouldOverwrite) // if there's a place to save and it already exists, then only save if overwriting
-            ) {
-            NSDictionary *cassetteDictionary = [BKRRecorder sharedInstance].plistDictionary;
-            finalPath = currentFilePath;
-            NSLog(@"trying to write cassette to: %@", currentFilePath);
-            finalResult = [BKRFilePathHelper writeDictionary:cassetteDictionary toFile:currentFilePath];
-            self->_state = BKRVCRStateStopped; // somewhat unnecessary
-            self->_cassetteFilePath = nil; // remove the cassette file path
-            [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil]; // reset the recorder (removes cassette)
+        if (!cassetteSavingBlock) {
+            NSLog(@"There's no cassette saving block");
+            finalResult = NO;
+            return;
         }
+        NSString *currentFilePath = cassetteSavingBlock(lastCassette);
+        if (!currentFilePath) {
+            NSLog(@"There is no path to save file at");
+            finalResult = NO;
+            return;
+        }
+        NSDictionary *cassetteDictionary = [BKRRecorder sharedInstance].plistDictionary;
+        finalPath = currentFilePath;
+        NSLog(@"%@: trying to write cassette to: %@", self, currentFilePath);
+        finalResult = [BKRFilePathHelper writeDictionary:cassetteDictionary toFile:currentFilePath];
+        self->_state = BKRVCRStateStopped; // somewhat unnecessary
+        [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil]; // reset the recorder (removes cassette)
     });
-    if (completionBlock) {
-        if ([NSThread isMainThread]) {
-            completionBlock(finalResult, finalPath);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock(finalResult, finalPath);
-            });
-        }
-    }
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult onMainQueue:completionBlock];
     return finalResult;
 }
 
-- (void)stopWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)stopWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -221,16 +211,24 @@
             case BKRVCRStateRecording:
             {
                 self->_state = BKRVCRStateStopped;
-                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
+                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:^{
+                    if (completionBlock) {
+                        completionBlock(YES);
+                    }
+                }];
+                return;
             }
                 break;
             case BKRVCRStateStopped:
                 break;
         }
+        if (completionBlock) {
+            completionBlock(NO);
+        }
     });
 }
 
-- (void)pauseWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)pauseWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -242,23 +240,34 @@
             case BKRVCRStateRecording:
             {
                 self->_state = BKRVCRStatePaused;
-                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:completionBlock];
+                [[BKRRecorder sharedInstance] setEnabled:NO withCompletionHandler:^{
+                    if (completionBlock) {
+                        completionBlock(YES);
+                    }
+                }];
+                return;
             }
                 break;
             case BKRVCRStatePaused:
             case BKRVCRStateStopped:
                 break;
         }
+        if (completionBlock) {
+            completionBlock(NO);
+        }
     });
 }
 
-- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)resetWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
-        [[BKRRecorder sharedInstance] resetWithCompletionBlock:completionBlock];
+        [[BKRRecorder sharedInstance] resetWithCompletionBlock:^{
+            if (completionBlock) {
+                completionBlock(YES);
+            }
+        }];
     });
 }
 

@@ -10,6 +10,7 @@
 #import "BKRPlayer.h"
 #import "BKRCassette+Playable.h"
 #import "BKRFilePathHelper.h"
+#import "NSObject+BKRVCRAdditions.h"
 
 @interface BKRPlayableVCR ()
 @property (nonatomic, strong) BKRPlayer *player;
@@ -20,7 +21,6 @@
 @implementation BKRPlayableVCR
 
 @synthesize state = _state;
-@synthesize cassetteFilePath = _cassetteFilePath;
 
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
     self = [super init];
@@ -28,7 +28,6 @@
         _player = [BKRPlayer playerWithMatcherClass:matcherClass];
         _accessQueue = dispatch_queue_create("com.BKR.BKRPlayableVCR", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
-        _cassetteFilePath = nil;
     }
     return self;
 }
@@ -49,17 +48,7 @@
     return cassette;
 }
 
-- (NSString *)cassetteFilePath {
-    __block NSString *currentCassetteFilePath = nil;
-    BKRWeakify(self);
-    dispatch_sync(self.accessQueue, ^{
-        BKRStrongify(self);
-        currentCassetteFilePath = self->_cassetteFilePath;
-    });
-    return currentCassetteFilePath;
-}
-
-- (void)playWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)playWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -68,7 +57,12 @@
             case BKRVCRStateStopped:
             {
                 self->_state = BKRVCRStatePlaying;
-                [self->_player setEnabled:YES withCompletionHandler:completionBlock];
+                [self->_player setEnabled:YES withCompletionHandler:^{
+                    if (completionBlock) {
+                        completionBlock(YES);
+                    }
+                }];
+                return;
             }
                 break;
             case BKRVCRStateUnknown:
@@ -80,15 +74,23 @@
             case BKRVCRStatePlaying:
                 break;
         }
+        if (completionBlock) {
+            completionBlock(NO);
+        }
     });
 }
 
-- (void)recordWithCompletionBlock:(void (^)(void))completionBlock {
-    // no-op
+- (void)recordWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     NSLog(@"playing VCR can't record a cassette");
+    if (!completionBlock) {
+        return;
+    }
+    dispatch_barrier_async(self.accessQueue, ^{
+        completionBlock(NO);
+    });
 }
 
-- (void)stopWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)stopWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -102,17 +104,25 @@
             case BKRVCRStatePlaying:
             {
                 self->_state = BKRVCRStateStopped;
-                [self->_player setEnabled:NO withCompletionHandler:completionBlock];
+                [self->_player setEnabled:NO withCompletionHandler:^{
+                    if (completionBlock) {
+                        completionBlock(YES);
+                    }
+                }];
+                return;
             }
                 break;
             case BKRVCRStatePaused:
             case BKRVCRStateStopped:
                 break;
         }
+        if (completionBlock) {
+            completionBlock(NO);
+        }
     });
 }
 
-- (void)pauseWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)pauseWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
@@ -126,94 +136,81 @@
             case BKRVCRStatePlaying:
             {
                 self->_state = BKRVCRStatePaused;
-                [self->_player setEnabled:NO withCompletionHandler:completionBlock];
+                [self->_player setEnabled:NO withCompletionHandler:^{
+                    if (completionBlock) {
+                        completionBlock(YES);
+                    }
+                }];
+                return;
             }
                 break;
             case BKRVCRStateStopped:
             case BKRVCRStatePaused:
                 break;
         }
+        if (completionBlock) {
+            completionBlock(NO);
+        }
     });
 }
 
-- (BOOL)insert:(NSString *)cassetteFilePath completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+- (BOOL)insert:(BKRVCRCassetteLoadingBlock)cassetteLoadingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     // can't insert a cassette if you already have one
-    if (self.cassetteFilePath) {
+    if (self.currentCassette) {
         NSLog(@"Already contains a cassette");
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO onMainQueue:completionBlock];
         return NO;
     }
-    NSParameterAssert(cassetteFilePath);
-    NSParameterAssert([cassetteFilePath.pathExtension isEqualToString:@"plist"]);
-    if (![BKRFilePathHelper filePathExists:cassetteFilePath]) {
-        NSLog(@"There is no file at this location");
-        // should we throw an exception here too??
-        return NO;
-    }
+
     __block BOOL finalResult = NO;
-    __block NSString *finalPath = nil;
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
-        NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
-        if (cassetteDictionary) {
-            // if no cassette dictionary is fetched, then return NO
-            self->_cassetteFilePath = cassetteFilePath;
-            finalPath = self->_cassetteFilePath;
-            BKRCassette *cassette = [BKRCassette cassetteFromDictionary:cassetteDictionary];
-            self->_player.currentCassette = cassette;
-            finalResult = YES;
+        if (!cassetteLoadingBlock) {
+            finalResult = NO;
+            return;
         }
+        
+        BKRCassette *loadingCassette = cassetteLoadingBlock();
+        // if no cassette dictionary is fetched, then return NO
+        finalResult = (loadingCassette ? YES : NO);
+        self->_player.currentCassette = loadingCassette;
     });
-    if (completionBlock) {
-        if ([NSThread isMainThread]) {
-            completionBlock(finalResult, finalPath);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock(finalResult, finalPath);
-            });
-        }
-    }
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult onMainQueue:completionBlock];
     return finalResult;
 }
 
-- (BOOL)eject:(BOOL)shouldOverwrite completionHandler:(BKRCassetteHandlingBlock)completionBlock {
-    if (!self.cassetteFilePath) {
+- (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
+    if (!self.currentCassette) {
         NSLog(@"no cassette contained");
+        [self BKR_executeCassetteHandlingBlockWithFinalResult:NO onMainQueue:completionBlock];
         return NO;
     }
     __block BOOL finalResult = NO;
-    __block NSString *finalPath = nil;
     [self stopWithCompletionBlock:nil]; // no completion block to call
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessQueue, ^{
         BKRStrongify(self);
+        if (self->_state == BKRVCRStateUnknown) {
+            NSLog(@"what happened, how did we get in this state? Please open a GitHub issue");
+            return;
+        }
         self->_state = BKRVCRStateStopped; // this is redundant from the `stopWithCompletionBlock:` call up above
-        finalPath = self->_cassetteFilePath;
-        self->_cassetteFilePath = nil;
         [self->_player resetWithCompletionBlock:nil]; // removes cassette
         finalResult = YES;
     });
-    if (completionBlock) {
-        if ([NSThread isMainThread]) {
-            completionBlock(finalResult, finalPath);
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionBlock(finalResult, finalPath);
-            });
-        }
-    }
+    [self BKR_executeCassetteHandlingBlockWithFinalResult:finalResult onMainQueue:completionBlock];
     return finalResult;
 }
 
-- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
+- (void)resetWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock {
     BKRWeakify(self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
-        self->_cassetteFilePath = nil;
         self->_state = BKRVCRStateStopped;
         [self->_player resetWithCompletionBlock:^{
             if (completionBlock) {
-                completionBlock();
+                completionBlock(YES);
             }
         }];
     });
