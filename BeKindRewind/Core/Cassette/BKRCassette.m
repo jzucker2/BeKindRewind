@@ -27,7 +27,6 @@
     if (self) {
         _creationDate = [NSDate date];
         _scenes = [NSMutableDictionary dictionary];
-        _processingQueue = dispatch_queue_create("com.BKR.cassetteProcessingQueue", DISPATCH_QUEUE_CONCURRENT);
         _accessingQueue = dispatch_queue_create("com.BKR.cassetteAccessingQueue", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
@@ -35,24 +34,65 @@
 
 - (NSDictionary<NSString *, BKRScene *> *)scenesDictionary {
     __block NSDictionary<NSString *, BKRScene *> *currentScenes = nil;
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_sync(self.accessingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        currentScenes = sself->_scenes.copy;
+        BKRStrongify(self);
+        currentScenes = self->_scenes.copy;
     });
     return currentScenes;
 }
 
 - (void)addSceneToScenesDictionary:(BKRScene *)scene {
-    __weak typeof(self) wself = self;
-    dispatch_barrier_async(self.accessingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        sself->_scenes[scene.uniqueIdentifier] = scene;
+    self->_scenes[scene.uniqueIdentifier] = scene;
+}
+
+- (void)addBatchOfScenes:(NSArray<NSDictionary *> *)rawSceneDictionaries toCassetteWithBlock:(BKRCassetteBatchSceneAddingBlock)batchAddingBlock {
+    // if there's nothing to process (no block or array has is nil or has nothing) then skip
+    if (
+        !batchAddingBlock ||
+        !rawSceneDictionaries ||
+        !rawSceneDictionaries.count
+        ) {
+        return;
+    }
+    // this queue only exists for the dispatch apply performed here
+    dispatch_queue_t processingQueue = dispatch_queue_create("com.BKR.cassetteProcessingQueue", DISPATCH_QUEUE_CONCURRENT);
+    // dispatch apply is synchronous so this should block until it finishes
+    dispatch_apply(rawSceneDictionaries.count, processingQueue, ^(size_t iteration) {
+        dispatch_barrier_async(self.accessingQueue, ^{
+            batchAddingBlock(rawSceneDictionaries[iteration]);
+        });
     });
 }
 
 - (NSArray<BKRScene *> *)allScenes {
-    return [self.scenesDictionary.allValues sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
+    return [self _scenesSortedByClapboardFrameCreationDate:self.scenesDictionary];
+}
+
+- (NSArray<BKRScene *> *)_scenesSortedByClapboardFrameCreationDate:(NSDictionary<NSString *, BKRScene *> *)aScenesDictionary {
+    return [aScenesDictionary.allValues sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
+}
+
+- (void)editScenesDictionary:(BKRCassetteSceneDictionaryAccessBlock)sceneDictionaryAccessBlock {
+    if (!sceneDictionaryAccessBlock) {
+        return;
+    }
+    BKRWeakify(self);
+    dispatch_barrier_async(self.accessingQueue, ^{
+        BKRStrongify(self);
+        sceneDictionaryAccessBlock(self->_scenes);
+    });
+}
+
+- (void)processScenes:(BKRCassetteAllScenesProcessingBlock)allScenesProcessingBlock {
+    if (!allScenesProcessingBlock) {
+        return;
+    }
+    BKRWeakify(self);
+    dispatch_barrier_sync(self.accessingQueue, ^{
+        BKRStrongify(self);
+        allScenesProcessingBlock(self.creationDate, [self _scenesSortedByClapboardFrameCreationDate:self->_scenes]);
+    });
 }
 
 @end

@@ -57,10 +57,14 @@
         return;
     }
     BKRWeakify(self);
+    NSLog(@"%@ (editSynchronously): before barrier sync", self);
     dispatch_barrier_sync(self.editingQueue, ^{
         BKRStrongify(self);
+        NSLog(@"%@ (editSynchronously): start barrier sync", self);
         cassetteEditingBlock(self->_enabled, self->_currentCassette);
+        NSLog(@"%@ (editSynchronously): end of barrier sync", self);
     });
+    NSLog(@"%@ (editSynchronously): after barrier sync", self);
 }
 
 - (void)setEnabled:(BOOL)enabled {

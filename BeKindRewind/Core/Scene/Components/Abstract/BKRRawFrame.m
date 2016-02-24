@@ -10,4 +10,10 @@
 
 @implementation BKRRawFrame
 
+- (NSString *)debugDescription {
+    NSString *superDebugDescription = [super debugDescription];
+    NSString *additionalDebugDescription = [NSString stringWithFormat:@"item class: %@", [self.item class]];
+    return [NSString stringWithFormat:@"%@, %@", superDebugDescription, additionalDebugDescription];
+}
+
 @end
