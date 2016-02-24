@@ -181,9 +181,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         if (expectedResult.shouldCancel) {
-            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning);
-            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended);
+            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning, @"If task is still running, then it failed to cancel as expected, this is most likely not a BeKindRewind bug but a system bug");
+            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended, @"If task is suspended, it did not properly cancel, this might be a system bug and not a BeKindRewind bug");
         } else {
+            XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted, @"If state is not completed, that most likely means the request failed due to a bad connection");
             XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted);
         }
         XCTAssertNotNil(executingTask.originalRequest);
