@@ -68,28 +68,28 @@
 
 - (BOOL)isEnabled {
     __block BOOL currentEnabled;
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_sync(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        currentEnabled = sself->_enabled;
+        BKRStrongify(self);
+        currentEnabled = self->_enabled;
     });
     return currentEnabled;
 }
 
 - (void)setCurrentCassette:(BKRCassette *)currentCassette {
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_barrier_async(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        sself->_currentCassette = currentCassette;
+        BKRStrongify(self);
+        self->_currentCassette = currentCassette;
     });
 }
 
 - (BKRCassette *)currentCassette {
     __block BKRCassette *cassette = nil;
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_sync(self.editingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        cassette = sself->_currentCassette;
+        BKRStrongify(self);
+        cassette = self->_currentCassette;
     });
     return cassette;
 }

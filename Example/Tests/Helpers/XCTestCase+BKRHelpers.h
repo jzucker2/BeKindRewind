@@ -47,11 +47,12 @@ typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, N
 typedef void (^BKRTestBatchNetworkCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions);
 
-@class BKRPlayer, BKRCassette, BKRPlayableVCR;
+@class BKRPlayer, BKRCassette, BKRPlayableVCR, BKRVCR;
 @interface XCTestCase (BKRHelpers)
 
 - (void)insertNewCassetteInRecorder;
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher;
+- (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption;
 
 - (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
 
@@ -75,9 +76,10 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 #pragma mark - VCR helpers
 
+- (void)insertBlankCassetteIntoVCR:(id<BKRVCRActions>)vcr;
 - (void)insertCassetteFilePath:(NSString *)cassetteFilePath intoVCR:(id<BKRVCRActions>)vcr;
 - (void)resetVCR:(id<BKRVCRActions>)vcr;
-- (BOOL)ejectCassetteFromVCR:(id<BKRVCRActions>)vcr; // returns result of eject message
+- (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromVCR:(id<BKRVCRActions>)vcr; // returns result of eject message
 - (void)playVCR:(id<BKRVCRActions>)vcr;
 - (void)stopVCR:(id<BKRVCRActions>)vcr;
 - (void)recordVCR:(id<BKRVCRActions>)vcr;

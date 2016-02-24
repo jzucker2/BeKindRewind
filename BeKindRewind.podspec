@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "BeKindRewind"
-  s.version          = "0.7.2"
+  s.version          = "0.8.0"
   s.summary          = "A simple way to record and replay network requests for testing."
   s.description      = <<-DESC
                         Provides an XCTestCase subclass for easily
@@ -21,13 +21,13 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "Jordan Zucker" => "jordan.zucker@gmail.com" }
   s.source           = { :git => "https://github.com/jzucker2/BeKindRewind.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/jzucker'
+  s.social_media_url = 'https://twitter.com/jzucker'
 
   s.ios.deployment_target = '8.0'
   s.tvos.deployment_target = '9.0'
   s.osx.deployment_target = '10.9'
   s.requires_arc = true
-  s.dependency 'OHHTTPStubs', '~> 4.7.0'
+  s.dependency 'OHHTTPStubs', '~> 4.7.1'
   s.framework = 'XCTest'
   s.source_files = 'BeKindRewind/Core/**/*'
 #  s.prefix_header_contents = '#import "BKRConstants.h"'

@@ -11,8 +11,8 @@
 
 @interface BKRRecordableVCR : NSObject <BKRVCRActions, BKRVCRRecording>
 
-- (instancetype)initWithEmptyCassetteOption:(BOOL)shouldSaveEmptyCassette;
-+ (instancetype)vcrWithCassetteSavingOption:(BOOL)shouldSaveEmptyCassette;
+- (instancetype)initWithEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette;
++ (instancetype)vcrWithEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette;
 
 + (instancetype)vcr;
 
