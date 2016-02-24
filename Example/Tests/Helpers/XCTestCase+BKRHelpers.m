@@ -20,6 +20,7 @@
 #import <BeKindRewind/BKRRequestFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRConfiguration.h>
+#import <BeKindRewind/BKRTestConfiguration.h>
 #import <BeKindRewind/BKRCassette+Playable.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import <BeKindRewind/BKRVCR.h>
@@ -287,6 +288,15 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             XCTAssertEqualObjects(actualHeaderFields[actualResponseKey], expectedResult.currentRequestAllHTTPHeaderFields[actualResponseKey]);
         }
     }
+}
+
+- (void)assertDefaultTestConfiguration:(BKRTestConfiguration *)configuration {
+    XCTAssertNotNil(configuration);
+    XCTAssertEqualObjects(configuration.currentTestCase, self);
+    XCTAssertEqual(configuration.shouldSaveEmptyCassette, NO);
+    XCTAssertEqual(configuration.matcherClass, [BKRPlayheadMatcher class]);
+    XCTAssertNotNil(configuration.beginRecordingBlock);
+    XCTAssertNotNil(configuration.endRecordingBlock);
 }
 
 - (void)_assertExpectedResult:(BKRTestExpectedResult *)expectedResult withActualResponseHeaderFields:(NSDictionary *)actualResponseHeaderFields {

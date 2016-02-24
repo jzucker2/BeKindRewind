@@ -48,10 +48,11 @@ typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, N
 typedef void (^BKRTestBatchNetworkCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions);
 
-@class BKRPlayer, BKRCassette, BKRPlayableVCR, BKRVCR, BKRConfiguration;
+@class BKRPlayer, BKRCassette, BKRPlayableVCR, BKRVCR, BKRConfiguration, BKRTestConfiguration;
 @interface XCTestCase (BKRHelpers)
 
 - (BKRConfiguration *)defaultConfiguration;
+- (void)assertDefaultTestConfiguration:(BKRTestConfiguration *)configuration;
 - (void)insertNewCassetteInRecorder;
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher;
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption;

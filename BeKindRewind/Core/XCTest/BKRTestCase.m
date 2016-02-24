@@ -15,7 +15,7 @@
 #import "BKRTestCaseFilePathHelper.h"
 
 @interface BKRTestCase ()
-@property (nonatomic, strong, readwrite) id<BKRTestVCRActions>vcr;
+@property (nonatomic, strong, readwrite) id<BKRTestVCRActions> currentVCR;
 @end
 
 @implementation BKRTestCase
@@ -24,15 +24,18 @@
     return YES;
 }
 
-- (BKRTestConfiguration *)configuration {
+- (BKRTestConfiguration *)testConfiguration {
     return [BKRTestConfiguration defaultConfigurationWithTestCase:self];
+}
+
+- (id<BKRTestVCRActions>)testVCR {
+    return [BKRTestVCR vcrWithTestConfiguration:[[self testConfiguration] copy]];
 }
 
 - (instancetype)initWithInvocation:(NSInvocation *)invocation {
     self = [super initWithInvocation:invocation];
     if (self) {
-        BKRTestConfiguration *testConfiguration = [[self configuration] copy];
-        _vcr = [BKRTestVCR vcrWithTestConfiguration:testConfiguration];
+        _currentVCR = [self testVCR];
     }
     return self;
 }
@@ -58,39 +61,39 @@
     BKRVCRState assertionState = BKRVCRStateUnknown;
     BKRWeakify(self);
     if ([self isRecording]) {
-        XCTAssertTrue([self.vcr insert:^BKRCassette *{
+        XCTAssertTrue([self.currentVCR insert:^BKRCassette *{
             BKRStrongify(self);
             return [self recordingCassette];
         }]);
-        [self.vcr record];
+        [self.currentVCR record];
         assertionState = BKRVCRStateRecording;
     } else {
-        XCTAssertTrue([self.vcr insert:^BKRCassette *{
+        XCTAssertTrue([self.currentVCR insert:^BKRCassette *{
             BKRStrongify(self);
             return [self playingCassette];
         }]);
-        [self.vcr play];
+        [self.currentVCR play];
         assertionState = BKRVCRStatePlaying;
     }
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
-    XCTAssertEqual(self.vcr.state, assertionState);
+    XCTAssertEqual(self.currentVCR.state, assertionState);
 }
 
 - (void)tearDown {
     if ([self isRecording]) {
         BKRWeakify(self);
-        [self.vcr eject:^NSString *(BKRCassette *cassette) {
+        [self.currentVCR eject:^NSString *(BKRCassette *cassette) {
             BKRStrongify(self);
             return [self recordingCassetteFilePath];
         }];
     }
-    [self.vcr reset];
+    [self.currentVCR reset];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
-    self.vcr = nil; // clear the VCR so that it can't possibly carry over to the next test
+    self.currentVCR = nil; // clear the VCR so that it can't possibly carry over to the next test
     [super tearDown];
 }
 

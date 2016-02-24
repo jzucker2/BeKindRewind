@@ -7,8 +7,11 @@
 //
 
 #import <BeKindRewind/BKRTestCase.h>
+#import <BeKindRewind/BKRTestVCR.h>
+#import <BeKindRewind/BKRTestVCRActions.h>
 #import <BeKindRewind/BKRTestConfiguration.h>
-#import <BeKindRewind/BKRPlayheadMatcher.h>
+#import "BKRBaseTestCase.h"
+#import "XCTestCase+BKRHelpers.h"
 
 @interface BKRDefaultTestCase : BKRTestCase
 @end
@@ -26,16 +29,18 @@
 }
 
 - (void)testDefaultConfiguration {
-    BKRTestConfiguration *configuration = [self configuration];
-    XCTAssertEqualObjects(configuration.currentTestCase, self);
-    XCTAssertEqual(configuration.shouldSaveEmptyCassette, NO);
-    XCTAssertEqual(configuration.matcherClass, [BKRPlayheadMatcher class]);
-    XCTAssertNotNil(configuration.beginRecordingBlock);
-    XCTAssertNotNil(configuration.endRecordingBlock);
+    BKRTestConfiguration *configuration = [self testConfiguration];
+    [self assertDefaultTestConfiguration:configuration];
 }
 
 - (void)testDefaultIsRecording {
     XCTAssertTrue([self isRecording], @"Default return value for isRecording is YES");
+    XCTAssertEqual(self.currentVCR.state, BKRVCRStateRecording, @"Current VCR should be in recording state");
+}
+
+- (void)testDefaultVCR {
+    XCTAssertNotNil(self.currentVCR);
+    [self assertDefaultTestConfiguration:self.currentVCR.currentConfiguration];
 }
 
 @end
