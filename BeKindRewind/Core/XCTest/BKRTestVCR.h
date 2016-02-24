@@ -16,12 +16,12 @@
  */
 @interface BKRTestVCR : BKRVCR <BKRTestVCRActions>
 
-- (instancetype)initWithTestCase:(XCTestCase *)testCase;
-+ (instancetype)vcrWithTestCase:(XCTestCase *)testCase;
+//- (instancetype)initWithTestCase:(XCTestCase *)testCase;
+//+ (instancetype)vcrWithTestCase:(XCTestCase *)testCase;
 
 ///**
 // *  The test case that needs to have its network operations recorded or stubbed.
 // */
-//@property (nonatomic, strong) XCTestCase *currentTestCase;
+//@property (nonatomic, strong, readonly) XCTestCase *currentTestCase;
 
 @end

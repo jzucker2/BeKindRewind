@@ -8,6 +8,7 @@
 
 #import "BKRPlayableVCR.h"
 #import "BKRPlayer.h"
+#import "BKRConfiguration.h"
 #import "BKRCassette+Playable.h"
 #import "BKRFilePathHelper.h"
 #import "NSObject+BKRVCRAdditions.h"
@@ -15,6 +16,7 @@
 @interface BKRPlayableVCR ()
 @property (nonatomic, strong) BKRPlayer *player;
 @property (nonatomic) dispatch_queue_t accessQueue;
+@property (nonatomic, copy) BKRConfiguration *configuration;
 
 @end
 
@@ -22,21 +24,50 @@
 
 @synthesize state = _state;
 
-- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
+//- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
+//    self = [super init];
+//    if (self) {
+//        _player = [BKRPlayer playerWithMatcherClass:matcherClass];
+//        _accessQueue = dispatch_queue_create("com.BKR.BKRPlayableVCR", DISPATCH_QUEUE_CONCURRENT);
+//        _state = BKRVCRStateStopped;
+//    }
+//    return self;
+//}
+//
+//+ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
+//    return [[self alloc] initWithMatcherClass:matcherClass];
+//}
+
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration {
     self = [super init];
     if (self) {
-        _player = [BKRPlayer playerWithMatcherClass:matcherClass];
+        _configuration = configuration.copy;
+        _player = [BKRPlayer playerWithMatcherClass:_configuration.matcherClass];
         _accessQueue = dispatch_queue_create("com.BKR.BKRPlayableVCR", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
     }
     return self;
 }
 
-+ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
-    return [[self alloc] initWithMatcherClass:matcherClass];
++ (instancetype)vcrWithConfiguration:(BKRConfiguration *)configuration {
+    return [[self alloc] initWithConfiguration:configuration];
+}
+
++ (instancetype)defaultVCR {
+    return [self vcrWithConfiguration:[BKRConfiguration defaultConfiguration]];
+}
+
+#pragma mark - Extras
+
+- (id<BKRRequestMatching>)matcher {
+    return self.player.matcher;
 }
 
 #pragma mark - BKRActions
+
+- (BKRConfiguration *)currentConfiguration {
+    return self.configuration.copy;
+}
 
 - (BKRCassette *)currentCassette {
     __block BKRCassette *cassette = nil;

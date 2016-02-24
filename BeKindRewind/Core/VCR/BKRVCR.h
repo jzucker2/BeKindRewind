@@ -10,7 +10,7 @@
 #import "BKRRequestMatching.h"
 #import "BKRVCRActions.h"
 
-@class BKRCassette;
+//@class BKRCassette;
 
 /**
  *  This is the major unit of the BeKindRewind framework. It is similar to the VCR (Video Cassette Recorder)
@@ -18,7 +18,7 @@
  *  play back information. Unlike the VCR of the 1980s which records and plays back grainy 
  *  video, the BKRVCR records and plays back network activity in Objective-C and Swift.
  */
-@interface BKRVCR : NSObject <BKRVCRActions, BKRVCRRecording>
+@interface BKRVCR : NSObject <BKRVCRActions>
 
 /**
  *  Designated intializer for creating a BKRVCR instance. Must provide a
@@ -33,7 +33,7 @@
  *
  *  @return newly initialized instance of BKRVCR
  */
-- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette;
+//- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette;
 
 /**
  *  Convenience constructor for creating a BKRVCR instance. Must provide a
@@ -46,9 +46,9 @@
  *
  *  @return newly initialized instance of BKRVCR
  */
-+ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette;
+//+ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette;
 
-@property (nonatomic, assign, readonly) BOOL shouldSaveEmptyCassette; // no by default
+//@property (nonatomic, assign, readonly) BOOL shouldSaveEmptyCassette; // no by default
 
 ///**
 // *  This determines whether the BKRVCR instance is playing or recording.

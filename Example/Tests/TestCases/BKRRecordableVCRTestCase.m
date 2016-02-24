@@ -9,6 +9,7 @@
 #import <BeKindRewind/BKRRecordableVCR.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import <BeKindRewind/BKRCassette.h>
+#import <BeKindRewind/BKRConfiguration.h>
 #import "BKRBaseTestCase.h"
 #import "XCTestCase+BKRHelpers.h"
 

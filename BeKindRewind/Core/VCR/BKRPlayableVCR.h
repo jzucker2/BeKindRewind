@@ -12,33 +12,34 @@
 
 @interface BKRPlayableVCR : NSObject <BKRVCRActions>
 
-/**
- *  Designated intializer for creating a BKRVCR instance. Must provide a
- *  matcherClass so that play back can occur. Once a BKRVCR instance is initialized,
- *  the matcher created by matcherClass cannot be changed.
- *
- *
- *  @param matcherClass class must conform to BKRRequestMatching and will be
- *                      used to construct stubs for playing back network operations. Throws
- *                      NSInternalInconsistency exception if this is nil
- *
- *
- *  @return newly initialized instance of BKRVCR
- */
-- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
-
-/**
- *  Convenience constructor for creating a BKRVCR instance. Must provide a
- *  matcherClass so that play back can occur. Once a BKRVCR instance is initialized,
- *  the matcher created by matcherClass cannot be changed.
- *
- *  @param matcherClass class must conform to BKRRequestMatching and will be used to
- *                      construct stubs for playing back network operations. Throws
- *                      NSInternalInconsistency exception if this is nil
- *
- *  @return newly initialized instance of BKRVCR
- */
-+ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
+///**
+// *  Designated intializer for creating a BKRVCR instance. Must provide a
+// *  matcherClass so that play back can occur. Once a BKRVCR instance is initialized,
+// *  the matcher created by matcherClass cannot be changed.
+// *
+// *
+// *  @param matcherClass class must conform to BKRRequestMatching and will be
+// *                      used to construct stubs for playing back network operations. Throws
+// *                      NSInternalInconsistency exception if this is nil
+// *
+// *
+// *  @return newly initialized instance of BKRVCR
+// */
+//- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
+//
+///**
+// *  Convenience constructor for creating a BKRVCR instance. Must provide a
+// *  matcherClass so that play back can occur. Once a BKRVCR instance is initialized,
+// *  the matcher created by matcherClass cannot be changed.
+// *
+// *  @param matcherClass class must conform to BKRRequestMatching and will be used to
+// *                      construct stubs for playing back network operations. Throws
+// *                      NSInternalInconsistency exception if this is nil
+// *
+// *  @return newly initialized instance of BKRVCR
+// */
+//+ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
+//+ (instancetype)vcr;
 
 /**
  *  This is the matcher object created during class initialization. It is

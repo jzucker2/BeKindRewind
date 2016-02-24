@@ -37,6 +37,7 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
 };
 
 @class BKRCassette;
+@class BKRConfiguration;
 
 @protocol BKRVCRRecording <NSObject>
 
@@ -68,6 +69,10 @@ typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
 
 @protocol BKRVCRActions <NSObject>
 
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration;
++ (instancetype)vcrWithConfiguration:(BKRConfiguration *)configuration;
++ (instancetype)defaultVCR;
+
 - (void)playWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock;
 - (void)pauseWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock; // is there a difference between stop and pause?
 - (void)stopWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock; // is there a difference between stop and pause?
@@ -89,6 +94,16 @@ typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
 @property (nonatomic, strong, readonly) BKRCassette *currentCassette;
 
 @property (nonatomic, assign, readonly) BKRVCRState state;
+
+/*
+ *  Retrieve reference on current client's configuration.
+ *
+ *  @return Currently used configuration instance copy. Changes to this instance won't affect
+ *  receiver's configuration.
+ *
+ *  @since 0.9
+ */
+- (BKRConfiguration *)currentConfiguration;
 
 //@property (nonatomic, copy, readonly) NSString *cassetteFilePath;
 
