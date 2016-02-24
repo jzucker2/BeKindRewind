@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import <BeKindRewind/BKRVCRActions.h>
+#import <BeKindRewind/BKRTestVCRActions.h>
 
 @interface BKRTestExpectedResult : NSObject
 @property (nonatomic, copy) NSString *URLString;
@@ -78,9 +79,13 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 #pragma mark - VCR helpers
 
 - (void)insertBlankCassetteIntoVCR:(id<BKRVCRActions>)vcr;
+- (void)insertBlankCassetteIntoTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)insertCassetteFilePath:(NSString *)cassetteFilePath intoVCR:(id<BKRVCRActions>)vcr;
+- (void)insertCassetteFilePath:(NSString *)cassetteFilePath intoTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)resetVCR:(id<BKRVCRActions>)vcr;
+- (void)resetTestVCR:(id<BKRTestVCRActions>)vcr;
 - (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromVCR:(id<BKRVCRActions>)vcr; // returns result of eject message
+- (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)playVCR:(id<BKRVCRActions>)vcr;
 - (void)stopVCR:(id<BKRVCRActions>)vcr;
 - (void)recordVCR:(id<BKRVCRActions>)vcr;
