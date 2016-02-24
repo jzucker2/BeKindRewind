@@ -50,6 +50,10 @@
  */
 + (NSBundle *)writingBundleForTestCase:(XCTestCase *)testCase inDirectory:(NSString *)filePath;
 
++ (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inBundle:(NSBundle *)writingBundle;
+
++ (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inTestSuiteBundleInDirectory:(NSString *)filePath;
+
 /**
  *  This should be the default method used to save recordings created during a test session. It finds and 
  *  creates intermediate directories to save the network recordings for a testing session. It

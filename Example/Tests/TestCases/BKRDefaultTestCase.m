@@ -7,9 +7,10 @@
 //
 
 #import <BeKindRewind/BKRTestCase.h>
+#import <BeKindRewind/BKRTestConfiguration.h>
+#import <BeKindRewind/BKRPlayheadMatcher.h>
 
 @interface BKRDefaultTestCase : BKRTestCase
-
 @end
 
 @implementation BKRDefaultTestCase
@@ -24,7 +25,17 @@
     [super tearDown];
 }
 
-- (void)DISABLE_testNetworkCall {
+- (void)testDefaultConfiguration {
+    BKRTestConfiguration *configuration = [self configuration];
+    XCTAssertEqualObjects(configuration.currentTestCase, self);
+    XCTAssertEqual(configuration.shouldSaveEmptyCassette, NO);
+    XCTAssertEqual(configuration.matcherClass, [BKRPlayheadMatcher class]);
+    XCTAssertNotNil(configuration.beginRecordingBlock);
+    XCTAssertNotNil(configuration.endRecordingBlock);
+}
+
+- (void)testDefaultIsRecording {
+    XCTAssertTrue([self isRecording], @"Default return value for isRecording is YES");
 }
 
 @end

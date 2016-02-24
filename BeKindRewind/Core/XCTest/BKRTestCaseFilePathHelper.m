@@ -26,11 +26,19 @@
     return [self writingBundleNamed:bundleName inDirectory:filePath];
 }
 
-+ (BOOL)writeDictionary:(NSDictionary *)dictionary forTestCase:(XCTestCase *)testCase toDirectory:(NSString *)directoryPath {
-    NSBundle *testBundle = [self writingBundleForTestCase:testCase inDirectory:directoryPath];
++ (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inBundle:(NSBundle *)writingBundle {
+    NSParameterAssert(writingBundle);
     NSString *plistName = [NSStringFromSelector(testCase.invocation.selector) stringByAppendingPathExtension:@"plist"];
-    NSString *finalFilePath = [testBundle.bundlePath stringByAppendingPathComponent:plistName];
+    return [writingBundle.bundlePath stringByAppendingPathComponent:plistName];
+}
+
++ (BOOL)writeDictionary:(NSDictionary *)dictionary forTestCase:(XCTestCase *)testCase toDirectory:(NSString *)directoryPath {
+    NSString *finalFilePath = [self writingFinalPathForTestCase:testCase inBundle:[self writingBundleForTestCase:testCase inDirectory:directoryPath]];
     return [self writeDictionary:dictionary toFile:finalFilePath];
+}
+
++ (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inTestSuiteBundleInDirectory:(NSString *)filePath {
+    return [self writingFinalPathForTestCase:testCase inBundle:[self writingBundleForTestCase:testCase inDirectory:filePath]];
 }
 
 @end
