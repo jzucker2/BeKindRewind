@@ -87,8 +87,11 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 - (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromVCR:(id<BKRVCRActions>)vcr; // returns result of eject message
 - (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)playVCR:(id<BKRVCRActions>)vcr;
+- (void)playTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)stopVCR:(id<BKRVCRActions>)vcr;
+- (void)stopTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)recordVCR:(id<BKRVCRActions>)vcr;
+- (void)recordTestVCR:(id<BKRTestVCRActions>)vcr;
 //- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr;
 
 #pragma mark - Plist builders

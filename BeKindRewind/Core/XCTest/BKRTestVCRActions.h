@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BKRVCRActions.h"
 
 @class BKRTestConfiguration;
 @class BKRCassette;
@@ -15,7 +16,7 @@
 //typedef BKRCassette *(^BKRTestVCRCassetteLoadingBlock)(XCTestCase *testCase);
 //typedef NSString *(^BKRTestVCRCassetteSavingBlock)(BKRCassette *cassette, XCTestCase *testCase);
 
-@protocol BKRTestVCRActions <NSObject>
+@protocol BKRTestVCRActions <BKRVCRActions>
 
 - (instancetype)initWithTestConfiguration:(BKRTestConfiguration *)configuration;
 + (instancetype)vcrWithTestConfiguration:(BKRTestConfiguration *)configuration;

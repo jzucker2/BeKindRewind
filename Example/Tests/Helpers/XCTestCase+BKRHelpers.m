@@ -913,7 +913,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
-//    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
 }
 
 - (void)insertCassetteFilePath:(NSString *)cassetteFilePath intoVCR:(id<BKRVCRActions>)vcr {
@@ -951,7 +951,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
-//    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
 }
 
 - (void)resetVCR:(id<BKRVCRActions>)vcr {
@@ -974,7 +974,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
-//    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
 }
 
 - (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromVCR:(id<BKRVCRActions>)vcr {
@@ -1001,7 +1001,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
-//    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
     return result;
 }
 
@@ -1014,6 +1014,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             playExpectation = nil;
         });
     }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    XCTAssertEqual(vcr.state, BKRVCRStatePlaying);
+}
+
+- (void)playTestVCR:(id<BKRTestVCRActions>)vcr {
+    [vcr play];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
@@ -1035,6 +1043,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     XCTAssertEqual(vcr.state, BKRVCRStateRecording);
 }
 
+- (void)recordTestVCR:(id<BKRTestVCRActions>)vcr {
+    [vcr record];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    XCTAssertEqual(vcr.state, BKRVCRStateRecording);
+}
+
 - (void)stopVCR:(id<BKRVCRActions>)vcr {
     __block XCTestExpectation *stopExpectation = [self expectationWithDescription:@"stop vcr expectation"];
     [vcr stopWithCompletionBlock:^(BOOL result) {
@@ -1044,6 +1060,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             stopExpectation = nil;
         });
     }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    XCTAssertEqual(vcr.state, BKRVCRStateStopped);
+}
+
+- (void)stopTestVCR:(id<BKRTestVCRActions>)vcr {
+    [vcr stop];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
