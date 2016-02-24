@@ -42,19 +42,19 @@
 
 - (NSArray<BKRFrame *> *)_unorderedFrames {
     __block NSArray<BKRFrame *> *currentFramesArray = nil;
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_sync(self.accessingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        currentFramesArray = sself->_frames.copy;
+        BKRStrongify(self);
+        currentFramesArray = self->_frames.copy;
     });
     return currentFramesArray;
 }
 
 - (void)addFrameToFramesArray:(BKRFrame *)frame {
-    __weak typeof(self) wself = self;
+    BKRWeakify(self);
     dispatch_barrier_async(self.accessingQueue, ^{
-        __strong typeof(wself) sself = wself;
-        [sself->_frames addObject:frame];
+        BKRStrongify(self);
+        [self->_frames addObject:frame];
     });
 }
 

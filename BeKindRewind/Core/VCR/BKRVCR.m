@@ -228,7 +228,6 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
         self->_state = BKRVCRStateStopped; // redundant because of stop call above
         finalResult = recordableResult && playableResult;
     });
-    
     return finalResult;
 }
 
@@ -249,31 +248,24 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
     // set a block variable for 0, count up for each completion shop,
     // run the block on main queue when you hit 2
     BKRWeakify(self);
-    NSLog(@"%@: begin resetting", self);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         __block NSInteger completionBlockCount = 0;
         [self->_recordableVCR resetWithCompletionBlock:^(BOOL result) {
-            NSLog(@"recordable resetCompletionBlock: %ld", (long)completionBlockCount);
             completionBlockCount++;
-            NSLog(@"recordable resetCompletionBlock: %ld", (long)completionBlockCount);
             if (
                 completionBlock &&
                 (completionBlockCount == 2)
                 ) {
-                NSLog(@"recordable run completion block");
                 completionBlock(YES);
             }
         }];
         [self->_playableVCR resetWithCompletionBlock:^(BOOL result) {
-            NSLog(@"playable resetCompletionBlock: %ld", (long)completionBlockCount);
             completionBlockCount++;
-            NSLog(@"playable resetCompletionBlock: %ld", (long)completionBlockCount);
             if (
                 completionBlock &&
                 (completionBlockCount == 2)
                 ) {
-                NSLog(@"playable run completion block");
                 completionBlock(YES);
             }
         }];

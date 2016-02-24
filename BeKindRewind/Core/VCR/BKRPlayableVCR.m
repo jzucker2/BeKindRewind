@@ -172,7 +172,6 @@
         }
         
         BKRCassette *loadingCassette = cassetteLoadingBlock();
-        NSLog(@"loading cassette: %@", loadingCassette);
         // if no cassette dictionary is fetched, then return NO
         finalResult = (loadingCassette ? YES : NO);
         self->_player.currentCassette = loadingCassette;

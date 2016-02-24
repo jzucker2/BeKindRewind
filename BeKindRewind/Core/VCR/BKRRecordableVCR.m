@@ -136,7 +136,6 @@
             return;
         }
         BKRCassette *loadingCassette = cassetteLoadingBlock();
-        NSLog(@"loading cassette: %@", loadingCassette);
         // if no cassette dictionary is fetched, then return NO
         finalResult = (loadingCassette ? YES : NO);
         [BKRRecorder sharedInstance].currentCassette = loadingCassette;
@@ -147,7 +146,7 @@
 
 - (BOOL)eject:(BKRVCRCassetteSavingBlock)cassetteSavingBlock completionHandler:(BKRCassetteHandlingBlock)completionBlock {
     if (!self.currentCassette) {
-        NSLog(@"no cassette contained");
+        NSLog(@"%@ no cassette contained", self);
         [self BKR_executeCassetteHandlingBlockWithFinalResult:NO onMainQueue:completionBlock];
         return NO;
     }
@@ -190,7 +189,7 @@
         }
         NSDictionary *cassetteDictionary = [BKRRecorder sharedInstance].plistDictionary;
         finalPath = currentFilePath;
-        NSLog(@"trying to write cassette to: %@", currentFilePath);
+        NSLog(@"%@: trying to write cassette to: %@", self, currentFilePath);
         finalResult = [BKRFilePathHelper writeDictionary:cassetteDictionary toFile:currentFilePath];
         self->_state = BKRVCRStateStopped; // somewhat unnecessary
         [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil]; // reset the recorder (removes cassette)
