@@ -7,40 +7,15 @@
 //
 
 #import <XCTest/XCTest.h>
-//#import "NSURLSessionTask+BKRAdditions.h"
-//#import "NSURLSessionTask+BKRTestAdditions.h"
-//#import "BKRPlayheadMatcher.h" // remove this
 #import "BKRTestConfiguration.h"
-//#import "BKRConfiguration.h"
 #import "BKRTestVCR.h"
 
 @interface BKRTestVCR ()
-//@property (nonatomic, copy) BKRTestConfiguration *configuration;
 @end
 
 @implementation BKRTestVCR
-//@synthesize currentTestCase = _currentTestCase;
 
 #pragma mark - BKRTestVCRActions
-
-//- (instancetype)initWithTestCase:(XCTestCase *)testCase {
-//    self = [super initWithMatcherClass:[BKRPlayheadMatcher class] andEmptyCassetteSavingOption:NO];
-//    if (self) {
-//        self.beginRecordingBlock = ^void (NSURLSessionTask *task) {
-//            NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
-//            task.recordingExpectation = [testCase expectationWithDescription:recordingExpectationString];
-//        };
-//        self.endRecordingBlock = ^void (NSURLSessionTask *task) {
-//            [task.recordingExpectation fulfill];
-//        };
-//        _currentTestCase = testCase;
-//    }
-//    return self;
-//}
-//
-//+ (instancetype)vcrWithTestCase:(XCTestCase *)testCase {
-//    return [[self alloc] initWithTestCase:testCase];
-//}
 
 - (instancetype)initWithTestConfiguration:(BKRTestConfiguration *)configuration {
     self = [super initWithConfiguration:configuration];

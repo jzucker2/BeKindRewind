@@ -22,29 +22,6 @@
 @implementation BKRRecordableVCR
 
 @synthesize state = _state;
-//@synthesize beginRecordingBlock = _beginRecordingBlock;
-//@synthesize endRecordingBlock = _endRecordingBlock;
-
-//- (instancetype)initWithEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
-//    self = [super init];
-//    if (self) {
-//        [[BKRRecorder sharedInstance] resetWithCompletionBlock:nil];
-//        _accessQueue = dispatch_queue_create("com.BKR.RecordableVCR", DISPATCH_QUEUE_CONCURRENT);
-//        _state = BKRVCRStateStopped;
-//        _configuration = shouldSaveEmptyCassette;
-//    }
-//    return self;
-//}
-//
-//
-//
-//+ (instancetype)vcrWithEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
-//    return [[self alloc] initWithEmptyCassetteSavingOption:shouldSaveEmptyCassette];
-//}
-//
-//+ (instancetype)vcr {
-//    return [self vcrWithEmptyCassetteSavingOption:NO];
-//}
 
 - (instancetype)initWithConfiguration:(BKRConfiguration *)configuration {
     self = [super init];
@@ -66,36 +43,6 @@
 + (instancetype)defaultVCR {
     return [self vcrWithConfiguration:[BKRConfiguration defaultConfiguration]];
 }
-
-#pragma mark - BKRVCRRecording
-
-//- (void)setBeginRecordingBlock:(BKRBeginRecordingTaskBlock)beginRecordingBlock {
-//    dispatch_barrier_async(self.accessQueue, ^{
-//        [BKRRecorder sharedInstance].beginRecordingBlock = beginRecordingBlock;
-//    });
-//}
-//
-//- (BKRBeginRecordingTaskBlock)beginRecordingBlock {
-//    __block BKRBeginRecordingTaskBlock recordingBlock = nil;
-//    dispatch_sync(self.accessQueue, ^{
-//        recordingBlock = [BKRRecorder sharedInstance].beginRecordingBlock;
-//    });
-//    return recordingBlock;
-//}
-//
-//- (void)setEndRecordingBlock:(BKREndRecordingTaskBlock)endRecordingBlock {
-//    dispatch_barrier_async(self.accessQueue, ^{
-//        [BKRRecorder sharedInstance].endRecordingBlock = endRecordingBlock;
-//    });
-//}
-//
-//- (BKREndRecordingTaskBlock)endRecordingBlock {
-//    __block BKREndRecordingTaskBlock recordingBlock = nil;
-//    dispatch_sync(self.accessQueue, ^{
-//        recordingBlock = [BKRRecorder sharedInstance].endRecordingBlock;
-//    });
-//    return recordingBlock;
-//}
 
 #pragma mark - BKRActions
 
@@ -193,7 +140,6 @@
         }
         // if there's nothing to record and we aren't supposed to save empty cassettes, then exit here
         if (
-//            (!self->_shouldSaveEmptyCassette) &&
             (!self->_configuration.shouldSaveEmptyCassette) &&
             (![BKRRecorder sharedInstance].didRecord)
             ) {

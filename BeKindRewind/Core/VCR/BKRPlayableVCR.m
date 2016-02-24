@@ -24,20 +24,6 @@
 
 @synthesize state = _state;
 
-//- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
-//    self = [super init];
-//    if (self) {
-//        _player = [BKRPlayer playerWithMatcherClass:matcherClass];
-//        _accessQueue = dispatch_queue_create("com.BKR.BKRPlayableVCR", DISPATCH_QUEUE_CONCURRENT);
-//        _state = BKRVCRStateStopped;
-//    }
-//    return self;
-//}
-//
-//+ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
-//    return [[self alloc] initWithMatcherClass:matcherClass];
-//}
-
 - (instancetype)initWithConfiguration:(BKRConfiguration *)configuration {
     self = [super init];
     if (self) {

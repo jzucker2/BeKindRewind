@@ -27,26 +27,8 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
 @implementation BKRVCR
 @synthesize state = _state;
 @synthesize currentVCR = _currentVCR;
-//@synthesize beginRecordingBlock = _beginRecordingBlock;
-//@synthesize endRecordingBlock = _endRecordingBlock;
 @synthesize recordableVCR = _recordableVCR;
 @synthesize playableVCR = _playableVCR;
-
-//- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
-//    self = [super init];
-//    if (self) {
-//        _accessQueue = dispatch_queue_create("com.BKR.VCR.accessQueue", DISPATCH_QUEUE_CONCURRENT);
-//        _state = BKRVCRStateStopped;
-//        _currentVCR = nil;
-//        _playableVCR = [BKRPlayableVCR vcrWithMatcherClass:matcherClass];
-//        _recordableVCR = [BKRRecordableVCR vcrWithEmptyCassetteSavingOption:shouldSaveEmptyCassette];
-//    }
-//    return self;
-//}
-//
-//+ (instancetype)vcrWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andEmptyCassetteSavingOption:(BOOL)shouldSaveEmptyCassette {
-//    return [[self alloc] initWithMatcherClass:matcherClass andEmptyCassetteSavingOption:shouldSaveEmptyCassette];
-//}
 
 - (instancetype)initWithConfiguration:(BKRConfiguration *)configuration {
     self = [super init];
@@ -74,10 +56,6 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
 - (id<BKRRequestMatching>)matcher {
     return self.playableVCR.matcher;
 }
-
-//- (BOOL)shouldSaveEmptyCassette {
-//    return self.recordableVCR.shouldSaveEmptyCassette;
-//}
 
 #pragma mark - helpers
 

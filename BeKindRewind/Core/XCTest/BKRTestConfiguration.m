@@ -13,7 +13,6 @@
 #import "NSURLSessionTask+BKRTestAdditions.h"
 
 @interface BKRTestConfiguration () <NSCopying>
-
 @end
 
 @implementation BKRTestConfiguration
