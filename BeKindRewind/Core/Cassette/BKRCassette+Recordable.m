@@ -15,16 +15,13 @@
 // frames and scenes share unique identifiers, this comes from the recorded task
 // if the frame matches a scene unique identifier, then add it to the scene
 - (void)addFrame:(BKRRawFrame *)frame {
-    NSLog(@"%@: adding frame: %@", self, frame.debugDescription);
     if (!frame.item) {
         // Can't add a blank frame!
-        NSLog(@"%@: can't add blank frame: %@", self, frame.debugDescription);
         return;
     }
     NSParameterAssert(frame);
     BKRWeakify(self);
     [self editScenesDictionary:^(NSDictionary<NSString *,BKRScene *> *currentScenesDictionary) {
-        NSLog(@"%@: barrier async block frame (%@)", self, frame.debugDescription);
         BKRStrongify(self);
         if (!currentScenesDictionary) {
             return;

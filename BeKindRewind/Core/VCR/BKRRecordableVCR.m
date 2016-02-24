@@ -136,7 +136,6 @@
             return;
         }
         BKRCassette *loadingCassette = cassetteLoadingBlock();
-        NSLog(@"recordable %@: loading cassette: %@", self, loadingCassette);
         // if no cassette dictionary is fetched, then return NO
         finalResult = (loadingCassette ? YES : NO);
         [BKRRecorder sharedInstance].currentCassette = loadingCassette;

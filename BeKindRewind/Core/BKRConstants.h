@@ -26,17 +26,6 @@ _Pragma("clang diagnostic pop") \
 @class BKRCassette;
 typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *cassette);
 
-
-/**
- *  Block for code execution before stubs are added for playback
- */
-typedef void (^BKRBeforeAddingStubs)(void);
-
-/**
- *  Block for code execution after stubs are added for playback
- */
-typedef void (^BKRAfterAddingStubs)(void);
-
 /**
  *  Block for execution before a NSURLSessionTask begins recording
  *
