@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import <BeKindRewind/BKRVCRActions.h>
+#import <BeKindRewind/BKRTestVCRActions.h>
 
 @interface BKRTestExpectedResult : NSObject
 @property (nonatomic, copy) NSString *URLString;
@@ -47,9 +48,10 @@ typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, N
 typedef void (^BKRTestBatchNetworkCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions);
 
-@class BKRPlayer, BKRCassette, BKRPlayableVCR, BKRVCR;
+@class BKRPlayer, BKRCassette, BKRPlayableVCR, BKRVCR, BKRConfiguration;
 @interface XCTestCase (BKRHelpers)
 
+- (BKRConfiguration *)defaultConfiguration;
 - (void)insertNewCassetteInRecorder;
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher;
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption;
@@ -77,13 +79,20 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 #pragma mark - VCR helpers
 
 - (void)insertBlankCassetteIntoVCR:(id<BKRVCRActions>)vcr;
+- (void)insertBlankCassetteIntoTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)insertCassetteFilePath:(NSString *)cassetteFilePath intoVCR:(id<BKRVCRActions>)vcr;
+- (void)insertCassetteFilePath:(NSString *)cassetteFilePath intoTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)resetVCR:(id<BKRVCRActions>)vcr;
+- (void)resetTestVCR:(id<BKRTestVCRActions>)vcr;
 - (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromVCR:(id<BKRVCRActions>)vcr; // returns result of eject message
+- (BOOL)ejectCassetteWithFilePath:(NSString *)cassetteFilePath fromTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)playVCR:(id<BKRVCRActions>)vcr;
+- (void)playTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)stopVCR:(id<BKRVCRActions>)vcr;
+- (void)stopTestVCR:(id<BKRTestVCRActions>)vcr;
 - (void)recordVCR:(id<BKRVCRActions>)vcr;
-- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr;
+- (void)recordTestVCR:(id<BKRTestVCRActions>)vcr;
+//- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr;
 
 #pragma mark - Plist builders
 

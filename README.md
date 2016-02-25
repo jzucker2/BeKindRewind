@@ -135,8 +135,6 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 ## Release criteria
 * Bring over to-do's from JSZVCR
 * Tests for different types of NSURLSession (shared, ephemeral, standard, background, etc). Make different test case classes for each type of session
-* test vcr by playing playing network calls from plist
-* test vcr by recording networks calls and comparing against plist
 * test different types of errors (timeout, invalid url) for playing/recording
 * swift tests (at least basic)
 * add code coverage
@@ -144,4 +142,5 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * add different types of matchers
 * afnetworking tests
 * JSON serializing in addition to plist serializing
-* make sure that before and after recording/playing blocks are on editor's queue
+* Separate into subspecs
+* Use BKRConfiguration to init vcr objects

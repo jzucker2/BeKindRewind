@@ -7,17 +7,13 @@
 //
 
 #import "BKRVCR.h"
+#import "BKRTestVCRActions.h"
 
 @class XCTestCase;
 
 /**
  *  This is simple subclass of BKRVCR that simplifies usage in XCTestCase for easy testing.
  */
-@interface BKRTestVCR : BKRVCR
-
-/**
- *  The test case that needs to have its network operations recorded or stubbed.
- */
-@property (nonatomic, strong) XCTestCase *currentTestCase;
+@interface BKRTestVCR : BKRVCR <BKRTestVCRActions>
 
 @end
