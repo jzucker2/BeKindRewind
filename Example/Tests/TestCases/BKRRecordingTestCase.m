@@ -6,104 +6,76 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <BeKindRewind/BKRRecorder.h>
+#import <BeKindRewind/BKRTestCase.h>
+#import <BeKindRewind/BKRCassette.h>
+#import <BeKindRewind/BKRTestCaseFilePathHelper.h>
 #import "XCTestCase+BKRHelpers.h"
-#import "BKRBaseTestCase.h"
 
-@interface BKRRecordingTestCase : BKRBaseTestCase
+@interface BKRRecordingTestCase : BKRTestCase
+@property (nonatomic, strong) NSArray<BKRTestExpectedResult *> *expectedResults;
 @end
 
 @implementation BKRRecordingTestCase
 
+- (BOOL)isRecording {
+    return YES;
+}
+
 - (void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-    [self insertNewCassetteInRecorder];
-    if (self.invocation.selector != @selector(testNotRecordingGETRequestWhenRecorderIsNotExplicitlyEnabled)) {
-        [self setRecorderToEnabledWithExpectation:YES];
-    }
-
-    [self setRecorderBeginAndEndRecordingBlocks];
+    // Clear any existing recordings if they exist
+    NSString *filePath = [self recordingCassetteFilePathWithBaseDirectoryFilePath:[self baseFixturesDirectoryFilePath]];
+    XCTAssertNotNil(filePath);
+    [self assertNoFileAtRecordingCassetteFilePath:filePath];
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    __block XCTestExpectation *resetExpectation = [self expectationWithDescription:@"reset expectation"];
-    [[BKRRecorder sharedInstance] resetWithCompletionBlock:^{
-        [resetExpectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-    }];
     [super tearDown];
-}
-
-- (void)testNotRecordingGETRequestWhenRecorderIsNotExplicitlyEnabled {
-    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 0);
-    }];
-}
-
-- (void)testNotRecordingGETRequestWhenRecorderIsExplicitlyDisabled {
-    [self setRecorderToEnabledWithExpectation:NO];
-    
-    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 0);
-    }];
+    // Now eject should have occurred, so let's test the eject results
+    NSString *filePath = [self recordingCassetteFilePathWithBaseDirectoryFilePath:[self baseFixturesDirectoryFilePath]];
+    XCTAssertNotNil(filePath);
+    XCTAssertTrue([BKRTestCaseFilePathHelper filePathExists:filePath]);
+    [self assertCassettePath:filePath matchesExpectedResults:self.expectedResults];
+    self.expectedResults = nil;
 }
 
 - (void)testRecordingOneGETRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
-        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
-    }];
-}
-
-- (void)testSwitchRecordingOffThenOn {
-    [self setRecorderToEnabledWithExpectation:NO];
-    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 0);
-    }];
-    
-    [self setRecorderToEnabledWithExpectation:YES];
-    
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
-        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
-    }];
-}
-
-- (void)testSwitchRecordingOnThenOff {
-    BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
-        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
-    }];
-    
-    [self setRecorderToEnabledWithExpectation:NO];
-    
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+    self.expectedResults = @[expectedResult];
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.currentVCR.currentCassette.allScenes);
+        XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, 1);
     }];
 }
 
 - (void)testRecordingOneCancelledGETRequest {
     BKRTestExpectedResult *cancelledResult = [self HTTPBinCancelledRequestWithRecording:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[cancelledResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
-        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+    self.expectedResults = @[cancelledResult];
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults.copy withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.currentVCR.currentCassette.allScenes);
+        XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, 1);
     }];
 }
 
 - (void)testRecordingOnePOSTRequest {
-    BKRTestExpectedResult *expectedResult = [self HTTPBinPostRequestWithRecording:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
-        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+    BKRTestExpectedResult *postResult = [self HTTPBinPostRequestWithRecording:YES];
+    self.expectedResults = @[postResult];
+
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.currentVCR.currentCassette.allScenes);
+        XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, 1);
     }];
 }
 
@@ -111,32 +83,41 @@
     BKRTestExpectedResult *firstResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     BKRTestExpectedResult *secondResult = [self HTTPBinGetRequestWithQueryString:@"test=test2" withRecording:YES];
 
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+    self.expectedResults = @[firstResult, secondResult];
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.currentVCR.currentCassette.allScenes);
+        NSInteger totalScenes = 0;
         if (result == firstResult) {
-            XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+            totalScenes = 1;
         } else if (result == secondResult) {
-            XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
-        } else {
-            XCTFail(@"how did we get here?");
+            totalScenes = 2;
         }
+        XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, totalScenes);
     }];
 }
 
 - (void)testRecordingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
     BKRTestExpectedResult *firstResult = [self PNGetTimeTokenWithRecording:YES];
     BKRTestExpectedResult *secondResult = [self PNGetTimeTokenWithRecording:YES];
+
+    self.expectedResults = @[firstResult, secondResult];
     
-    [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    BKRWeakify(self);
+    [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:self.expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+        BKRStrongify(self);
+        batchSceneAssertions(self.currentVCR.currentCassette.allScenes);
+        NSInteger totalScenes = 0;
         if (result == firstResult) {
-            XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+            totalScenes = 1;
         } else if (result == secondResult) {
-            XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
-        } else {
-            XCTFail(@"how did we get here?");
+            totalScenes = 2;
         }
+        XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, totalScenes);
     }];
 }
 

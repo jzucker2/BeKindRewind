@@ -48,7 +48,11 @@
  *
  *  @return valid NSBundle (created if one cannot be found) for saving network activity during a testing session
  */
-+ (NSBundle *)writingBundleForTestCase:(XCTestCase *)testCase inDirectory:(NSString *)filePath;
++ (NSBundle *)writingBundleForTestCase:(XCTestCase *)testCase inDirectory:(NSString *)filePath; // possibly modify tests for this
+
++ (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inBundle:(NSBundle *)writingBundle; //write tests for this
+
++ (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inTestSuiteBundleInDirectory:(NSString *)filePath; // write tests for this
 
 /**
  *  This should be the default method used to save recordings created during a test session. It finds and 

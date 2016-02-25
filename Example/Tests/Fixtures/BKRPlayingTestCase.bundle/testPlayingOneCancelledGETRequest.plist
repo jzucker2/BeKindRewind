@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>creationDate</key>
+	<date>2016-02-12T00:29:19Z</date>
+	<key>version</key>
+	<string>0.9.0</string>
+	<key>scenes</key>
+	<array>
+		<dict>
+			<key>frames</key>
+			<array>
+				<dict>
+					<key>HTTPMethod</key>
+					<string>GET</string>
+					<key>HTTPShouldHandleCookies</key>
+					<true/>
+					<key>HTTPShouldUsePipelining</key>
+					<false/>
+					<key>URL</key>
+					<string>https://httpbin.org/delay/10</string>
+					<key>allowsCellularAccess</key>
+					<true/>
+					<key>class</key>
+					<string>BKRRequestFrame</string>
+					<key>creationDate</key>
+					<date>2016-02-12T00:29:19Z</date>
+					<key>timeoutInterval</key>
+					<real>60</real>
+					<key>uniqueIdentifier</key>
+					<string>6B78000D-2E10-4D1F-AE22-0EDA33F57590</string>
+				</dict>
+				<dict>
+					<key>class</key>
+					<string>BKRErrorFrame</string>
+					<key>code</key>
+					<integer>-999</integer>
+					<key>creationDate</key>
+					<date>2016-02-12T00:29:20Z</date>
+					<key>domain</key>
+					<string>NSURLErrorDomain</string>
+					<key>uniqueIdentifier</key>
+					<string>6B78000D-2E10-4D1F-AE22-0EDA33F57590</string>
+					<key>userInfo</key>
+					<dict>
+						<key>NSErrorFailingURLKey</key>
+						<string>https://httpbin.org/delay/10</string>
+						<key>NSErrorFailingURLStringKey</key>
+						<string>https://httpbin.org/delay/10</string>
+						<key>NSLocalizedDescription</key>
+						<string>cancelled</string>
+					</dict>
+				</dict>
+			</array>
+			<key>uniqueIdentifier</key>
+			<string>6B78000D-2E10-4D1F-AE22-0EDA33F57590</string>
+		</dict>
+	</array>
+</dict>
+</plist>
