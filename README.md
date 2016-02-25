@@ -133,7 +133,6 @@ Jordan Zucker, jordan.zucker@gmail.com
 BeKindRewind is available under the MIT license. See the LICENSE file for more info.
 
 ## Release criteria
-* Bring over to-do's from JSZVCR
 * Tests for different types of NSURLSession (shared, ephemeral, standard, background, etc). Make different test case classes for each type of session
 * test different types of errors (timeout, invalid url) for playing/recording
 * swift tests (at least basic)
@@ -144,3 +143,4 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * Separate into subspecs
 * Update README
 * blog post
+* proper support for redirects
