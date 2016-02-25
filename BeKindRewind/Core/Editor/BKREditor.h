@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BKRConstants.h"
 
 @class BKRCassette;
 @class BKRScene;
+
+typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *cassette);
 
 /**
  *  This object is responsible for translating BeKindRewind network information between cassettes

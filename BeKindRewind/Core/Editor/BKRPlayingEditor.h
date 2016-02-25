@@ -8,9 +8,6 @@
 
 #import "BKREditor.h"
 #import "BKRRequestMatching.h"
-#import "BKRConstants.h"
-
-@class BKRPlayer;
 
 /**
  *  This subclass is for turning cassettes into stubs in a thread-safe manner

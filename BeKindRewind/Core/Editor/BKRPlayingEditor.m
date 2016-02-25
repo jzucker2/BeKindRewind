@@ -10,6 +10,7 @@
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRCassette+Playable.h"
 #import "BKRScene+Playable.h"
+#import "BKRConstants.h"
 
 @interface BKRPlayingEditor ()
 @end

@@ -27,11 +27,6 @@
 - (void)reset;
 
 /**
- *  Update the recordingStartTime to now or set it to nil if BKRRecordingEditor is not enabled
- */
-//- (void)updateRecordingStartTimeWithEnabled:(BOOL)desiredEnabled;
-
-/**
  *  Add raw recordable frame representing a component of a network request to the current cassette
  *
  *  @param frame component of a network request
@@ -47,7 +42,5 @@
  *  @param task              task that was being recorded
  */
 - (void)executeEndRecordingBlockWithTask:(NSURLSessionTask *)task;
-
-//- (void)resetHandledRecording;
 
 @end
