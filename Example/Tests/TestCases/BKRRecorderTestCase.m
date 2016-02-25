@@ -141,4 +141,27 @@
     }];
 }
 
+- (void)testRecordingTwoSimultaneousGETRequests {
+    BKRTestExpectedResult *firstResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
+    BKRTestExpectedResult *secondResult = [self HTTPBinGetRequestWithQueryString:@"test=test2" withRecording:YES];
+    
+//    [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+//    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+//        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+//        if (result == firstResult) {
+//            XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
+//        } else if (result == secondResult) {
+//            XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
+//        } else {
+//            XCTFail(@"how did we get here?");
+//        }
+//    }];
+    [self BKRTest_executeSimultaneousNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
+    }];
+}
+
 @end

@@ -35,6 +35,9 @@
 @property (nonatomic, assign) BOOL isRecording; // no by default
 @property (nonatomic, assign) BOOL shouldCompareCurrentRequestHTTPHeaderFields; // default is NO
 @property (nonatomic, strong) NSDictionary *currentRequestAllHTTPHeaderFields; // setting this turns hasCurrentRequest to YES automatically
+@property (nonatomic, strong) NSData *actualReceivedData;
+@property (nonatomic, strong) NSURLResponse *actualReceivedResponse;
+@property (nonatomic, strong) NSError *actualReceivedError;
 + (instancetype)result;
 @end
 
@@ -57,6 +60,7 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher;
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption;
 
+- (void)BKRTest_executeSimultaneousNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
 - (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
