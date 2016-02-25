@@ -6,14 +6,18 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <BeKindRewind/BKRPlayer.h>
-#import "XCTestCase+BKRHelpers.h"
-#import "BKRBaseTestCase.h"
+#import <BeKindRewind/BKRTestCase.h>
 
-@interface BKRPlayingTestCase : BKRBaseTestCase
+@interface BKRPlayingTestCase : BKRTestCase
 
 @end
 
 @implementation BKRPlayingTestCase
+
+- (BOOL)isRecording {
+    return NO;
+}
+
+
 
 @end
