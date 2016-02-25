@@ -142,45 +142,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
-//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:expectedResult.URL];
-//    if (expectedResult.HTTPMethod) {
-//        request.HTTPMethod = expectedResult.HTTPMethod;
-//    }
-//    if (expectedResult.HTTPBody) {
-//        request.HTTPBody = expectedResult.HTTPBody;
-//    }
-//    NSString *networkExpectationString = [NSString stringWithFormat:@"network call expectation for task: %@", expectedResult.taskUniqueIdentifier];
-//    __block XCTestExpectation *networkExpectation = [self expectationWithDescription:networkExpectationString];
-//    __block NSData *receivedData = nil;
-//    __block NSURLResponse *receivedResponse = nil;
-//    __block NSError *receivedError = nil;
-//    __block NSURLSessionTask *executingTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        receivedData = data;
-//        receivedResponse = response;
-//        receivedError = error;
-//        if (expectedResult.shouldCancel) {
-//            XCTAssertNotNil(error);
-//            XCTAssertEqual(expectedResult.errorCode, error.code);
-//            XCTAssertEqualObjects(expectedResult.errorDomain, error.domain);
-//            XCTAssertEqualObjects(expectedResult.errorUserInfo, error.userInfo);
-//        } else {
-//            XCTAssertNil(error);
-//            XCTAssertNotNil(data);
-//            [self _assertExpectedResult:expectedResult withData:data];
-//            XCTAssertNotNil(response);
-//            if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-//                NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
-//                XCTAssertEqual(expectedResult.responseCode, castedResponse.statusCode);
-//                [self _assertExpectedResult:expectedResult withActualResponseHeaderFields:castedResponse.allHeaderFields];
-//            }
-//        }
-//        if (networkCompletionAssertions) {
-//            networkCompletionAssertions(executingTask, data, response, error);
-//        }
-//        [networkExpectation fulfill];
-//        networkExpectation = nil;
-//    }];
-//    XCTAssertEqual(executingTask.state, NSURLSessionTaskStateSuspended);
+    
     NSURLSessionTask *executingTask = [self _preparedTaskForExpectedResult:expectedResult andTaskCompletionAssertions:networkCompletionAssertions];
     [executingTask resume];
     if (expectedResult.shouldCancel) {
@@ -202,48 +164,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertNotNil(executingTask.originalRequest);
         if (expectedResult.hasCurrentRequest) {
             XCTAssertNotNil(executingTask.currentRequest);
-            
         }
-        
-//        BKRTestSceneAssertionHandler sceneAssertions = ^void (BKRScene *scene) {
-////            [self _assertRequestFrame:scene.originalRequest withRequest:executingTask.originalRequest andIgnoreHeaderFields:YES];
-////            if (expectedResult.hasCurrentRequest) {
-////                // when we are playing, OHHTTPStubs does not mock adjusting the currentRequest to have different headers like a server would with a live NSURLSessionTask
-////                [self _assertRequestFrame:scene.currentRequest withRequest:executingTask.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
-////            }
-////            if (receivedResponse) {
-////                [self _assertResponseFrame:scene.allResponseFrames.firstObject withResponse:receivedResponse];
-////            }
-////            if (
-////                receivedData &&
-////                !expectedResult.shouldCancel
-////                ) {
-////                [self _assertDataFrame:scene.allDataFrames.firstObject withData:receivedData];
-////            }
-////            if (receivedError) {
-////                [self _assertErrorFrame:scene.allErrorFrames.firstObject withError:receivedError];
-////            }
-////            [self assertFramesOrderForScene:scene];
-//            
-//            [self _assertRequestFrame:scene.originalRequest withRequest:executingTask.originalRequest andIgnoreHeaderFields:YES];
-//            if (expectedResult.hasCurrentRequest) {
-//                // when we are playing, OHHTTPStubs does not mock adjusting the currentRequest to have different headers like a server would with a live NSURLSessionTask
-//                [self _assertRequestFrame:scene.currentRequest withRequest:executingTask.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
-//            }
-//            if (expectedResult.actualReceivedResponse) {
-//                [self _assertResponseFrame:scene.allResponseFrames.firstObject withResponse:expectedResult.actualReceivedResponse];
-//            }
-//            if (
-//                expectedResult.actualReceivedData &&
-//                !expectedResult.shouldCancel
-//                ) {
-//                [self _assertDataFrame:scene.allDataFrames.firstObject withData:expectedResult.actualReceivedData];
-//            }
-//            if (expectedResult.actualReceivedError) {
-//                [self _assertErrorFrame:scene.allErrorFrames.firstObject withError:expectedResult.actualReceivedError];
-//            }
-//            [self assertFramesOrderForScene:scene];
-//        };
         
         BKRTestSceneAssertionHandler sceneAssertions = [self _assertionHandlerForExpectedResult:expectedResult andTask:executingTask];
         
@@ -288,13 +209,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }
     NSString *networkExpectationString = [NSString stringWithFormat:@"network call expectation for task: %@", expectedResult.taskUniqueIdentifier];
     __block XCTestExpectation *networkExpectation = [self expectationWithDescription:networkExpectationString];
-//    __block NSData *receivedData = nil;
-//    __block NSURLResponse *receivedResponse = nil;
-//    __block NSError *receivedError = nil;
     __block NSURLSessionTask *executingTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        receivedData = data;
-//        receivedResponse = response;
-//        receivedError = error;
         expectedResult.actualReceivedData = data;
         expectedResult.actualReceivedResponse = response;
         expectedResult.actualReceivedError = error;
@@ -460,6 +375,11 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertEqual(executedTasks.count, ++executedTasksCount);
         [task resume];
     }
+    for (NSInteger i=0; i < expectedResults.count; i++) {
+        NSURLSessionTask *checkingTask = executedTasks[i];
+        XCTAssertNotNil(checkingTask);
+        XCTAssertEqual(checkingTask.state, NSURLSessionTaskStateRunning);
+    }
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         for (NSInteger i=0; i <expectedResults.count; i++) {
@@ -492,7 +412,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (void)BKRTest_executeHTTPBinNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults simultaneously:(BOOL)simultaneously withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
-    [self BKRTest_executeNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    
+    BKRTestBatchNetworkCompletionHandler networkCompletionHandler = ^void (BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         if (result.shouldCancel) {
             
         } else {
@@ -515,11 +436,19 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         if (networkCompletionAssertions) {
             networkCompletionAssertions(result, task, data, response, error);
         }
-    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    };
+    
+    BKRTestBatchNetworkTimeoutCompletionHandler networkTimeoutHandler = ^void (BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         if (timeoutAssertions) {
             timeoutAssertions(result, task, error, batchSceneAssertions);
         }
-    }];
+    };
+    
+    if (simultaneously) {
+        [self BKRTest_executeSimultaneousNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:networkCompletionHandler taskTimeoutHandler:networkTimeoutHandler];
+    } else {
+        [self BKRTest_executeNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:networkCompletionHandler taskTimeoutHandler:networkTimeoutHandler];
+    }
 }
 
 - (void)BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
@@ -812,6 +741,36 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                                      NSURLErrorFailingURLStringErrorKey: expectedResult.URLString,
                                      NSLocalizedDescriptionKey: @"cancelled"
                                      };
+    return expectedResult;
+}
+
+- (BKRTestExpectedResult *)HTTPBinDelayedRequestWithDelay:(NSInteger)delay withRecording:(BOOL)isRecording {
+    BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
+    expectedResult.isRecording = isRecording;
+    expectedResult.URLString = @"https://httpbin.org/delay/3";
+    expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/delay/%ld", (long)delay];
+    expectedResult.hasCurrentRequest = YES;
+    expectedResult.expectedNumberOfFrames = 4;
+    //    expectedResult.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
+    expectedResult.expectedSceneNumber = 0;
+    expectedResult.responseCode = 200;
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
+    expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"356"];
+    expectedResult.receivedJSON = @{
+                                    @"args": @{},
+                                    @"data": @"",
+                                    @"files": @{},
+                                    @"form": @{},
+                                    @"headers": @{
+                                            @"Accept": @"*/*",
+                                            @"Accept-Endcoding": @"gzip, deflate",
+                                            @"Accept-Language": @"en-us",
+                                            @"Host": @"httpbin.org",
+                                            @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0",
+                                            },
+                                    @"origin": @"98.210.195.88",
+                                    @"url": expectedResult.URLString,
+                                    };
     return expectedResult;
 }
 
