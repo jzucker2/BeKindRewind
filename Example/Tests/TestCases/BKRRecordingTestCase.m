@@ -43,7 +43,7 @@
     BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     self.expectedResults = @[expectedResult];
     BKRWeakify(self);
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         BKRStrongify(self);
@@ -56,7 +56,7 @@
     BKRTestExpectedResult *cancelledResult = [self HTTPBinCancelledRequestWithRecording:YES];
     self.expectedResults = @[cancelledResult];
     BKRWeakify(self);
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults.copy withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         BKRStrongify(self);
@@ -70,7 +70,7 @@
     self.expectedResults = @[postResult];
 
     BKRWeakify(self);
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         BKRStrongify(self);
@@ -85,7 +85,7 @@
 
     self.expectedResults = @[firstResult, secondResult];
     BKRWeakify(self);
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         BKRStrongify(self);
