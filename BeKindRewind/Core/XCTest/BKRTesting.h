@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BKRRequestMatching.h"
 #import "BKRTestVCRActions.h"
+
+@class BKRTestConfiguration;
 
 /**
  *  This protocol provides the structure necessary for proper BeKindRewind network recording
@@ -29,7 +30,7 @@
  *  stubbed. NO is returned by default unless overridden. This should be NO for continuous 
  *  integration so that requests are stubbed during automated testing
  */
-- (BOOL)isRecording;
+- (BOOL)isRecording; // default is YES so that it runs during dev for new classes
 
 /**
  *  This is the matcher class used to stub responses to requests during playback. This is
@@ -38,8 +39,14 @@
  *
  *  @return class conforming to BKRRequestMatching protocol
  */
-- (Class<BKRRequestMatching>)matcherClass;
+- (BKRTestConfiguration *)testConfiguration;
+- (id<BKRTestVCRActions>)testVCRWithConfiguration:(BKRTestConfiguration *)configuration;
 
-@property (nonatomic, strong, readonly) id<BKRTestVCRActions>vcr;
+@property (nonatomic, strong, readonly) id<BKRTestVCRActions>currentVCR;
+
+- (NSString *)baseFixturesDirectoryFilePath;
+- (NSString *)recordingCassetteFilePathWithBaseDirectoryFilePath:(NSString *)baseDirectoryFilePath;
+- (BKRCassette *)playingCassette;
+- (BKRCassette *)recordingCassette;
 
 @end
