@@ -145,3 +145,5 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * Separate into subspecs
 * Use BKRConfiguration to init vcr objects
 * Include version in BKRCassette plist recording
+* Update README
+* blog post
