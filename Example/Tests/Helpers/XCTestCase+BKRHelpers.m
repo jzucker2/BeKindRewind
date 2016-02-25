@@ -132,7 +132,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher {
-//    return [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
     return [BKRPlayableVCR defaultVCR];
 }
 
@@ -140,7 +139,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BKRConfiguration *configuration = [self defaultConfiguration];
     configuration.shouldSaveEmptyCassette = cassetteSavingOption;
     return [BKRVCR vcrWithConfiguration:configuration];
-//    return [BKRVCR vcrWithMatcherClass:[BKRPlayheadMatcher class] andEmptyCassetteSavingOption:cassetteSavingOption];
 }
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
@@ -903,7 +901,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 #pragma mark - VCR helpers
 
-//- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr {
 - (void)_setBeginAndEndRecordingBlocksForConfiguration:(BKRConfiguration *)configuration {
     configuration.beginRecordingBlock = ^void(NSURLSessionTask *task) {
         NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
