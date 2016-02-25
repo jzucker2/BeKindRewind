@@ -5,17 +5,16 @@
 [![License](https://img.shields.io/cocoapods/l/BeKindRewind.svg?style=flat)](http://cocoapods.org/pods/BeKindRewind)
 [![Platform](https://img.shields.io/cocoapods/p/BeKindRewind.svg?style=flat)](http://cocoapods.org/pods/BeKindRewind)
 
-Simple XCTest subclass for recording and replaying network events for integration testing
+Easy XCTestCase subclass for recording and replaying network events for integration testing
 
 ## Features
 
-* Easy recording and replaying
-* Easy to fail tests when network requests don't match recorded requests (can set level easily)
-* Can create custom matchers for matching recorded responses to requests
-* Provides everything in an XCTest subclass
+* Easy recording and replaying of network events
+* Provides full functionality in a simple XCTestCase subclass
+* Can create custom matchers for building network stubs
 
 ## Description
-This is a simple testing framework for recording and replaying network calls for automated integration testing. In order to reduce stubbing, it records live network requests and responses and then replays them in subsequent runs, stubbing the network requests (thanks to the fabulous [OHHTTPStubs](https://github.com/AliSoftware/OHHTTPStubs)) so that your software can run in peace.
+This is an easy testing framework for recording and replaying network events for automated integration testing. In order to reduce tedium around creating network stubs, it records live network requests and responses and then replays them in subsequent runs (thanks to the fabulous [OHHTTPStubs](https://github.com/AliSoftware/OHHTTPStubs)) so that your software can in continunous integration without flakiness.
 
 ## Usage
 
@@ -42,14 +41,6 @@ pod "BeKindRewind"
 
 - (BOOL)isRecording {
     return YES;
-}
-
-- (Class<BKRMatching>)matcherClass {
-    return [BKRSimpleURLMatcher class];
-}
-
-- (BKRMatchingStrictness)matchingFailStrictness {
-    return BKRMatchingStrictnessNone;
 }
 
 - (void)testSimpleNetworkCall {
