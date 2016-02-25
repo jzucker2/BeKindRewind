@@ -799,6 +799,19 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }
 }
 
+- (void)assertNoFileAtRecordingCassetteFilePath:(NSString *)cassetteFilePath {
+    // now remove anything at that path if there is something
+    NSError *testResultRemovalError = nil;
+    BOOL fileExists = [BKRFilePathHelper filePathExists:cassetteFilePath];
+    if (fileExists) {
+        BOOL removeTestResults = [[NSFileManager defaultManager] removeItemAtPath:cassetteFilePath error:&testResultRemovalError];
+        XCTAssertTrue(removeTestResults);
+        XCTAssertNil(testResultRemovalError, @"Couldn't remove test results: %@", testResultRemovalError.localizedDescription);
+    }
+    
+    XCTAssertFalse([BKRFilePathHelper filePathExists:cassetteFilePath]);
+}
+
 - (void)assertCassettePath:(NSString *)cassetteFilePath matchesExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
     XCTAssertTrue([BKRFilePathHelper filePathExists:cassetteFilePath]);
     NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];

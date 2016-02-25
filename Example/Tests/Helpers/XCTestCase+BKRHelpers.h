@@ -77,6 +77,8 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 - (void)assertCassettePath:(NSString *)cassetteFilePath matchesExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 - (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes;
 
+- (void)assertNoFileAtRecordingCassetteFilePath:(NSString *)cassetteFilePath;
+
 #pragma mark - VCR helpers
 
 - (void)insertBlankCassetteIntoVCR:(id<BKRVCRActions>)vcr;

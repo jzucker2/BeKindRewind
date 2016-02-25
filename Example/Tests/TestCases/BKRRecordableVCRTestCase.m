@@ -28,16 +28,7 @@
     self.testRecordingFilePath = [baseDirectory stringByAppendingPathComponent:fileName];
     XCTAssertNotNil(self.testRecordingFilePath);
     
-    // now remove anything at that path if there is something
-    NSError *testResultRemovalError = nil;
-    BOOL fileExists = [BKRFilePathHelper filePathExists:self.testRecordingFilePath];
-    if (fileExists) {
-        BOOL removeTestResults = [[NSFileManager defaultManager] removeItemAtPath:self.testRecordingFilePath error:&testResultRemovalError];
-        XCTAssertTrue(removeTestResults);
-        XCTAssertNil(testResultRemovalError, @"Couldn't remove test results: %@", testResultRemovalError.localizedDescription);
-    }
-    
-    XCTAssertFalse([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
+    [self assertNoFileAtRecordingCassetteFilePath:self.testRecordingFilePath];
     
     BKRConfiguration *configuration = [self defaultConfiguration];
     if (self.invocation.selector == @selector(testRecordingFileCreatedWhenRecordingDisabledAndDefaultOverriddenInInit)) {
