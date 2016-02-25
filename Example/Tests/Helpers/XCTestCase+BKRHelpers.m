@@ -793,6 +793,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     XCTAssertTrue([BKRFilePathHelper filePathExists:cassetteFilePath]);
     NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
     XCTAssertTrue([cassetteDictionary isKindOfClass:[NSDictionary class]]);
+    XCTAssertNotNil(cassetteDictionary[@"version"]);
+    XCTAssertTrue([cassetteDictionary[@"version"] isKindOfClass:[NSString class]]);
     XCTAssertTrue([cassetteDictionary[@"creationDate"] isKindOfClass:[NSDate class]]);
     NSArray *scenes = cassetteDictionary[@"scenes"];
     XCTAssertEqual(expectedResults.count, scenes.count);

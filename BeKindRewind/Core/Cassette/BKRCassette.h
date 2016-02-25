@@ -13,13 +13,15 @@
 //typedef returnType (^TypeName)(parameterTypes);
 //TypeName blockName = ^returnType(parameters) {...};
 typedef void (^BKRCassetteSceneDictionaryAccessBlock)(NSDictionary<NSString *, BKRScene *> *currentScenesDictionary);
-typedef void (^BKRCassetteAllScenesProcessingBlock)(NSDate *cassetteCreationDate, NSArray<BKRScene *> *currentAllScenes);
+typedef void (^BKRCassetteAllScenesProcessingBlock)(NSString *version, NSDate *cassetteCreationDate, NSArray<BKRScene *> *currentAllScenes);
 typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryForIteration);
 
 /**
  *  Contains the BKRScene objects associated with a networking session
  */
 @interface BKRCassette : NSObject
+
+@property (nonatomic, copy) NSString *version;
 
 + (instancetype)cassette;
 

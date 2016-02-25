@@ -52,7 +52,7 @@
 
 - (NSDictionary *)plistDictionary {
     __block NSDictionary *finalPlistDictionary = nil;
-    [self processScenes:^(NSDate *cassetteCreationDate, NSArray<BKRScene *> *currentAllScenes) {
+    [self processScenes:^(NSString *version, NSDate *cassetteCreationDate, NSArray<BKRScene *> *currentAllScenes) {
         NSMutableArray *plistArray = [NSMutableArray array];
         for (BKRScene *scene in currentAllScenes) {
             [plistArray addObject:scene.plistDictionary];
@@ -61,6 +61,7 @@
                                             @"scenes": [[NSArray alloc] initWithArray:plistArray copyItems:YES]
                                             } mutableCopy];
         plistDict[@"creationDate"] = cassetteCreationDate.copy;
+        plistDict[@"version"] = version.copy;
         finalPlistDictionary = [[NSDictionary alloc] initWithDictionary:plistDict.copy copyItems:YES];
     }];
     return finalPlistDictionary;
