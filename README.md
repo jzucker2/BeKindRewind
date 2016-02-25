@@ -144,3 +144,4 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * JSON serializing in addition to plist serializing
 * Separate into subspecs
 * Use BKRConfiguration to init vcr objects
+* Include version in BKRCassette plist recording
