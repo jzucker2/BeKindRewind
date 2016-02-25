@@ -10,6 +10,7 @@
 #import "BKRScene.h"
 #import "BKRFrame.h"
 #import "BKRConstants.h"
+#import "BKRInformation.h"
 
 @interface BKRCassette ()
 @property (nonatomic, strong) NSMutableDictionary<NSString *, BKRScene *> *scenes;
@@ -27,6 +28,7 @@
     if (self) {
         _creationDate = [NSDate date];
         _scenes = [NSMutableDictionary dictionary];
+        _version = [BKRInformation version];
         _accessingQueue = dispatch_queue_create("com.BKR.cassetteAccessingQueue", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
@@ -91,7 +93,7 @@
     BKRWeakify(self);
     dispatch_barrier_sync(self.accessingQueue, ^{
         BKRStrongify(self);
-        allScenesProcessingBlock(self.creationDate, [self _scenesSortedByClapboardFrameCreationDate:self->_scenes]);
+        allScenesProcessingBlock(self.version, self.creationDate, [self _scenesSortedByClapboardFrameCreationDate:self->_scenes]);
     });
 }
 

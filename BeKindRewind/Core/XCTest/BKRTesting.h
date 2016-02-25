@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BKRRequestMatching.h"
+#import "BKRTestVCRActions.h"
 
 /**
  *  This protocol provides the structure necessary for proper BeKindRewind network recording
@@ -38,5 +39,7 @@
  *  @return class conforming to BKRRequestMatching protocol
  */
 - (Class<BKRRequestMatching>)matcherClass;
+
+@property (nonatomic, strong, readonly) id<BKRTestVCRActions>vcr;
 
 @end

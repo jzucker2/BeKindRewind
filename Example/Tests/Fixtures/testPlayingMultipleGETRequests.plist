@@ -4,6 +4,8 @@
 <dict>
 	<key>creationDate</key>
 	<date>2016-02-12T00:29:18Z</date>
+	<key>version</key>
+	<string>0.9.0</string>
 	<key>scenes</key>
 	<array>
 		<dict>

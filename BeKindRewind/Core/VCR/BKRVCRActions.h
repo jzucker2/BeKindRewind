@@ -36,16 +36,8 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
     BKRVCRStatePaused = 3,
 };
 
-// what would i use this for?
-typedef NS_OPTIONS(NSUInteger, BKRVCRConfiguration) {
-    BKRVCRConfigurationEmpty            = 0,
-    BKRVCRConfigurationHasCassette      = 1 << 0,
-    BKRVCRConfigurationHasCassettePath  = 1 << 1,
-    BKRVCRConfigurationIsRecording      = 1 << 2,
-    BKRVCRConfigurationIsPlaying        = 1 << 3,
-};
-
 @class BKRCassette;
+@class BKRConfiguration;
 
 @protocol BKRVCRRecording <NSObject>
 
@@ -77,6 +69,10 @@ typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
 
 @protocol BKRVCRActions <NSObject>
 
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration;
++ (instancetype)vcrWithConfiguration:(BKRConfiguration *)configuration;
++ (instancetype)defaultVCR;
+
 - (void)playWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock;
 - (void)pauseWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock; // is there a difference between stop and pause?
 - (void)stopWithCompletionBlock:(BKRVCRActionCompletionBlock)completionBlock; // is there a difference between stop and pause?
@@ -99,39 +95,15 @@ typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
 
 @property (nonatomic, assign, readonly) BKRVCRState state;
 
-//@property (nonatomic, copy, readonly) NSString *cassetteFilePath;
-
-///**
-// *  Block is executed on the main thread before all stubs for a
-// *  playback session are added
-// *  @note make sure not to deadlock or execute slow code in this block
-// */
-//@property (nonatomic, copy) BKRBeforeAddingStubs beforeAddingStubsBlock;
-//
-///**
-// *  Block is executed on the main thread after all stubs for a
-// *  playback session are added
-// *  @note make sure not to deadlock or execute slow code in this block
-// */
-//@property (nonatomic, copy) BKRAfterAddingStubs afterAddingStubsBlock;
-//
-///**
-// *  This block executes on the main queue before any network request
-// *  begins. Make sure not to deadlock or execute slow code. It passes in
-// *  the NSURLSessionTask associated with this recording.
-// *
-// *  @note this block is executed synchronously on the main queue
-// */
-//@property (nonatomic, copy) BKRBeginRecordingTaskBlock beginRecordingBlock;
-//
-///**
-// *  This block executes on the main queue after any network request
-// *  begins. Make sure not to deadlock or execute slow code. It passes in
-// *  the NSURLSessionTask associated with this recording.
-// *
-// *  @note this block is executed asynchronously on the main queue
-// */
-//@property (nonatomic, copy) BKREndRecordingTaskBlock endRecordingBlock;
+/*
+ *  Retrieve reference on current client's configuration.
+ *
+ *  @return Currently used configuration instance copy. Changes to this instance won't affect
+ *  receiver's configuration.
+ *
+ *  @since 0.9
+ */
+- (BKRConfiguration *)currentConfiguration;
 
 //- (NSInteger)playhead;
 //- (NSInteger)totalRequests;
