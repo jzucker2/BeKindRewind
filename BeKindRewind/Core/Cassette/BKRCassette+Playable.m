@@ -20,6 +20,7 @@
     self = [[[self class] alloc] init];
     if (self) {
         self.creationDate = dictionary[@"creationDate"];
+        self.version = dictionary[@"version"];
         [self _addEditedScenes:dictionary[@"scenes"]];
     }
     return self;
