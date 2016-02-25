@@ -138,12 +138,9 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * test different types of errors (timeout, invalid url) for playing/recording
 * swift tests (at least basic)
 * add code coverage
-* tests for XCTest subclass
 * add different types of matchers
 * afnetworking tests
 * JSON serializing in addition to plist serializing
 * Separate into subspecs
-* Use BKRConfiguration to init vcr objects
-* Include version in BKRCassette plist recording
 * Update README
 * blog post
