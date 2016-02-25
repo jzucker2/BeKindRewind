@@ -28,22 +28,25 @@
     return [BKRTestConfiguration defaultConfigurationWithTestCase:self];
 }
 
-- (id<BKRTestVCRActions>)testVCR {
-    return [BKRTestVCR vcrWithTestConfiguration:[[self testConfiguration] copy]];
+- (id<BKRTestVCRActions>)testVCRWithConfiguration:(BKRTestConfiguration *)configuration {
+    return [BKRTestVCR vcrWithTestConfiguration:configuration];
 }
 
 - (instancetype)initWithInvocation:(NSInvocation *)invocation {
     self = [super initWithInvocation:invocation];
     if (self) {
-        _currentVCR = [self testVCR];
+        _currentVCR = [self testVCRWithConfiguration:[self testConfiguration]];
     }
     return self;
 }
 
-- (NSString *)recordingCassetteFilePath {
-    NSString *baseDirectory = [BKRTestCaseFilePathHelper documentsDirectory];
-    XCTAssertNotNil(baseDirectory);
-    return [BKRTestCaseFilePathHelper writingFinalPathForTestCase:self inTestSuiteBundleInDirectory:baseDirectory];
+- (NSString *)baseFixturesDirectoryFilePath {
+    return [BKRTestCaseFilePathHelper documentsDirectory];
+}
+
+- (NSString *)recordingCassetteFilePathWithBaseDirectoryFilePath:(NSString *)baseDirectoryFilePath {
+    NSParameterAssert(baseDirectoryFilePath);
+    return [BKRTestCaseFilePathHelper writingFinalPathForTestCase:self inTestSuiteBundleInDirectory:baseDirectoryFilePath];
 }
 
 - (BKRCassette *)playingCassette {
@@ -86,10 +89,10 @@
         BKRWeakify(self);
         [self.currentVCR eject:^NSString *(BKRCassette *cassette) {
             BKRStrongify(self);
-            return [self recordingCassetteFilePath];
+            return [self recordingCassetteFilePathWithBaseDirectoryFilePath:[self baseFixturesDirectoryFilePath]];
         }];
     }
-    [self.currentVCR reset];
+    [self.currentVCR reset]; // reset for BKRRecorder mostly
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];

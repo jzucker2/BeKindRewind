@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		515C56321C7E8B8800691220 /* BKRDefaultTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */; };
 		515E36011C73B40B00058D74 /* XCTestCase+BKRHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */; };
 		518436C11C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */; };
 		518436D11C6D7717006B5A07 /* testPlayingMultipleGETRequests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CC1C6D7717006B5A07 /* testPlayingMultipleGETRequests.plist */; };
@@ -45,6 +46,7 @@
 		2ABA0ED2BAFDF50ADCC348D3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		46FDC6D62117BCC2DBD07745 /* BeKindRewind.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BeKindRewind.podspec; path = ../BeKindRewind.podspec; sourceTree = "<group>"; };
 		4D2A9743CBA46BB14A7BC2BF /* Pods_BKR_Tests_iOS_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_iOS_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BKRDefaultTestCase.bundle; sourceTree = "<group>"; };
 		515E35FF1C73B40B00058D74 /* XCTestCase+BKRHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRHelpers.h"; sourceTree = "<group>"; };
 		515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRHelpers.m"; sourceTree = "<group>"; };
 		518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRPlayableVCRTestCase.m; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 		51B9B9CC1C57EA46006156C2 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */,
 				518436CC1C6D7717006B5A07 /* testPlayingMultipleGETRequests.plist */,
 				518436CD1C6D7717006B5A07 /* testPlayingOneCancelledGETRequest.plist */,
 				518436CE1C6D7717006B5A07 /* testPlayingOneGETRequest.plist */,
@@ -343,6 +346,7 @@
 				51B9B9DA1C57F918006156C2 /* SimpleBundle.bundle in Resources */,
 				518436D31C6D7717006B5A07 /* testPlayingOneGETRequest.plist in Resources */,
 				51A6B6F61C788BEC0063902F /* testPlayingOffThenOn.plist in Resources */,
+				515C56321C7E8B8800691220 /* BKRDefaultTestCase.bundle in Resources */,
 				51A6B6F91C788CFD0063902F /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist in Resources */,
 				51B9B9D41C57EED8006156C2 /* SimplePlistArray.plist in Resources */,
 				51A6B6F71C788BEC0063902F /* testPlayingOnThenOff.plist in Resources */,

@@ -40,11 +40,12 @@
  *  @return class conforming to BKRRequestMatching protocol
  */
 - (BKRTestConfiguration *)testConfiguration;
-- (id<BKRTestVCRActions>)testVCR;
+- (id<BKRTestVCRActions>)testVCRWithConfiguration:(BKRTestConfiguration *)configuration;
 
 @property (nonatomic, strong, readonly) id<BKRTestVCRActions>currentVCR;
 
-- (NSString *)recordingCassetteFilePath;
+- (NSString *)baseFixturesDirectoryFilePath;
+- (NSString *)recordingCassetteFilePathWithBaseDirectoryFilePath:(NSString *)baseDirectoryFilePath;
 - (BKRCassette *)playingCassette;
 - (BKRCassette *)recordingCassette;
 
