@@ -142,7 +142,7 @@
     }];
 }
 
-- (void)testPlayingTwoSimultaneousGETRequests {
+- (void)DISABLE_testPlayingTwoSimultaneousGETRequests {
     BKRTestExpectedResult *firstResult = [self HTTPBinDelayedRequestWithDelay:2 withRecording:NO];
     BKRTestExpectedResult *secondResult = [self HTTPBinDelayedRequestWithDelay:3 withRecording:NO];
     

@@ -1,16 +1,16 @@
 //
-//  BKRPlayheadMatcher.m
+//  BKRAnyMatcher.m
 //  Pods
 //
-//  Created by Jordan Zucker on 1/22/16.
+//  Created by Jordan Zucker on 2/25/16.
 //
 //
 
-#import "BKRPlayheadMatcher.h"
+#import "BKRAnyMatcher.h"
 #import "BKRScene+Playable.h"
 #import "BKRRequestFrame.h"
 
-@implementation BKRPlayheadMatcher
+@implementation BKRAnyMatcher
 
 + (id<BKRRequestMatching>)matcher {
     return [[self alloc] init];
