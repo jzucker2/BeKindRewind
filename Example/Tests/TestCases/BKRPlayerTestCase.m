@@ -142,4 +142,19 @@
     }];
 }
 
+- (void)testPlayingTwoSimultaneousGETRequests {
+    BKRTestExpectedResult *firstResult = [self HTTPBinDelayedRequestWithDelay:2 withRecording:NO];
+    BKRTestExpectedResult *secondResult = [self HTTPBinDelayedRequestWithDelay:3 withRecording:NO];
+    
+    __block BKRPlayer *player = [self playerWithExpectedResults:@[firstResult, secondResult]];
+    XCTAssertEqual(player.allScenes.count, 2);
+    [self setPlayer:player withExpectationToEnabled:YES];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        NSLog(@"response: %@", response);
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions(player.allScenes);
+    }];
+}
+
 @end

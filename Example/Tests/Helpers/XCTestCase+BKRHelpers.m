@@ -318,6 +318,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 XCTAssertNotEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
                 XCTAssertNotEqualObjects(actualResponseHeaderFields[actualResponseKey], kBKRTestHTTPBinResponseDateStringValue);
             } else {
+                NSLog(@"------------------");
                 XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
                 XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], kBKRTestHTTPBinResponseDateStringValue);
             }
@@ -380,7 +381,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertNotNil(checkingTask);
         XCTAssertEqual(checkingTask.state, NSURLSessionTaskStateRunning);
     }
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         for (NSInteger i=0; i <expectedResults.count; i++) {
             BKRTestExpectedResult *expectedResult = expectedResults[i];
@@ -401,6 +402,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             BKRTestSceneAssertionHandler sceneAssertions = [self _assertionHandlerForExpectedResult:expectedResult andTask:executingTask];
             BKRTestBatchSceneAssertionHandler batchSceneAssertions = ^void (NSArray<BKRScene *> *scenes) {
                 if (scenes[i]) {
+                    NSLog(@"batchSceneAssertions: %@", scenes[i].debugDescription);
                     sceneAssertions(scenes[i]);
                 }
             };
