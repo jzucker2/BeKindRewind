@@ -14,6 +14,7 @@
 		515C56621C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56611C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m */; };
 		515C56641C7FF80C00691220 /* BKRAnyMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56631C7FF80C00691220 /* BKRAnyMatcherTestCase.m */; };
 		515C56671C7FF82400691220 /* BKRMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56661C7FF82400691220 /* BKRMatcherTestCase.m */; };
+		515C56691C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 515C56681C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist */; };
 		515E36011C73B40B00058D74 /* XCTestCase+BKRHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */; };
 		518436C11C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */; };
 		518436D11C6D7717006B5A07 /* testPlayingMultipleGETRequests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CC1C6D7717006B5A07 /* testPlayingMultipleGETRequests.plist */; };
@@ -60,6 +61,7 @@
 		515C56631C7FF80C00691220 /* BKRAnyMatcherTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRAnyMatcherTestCase.m; sourceTree = "<group>"; };
 		515C56651C7FF82400691220 /* BKRMatcherTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKRMatcherTestCase.h; sourceTree = "<group>"; };
 		515C56661C7FF82400691220 /* BKRMatcherTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRMatcherTestCase.m; sourceTree = "<group>"; };
+		515C56681C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingTwoSimultaneousGETRequests.plist; sourceTree = "<group>"; };
 		515E35FF1C73B40B00058D74 /* XCTestCase+BKRHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRHelpers.h"; sourceTree = "<group>"; };
 		515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRHelpers.m"; sourceTree = "<group>"; };
 		518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRPlayableVCRTestCase.m; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				518436CF1C6D7717006B5A07 /* testPlayingOnePOSTRequest.plist */,
 				518436D01C6D7717006B5A07 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist */,
 				51A6B6F81C788CFD0063902F /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist */,
+				515C56681C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist */,
 				51B9B9DE1C58E2D1006156C2 /* NotInATarget.txt */,
 				51A6B6F41C788BEC0063902F /* testPlayingOffThenOn.plist */,
 				51A6B6F51C788BEC0063902F /* testPlayingOnThenOff.plist */,
@@ -375,6 +378,7 @@
 				518436D21C6D7717006B5A07 /* testPlayingOneCancelledGETRequest.plist in Resources */,
 				518436D11C6D7717006B5A07 /* testPlayingMultipleGETRequests.plist in Resources */,
 				518436D41C6D7717006B5A07 /* testPlayingOnePOSTRequest.plist in Resources */,
+				515C56691C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist in Resources */,
 				51B9B9D21C57EEC9006156C2 /* SimplePlistDictionary.plist in Resources */,
 				6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */,
 				51B9B9D81C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle in Resources */,

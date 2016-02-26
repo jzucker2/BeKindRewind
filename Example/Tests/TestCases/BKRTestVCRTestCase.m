@@ -8,6 +8,7 @@
 
 #import <BeKindRewind/BKRTestVCR.h>
 #import <BeKindRewind/BKRCassette.h>
+#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRCassette+Playable.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import <BeKindRewind/BKRTestConfiguration.h>
@@ -39,9 +40,16 @@
     } else if (self.invocation.selector == @selector(testRecordingNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
         configuration.shouldSaveEmptyCassette = NO;
         self.vcr = [BKRTestVCR vcrWithTestConfiguration:configuration];
+    } else if (
+               (self.invocation.selector == @selector(testRecordingTwoSimultaneousGETRequests)) ||
+               (self.invocation.selector == @selector(testPlayingTwoSimultaneousGETRequests))
+               ) {
+        configuration.matcherClass = [BKRAnyMatcher class];
+        self.vcr = [BKRTestVCR vcrWithTestConfiguration:configuration];
     } else {
         self.vcr = [BKRTestVCR defaultVCRForTestCase:self];
     }
+    XCTAssertNotNil(self.vcr);
     
     NSString *testSelectorString = NSStringFromSelector(self.invocation.selector);
     if ([testSelectorString hasPrefix:@"testRecording"]) {
@@ -215,6 +223,24 @@
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
 }
 
+- (void)testRecordingTwoSimultaneousGETRequests {
+    BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:YES];
+    BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:YES];
+    
+    [self recordVCR:self.vcr];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.vcr.currentCassette.allScenes);
+        XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 2);
+    }];
+    
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
+}
+
 // the fixture for this exists, and is asserted in the setUp
 - (void)testPlayingNoMockingWhenVCRIsNotSentPlay {
     BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
@@ -288,6 +314,17 @@
     [self playTestVCR:self.vcr];
     
     [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+}
+
+- (void)testPlayingTwoSimultaneousGETRequests {
+    BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:NO];
+    BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:NO];
+    
+    [self playTestVCR:self.vcr];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
 }

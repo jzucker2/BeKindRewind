@@ -26,8 +26,13 @@
     self.testPlayingFilePath = [BKRFilePathHelper findPathForFile:fileName inBundleForClass:self.class];
     XCTAssertNotNil(self.testPlayingFilePath);
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testPlayingFilePath]);
-        
-    self.vcr = [self playableVCRWithPlayheadMatcher];
+    
+    if (self.invocation.selector == @selector(testPlayingTwoSimultaneousGETRequests)) {
+        self.vcr = [self playableVCRWithAnyMatcher];
+    } else {
+        self.vcr = [self playableVCRWithPlayheadMatcher];
+    }
+    XCTAssertNotNil(self.vcr);
     
     [self insertCassetteFilePath:self.testPlayingFilePath intoVCR:self.vcr];
     
@@ -112,6 +117,17 @@
     [self playVCR:self.vcr];
     
     [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+}
+
+- (void)testPlayingTwoSimultaneousGETRequests {
+    BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:NO];
+    BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:NO];
+    
+    [self playVCR:self.vcr];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
 }

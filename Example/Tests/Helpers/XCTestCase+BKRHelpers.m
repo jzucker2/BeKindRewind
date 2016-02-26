@@ -12,6 +12,7 @@
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
+#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRFrame.h>
 #import <BeKindRewind/BKRCassette.h>
@@ -37,6 +38,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _expectedNumberOfFrames = 0;
         _expectedSceneNumber = 0;
         _responseCode = -1;
+        _isSimultaneous = NO;
         _errorCode = 1;
         _hasCurrentRequest = NO;
         _taskUniqueIdentifier = [NSUUID UUID].UUIDString;
@@ -135,9 +137,21 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     return [BKRPlayableVCR defaultVCR];
 }
 
+- (BKRPlayableVCR *)playableVCRWithAnyMatcher {
+    BKRConfiguration *configuration = [BKRConfiguration configurationWithMatcherClass:[BKRAnyMatcher class]];
+    return [BKRPlayableVCR vcrWithConfiguration:configuration];
+}
+
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption {
     BKRConfiguration *configuration = [self defaultConfiguration];
     configuration.shouldSaveEmptyCassette = cassetteSavingOption;
+    return [BKRVCR vcrWithConfiguration:configuration];
+}
+
+- (BKRVCR *)vcrWithMatcher:(Class<BKRRequestMatching>)matcherClass andCassetteSavingOption:(BOOL)cassetteSavingOption {
+    BKRConfiguration *configuration = [self defaultConfiguration];
+    configuration.shouldSaveEmptyCassette = cassetteSavingOption;
+    configuration.matcherClass = matcherClass;
     return [BKRVCR vcrWithConfiguration:configuration];
 }
 
@@ -382,6 +396,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     // also since, all tests are expected to only take arrays of recording or playing tasks but not
     // both, just check first expected result to determine (under previously stated assumption) that
     // all tasks are recording or playing
+    // note: maybe consider using isSimultaneous (this was added after this was written)
     for (NSInteger i=0; i < expectedResults.count; i++) {
         NSURLSessionTask *checkingTask = executedTasks[i];
         XCTAssertNotNil(checkingTask);
@@ -787,9 +802,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     return expectedResult;
 }
 
-- (BKRTestExpectedResult *)HTTPBinDelayedRequestWithDelay:(NSInteger)delay withRecording:(BOOL)isRecording {
+- (BKRTestExpectedResult *)HTTPBinSimultaneousDelayedRequestWithDelay:(NSInteger)delay withRecording:(BOOL)isRecording {
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
     expectedResult.isRecording = isRecording;
+    expectedResult.isSimultaneous = YES;
     expectedResult.URLString = @"https://httpbin.org/delay/3";
     expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/delay/%ld", (long)delay];
     expectedResult.hasCurrentRequest = YES;
@@ -979,7 +995,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         NSString *uniqueIdentifier = scene[@"uniqueIdentifier"];
         XCTAssertNotNil(uniqueIdentifier);
         BKRTestExpectedResult *recording = [expectedResults objectAtIndex:i];
-        XCTAssertEqual(recording.expectedSceneNumber, i);
+        // don't assert order for simultaneous requests!
+        if (!recording.isSimultaneous) {
+            XCTAssertEqual(recording.expectedSceneNumber, i);
+        }
         XCTAssertNotNil(recording);
         NSArray *frames = scene[@"frames"];
         XCTAssertNotNil(frames);

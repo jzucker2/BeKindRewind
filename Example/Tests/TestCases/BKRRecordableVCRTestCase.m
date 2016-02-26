@@ -8,6 +8,7 @@
 
 #import <BeKindRewind/BKRRecordableVCR.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
+#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRConfiguration.h>
 #import "BKRBaseTestCase.h"
@@ -37,9 +38,14 @@
     } else if (self.invocation.selector == @selector(testRecordingNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
         configuration.shouldSaveEmptyCassette = NO;
         self.vcr = [BKRRecordableVCR vcrWithConfiguration:configuration];
+    } else if (self.invocation.selector == @selector(testRecordingTwoSimultaneousGETRequests)) {
+        configuration.matcherClass = [BKRAnyMatcher class];
+        self.vcr = [BKRRecordableVCR vcrWithConfiguration:configuration];
     } else {
         self.vcr = [BKRRecordableVCR defaultVCR];
     }
+    
+    XCTAssertNotNil(self.vcr);
     
     [self insertBlankCassetteIntoVCR:self.vcr];
 }
@@ -198,6 +204,24 @@
         }
         XCTAssertEqual(self.vcr.currentCassette.allScenes.count, totalScenes);
     }];
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
+}
+
+- (void)testRecordingTwoSimultaneousGETRequests {    
+    BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:YES];
+    BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:YES];
+    
+    [self recordVCR:self.vcr];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.vcr.currentCassette.allScenes);
+        XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 2);
+    }];
+    
     XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
 }

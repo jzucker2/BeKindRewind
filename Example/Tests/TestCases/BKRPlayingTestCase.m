@@ -6,6 +6,8 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
+#import <BeKindRewind/BKRTestConfiguration.h>
+#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRTestCase.h>
 #import "XCTestCase+BKRHelpers.h"
 
@@ -17,6 +19,19 @@
 
 - (BOOL)isRecording {
     return NO;
+}
+
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *configuration = [super testConfiguration];
+    if (self.invocation.selector == @selector(testPlayingTwoSimultaneousGETRequests)) {
+        configuration.matcherClass = [BKRAnyMatcher class];
+    }
+    return configuration;
+}
+
+- (void)setUp {
+    [super setUp];
+    XCTAssertNotNil(self.currentVCR);
 }
 
 - (void)testPlayingOneGETRequest {
@@ -57,6 +72,15 @@
     BKRTestExpectedResult *secondResult = [self PNGetTimeTokenWithRecording:NO];
     
     [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+}
+
+- (void)testPlayingTwoSimultaneousGETRequests {
+    BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:NO];
+    BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:NO];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
 }

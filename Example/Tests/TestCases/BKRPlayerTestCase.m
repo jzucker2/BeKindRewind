@@ -144,8 +144,8 @@
 }
 
 - (void)testPlayingTwoSimultaneousGETRequests {
-    BKRTestExpectedResult *firstResult = [self HTTPBinDelayedRequestWithDelay:2 withRecording:NO];
-    BKRTestExpectedResult *secondResult = [self HTTPBinDelayedRequestWithDelay:3 withRecording:NO];
+    BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:NO];
+    BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:NO];
     
     __block BKRPlayer *player = [self playerWithMatcher:[BKRAnyMatcher class] withExpectedResults:@[firstResult, secondResult]];
     XCTAssertEqual(player.allScenes.count, 2);

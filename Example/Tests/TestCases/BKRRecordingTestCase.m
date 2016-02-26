@@ -6,6 +6,8 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
+#import <BeKindRewind/BKRTestConfiguration.h>
+#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRTestCase.h>
 #import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRTestCaseFilePathHelper.h>
@@ -21,9 +23,18 @@
     return YES;
 }
 
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *configuration = [super testConfiguration];
+    if (self.invocation.selector == @selector(testRecordingTwoSimultaneousGETRequests)) {
+        configuration.matcherClass = [BKRAnyMatcher class];
+    }
+    return configuration;
+}
+
 - (void)setUp {
     [super setUp];
     // Clear any existing recordings if they exist
+    XCTAssertNotNil(self.currentVCR);
     NSString *filePath = [self recordingCassetteFilePathWithBaseDirectoryFilePath:[self baseFixturesDirectoryFilePath]];
     XCTAssertNotNil(filePath);
     [self assertNoFileAtRecordingCassetteFilePath:filePath];
@@ -118,6 +129,21 @@
             totalScenes = 2;
         }
         XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, totalScenes);
+    }];
+}
+
+- (void)testRecordingTwoSimultaneousGETRequests {
+    BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:YES];
+    BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:YES];
+    
+    self.expectedResults = @[firstResult, secondResult];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.currentVCR.currentCassette.allScenes);
+        XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, 2);
     }];
 }
 
