@@ -7,6 +7,7 @@
 //
 
 #import <BeKindRewind/BKRPlayer.h>
+#import <BeKindRewind/BKRAnyMatcher.h>
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
@@ -142,11 +143,11 @@
     }];
 }
 
-- (void)DISABLE_testPlayingTwoSimultaneousGETRequests {
+- (void)testPlayingTwoSimultaneousGETRequests {
     BKRTestExpectedResult *firstResult = [self HTTPBinDelayedRequestWithDelay:2 withRecording:NO];
     BKRTestExpectedResult *secondResult = [self HTTPBinDelayedRequestWithDelay:3 withRecording:NO];
     
-    __block BKRPlayer *player = [self playerWithExpectedResults:@[firstResult, secondResult]];
+    __block BKRPlayer *player = [self playerWithMatcher:[BKRAnyMatcher class] withExpectedResults:@[firstResult, secondResult]];
     XCTAssertEqual(player.allScenes.count, 2);
     [self setPlayer:player withExpectationToEnabled:YES];
     

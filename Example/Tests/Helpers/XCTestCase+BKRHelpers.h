@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import <BeKindRewind/BKRRequestMatching.h>
 #import <BeKindRewind/BKRVCRActions.h>
 #import <BeKindRewind/BKRTestVCRActions.h>
 
@@ -73,6 +74,7 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 - (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 - (BKRPlayer *)playerWithExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
+- (BKRPlayer *)playerWithMatcher:(Class<BKRRequestMatching>)matcherClass withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 
 - (void)setRecorderToEnabledWithExpectation:(BOOL)enabled;
 - (void)setPlayer:(BKRPlayer *)player withExpectationToEnabled:(BOOL)enabled;

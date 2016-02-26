@@ -18,9 +18,13 @@
 
 // should also handle current request for everything, not just comparing to original request
 - (BKRScene *)matchForRequest:(NSURLRequest *)request withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    if ([playhead.originalRequest.URL.absoluteString isEqualToString:request.URL.absoluteString]) {
-        return playhead;
+    if (!request) {
+        return nil;
+    }
+    for (BKRScene *scene in scenes) {
+        if ([request.URL.absoluteString isEqualToString:scene.originalRequest.URL.absoluteString]) {
+            return scene;
+        }
     }
     return nil;
 }
@@ -30,46 +34,68 @@
 }
 
 - (BOOL)hasMatchForRequestHost:(NSString *)host withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    return [host isEqualToString:playhead.originalRequest.requestHost];
+    if (!host) {
+        return YES;
+    }
+    for (BKRScene *scene in scenes) {
+        if ([host isEqualToString:scene.originalRequest.requestHost]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 - (BOOL)hasMatchForRequestScheme:(NSString *)scheme withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    return [scheme isEqualToString:playhead.originalRequest.requestScheme];
+    if (!scheme) {
+        return YES;
+    }
+    for (BKRScene *scene in scenes) {
+        if ([scheme isEqualToString:scene.originalRequest.requestScheme]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 - (BOOL)hasMatchForRequestPath:(NSString *)path withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    NSString *playheadPath = playhead.originalRequest.requestPath;
-    return [self _requestComponentString:path matchesSceneComponentString:playheadPath];
+    if (!path) {
+        return YES;
+    }
+    for (BKRScene *scene in scenes) {
+        if ([path isEqualToString:scene.originalRequest.requestPath]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 - (BOOL)hasMatchForRequestFragment:(NSString *)fragment withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    NSString *playheadFragment = playhead.originalRequest.requestFragment;
-    return [self _requestComponentString:fragment matchesSceneComponentString:playheadFragment];
+    if (!fragment) {
+        return YES;
+    }
+    for (BKRScene *scene in scenes) {
+        if ([fragment isEqualToString:scene.originalRequest.requestFragment]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 - (BOOL)hasMatchForRequestQueryItems:(NSArray<NSURLQueryItem *> *)queryItems withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    NSSet *requestQueryItemsSet = [NSSet setWithArray:queryItems];
-    NSSet *playheadQueryItemsSet = [NSSet setWithArray:playhead.originalRequest.requestQueryItems];
-    return [requestQueryItemsSet isEqualToSet:playheadQueryItemsSet];
-}
-
-- (BOOL)_requestComponentString:(NSString *)requestComponentString matchesSceneComponentString:(NSString *)sceneComponentString {
     if (
-        requestComponentString &&
-        sceneComponentString
+        !queryItems ||
+        !queryItems.count
         ) {
-        return [requestComponentString isEqualToString:sceneComponentString];
-    } else if ((requestComponentString && !sceneComponentString) ||
-               (!requestComponentString && sceneComponentString)
-               ) {
-        return NO;
+        return YES;
     }
-    return YES;
+    for (BKRScene *scene in scenes) {
+        NSSet *requestQueryItemsSet = [NSSet setWithArray:queryItems];
+        NSSet *playheadQueryItemsSet = [NSSet setWithArray:scene.originalRequest.requestQueryItems];
+        if ([requestQueryItemsSet isEqualToSet:playheadQueryItemsSet]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end

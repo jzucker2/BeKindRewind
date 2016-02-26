@@ -128,12 +128,10 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * test different types of errors (timeout, invalid url) for playing/recording
 * swift tests (at least basic)
 * add code coverage
-* add different types of matchers
 * afnetworking tests
 * Separate into subspecs
 * Rewrite README instructions
 * blog post
-* test for simultaneous network requests (two gets works well enough)
 * proper support for redirects
 
 ## Future features

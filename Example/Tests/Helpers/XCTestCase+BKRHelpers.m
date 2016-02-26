@@ -531,6 +531,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (BKRPlayer *)playerWithExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
+    return [self playerWithMatcher:[BKRPlayheadMatcher class] withExpectedResults:expectedResults];
+}
+
+- (BKRPlayer *)playerWithMatcher:(Class<BKRRequestMatching>)matcherClass withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
     BKRCassette *cassette = [self cassetteFromExpectedResults:expectedResults];
     NSArray<BKRScene *> *scenes = cassette.allScenes.copy;
     XCTAssertEqual(scenes.count, expectedResults.count, @"testCassette should have one valid scene right now");
@@ -541,7 +545,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertEqual(result.expectedNumberOfFrames, scene.allFrames.count);
         
     }
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:matcherClass];
     player.currentCassette = cassette;
     return player;
 }
