@@ -550,12 +550,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (void)setRecorderBeginAndEndRecordingBlocks {
     [BKRRecorder sharedInstance].beginRecordingBlock = ^void(NSURLSessionTask *task) {
-        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
-        task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
+        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.BKR_globallyUniqueIdentifier];
+        task.BKR_recordingExpectation = [self expectationWithDescription:recordingExpectationString];
     };
     
     [BKRRecorder sharedInstance].endRecordingBlock = ^void(NSURLSessionTask *task) {
-        [task.recordingExpectation fulfill];
+        [task.BKR_recordingExpectation fulfill];
     };
 }
 
@@ -1053,12 +1053,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (void)_setBeginAndEndRecordingBlocksForConfiguration:(BKRConfiguration *)configuration {
     configuration.beginRecordingBlock = ^void(NSURLSessionTask *task) {
-        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
-        task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
+        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.BKR_globallyUniqueIdentifier];
+        task.BKR_recordingExpectation = [self expectationWithDescription:recordingExpectationString];
     };
     
     configuration.endRecordingBlock = ^void(NSURLSessionTask *task) {
-        [task.recordingExpectation fulfill];
+        [task.BKR_recordingExpectation fulfill];
     };
 }
 

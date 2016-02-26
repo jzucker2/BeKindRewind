@@ -21,6 +21,6 @@
  *  maintain a reference to the test expectation that ensures it
  *  is fully recorded.
  */
-@property (nonatomic, strong) XCTestExpectation *recordingExpectation;
+@property (nonatomic, strong) XCTestExpectation *BKR_recordingExpectation;
 
 @end

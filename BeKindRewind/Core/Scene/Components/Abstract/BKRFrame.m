@@ -21,7 +21,7 @@
     self = [super init];
     if (self) {
         _creationDate = [NSDate date];
-        _uniqueIdentifier = task.globallyUniqueIdentifier;
+        _uniqueIdentifier = task.BKR_globallyUniqueIdentifier;
     }
     return self;
 }

@@ -13,12 +13,13 @@
 static const void *BKRTaskTestExpectationKey = &BKRTaskTestExpectationKey;
 
 @implementation NSURLSessionTask (BKRTestAdditions)
+@dynamic BKR_recordingExpectation;
 
-- (void)setRecordingExpectation:(XCTestExpectation *)recordingExpectation {
+- (void)setBKR_recordingExpectation:(XCTestExpectation *)recordingExpectation {
     objc_setAssociatedObject(self, BKRTaskTestExpectationKey, recordingExpectation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (XCTestExpectation *)recordingExpectation {
+- (XCTestExpectation *)BKR_recordingExpectation {
     return objc_getAssociatedObject(self, BKRTaskTestExpectationKey);
 }
 

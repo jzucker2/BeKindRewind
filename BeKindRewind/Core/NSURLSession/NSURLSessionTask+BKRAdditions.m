@@ -13,19 +13,19 @@ static const void *BKRTaskUniqueIDKey = &BKRTaskUniqueIDKey;
 
 @implementation NSURLSessionTask (BKRAdditions)
 
-@dynamic globallyUniqueIdentifier;
+@dynamic BKR_globallyUniqueIdentifier;
 
-- (void)setGloballyUniqueIdentifier:(NSString *)globallyUniqueIdentifier {
+- (void)setBKR_globallyUniqueIdentifier:(NSString *)globallyUniqueIdentifier {
     objc_setAssociatedObject(self, BKRTaskUniqueIDKey, globallyUniqueIdentifier, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (NSString *)globallyUniqueIdentifier {
+- (NSString *)BKR_globallyUniqueIdentifier {
     return objc_getAssociatedObject(self, BKRTaskUniqueIDKey);
 }
 
-- (void)uniqueify {
-    if (!self.globallyUniqueIdentifier) {
-        self.globallyUniqueIdentifier = [NSUUID UUID].UUIDString;
+- (void)BKR_uniqueify {
+    if (!self.BKR_globallyUniqueIdentifier) {
+        self.BKR_globallyUniqueIdentifier = [NSUUID UUID].UUIDString;
     }
 }
 
