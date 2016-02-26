@@ -152,7 +152,6 @@
     [self setPlayer:player withExpectationToEnabled:YES];
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-        NSLog(@"response: %@", response);
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
     }];

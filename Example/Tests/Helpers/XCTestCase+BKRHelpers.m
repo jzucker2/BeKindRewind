@@ -318,7 +318,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 XCTAssertNotEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
                 XCTAssertNotEqualObjects(actualResponseHeaderFields[actualResponseKey], kBKRTestHTTPBinResponseDateStringValue);
             } else {
-                NSLog(@"------------------");
                 XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
                 XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], kBKRTestHTTPBinResponseDateStringValue);
             }
@@ -363,9 +362,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     NSMutableArray<NSURLSessionTask *> *executedTasks = [NSMutableArray array];
     for (NSInteger i=0; i <expectedResults.count; i++) {
         BKRTestExpectedResult *expectedResult = expectedResults[i];
-        if (expectedResult.automaticallyAssignSceneNumberForAssertion) {
-            expectedResult.expectedSceneNumber = i;
-        }
         NSURLSessionTask *task = [self _preparedTaskForExpectedResult:expectedResult andTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
             if (networkCompletionAssertions) {
                 networkCompletionAssertions(expectedResult, task, data, response, error);
@@ -376,11 +372,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertEqual(executedTasks.count, ++executedTasksCount);
         [task resume];
     }
+    // ensure all tasks are running (expects tasks that take a not insignificant amount of time)
     for (NSInteger i=0; i < expectedResults.count; i++) {
         NSURLSessionTask *checkingTask = executedTasks[i];
         XCTAssertNotNil(checkingTask);
         XCTAssertEqual(checkingTask.state, NSURLSessionTaskStateRunning);
     }
+    __block NSMutableArray<BKRScene *> *scenesToCheck = nil;
+    XCTAssertNil(scenesToCheck);
     [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         for (NSInteger i=0; i <expectedResults.count; i++) {
@@ -401,14 +400,33 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             }
             BKRTestSceneAssertionHandler sceneAssertions = [self _assertionHandlerForExpectedResult:expectedResult andTask:executingTask];
             BKRTestBatchSceneAssertionHandler batchSceneAssertions = ^void (NSArray<BKRScene *> *scenes) {
-                if (scenes[i]) {
-                    NSLog(@"batchSceneAssertions: %@", scenes[i].debugDescription);
-                    sceneAssertions(scenes[i]);
+                if (
+                    !scenes ||
+                    !scenes.count
+                    ) {
+                    NSLog(@"can't do batch scene assertions when no scenes are provided to assert on!");
+                    return;
                 }
+                if (!scenesToCheck) {
+                    scenesToCheck = scenes.mutableCopy;
+                }
+                XCTAssertNotNil(scenesToCheck);
+                NSUInteger currentScenesToCheckCount = scenesToCheck.count;
+                for (BKRScene *scene in scenes) {
+                    if ([scene.originalRequest.URL.absoluteString isEqualToString:executingTask.originalRequest.URL.absoluteString]) {
+                        sceneAssertions(scene);
+                        [scenesToCheck removeObject:scene];
+                    }
+                }
+                XCTAssertEqual(--currentScenesToCheckCount, scenesToCheck.count, @"After asserting a scenes, count of scenesToCheck should decrement, not %lu", (unsigned long)scenesToCheck.count);
             };
             if (timeoutAssertions) {
                 timeoutAssertions(expectedResult, executingTask, error, batchSceneAssertions);
             }
+        }
+        // if for some reason, this array is nil, don't check this
+        if (scenesToCheck) {
+            XCTAssertEqual(scenesToCheck.count, 0, @"After all assertions, there shouldn't be any scenes left to check: %lu", scenesToCheck.count);
         }
     }];
 }
