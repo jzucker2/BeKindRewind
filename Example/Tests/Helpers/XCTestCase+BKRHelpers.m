@@ -359,9 +359,13 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 //    dispatch_apply(expectedResults.count, simultaneousTestingQueue, ^(size_t interation) {
 //        BKRStrongify(self);
 //    });
+    __block BOOL isRecording = NO;
     NSMutableArray<NSURLSessionTask *> *executedTasks = [NSMutableArray array];
     for (NSInteger i=0; i <expectedResults.count; i++) {
         BKRTestExpectedResult *expectedResult = expectedResults[i];
+        if (i == 0) {
+            isRecording = expectedResult.isRecording;
+        }
         NSURLSessionTask *task = [self _preparedTaskForExpectedResult:expectedResult andTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
             if (networkCompletionAssertions) {
                 networkCompletionAssertions(expectedResult, task, data, response, error);
@@ -373,10 +377,17 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         [task resume];
     }
     // ensure all tasks are running (expects tasks that take a not insignificant amount of time)
+    // for now, playing tasks are immediate, so this check is skipped when not recording
+    // when playing time overrides are introduced, update this
+    // also since, all tests are expected to only take arrays of recording or playing tasks but not
+    // both, just check first expected result to determine (under previously stated assumption) that
+    // all tasks are recording or playing
     for (NSInteger i=0; i < expectedResults.count; i++) {
         NSURLSessionTask *checkingTask = executedTasks[i];
         XCTAssertNotNil(checkingTask);
-        XCTAssertEqual(checkingTask.state, NSURLSessionTaskStateRunning);
+        if (isRecording) {
+            XCTAssertEqual(checkingTask.state, NSURLSessionTaskStateRunning);
+        }
     }
     __block NSMutableArray<BKRScene *> *scenesToCheck = nil;
     XCTAssertNil(scenesToCheck);
