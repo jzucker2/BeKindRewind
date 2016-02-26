@@ -437,7 +437,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         }
         // if for some reason, this array is nil, don't check this
         if (scenesToCheck) {
-            XCTAssertEqual(scenesToCheck.count, 0, @"After all assertions, there shouldn't be any scenes left to check: %lu", scenesToCheck.count);
+            XCTAssertEqual(scenesToCheck.count, 0, @"After all assertions, there shouldn't be any scenes left to check: %lu", (unsigned long)scenesToCheck.count);
         }
     }];
 }
