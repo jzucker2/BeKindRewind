@@ -45,6 +45,7 @@
 @class BKRScene;
 typedef void (^BKRTestSceneAssertionHandler)(BKRScene *scene);
 typedef void (^BKRTestBatchSceneAssertionHandler)(NSArray<BKRScene *> *scenes);
+typedef BKRTestExpectedResult *(^BKRTestCassetteSceneCreationBlock)(NSUInteger iteration);
 
 typedef void (^BKRTestNetworkCompletionHandler)(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error, BKRTestSceneAssertionHandler sceneAssertions);
@@ -80,6 +81,7 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 - (void)setPlayer:(BKRPlayer *)player withExpectationToEnabled:(BOOL)enabled;
 - (void)setRecorderBeginAndEndRecordingBlocks;
 
+- (BKRCassette *)cassetteWithNumberOfScenes:(NSUInteger)numberOfScenes andCassetteCreationBlock:(BKRTestCassetteSceneCreationBlock)sceneCreationBlock;
 - (void)assertCassettePath:(NSString *)cassetteFilePath matchesExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 - (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes;
 

@@ -667,12 +667,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }
 }
 
-- (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes {
+- (BKRCassette *)cassetteWithNumberOfScenes:(NSUInteger)numberOfScenes andCassetteCreationBlock:(BKRTestCassetteSceneCreationBlock)sceneCreationBlock {
     NSParameterAssert(numberOfScenes);
+    NSParameterAssert(sceneCreationBlock);
     NSMutableArray<BKRTestExpectedResult *> *results = [NSMutableArray array];
     for (NSUInteger i=0; i < numberOfScenes; i++) {
-        NSString *queryString = [NSString stringWithFormat:@"scene=%ld", (long)i];
-        BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:queryString withRecording:NO];
+        BKRTestExpectedResult *result = sceneCreationBlock(i);
         XCTAssertNotNil(result);
         [results addObject:result];
     }
@@ -680,6 +680,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BKRCassette *cassette = [self cassetteFromExpectedResults:results.copy];
     XCTAssertNotNil(cassette);
     XCTAssertEqual(cassette.allScenes.count, numberOfScenes);
+    return cassette;
+}
+
+- (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes {
+    [self cassetteWithNumberOfScenes:numberOfScenes andCassetteCreationBlock:^BKRTestExpectedResult *(NSUInteger iteration) {
+        NSString *queryString = [NSString stringWithFormat:@"scene=%ld", (long)iteration];
+        return [self HTTPBinGetRequestWithQueryString:queryString withRecording:NO];
+    }];
 }
 
 - (NSMutableDictionary *)standardDataDictionary {

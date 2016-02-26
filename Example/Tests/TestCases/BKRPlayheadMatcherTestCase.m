@@ -6,11 +6,15 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
+#import <BeKindRewind/BKRCassette.h>
+#import <BeKindRewind/BKRScene+Playable.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
 #import "BKRMatcherTestCase.h"
+#import "XCTestCase+BKRHelpers.h"
 
 @interface BKRPlayheadMatcherTestCase : BKRMatcherTestCase
-
+@property (nonatomic, strong) BKRPlayheadMatcher *matcher;
+@property (nonatomic, strong) NSArray<BKRScene *> *scenes;
 @end
 
 @implementation BKRPlayheadMatcherTestCase
@@ -18,6 +22,8 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    self.matcher = [BKRPlayheadMatcher matcher];
+    XCTAssertNotNil(self.matcher);
 }
 
 - (void)tearDown {
