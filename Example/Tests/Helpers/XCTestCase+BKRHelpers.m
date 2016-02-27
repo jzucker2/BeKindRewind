@@ -989,12 +989,33 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     if (!expectedResults.count) {
         return;
     }
+    NSMutableArray<BKRTestExpectedResult *> *assertingExpectedResults = expectedResults.mutableCopy;
+    BOOL shouldCheckAssertingExpectedResultsArray = NO;
+    XCTAssertNotEqual(assertingExpectedResults.count, 0);
     for (NSInteger i=0; i < expectedResults.count; i++) {
         NSDictionary *scene = [scenes objectAtIndex:i];
         XCTAssertTrue([scene isKindOfClass:[NSDictionary class]]);
         NSString *uniqueIdentifier = scene[@"uniqueIdentifier"];
         XCTAssertNotNil(uniqueIdentifier);
         BKRTestExpectedResult *recording = [expectedResults objectAtIndex:i];
+        // if it's simultaneous, shuffle the expected results because order of scenes may be off in the recording
+        if (recording.isSimultaneous) {
+            // check the asserting array at the end of the test
+            shouldCheckAssertingExpectedResultsArray = YES;
+            for (BKRTestExpectedResult *assertingResult in assertingExpectedResults) {
+                // hardcoded getting the originalRequestURLString, this is brittle, may break, ok test shortcut
+                NSString *originalRequestURLString = scene[@"frames"][0][@"URL"];
+                // if the URLs match, then reassign
+                if ([assertingResult.URLString isEqualToString:originalRequestURLString]) {
+                    // reassign recording to check that is pull from the mutable asserting expected results array
+                    recording = assertingResult;
+                    // remove the expected result from the pool of checks
+                    [assertingExpectedResults removeObject:assertingResult];
+                    // break out of the for loop so we can test things
+                    break;
+                }
+            }
+        }
         // don't assert order for simultaneous requests!
         if (!recording.isSimultaneous) {
             XCTAssertEqual(recording.expectedSceneNumber, i);
@@ -1065,6 +1086,9 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             }
         }
         // assert order of frames and scenes
+    }
+    if (shouldCheckAssertingExpectedResultsArray) {
+        XCTAssertEqual(assertingExpectedResults.count, 0, @"Should have tested all expected results by end of test");
     }
 }
 
