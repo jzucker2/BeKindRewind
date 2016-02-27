@@ -233,16 +233,11 @@
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         BKRStrongify(self);
-        NSLog(@"perform batch assertions");
         batchSceneAssertions(self.vcr.currentCassette.allScenes);
-        NSLog(@"after batch assertions");
         XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 2);
     }];
-    NSLog(@"before eject");
     XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
-    NSLog(@"after eject, before cassette assert");
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
-    NSLog(@"after cassette assert");
 }
 
 // the fixture for this exists, and is asserted in the setUp
