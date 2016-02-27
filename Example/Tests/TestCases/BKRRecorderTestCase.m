@@ -147,9 +147,12 @@
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        NSLog(@"perform batch assertions");
         batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+        NSLog(@"after batch assertions");
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 2);
     }];
+    NSLog(@"end of test");
 }
 
 @end

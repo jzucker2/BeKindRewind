@@ -46,7 +46,9 @@
     NSString *filePath = [self recordingCassetteFilePathWithBaseDirectoryFilePath:[self baseFixturesDirectoryFilePath]];
     XCTAssertNotNil(filePath);
     XCTAssertTrue([BKRTestCaseFilePathHelper filePathExists:filePath]);
+    NSLog(@"tearDown before assert");
     [self assertCassettePath:filePath matchesExpectedResults:self.expectedResults];
+    NSLog(@"tearDown after assert");
     self.expectedResults = nil;
 }
 
@@ -142,9 +144,12 @@
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:self.expectedResults simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         BKRStrongify(self);
+        NSLog(@"perform batch assertions");
         batchSceneAssertions(self.currentVCR.currentCassette.allScenes);
+        NSLog(@"after batch assertions");
         XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, 2);
     }];
+    NSLog(@"end of test");
 }
 
 @end
