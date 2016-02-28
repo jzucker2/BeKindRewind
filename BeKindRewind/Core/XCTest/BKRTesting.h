@@ -40,8 +40,20 @@
  *  @return class conforming to BKRRequestMatching protocol
  */
 - (BKRTestConfiguration *)testConfiguration;
+
+/**
+ *  This object conforms to the BKRTestVCRActions protocol. It used by the object conforming
+ *  to this protocol to peform BeKindRewind actions
+ *
+ *  @param configuration this passes in the BKRTestConfiguration that is returned by testConfiguration
+ *
+ *  @return an object conforming to BKRTestVCRActions
+ */
 - (id<BKRTestVCRActions>)testVCRWithConfiguration:(BKRTestConfiguration *)configuration;
 
+/**
+ *  This is the object created by testVCRWithConfiguration:
+ */
 @property (nonatomic, strong, readonly) id<BKRTestVCRActions>currentVCR;
 
 - (NSString *)baseFixturesDirectoryFilePath;

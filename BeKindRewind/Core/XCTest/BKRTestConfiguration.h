@@ -15,6 +15,9 @@
 + (instancetype)defaultConfigurationWithTestCase:(XCTestCase *)testCase;
 + (instancetype)configurationWithMatcherClass:(Class<BKRRequestMatching>)matcherClass andTestCase:(XCTestCase *)testCase;
 
+/**
+ *  Current XCTestCase that the configuration object is meant to be used in
+ */
 @property (nonatomic, strong) XCTestCase *currentTestCase;
 
 @end

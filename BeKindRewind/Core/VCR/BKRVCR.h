@@ -10,8 +10,6 @@
 #import "BKRRequestMatching.h"
 #import "BKRVCRActions.h"
 
-//@class BKRCassette;
-
 /**
  *  This is the major unit of the BeKindRewind framework. It is similar to the VCR (Video Cassette Recorder)
  *  of the 1980s. Like a VCR, it can record information to a cassette or use a cassette to 
