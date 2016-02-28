@@ -12,7 +12,7 @@
 @class BKRRawFrame;
 
 /**
- *  This contains all of the data associated with a single,
+ *  This category handles all of the data associated with a single,
  *  specific NSURLSessionTask, with each portion represented
  *  by a single BKRFrame
  */

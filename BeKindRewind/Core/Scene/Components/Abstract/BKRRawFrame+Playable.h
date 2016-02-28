@@ -9,12 +9,18 @@
 #import "BKRRawFrame.h"
 
 /**
- *  This is a raw network component from a plist dictionary that needs
- *  to be normalized into a concrete BKRFrame subclass for proper handling
+ *  This is category is used for turning Foundation objects associated with
+ *  a network request into a normalized, concrete BKRFrame subclass for proper handling
  *  by the BKRPlayer instance
  */
 @interface BKRRawFrame (Playable) <BKRPlistDeserializer>
 
+/**
+ *  This is a normalized version of a BKRFrame concrete subclass created from the information
+ *  contained by the reciever
+ *
+ *  @return newly initialized instance of a concrete subclass of BKRFrame
+ */
 - (BKRFrame *)editedPlaying;
 
 @end
