@@ -9,8 +9,18 @@
 #import "BKRCassette.h"
 #import "BKRPlistSerializing.h"
 
+/**
+ *  This category is for playable-related functionality for a BKRCassette instance
+ */
 @interface BKRCassette (Playable) <BKRPlistDeserializer>
 
+/**
+ *  Constructor for creating a BKRCassette instance from Foundation objects
+ *
+ *  @param dictionary contains Foundation objects with information to create a BKRCassette
+ *
+ *  @return newly initialized instance of BKRCassette
+ */
 + (instancetype)cassetteFromDictionary:(NSDictionary *)dictionary;
 
 @end

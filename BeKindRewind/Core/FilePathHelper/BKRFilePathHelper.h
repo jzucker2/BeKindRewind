@@ -67,10 +67,6 @@
  */
 + (NSDictionary *)dictionaryForPlistFilePath:(NSString *)filePath;
 
-// this is the most important retrieving method, others are public in case people want to get creative.
-// also exposed for testing. but this is what you should be using
-// bundleName is the bundle stored in the project (containing the plists to use)
-// for last param, pass in `self.class`
 /**
  *  This is the most useful method for fetching stub data at a file path and returning a dictionary
  *  that can be converted into a BKRPlayableCassette object. The other method for finding files and
@@ -128,6 +124,14 @@
  */
 + (NSBundle *)writingBundleNamed:(NSString *)bundleName inDirectory:(NSString *)filePath;
 
+/**
+ *  Wrapper around system check for file path. Also has an assert for passing in a nil filePath
+ *
+ *  @param filePath string of file to check existence of.
+ *  @throws NSInternalInconsistency exception if filePath is nil
+ *
+ *  @return YES if filePath exists, NO if it does not
+ */
 + (BOOL)filePathExists:(NSString *)filePath;
 
 @end
