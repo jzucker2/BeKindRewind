@@ -22,6 +22,7 @@
 		518436D31C6D7717006B5A07 /* testPlayingOneGETRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CE1C6D7717006B5A07 /* testPlayingOneGETRequest.plist */; };
 		518436D41C6D7717006B5A07 /* testPlayingOnePOSTRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CF1C6D7717006B5A07 /* testPlayingOnePOSTRequest.plist */; };
 		518436D51C6D7717006B5A07 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436D01C6D7717006B5A07 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist */; };
+		51A668C31C83D1C200476A5F /* BeKindRewindExampleTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A668C21C83D1C200476A5F /* BeKindRewindExampleTestCase.m */; };
 		51A6B6F61C788BEC0063902F /* testPlayingOffThenOn.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F41C788BEC0063902F /* testPlayingOffThenOn.plist */; };
 		51A6B6F71C788BEC0063902F /* testPlayingOnThenOff.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F51C788BEC0063902F /* testPlayingOnThenOff.plist */; };
 		51A6B6F91C788CFD0063902F /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F81C788CFD0063902F /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist */; };
@@ -70,6 +71,7 @@
 		518436CE1C6D7717006B5A07 /* testPlayingOneGETRequest.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingOneGETRequest.plist; sourceTree = "<group>"; };
 		518436CF1C6D7717006B5A07 /* testPlayingOnePOSTRequest.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingOnePOSTRequest.plist; sourceTree = "<group>"; };
 		518436D01C6D7717006B5A07 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist; sourceTree = "<group>"; };
+		51A668C21C83D1C200476A5F /* BeKindRewindExampleTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeKindRewindExampleTestCase.m; sourceTree = "<group>"; };
 		51A6B6F41C788BEC0063902F /* testPlayingOffThenOn.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingOffThenOn.plist; sourceTree = "<group>"; };
 		51A6B6F51C788BEC0063902F /* testPlayingOnThenOff.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingOnThenOff.plist; sourceTree = "<group>"; };
 		51A6B6F81C788CFD0063902F /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingNoMockingWhenVCRIsNotSentPlay.plist; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */,
 				51A6B6FA1C7AE3A20063902F /* BKRTestVCRTestCase.m */,
 				51B9B9DF1C598572006156C2 /* BKRVCRTestCase.m */,
+				51A668C21C83D1C200476A5F /* BeKindRewindExampleTestCase.m */,
 			);
 			path = TestCases;
 			sourceTree = "<group>";
@@ -503,6 +506,7 @@
 				515C563A1C7EDE1B00691220 /* BKRPlayerTestCase.m in Sources */,
 				515C56621C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m in Sources */,
 				515E36011C73B40B00058D74 /* XCTestCase+BKRHelpers.m in Sources */,
+				51A668C31C83D1C200476A5F /* BeKindRewindExampleTestCase.m in Sources */,
 				515C56641C7FF80C00691220 /* BKRAnyMatcherTestCase.m in Sources */,
 				51B9B95B1C52FA35006156C2 /* BKRPlayingTestCase.m in Sources */,
 				51B9B9E01C598572006156C2 /* BKRVCRTestCase.m in Sources */,
