@@ -51,6 +51,19 @@
     }];
 }
 
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
+    BKRWeakify(self);
+    [super resetWithCompletionBlock:^void (void){
+        BKRStrongify(self);
+        if ([self->_matcher respondsToSelector:@selector(reset)]) {
+            [self->_matcher reset];
+        }
+        if (completionBlock) {
+            completionBlock();
+        }
+    }];
+}
+
 - (void)_removeAllStubs {
     [BKROHHTTPStubsWrapper removeAllStubs];
 }

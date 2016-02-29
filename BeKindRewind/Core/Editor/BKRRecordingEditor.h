@@ -28,12 +28,6 @@
 @property (nonatomic, assign, readonly) BOOL handledRecording;
 
 /**
- *  This resets the BKRRecordingEditor since it interacts with a singleton BKRRecorder. This should be called before
- *  releasing the instance.
- */
-- (void)reset;
-
-/**
  *  Add raw recordable frame representing a component of a network request to the current cassette
  *
  *  @param frame component of a network request

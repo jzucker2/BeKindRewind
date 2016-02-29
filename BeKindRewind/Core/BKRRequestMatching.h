@@ -60,6 +60,12 @@
 @optional
 
 /**
+ *  If the matcher class stores information between recordings, then this can be implemented to reset matcher state.
+ *  This can be expected to be called whenever the VCR calls reset
+ */
+- (void)reset;
+
+/**
  *  Convenience callback for testing the scheme of a request for possible stubbing
  *
  *  @param scheme       scheme from request URL currently being tested
