@@ -62,7 +62,7 @@
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     self.currentCassette = nil;
-    [self.editor setEnabled:NO withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
+    [self.editor resetWithCompletionBlock:^{
         if (completionBlock) {
             completionBlock();
         }

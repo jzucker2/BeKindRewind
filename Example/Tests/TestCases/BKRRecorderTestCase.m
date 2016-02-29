@@ -152,4 +152,15 @@
     }];
 }
 
+- (void)DISABLE_testRecordingChunkedResponseRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        NSLog(@"result: %@", result);
+        NSLog(@"task: %@", task);
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+    }];
+}
+
 @end

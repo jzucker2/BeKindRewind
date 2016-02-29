@@ -769,6 +769,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
              };
 }
 
+- (NSDictionary *)_HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:(NSString *)contentLengthString {
+    NSMutableDictionary *mutableOriginalDictionary = [[self _HTTPBinResponseAllHeaderFieldsWithContentLength:contentLengthString] mutableCopy];
+    mutableOriginalDictionary[@"Content-Type"] = @"application/octet-stream";
+    return mutableOriginalDictionary.copy;
+}
+
 - (NSDictionary *)_PNResponseAllHeaderFieldsWithContentLength:(NSString *)contentLengthString {
     return @{
              @"Access-Control-Allow-Methods": @"GET",
@@ -865,6 +871,27 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                                     @"origin": @"98.210.195.88",
                                     @"url": expectedResult.URLString,
                                     };
+    return expectedResult;
+}
+
+- (BKRTestExpectedResult *)HTTPBinDripDataWithRecording:(BOOL)isRecording {
+    BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
+    expectedResult.isRecording = isRecording;
+    expectedResult.hasCurrentRequest = YES;
+    expectedResult.URLString = @"https://httpbin.org/drip?numbytes=30000&duration=0&code=200";
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
+    expectedResult.responseCode = 200;
+    expectedResult.responseAllHeaderFields = [self _HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:@"30000"];
+    expectedResult.expectedNumberOfFrames = 4;
+    
+    return expectedResult;
+}
+
+- (BKRTestExpectedResult *)HTTPBinRedirectWithRecording:(BOOL)isRecording {
+    BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
+    expectedResult.isRecording = isRecording;
+    expectedResult.URLString = @"http://httpbin.org/redirect/6";
+    
     return expectedResult;
 }
 
