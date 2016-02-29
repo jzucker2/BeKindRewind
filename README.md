@@ -146,6 +146,7 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 ## Release criteria
 * proper support for redirects
 * handle multi-part data
+* tests for matcher classes
 * tests for OSX, tvOS
 
 ## Future features
