@@ -50,8 +50,24 @@
  */
 + (NSBundle *)writingBundleForTestCase:(XCTestCase *)testCase inDirectory:(NSString *)filePath; // possibly modify tests for this
 
+/**
+ *  This is used internally by other methods to build full file paths
+ *
+ *  @param testCase      XCTestCase instance to use for building the full path
+ *  @param writingBundle NSBundle instance to search within
+ *
+ *  @return full path to write .plist in the file system
+ */
 + (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inBundle:(NSBundle *)writingBundle; //write tests for this
 
+/**
+ *  This method assumes the .plist of recordings is within an NSBundle named after the test suite
+ *
+ *  @param testCase XCTestCase instance to use for building the full path
+ *  @param filePath file path that contains the NSBundle named after the test suite
+ *
+ *  @return full path to write .plist in the file system
+ */
 + (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inTestSuiteBundleInDirectory:(NSString *)filePath; // write tests for this
 
 /**
