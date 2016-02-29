@@ -91,20 +91,40 @@ Then on subsequent runs, the tests will use the recorded files to respond to mat
 
 ## BKRTestCase Defaults
 
-These are set automatically. Feel free to override with appropriate values but it is not necessary if these will suffice. It is possible these defaults will change until version 1.0 lands. A note about recording and playback, they are only valid during test run, not during set up and tear down.
+These are set automatically. Feel free to override with appropriate values but it is not necessary if these will suffice. It is possible these defaults will change until version 1.0 lands. A note about recording and playback, they are only valid after `[super setUp]` and before `[super tearDown]`
 
 ```objective-c
 - (BOOL)isRecording {
     return YES;
 }
 
-- (BKRMatchingStrictness)matchingFailStrictness {
-    return BKRMatchingStrictnessNone;
+- (NSString *)baseFixturesDirectoryFilePath {
+    return [BKRTestCaseFilePathHelper documentsDirectory];
 }
 
-- (Class<BKRMatching>)matcherClass {
-    return [BKRSimpleURLMatcher class];
+- (BKRTestConfiguration *)testConfiguration {
+    return [BKRTestConfiguration defaultConfigurationWithTestCase:self];
 }
+
+- (id<BKRTestVCRActions>)testVCRWithConfiguration:(BKRTestConfiguration *)configuration {
+    return [BKRTestVCR vcrWithTestConfiguration:configuration];
+}
+
+- (NSString *)recordingCassetteFilePathWithBaseDirectoryFilePath:(NSString *)baseDirectoryFilePath {
+    NSParameterAssert(baseDirectoryFilePath);
+    return [BKRTestCaseFilePathHelper writingFinalPathForTestCase:self inTestSuiteBundleInDirectory:baseDirectoryFilePath];
+}
+
+- (BKRCassette *)playingCassette {
+    NSDictionary *cassetteDictionary = [BKRTestCaseFilePathHelper dictionaryForTestCase:self];
+    XCTAssertNotNil(cassetteDictionary);
+    return [BKRCassette cassetteFromDictionary:cassetteDictionary];
+}
+
+- (BKRCassette *)recordingCassette {
+    return [BKRCassette cassette];
+}
+
 ```
 
 ## Basic Testing Strategy
@@ -124,18 +144,19 @@ Jordan Zucker, jordan.zucker@gmail.com
 BeKindRewind is available under the MIT license. See the LICENSE file for more info.
 
 ## Release criteria
+* Tests for different types of NSURLSession (shared, ephemeral, standard, background, etc). Make different test case classes for each type of session
+* test different types of errors (timeout, invalid url) for playing/recording
+* swift tests (at least basic)
+* add code coverage
+* add different types of matchers
+* afnetworking tests
+* Separate into subspecs
 * Rewrite README instructions
+* blog post
+* test for simultaneous network requests (two gets works well enough)
 * proper support for redirects
-* handle multi-part data
 
 ## Future features
-* swift tests (at least basic)
-* Separate into subspecs
-* add code coverage
-* test different types of errors (timeout, invalid url) for playing/recording
-* Tests for different types of NSURLSession (shared, ephemeral, standard, background, etc). Make different test case classes for each type of session
-* afnetworking tests
 * test for other types of network requests (streaming)
 * timing taken into consideration
-* blog post
 * JSON serializing in addition to plist serializing
