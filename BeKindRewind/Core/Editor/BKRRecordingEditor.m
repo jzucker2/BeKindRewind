@@ -31,13 +31,19 @@
     return self;
 }
 
-- (void)reset {
+// This resets the BKRRecordingEditor since it interacts with a
+// singleton BKRRecorder. This should be called before
+// releasing the instance.
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
-    dispatch_barrier_async(self.editingQueue, ^{
+    [super resetWithCompletionBlock:^void (void){
         BKRStrongify(self);
         self->_handledRecording = NO;
         self->_recordingStartTime = nil;
-    });
+        if (completionBlock) {
+            completionBlock();
+        }
+    }];
 }
 
 

@@ -80,8 +80,7 @@
     self.currentCassette = nil;
     self.beginRecordingBlock = nil;
     self.endRecordingBlock = nil;
-    [self.editor reset];
-    [self.editor editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
+    [self.editor resetWithCompletionBlock:^{
         if (completionBlock) {
             completionBlock();
         }

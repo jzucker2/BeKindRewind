@@ -98,4 +98,12 @@
     return self.currentCassette.allScenes;
 }
 
+- (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
+    [self setEnabled:NO withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        if (completionBlock) {
+            completionBlock();
+        }
+    }];
+}
+
 @end

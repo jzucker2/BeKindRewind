@@ -63,7 +63,9 @@
 
 /**
  *  Reset the player's enabled state along with before 
- *  and after playback blocks
+ *  and after playback blocks. If the matcher saves any state,
+ *  that can be reset here by implemented the optional `reset` method
+ *  in the BKRRequestMatching protocol
  */
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock;
 

@@ -123,6 +123,8 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 - (BKRTestExpectedResult *)HTTPBinCancelledRequestWithRecording:(BOOL)isRecording;
 - (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString withRecording:(BOOL)isRecording;
 - (BKRTestExpectedResult *)HTTPBinPostRequestWithRecording:(BOOL)isRecording;
+- (BKRTestExpectedResult *)HTTPBinRedirectWithRecording:(BOOL)isRecording;
+- (BKRTestExpectedResult *)HTTPBinDripDataWithRecording:(BOOL)isRecording;
 
 #pragma mark - PN Helpers
 

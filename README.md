@@ -144,13 +144,15 @@ Jordan Zucker, jordan.zucker@gmail.com
 BeKindRewind is available under the MIT license. See the LICENSE file for more info.
 
 ## Release criteria
-* Rewrite README instructions
 * proper support for redirects
 * handle multi-part data
-* proper header file
+* tests for matcher classes
+* tests for OSX, tvOS
 
 ## Future features
-* swift tests (at least basic)
+* swift tests (at least basic)/Swift Package Manager
+* Code example for playing back in the README (not just recording)
+* explain fixture write directory hack for easy recording
 * Separate into subspecs
 * add code coverage
 * test different types of errors (timeout, invalid url) for playing/recording

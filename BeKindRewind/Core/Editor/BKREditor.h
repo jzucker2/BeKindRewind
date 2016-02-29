@@ -80,4 +80,15 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  */
 - (NSArray<BKRScene *> *)allScenes;
 
+/**
+ *  Resets the receiver if it contains any internal state. This should
+ *  usually be called at the end of a session. This method is non-blocking
+ *  and asynchronously called on the receiver's internal custom queue. This
+ *  method sets the receiver's enabled property to NO
+ *
+ *  @param completionBlock run on the receiver's queue after the reset 
+ *                         actions are performed
+ */
+- (void)resetWithCompletionBlock:(void(^)(void))completionBlock;
+
 @end
