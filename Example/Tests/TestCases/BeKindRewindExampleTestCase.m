@@ -7,7 +7,7 @@
 //
 
 // keep this simple to test the import
-#import <BeKindRewind/BKRTestCase.h>
+#import <BeKindRewind/BeKindRewind.h>
 
 @interface BeKindRewindExampleTestCase : BKRTestCase
 @end
