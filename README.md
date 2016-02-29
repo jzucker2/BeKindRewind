@@ -5,17 +5,16 @@
 [![License](https://img.shields.io/cocoapods/l/BeKindRewind.svg?style=flat)](http://cocoapods.org/pods/BeKindRewind)
 [![Platform](https://img.shields.io/cocoapods/p/BeKindRewind.svg?style=flat)](http://cocoapods.org/pods/BeKindRewind)
 
-Simple XCTest subclass for recording and replaying network events for integration testing
+Easy XCTestCase subclass for recording and replaying network events for integration testing
 
 ## Features
 
-* Easy recording and replaying
-* Easy to fail tests when network requests don't match recorded requests (can set level easily)
-* Can create custom matchers for matching recorded responses to requests
-* Provides everything in an XCTest subclass
+* Easy recording and replaying of network events
+* Provides full functionality in a simple XCTestCase subclass
+* Can create custom matchers for building network stubs
 
 ## Description
-This is a simple testing framework for recording and replaying network calls for automated integration testing. In order to reduce stubbing, it records live network requests and responses and then replays them in subsequent runs, stubbing the network requests (thanks to the fabulous [OHHTTPStubs](https://github.com/AliSoftware/OHHTTPStubs)) so that your software can run in peace.
+This is an easy testing framework for recording and replaying network events for automated integration testing. In order to reduce tedium around creating network stubs, it records live network requests and responses and then replays them in subsequent runs (thanks to the fabulous [OHHTTPStubs](https://github.com/AliSoftware/OHHTTPStubs)) so that your software can in continunous integration without flakiness.
 
 ## Usage
 
@@ -42,14 +41,6 @@ pod "BeKindRewind"
 
 - (BOOL)isRecording {
     return YES;
-}
-
-- (Class<BKRMatching>)matcherClass {
-    return [BKRSimpleURLMatcher class];
-}
-
-- (BKRMatchingStrictness)matchingFailStrictness {
-    return BKRMatchingStrictnessNone;
 }
 
 - (void)testSimpleNetworkCall {
@@ -83,7 +74,7 @@ pod "BeKindRewind"
 After running this test, files will be outputted to the console with a log similar to this:
 
 ```bash
-2015-06-25 20:48:47.968 xctest[97164:1809740] filePath = /Users/jzucker/Library/Developer/CoreSimulator/Devices/F9C2D4BE-9022-48E9-9A27-C89B8E615571/data/Documents/BeKindRewindExampleTestCase.bundle/testSimpleNetworkCall.plist
+2016-02-28 17:12:25.175 xctest[44265:13063191] <BKRRecordableVCR: 0x7f88487052f0>: trying to write cassette to: /Users/jordanz/Library/Developer/CoreSimulator/Devices/6C6825EE-3B1E-48A9-98B7-AEE9FAE2CFC2/data/Documents/BeKindRewindExampleTestCase.bundle/testSimpleNetworkCall.plist
 ```
 
 Drag this into your project as a bundle named after your test case (it is named automatically).
@@ -100,20 +91,40 @@ Then on subsequent runs, the tests will use the recorded files to respond to mat
 
 ## BKRTestCase Defaults
 
-These are set automatically. Feel free to override with appropriate values but it is not necessary if these will suffice. It is possible these defaults will change until version 1.0 lands. A note about recording and playback, they are only valid during test run, not during set up and tear down.
+These are set automatically. Feel free to override with appropriate values but it is not necessary if these will suffice. It is possible these defaults will change until version 1.0 lands. A note about recording and playback, they are only valid after `[super setUp]` and before `[super tearDown]`
 
 ```objective-c
 - (BOOL)isRecording {
     return YES;
 }
 
-- (BKRMatchingStrictness)matchingFailStrictness {
-    return BKRMatchingStrictnessNone;
+- (NSString *)baseFixturesDirectoryFilePath {
+    return [BKRTestCaseFilePathHelper documentsDirectory];
 }
 
-- (Class<BKRMatching>)matcherClass {
-    return [BKRSimpleURLMatcher class];
+- (BKRTestConfiguration *)testConfiguration {
+    return [BKRTestConfiguration defaultConfigurationWithTestCase:self];
 }
+
+- (id<BKRTestVCRActions>)testVCRWithConfiguration:(BKRTestConfiguration *)configuration {
+    return [BKRTestVCR vcrWithTestConfiguration:configuration];
+}
+
+- (NSString *)recordingCassetteFilePathWithBaseDirectoryFilePath:(NSString *)baseDirectoryFilePath {
+    NSParameterAssert(baseDirectoryFilePath);
+    return [BKRTestCaseFilePathHelper writingFinalPathForTestCase:self inTestSuiteBundleInDirectory:baseDirectoryFilePath];
+}
+
+- (BKRCassette *)playingCassette {
+    NSDictionary *cassetteDictionary = [BKRTestCaseFilePathHelper dictionaryForTestCase:self];
+    XCTAssertNotNil(cassetteDictionary);
+    return [BKRCassette cassetteFromDictionary:cassetteDictionary];
+}
+
+- (BKRCassette *)recordingCassette {
+    return [BKRCassette cassette];
+}
+
 ```
 
 ## Basic Testing Strategy
@@ -133,19 +144,19 @@ Jordan Zucker, jordan.zucker@gmail.com
 BeKindRewind is available under the MIT license. See the LICENSE file for more info.
 
 ## Release criteria
-* Tests for different types of NSURLSession (shared, ephemeral, standard, background, etc). Make different test case classes for each type of session
-* test different types of errors (timeout, invalid url) for playing/recording
-* swift tests (at least basic)
-* add code coverage
-* add different types of matchers
-* afnetworking tests
-* Separate into subspecs
 * Rewrite README instructions
-* blog post
-* test for simultaneous network requests (two gets works well enough)
 * proper support for redirects
+* handle multi-part data
+* proper header file
 
 ## Future features
+* swift tests (at least basic)
+* Separate into subspecs
+* add code coverage
+* test different types of errors (timeout, invalid url) for playing/recording
+* Tests for different types of NSURLSession (shared, ephemeral, standard, background, etc). Make different test case classes for each type of session
+* afnetworking tests
 * test for other types of network requests (streaming)
 * timing taken into consideration
+* blog post
 * JSON serializing in addition to plist serializing

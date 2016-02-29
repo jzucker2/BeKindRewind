@@ -29,11 +29,11 @@
 + (instancetype)defaultConfigurationWithTestCase:(XCTestCase *)testCase {
     BKRTestConfiguration *configuration = [[self alloc] initWithMatcherClass:[BKRPlayheadMatcher class] andTestCase:testCase];
     configuration.beginRecordingBlock = ^void (NSURLSessionTask *task) {
-        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
-        task.recordingExpectation = [testCase expectationWithDescription:recordingExpectationString];
+        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.BKR_globallyUniqueIdentifier];
+        task.BKR_recordingExpectation = [testCase expectationWithDescription:recordingExpectationString];
     };
     configuration.endRecordingBlock = ^void (NSURLSessionTask *task) {
-        [task.recordingExpectation fulfill];
+        [task.BKR_recordingExpectation fulfill];
     };
     return configuration;
 }

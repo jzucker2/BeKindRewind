@@ -12,8 +12,9 @@
 @class XCTestCase;
 
 /**
- *  This is simple subclass of BKRVCR that simplifies usage in XCTestCase for easy testing.
+ *  This is easy subclass of BKRVCR that simplifies usage in XCTestCase for easy testing.
+ *  It internally handles most XCTestExpectation related issues involved in stubbing and
+ *  recording network events.
  */
 @interface BKRTestVCR : BKRVCR <BKRTestVCRActions>
-
 @end

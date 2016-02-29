@@ -41,7 +41,14 @@
 
 - (BOOL)hasMatchForRequestPath:(NSString *)path withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
     BKRScene *playhead = scenes[networkCalls];
-    return [path isEqualToString:playhead.originalRequest.requestPath];
+    NSString *playheadPath = playhead.originalRequest.requestPath;
+    return [self _requestComponentString:path matchesSceneComponentString:playheadPath];
+}
+
+- (BOOL)hasMatchForRequestFragment:(NSString *)fragment withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
+    BKRScene *playhead = scenes[networkCalls];
+    NSString *playheadFragment = playhead.originalRequest.requestFragment;
+    return [self _requestComponentString:fragment matchesSceneComponentString:playheadFragment];
 }
 
 - (BOOL)hasMatchForRequestQueryItems:(NSArray<NSURLQueryItem *> *)queryItems withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
@@ -49,6 +56,20 @@
     NSSet *requestQueryItemsSet = [NSSet setWithArray:queryItems];
     NSSet *playheadQueryItemsSet = [NSSet setWithArray:playhead.originalRequest.requestQueryItems];
     return [requestQueryItemsSet isEqualToSet:playheadQueryItemsSet];
+}
+
+- (BOOL)_requestComponentString:(NSString *)requestComponentString matchesSceneComponentString:(NSString *)sceneComponentString {
+    if (
+        requestComponentString &&
+        sceneComponentString
+        ) {
+        return [requestComponentString isEqualToString:sceneComponentString];
+    } else if ((requestComponentString && !sceneComponentString) ||
+               (!requestComponentString && sceneComponentString)
+               ) {
+        return NO;
+    }
+    return YES;
 }
 
 @end

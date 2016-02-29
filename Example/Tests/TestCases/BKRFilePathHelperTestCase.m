@@ -205,6 +205,17 @@
     XCTAssertEqualObjects(newDictionary, newExpectedDictionary);
 }
 
+- (void)testFilePathExistsReturnsYESForActualFilePath {
+    NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
+    XCTAssertNotNil(documentsDirectory);
+    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    XCTAssertTrue([BKRFilePathHelper filePathExists:documentsDirectory]);
+}
+
+- (void)testFilePathExistsReturnsNOForNonExistentFilePath {
+    XCTAssertFalse([BKRFilePathHelper filePathExists:@"fake file path"]);
+}
+
 #if DEBUG
 
 - (void)testThrowsExceptionForCreatingBundleInDocumentsDirectoryWithBundleExtensionIncludeInBundleName {
@@ -236,6 +247,10 @@
 
 - (void)testThrowsExceptionForCreatingDictionaryFromNonPlistFileInABundle {
     XCTAssertThrowsSpecificNamed([BKRFilePathHelper dictionaryForPlistFile:@"SimpleFileInBundle.txt" inBundle:@"SimpleBundle" inBundleForClass:self.class], NSException, NSInternalInconsistencyException);
+}
+
+- (void)testThrowsExceptionForPassingInNilToCheckIfFilePathExists {
+    XCTAssertThrowsSpecificNamed([BKRFilePathHelper filePathExists:nil], NSException, NSInternalInconsistencyException);
 }
 
 #endif

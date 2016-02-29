@@ -91,28 +91,28 @@
 }
 
 - (instancetype)BKR_initWithTask:(NSURLSessionTask *)task delegate:(id <NSURLSessionDelegate>)delegate delegateQueue:(NSOperationQueue *)queue {
-    [task uniqueify];
+    [task BKR_uniqueify];
     [[BKRRecorder sharedInstance] initTask:task];
     return [self BKR_initWithTask:task delegate:delegate delegateQueue:queue];
 }
 
 - (void)BKR__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(id)arg3;
 {
-    [self.task uniqueify];
+    [self.task BKR_uniqueify];
     [[BKRRecorder sharedInstance] recordTask:self.task redirectRequest:arg1 redirectResponse:arg2];
     [self BKR__redirectRequest:arg1 redirectResponse:arg2 completion:arg3];
 }
 
 - (void)BKR__didReceiveData:(id)data;
 {
-    [self.task uniqueify];
+    [self.task BKR_uniqueify];
     [[BKRRecorder sharedInstance] recordTask:self.task didReceiveData:data];
     [self BKR__didReceiveData:data];
 }
 
 - (void)BKR__didReceiveResponse:(NSURLResponse *)response sniff:(BOOL)sniff;
 {
-    [self.task uniqueify];
+    [self.task BKR_uniqueify];
     // This can be called multiple times for the same request. Make sure it doesn't
     [[BKRRecorder sharedInstance] recordTask:self.task didReceiveResponse:response];
     [self BKR__didReceiveResponse:response sniff:sniff];
@@ -120,7 +120,7 @@
 
 - (void)BKR__didFinishWithError:(NSError *)error;
 {
-    [self.task uniqueify];
+    [self.task BKR_uniqueify];
     [[BKRRecorder sharedInstance] recordTask:self.task didFinishWithError:error];
     [self BKR__didFinishWithError:error];
 }

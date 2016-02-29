@@ -41,6 +41,12 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
+/**
+ *  Thread-safe method that updates the enabled state on the receiver's queue
+ *
+ *  @param enabled         whether or not to receiver should be enabled
+ *  @param completionBlock block runs on receiver's queue after enabled is updated
+ */
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock;
 
 /**

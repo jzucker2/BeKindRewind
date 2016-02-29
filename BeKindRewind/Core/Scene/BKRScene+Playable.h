@@ -10,7 +10,7 @@
 #import "BKRPlistSerializing.h"
 
 /**
- *  This object represents the data associated with a network
+ *  This category handles the data associated with a network
  *  request and is intended to be used for stubbing.
  */
 @interface BKRScene (Playable) <BKRPlistDeserializer>

@@ -12,6 +12,9 @@
 
 @class BKRRawFrame;
 
+/**
+ *  This category is for recordable-related functionality for a BKRCassette instance
+ */
 @interface BKRCassette (Recordable) <BKRPlistSerializer>
 
 /**

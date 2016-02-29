@@ -12,6 +12,7 @@
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
+#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRFrame.h>
 #import <BeKindRewind/BKRCassette.h>
@@ -37,6 +38,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _expectedNumberOfFrames = 0;
         _expectedSceneNumber = 0;
         _responseCode = -1;
+        _isSimultaneous = NO;
         _errorCode = 1;
         _hasCurrentRequest = NO;
         _taskUniqueIdentifier = [NSUUID UUID].UUIDString;
@@ -132,18 +134,86 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher {
-//    return [BKRPlayableVCR vcrWithMatcherClass:[BKRPlayheadMatcher class]];
     return [BKRPlayableVCR defaultVCR];
+}
+
+- (BKRPlayableVCR *)playableVCRWithAnyMatcher {
+    BKRConfiguration *configuration = [BKRConfiguration configurationWithMatcherClass:[BKRAnyMatcher class]];
+    return [BKRPlayableVCR vcrWithConfiguration:configuration];
 }
 
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption {
     BKRConfiguration *configuration = [self defaultConfiguration];
     configuration.shouldSaveEmptyCassette = cassetteSavingOption;
     return [BKRVCR vcrWithConfiguration:configuration];
-//    return [BKRVCR vcrWithMatcherClass:[BKRPlayheadMatcher class] andEmptyCassetteSavingOption:cassetteSavingOption];
+}
+
+- (BKRVCR *)vcrWithMatcher:(Class<BKRRequestMatching>)matcherClass andCassetteSavingOption:(BOOL)cassetteSavingOption {
+    BKRConfiguration *configuration = [self defaultConfiguration];
+    configuration.shouldSaveEmptyCassette = cassetteSavingOption;
+    configuration.matcherClass = matcherClass;
+    return [BKRVCR vcrWithConfiguration:configuration];
 }
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
+    
+    NSURLSessionTask *executingTask = [self _preparedTaskForExpectedResult:expectedResult andTaskCompletionAssertions:networkCompletionAssertions];
+    [executingTask resume];
+    if (expectedResult.shouldCancel) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [executingTask cancel];
+            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning);
+            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended);
+        });
+    }
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+        if (expectedResult.shouldCancel) {
+            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning, @"If task is still running, then it failed to cancel as expected, this is most likely not a BeKindRewind bug but a system bug");
+            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended, @"If task is suspended, it did not properly cancel, this might be a system bug and not a BeKindRewind bug");
+        } else {
+            XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted, @"If state is not completed, that most likely means the request failed due to a bad connection");
+            XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted);
+        }
+        XCTAssertNotNil(executingTask.originalRequest);
+        if (expectedResult.hasCurrentRequest) {
+            XCTAssertNotNil(executingTask.currentRequest);
+        }
+        
+        BKRTestSceneAssertionHandler sceneAssertions = [self _assertionHandlerForExpectedResult:expectedResult andTask:executingTask];
+        
+        if (timeoutAssertions) {
+            timeoutAssertions(executingTask, error, sceneAssertions);
+        }
+    }];
+}
+
+- (BKRTestSceneAssertionHandler)_assertionHandlerForExpectedResult:(BKRTestExpectedResult *)expectedResult andTask:(NSURLSessionTask *)task {
+    BKRTestSceneAssertionHandler sceneAssertions = ^void (BKRScene *scene) {
+        [self _assertRequestFrame:scene.originalRequest withRequest:task.originalRequest andIgnoreHeaderFields:YES];
+        if (expectedResult.hasCurrentRequest) {
+            // when we are playing, OHHTTPStubs does not mock adjusting the currentRequest to have different headers like a server would with a live NSURLSessionTask
+            [self _assertRequestFrame:scene.currentRequest withRequest:task.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
+        }
+        if (expectedResult.actualReceivedResponse) {
+            [self _assertResponseFrame:scene.allResponseFrames.firstObject withResponse:expectedResult.actualReceivedResponse];
+        }
+        if (
+            expectedResult.actualReceivedData &&
+            !expectedResult.shouldCancel
+            ) {
+            [self _assertDataFrame:scene.allDataFrames.firstObject withData:expectedResult.actualReceivedData];
+        }
+        if (expectedResult.actualReceivedError) {
+            [self _assertErrorFrame:scene.allErrorFrames.firstObject withError:expectedResult.actualReceivedError];
+        }
+        [self assertFramesOrderForScene:scene];
+    };
+    
+    return sceneAssertions;
+}
+
+- (NSURLSessionTask *)_preparedTaskForExpectedResult:(BKRTestExpectedResult *)expectedResult andTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:expectedResult.URL];
     if (expectedResult.HTTPMethod) {
         request.HTTPMethod = expectedResult.HTTPMethod;
@@ -151,14 +221,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     if (expectedResult.HTTPBody) {
         request.HTTPBody = expectedResult.HTTPBody;
     }
-    __block XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network call expectation"];
-    __block NSData *receivedData = nil;
-    __block NSURLResponse *receivedResponse = nil;
-    __block NSError *receivedError = nil;
+    NSString *networkExpectationString = [NSString stringWithFormat:@"network call expectation for task: %@", expectedResult.taskUniqueIdentifier];
+    __block XCTestExpectation *networkExpectation = [self expectationWithDescription:networkExpectationString];
     __block NSURLSessionTask *executingTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        receivedData = data;
-        receivedResponse = response;
-        receivedError = error;
+        expectedResult.actualReceivedData = data;
+        expectedResult.actualReceivedResponse = response;
+        expectedResult.actualReceivedError = error;
         if (expectedResult.shouldCancel) {
             XCTAssertNotNil(error);
             XCTAssertEqual(expectedResult.errorCode, error.code);
@@ -181,55 +249,9 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         [networkExpectation fulfill];
         networkExpectation = nil;
     }];
+    XCTAssertNotNil(executingTask);
     XCTAssertEqual(executingTask.state, NSURLSessionTaskStateSuspended);
-    [executingTask resume];
-    if (expectedResult.shouldCancel) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [executingTask cancel];
-            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning);
-            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended);
-        });
-    }
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-        if (expectedResult.shouldCancel) {
-            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning, @"If task is still running, then it failed to cancel as expected, this is most likely not a BeKindRewind bug but a system bug");
-            XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended, @"If task is suspended, it did not properly cancel, this might be a system bug and not a BeKindRewind bug");
-        } else {
-            XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted, @"If state is not completed, that most likely means the request failed due to a bad connection");
-            XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted);
-        }
-        XCTAssertNotNil(executingTask.originalRequest);
-        if (expectedResult.hasCurrentRequest) {
-            XCTAssertNotNil(executingTask.currentRequest);
-            
-        }
-        
-        BKRTestSceneAssertionHandler sceneAssertions = ^void (BKRScene *scene) {
-            [self _assertRequestFrame:scene.originalRequest withRequest:executingTask.originalRequest andIgnoreHeaderFields:YES];
-            if (expectedResult.hasCurrentRequest) {
-                // when we are playing, OHHTTPStubs does not mock adjusting the currentRequest to have different headers like a server would with a live NSURLSessionTask
-                [self _assertRequestFrame:scene.currentRequest withRequest:executingTask.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
-            }
-            if (receivedResponse) {
-                [self _assertResponseFrame:scene.allResponseFrames.firstObject withResponse:receivedResponse];
-            }
-            if (
-                receivedData &&
-                !expectedResult.shouldCancel
-                ) {
-                [self _assertDataFrame:scene.allDataFrames.firstObject withData:receivedData];
-            }
-            if (receivedError) {
-                [self _assertErrorFrame:scene.allErrorFrames.firstObject withError:receivedError];
-            }
-            [self assertFramesOrderForScene:scene];
-        };
-        
-        if (timeoutAssertions) {
-            timeoutAssertions(executingTask, error, sceneAssertions);
-        }
-    }];
+    return executingTask;
 }
 
 - (void)_assertExpectedResult:(BKRTestExpectedResult *)expectedResult withData:(NSData *)data {
@@ -345,8 +367,99 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }
 }
 
-- (void)BKRTest_executeHTTPBinNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
-    [self BKRTest_executeNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+- (void)BKRTest_executeSimultaneousNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
+//    dispatch_queue_t simultaneousTestingQueue = dispatch_queue_create("com.BKRTesting.SimultaneousQueue", DISPATCH_QUEUE_CONCURRENT);
+//    BKRWeakify(self);
+//    dispatch_apply(expectedResults.count, simultaneousTestingQueue, ^(size_t interation) {
+//        BKRStrongify(self);
+//    });
+    __block BOOL isRecording = NO;
+    NSMutableArray<NSURLSessionTask *> *executedTasks = [NSMutableArray array];
+    for (NSInteger i=0; i <expectedResults.count; i++) {
+        BKRTestExpectedResult *expectedResult = expectedResults[i];
+        if (i == 0) {
+            isRecording = expectedResult.isRecording;
+        }
+        NSURLSessionTask *task = [self _preparedTaskForExpectedResult:expectedResult andTaskCompletionAssertions:^(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+            if (networkCompletionAssertions) {
+                networkCompletionAssertions(expectedResult, task, data, response, error);
+            }
+        }];
+        NSUInteger executedTasksCount = executedTasks.count;
+        executedTasks[i] = task;
+        XCTAssertEqual(executedTasks.count, ++executedTasksCount);
+        [task resume];
+    }
+    // ensure all tasks are running (expects tasks that take a not insignificant amount of time)
+    // for now, playing tasks are immediate, so this check is skipped when not recording
+    // when playing time overrides are introduced, update this
+    // also since, all tests are expected to only take arrays of recording or playing tasks but not
+    // both, just check first expected result to determine (under previously stated assumption) that
+    // all tasks are recording or playing
+    // note: maybe consider using isSimultaneous (this was added after this was written)
+    for (NSInteger i=0; i < expectedResults.count; i++) {
+        NSURLSessionTask *checkingTask = executedTasks[i];
+        XCTAssertNotNil(checkingTask);
+        if (isRecording) {
+            XCTAssertEqual(checkingTask.state, NSURLSessionTaskStateRunning);
+        }
+    }
+    __block NSMutableArray<BKRScene *> *scenesToCheck = nil;
+    XCTAssertNil(scenesToCheck);
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+        for (NSInteger i=0; i <expectedResults.count; i++) {
+            BKRTestExpectedResult *expectedResult = expectedResults[i];
+            NSURLSessionTask *executingTask = executedTasks[i];
+            XCTAssertNotNil(executingTask);
+            if (expectedResult.shouldCancel) {
+                XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning, @"If task is still running, then it failed to cancel as expected, this is most likely not a BeKindRewind bug but a system bug");
+                XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended, @"If task is suspended, it did not properly cancel, this might be a system bug and not a BeKindRewind bug");
+            } else {
+                XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted, @"If state is not completed, that most likely means the request failed due to a bad connection");
+                XCTAssertEqual(executingTask.state, NSURLSessionTaskStateCompleted);
+            }
+            XCTAssertNotNil(executingTask.originalRequest);
+            if (expectedResult.hasCurrentRequest) {
+                XCTAssertNotNil(executingTask.currentRequest);
+                
+            }
+            BKRTestSceneAssertionHandler sceneAssertions = [self _assertionHandlerForExpectedResult:expectedResult andTask:executingTask];
+            BKRTestBatchSceneAssertionHandler batchSceneAssertions = ^void (NSArray<BKRScene *> *scenes) {
+                if (
+                    !scenes ||
+                    !scenes.count
+                    ) {
+                    NSLog(@"can't do batch scene assertions when no scenes are provided to assert on!");
+                    return;
+                }
+                if (!scenesToCheck) {
+                    scenesToCheck = scenes.mutableCopy;
+                }
+                XCTAssertNotNil(scenesToCheck);
+                NSUInteger currentScenesToCheckCount = scenesToCheck.count;
+                for (BKRScene *scene in scenes) {
+                    if ([scene.originalRequest.URL.absoluteString isEqualToString:executingTask.originalRequest.URL.absoluteString]) {
+                        sceneAssertions(scene);
+                        [scenesToCheck removeObject:scene];
+                    }
+                }
+                XCTAssertEqual(--currentScenesToCheckCount, scenesToCheck.count, @"After asserting a scenes, count of scenesToCheck should decrement, not %lu", (unsigned long)scenesToCheck.count);
+            };
+            if (timeoutAssertions) {
+                timeoutAssertions(expectedResult, executingTask, error, batchSceneAssertions);
+            }
+        }
+        // if for some reason, this array is nil, don't check this
+        if (scenesToCheck) {
+            XCTAssertEqual(scenesToCheck.count, 0, @"After all assertions, there shouldn't be any scenes left to check: %lu", (unsigned long)scenesToCheck.count);
+        }
+    }];
+}
+
+- (void)BKRTest_executeHTTPBinNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults simultaneously:(BOOL)simultaneously withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
+    
+    BKRTestBatchNetworkCompletionHandler networkCompletionHandler = ^void (BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         if (result.shouldCancel) {
             
         } else {
@@ -369,11 +482,19 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         if (networkCompletionAssertions) {
             networkCompletionAssertions(result, task, data, response, error);
         }
-    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    };
+    
+    BKRTestBatchNetworkTimeoutCompletionHandler networkTimeoutHandler = ^void (BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         if (timeoutAssertions) {
             timeoutAssertions(result, task, error, batchSceneAssertions);
         }
-    }];
+    };
+    
+    if (simultaneously) {
+        [self BKRTest_executeSimultaneousNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:networkCompletionHandler taskTimeoutHandler:networkTimeoutHandler];
+    } else {
+        [self BKRTest_executeNetworkCallsForExpectedResults:expectedResults withTaskCompletionAssertions:networkCompletionHandler taskTimeoutHandler:networkTimeoutHandler];
+    }
 }
 
 - (void)BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions {
@@ -444,16 +565,20 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (void)setRecorderBeginAndEndRecordingBlocks {
     [BKRRecorder sharedInstance].beginRecordingBlock = ^void(NSURLSessionTask *task) {
-        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
-        task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
+        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.BKR_globallyUniqueIdentifier];
+        task.BKR_recordingExpectation = [self expectationWithDescription:recordingExpectationString];
     };
     
     [BKRRecorder sharedInstance].endRecordingBlock = ^void(NSURLSessionTask *task) {
-        [task.recordingExpectation fulfill];
+        [task.BKR_recordingExpectation fulfill];
     };
 }
 
 - (BKRPlayer *)playerWithExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
+    return [self playerWithMatcher:[BKRPlayheadMatcher class] withExpectedResults:expectedResults];
+}
+
+- (BKRPlayer *)playerWithMatcher:(Class<BKRRequestMatching>)matcherClass withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
     BKRCassette *cassette = [self cassetteFromExpectedResults:expectedResults];
     NSArray<BKRScene *> *scenes = cassette.allScenes.copy;
     XCTAssertEqual(scenes.count, expectedResults.count, @"testCassette should have one valid scene right now");
@@ -464,7 +589,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertEqual(result.expectedNumberOfFrames, scene.allFrames.count);
         
     }
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:[BKRPlayheadMatcher class]];
+    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:matcherClass];
     player.currentCassette = cassette;
     return player;
 }
@@ -557,12 +682,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }
 }
 
-- (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes {
+- (BKRCassette *)cassetteWithNumberOfScenes:(NSUInteger)numberOfScenes andCassetteCreationBlock:(BKRTestCassetteSceneCreationBlock)sceneCreationBlock {
     NSParameterAssert(numberOfScenes);
+    NSParameterAssert(sceneCreationBlock);
     NSMutableArray<BKRTestExpectedResult *> *results = [NSMutableArray array];
     for (NSUInteger i=0; i < numberOfScenes; i++) {
-        NSString *queryString = [NSString stringWithFormat:@"scene=%ld", (long)i];
-        BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:queryString withRecording:NO];
+        BKRTestExpectedResult *result = sceneCreationBlock(i);
         XCTAssertNotNil(result);
         [results addObject:result];
     }
@@ -570,6 +695,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BKRCassette *cassette = [self cassetteFromExpectedResults:results.copy];
     XCTAssertNotNil(cassette);
     XCTAssertEqual(cassette.allScenes.count, numberOfScenes);
+    return cassette;
+}
+
+- (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes {
+    [self cassetteWithNumberOfScenes:numberOfScenes andCassetteCreationBlock:^BKRTestExpectedResult *(NSUInteger iteration) {
+        NSString *queryString = [NSString stringWithFormat:@"scene=%ld", (long)iteration];
+        return [self HTTPBinGetRequestWithQueryString:queryString withRecording:NO];
+    }];
 }
 
 - (NSMutableDictionary *)standardDataDictionary {
@@ -666,6 +799,37 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                                      NSURLErrorFailingURLStringErrorKey: expectedResult.URLString,
                                      NSLocalizedDescriptionKey: @"cancelled"
                                      };
+    return expectedResult;
+}
+
+- (BKRTestExpectedResult *)HTTPBinSimultaneousDelayedRequestWithDelay:(NSInteger)delay withRecording:(BOOL)isRecording {
+    BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
+    expectedResult.isRecording = isRecording;
+    expectedResult.isSimultaneous = YES;
+    expectedResult.URLString = @"https://httpbin.org/delay/3";
+    expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/delay/%ld", (long)delay];
+    expectedResult.hasCurrentRequest = YES;
+    expectedResult.expectedNumberOfFrames = 4;
+    //    expectedResult.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
+    expectedResult.expectedSceneNumber = 0;
+    expectedResult.responseCode = 200;
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
+    expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"356"];
+    expectedResult.receivedJSON = @{
+                                    @"args": @{},
+                                    @"data": @"",
+                                    @"files": @{},
+                                    @"form": @{},
+                                    @"headers": @{
+                                            @"Accept": @"*/*",
+                                            @"Accept-Endcoding": @"gzip, deflate",
+                                            @"Accept-Language": @"en-us",
+                                            @"Host": @"httpbin.org",
+                                            @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0",
+                                            },
+                                    @"origin": @"98.210.195.88",
+                                    @"url": expectedResult.URLString,
+                                    };
     return expectedResult;
 }
 
@@ -825,13 +989,37 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     if (!expectedResults.count) {
         return;
     }
+    NSMutableArray<BKRTestExpectedResult *> *assertingExpectedResults = expectedResults.mutableCopy;
+    BOOL shouldCheckAssertingExpectedResultsArray = NO;
+    XCTAssertNotEqual(assertingExpectedResults.count, 0);
     for (NSInteger i=0; i < expectedResults.count; i++) {
         NSDictionary *scene = [scenes objectAtIndex:i];
         XCTAssertTrue([scene isKindOfClass:[NSDictionary class]]);
         NSString *uniqueIdentifier = scene[@"uniqueIdentifier"];
         XCTAssertNotNil(uniqueIdentifier);
         BKRTestExpectedResult *recording = [expectedResults objectAtIndex:i];
-        XCTAssertEqual(recording.expectedSceneNumber, i);
+        // if it's simultaneous, shuffle the expected results because order of scenes may be off in the recording
+        if (recording.isSimultaneous) {
+            // check the asserting array at the end of the test
+            shouldCheckAssertingExpectedResultsArray = YES;
+            for (BKRTestExpectedResult *assertingResult in assertingExpectedResults) {
+                // hardcoded getting the originalRequestURLString, this is brittle, may break, ok test shortcut
+                NSString *originalRequestURLString = scene[@"frames"][0][@"URL"];
+                // if the URLs match, then reassign
+                if ([assertingResult.URLString isEqualToString:originalRequestURLString]) {
+                    // reassign recording to check that is pull from the mutable asserting expected results array
+                    recording = assertingResult;
+                    // remove the expected result from the pool of checks
+                    [assertingExpectedResults removeObject:assertingResult];
+                    // break out of the for loop so we can test things
+                    break;
+                }
+            }
+        }
+        // don't assert order for simultaneous requests!
+        if (!recording.isSimultaneous) {
+            XCTAssertEqual(recording.expectedSceneNumber, i);
+        }
         XCTAssertNotNil(recording);
         NSArray *frames = scene[@"frames"];
         XCTAssertNotNil(frames);
@@ -899,19 +1087,21 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         }
         // assert order of frames and scenes
     }
+    if (shouldCheckAssertingExpectedResultsArray) {
+        XCTAssertEqual(assertingExpectedResults.count, 0, @"Should have tested all expected results by end of test");
+    }
 }
 
 #pragma mark - VCR helpers
 
-//- (void)setVCRBeginAndEndRecordingBlocks:(id<BKRVCRRecording>)vcr {
 - (void)_setBeginAndEndRecordingBlocksForConfiguration:(BKRConfiguration *)configuration {
     configuration.beginRecordingBlock = ^void(NSURLSessionTask *task) {
-        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.globallyUniqueIdentifier];
-        task.recordingExpectation = [self expectationWithDescription:recordingExpectationString];
+        NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.BKR_globallyUniqueIdentifier];
+        task.BKR_recordingExpectation = [self expectationWithDescription:recordingExpectationString];
     };
     
     configuration.endRecordingBlock = ^void(NSURLSessionTask *task) {
-        [task.recordingExpectation fulfill];
+        [task.BKR_recordingExpectation fulfill];
     };
 }
 

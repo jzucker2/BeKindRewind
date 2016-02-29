@@ -61,7 +61,8 @@
 
 - (void)setUp {
     [super setUp];
-    BKRVCRState assertionState = BKRVCRStateUnknown;
+    BKRVCRState assertionState = BKRVCRStateStopped;
+    XCTAssertEqual(self.currentVCR.state, assertionState, @"currentVCR should begin in stopped state");
     BKRWeakify(self);
     if ([self isRecording]) {
         XCTAssertTrue([self.currentVCR insert:^BKRCassette *{
