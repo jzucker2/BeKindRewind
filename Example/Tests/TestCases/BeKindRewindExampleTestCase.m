@@ -6,6 +6,7 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
+// keep this simple to test the import
 #import <BeKindRewind/BKRTestCase.h>
 
 @interface BeKindRewindExampleTestCase : BKRTestCase
