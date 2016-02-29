@@ -68,10 +68,35 @@ typedef BKRCassette *(^BKRVCRCassetteLoadingBlock)(void);
 typedef NSString *(^BKRVCRCassetteSavingBlock)(BKRCassette *cassette);
 typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
 
+/**
+ *  This protocol defines the actions a VCR in the BeKindRewind framework is expected to implement.
+ *  All VCR objects in this framework conform to this protocol.
+ */
 @protocol BKRVCRActions <NSObject>
 
+/**
+ *  Designated initializer for creating an instance of an object conforming to this protocol.
+ *
+ *  @param configuration contains all the options to be utilized by a VCR object
+ *
+ *  @return newly initialized instance conforming to this protocol
+ */
 - (instancetype)initWithConfiguration:(BKRConfiguration *)configuration;
+
+/**
+ *  Convenience initializer for creating an instance of an object conforming to this protocol.
+ *
+ *  @param configuration contains all the options to be utilized by a VCR object
+ *
+ *  @return newly initialized instance conforming to this protocol
+ */
 + (instancetype)vcrWithConfiguration:(BKRConfiguration *)configuration;
+
+/**
+ *  Initializes an object using `[BKRConfiguration defaultConfiguration]`
+ *
+ *  @return newly initialized instance conforming to this protocol
+ */
 + (instancetype)defaultVCR;
 
 /**

@@ -11,6 +11,13 @@
 @class BKRCassette;
 @class BKRScene;
 
+/**
+ *  Thread-safe block to process editor actions with enabled state
+ *  and casseette when the block is being executed.
+ *
+ *  @param updatedEnabled current enabled state of editor
+ *  @param cassette       current cassette when block is being processed.
+ */
 typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *cassette);
 
 /**
