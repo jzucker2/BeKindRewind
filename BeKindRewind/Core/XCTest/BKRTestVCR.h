@@ -17,5 +17,4 @@
  *  recording network events.
  */
 @interface BKRTestVCR : BKRVCR <BKRTestVCRActions>
-
 @end

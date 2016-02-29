@@ -40,6 +40,10 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
 @class BKRCassette;
 @class BKRConfiguration;
 
+/**
+ *  This is the protocol used for any object expected to run blocks at the 
+ *  beginning or end of any network event being recorded.
+ */
 @protocol BKRVCRRecording <NSObject>
 
 /**
@@ -63,9 +67,37 @@ typedef NS_ENUM(NSInteger, BKRVCRState) {
 
 @end
 
+/**
+ *  This is a completion block that runs at the end 
+ *  of `eject:` or `insert:` VCR commands
+ *
+ *  @param result result of executing command that block runs after
+ */
 typedef void (^BKRCassetteHandlingBlock)(BOOL result);
+
+/**
+ *  This block is run by the `insert:` command to load a BKRCassette
+ *  into an object conforming to this protocol
+ *
+ *  @return a BKRCassette instance to load into a VCR for recording or playing
+ */
 typedef BKRCassette *(^BKRVCRCassetteLoadingBlock)(void);
+
+/**
+ *  This block is run by the `eject:` command to remove a BKRCassette
+ *  from an object conforming to this protocol.
+ *
+ *  @param cassette the instance of BKRCassette containings recorded network events to save
+ *
+ *  @return full path to write recorded network events to
+ */
 typedef NSString *(^BKRVCRCassetteSavingBlock)(BKRCassette *cassette);
+
+/**
+ *  This block is run as a completion block after almost all VCR actions
+ *
+ *  @param result whether or not operation is successful
+ */
 typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
 
 /**

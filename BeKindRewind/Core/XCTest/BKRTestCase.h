@@ -16,5 +16,4 @@
  *  your own XCTestCase subclass.
  */
 @interface BKRTestCase : XCTestCase <BKRTesting>
-
 @end
