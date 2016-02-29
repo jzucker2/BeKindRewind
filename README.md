@@ -131,10 +131,10 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * afnetworking tests
 * Separate into subspecs
 * Rewrite README instructions
-* blog post
 * proper support for redirects
 
 ## Future features
 * test for other types of network requests (streaming)
 * timing taken into consideration
+* blog post
 * JSON serializing in addition to plist serializing
