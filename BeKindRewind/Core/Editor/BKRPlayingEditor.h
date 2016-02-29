@@ -8,30 +8,33 @@
 
 #import "BKREditor.h"
 #import "BKRRequestMatching.h"
-#import "BKRConstants.h"
-
-@class BKRPlayer;
 
 /**
  *  This subclass is for turning cassettes into stubs in a thread-safe manner
  */
 @interface BKRPlayingEditor : BKREditor
 
+/**
+ *  Designated initializer with a class for determining how to build playing sessions.
+ *
+ *  @param matcher this must conform to BKRRequestMatching
+ *
+ *  @return newly-initialized instance of BKRPlayingEditor
+ */
 - (instancetype)initWithMatcher:(id<BKRRequestMatching>)matcher;
-+ (instancetype)editorWithMatcher:(id<BKRRequestMatching>)matcher;
-
-@property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
 
 /**
- *  Adds stubs using matcher conforming to @protocol BKRRequestMatching with
- *  a block to execute on the main queue after all stubs are added.
+ *  Convenience initializer with a class for determining how to build playing sessions.
  *
- *  @param matcher         object used to construct stubs for playback, contains rules for stubbing
- *  @param afterStubsBlock block to execute on main queue after all stubs are added
+ *  @param matcher this must conform to BKRRequestMatching
+ *
+ *  @return newly-initialized instance of BKRPlayingEditor
  */
-//- (void)addStubsForMatcher;
++ (instancetype)editorWithMatcher:(id<BKRRequestMatching>)matcher;
 
-//- (void)removeAllStubs;
-
+/**
+ *  This is the matcher passed in during initialization. It is read-only
+ */
+@property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
 
 @end

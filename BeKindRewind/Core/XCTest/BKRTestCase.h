@@ -9,7 +9,6 @@
 #import <XCTest/XCTest.h>
 #import "BKRTesting.h"
 
-
 /**
  *  This is a provided XCTestCase subclass for easy network recording and stubbing. It conforms
  *  to the BKRTesting protocol and does all of the necessary configuration for easy usage of
@@ -17,5 +16,4 @@
  *  your own XCTestCase subclass.
  */
 @interface BKRTestCase : XCTestCase <BKRTesting>
-
 @end

@@ -74,12 +74,12 @@
 }
 
 - (void)BKR_setError:(id)arg1 {
-    [[BKRRecorder sharedInstance] recordTask:[(NSURLSessionTask *)self globallyUniqueIdentifier] setError:arg1];
+    [[BKRRecorder sharedInstance] recordTask:[(NSURLSessionTask *)self BKR_globallyUniqueIdentifier] setError:arg1];
     [self BKR_setError:arg1];
 }
 
 - (void)BKR_resume {
-    [(NSURLSessionTask *)self uniqueify];
+    [(NSURLSessionTask *)self BKR_uniqueify];
     [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)self];
     [self BKR_resume];
 }

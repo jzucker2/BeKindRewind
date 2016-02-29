@@ -40,13 +40,56 @@
  *  @return class conforming to BKRRequestMatching protocol
  */
 - (BKRTestConfiguration *)testConfiguration;
+
+/**
+ *  This object conforms to the BKRTestVCRActions protocol. It used by the object conforming
+ *  to this protocol to peform BeKindRewind actions
+ *
+ *  @param configuration this passes in the BKRTestConfiguration that is returned by testConfiguration
+ *
+ *  @return an object conforming to BKRTestVCRActions
+ */
 - (id<BKRTestVCRActions>)testVCRWithConfiguration:(BKRTestConfiguration *)configuration;
 
+/**
+ *  This is the object created by testVCRWithConfiguration:
+ */
 @property (nonatomic, strong, readonly) id<BKRTestVCRActions>currentVCR;
 
+/**
+ *  This is the base directory to search for the NSBundle instances containing fixtures
+ *
+ *  @return full path to start the search for fixture NSBundle instances
+ */
 - (NSString *)baseFixturesDirectoryFilePath;
+
+/**
+ *  File path to use for writing the recordings created when `[self isRecording]` 
+ *  returns YES during the XCTestCase execution. This is only expected to be 
+ *  called if `[self isRecording]` returns NO
+ *
+ *  @param baseDirectoryFilePath this is passed in during test execution by 
+ *                               the result of `[self baseFixturesDirectoryFilePath]`
+ *
+ *  @return the full path of where to save recordings to on disk at the end of the run
+ */
 - (NSString *)recordingCassetteFilePathWithBaseDirectoryFilePath:(NSString *)baseDirectoryFilePath;
+
+/**
+ *  This is an instance of BKRCassette used to stub network events for playing.
+ *  This is only expected to be called if `[self isRecording]` returns YES
+ *
+ *  @return fully created instance of BKRCassette containing any recordings to be used for playing
+ */
 - (BKRCassette *)playingCassette;
+
+/**
+ *  This is an instance of BKRCassette used to record network events for later playback. This 
+ *  is only expected to be called if `[self isRecording]` returns NO. Expected to return a 
+ *  blank instance of BKRCassette like `[BKRCassette cassette]`
+ *
+ *  @return fully created instance of BKRCassette to store network events on
+ */
 - (BKRCassette *)recordingCassette;
 
 @end

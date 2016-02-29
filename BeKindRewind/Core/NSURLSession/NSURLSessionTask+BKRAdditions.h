@@ -15,13 +15,13 @@
 @interface NSURLSessionTask (BKRAdditions)
 
 /**
- *  This globabllyUniqueIdentifier is a NSString of an NSUUID for uniquefying all tasks we are recording.
+ *  This BKR_globabllyUniqueIdentifier is a NSString of an NSUUID for uniquefying all tasks we are recording.
  */
-@property (nonatomic, copy) NSString *globallyUniqueIdentifier;
+@property (nonatomic, copy) NSString *BKR_globallyUniqueIdentifier;
 
 /**
- *  Sets a globallyUniqueIdentifier for correlating recordings if one was not already set
+ *  Sets a BKR_globallyUniqueIdentifier for correlating recordings if one was not already set
  */
-- (void)uniqueify;
+- (void)BKR_uniqueify;
 
 @end

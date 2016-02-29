@@ -78,11 +78,14 @@
     BKRWeakify(self);
     [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
-        if (!cassette) {
-            NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
+        // check if you should record first:
+        // 1) have a frame to record
+        // 2) record starting time exists and is valid for this frame's creationDate
+        if (![self _shouldRecord:frame]) {
             return;
         }
-        if (![self _shouldRecord:frame]) {
+        if (!cassette) {
+            NSLog(@"%@ has no cassette right now", NSStringFromClass(self.class));
             return;
         }
         self->_handledRecording = YES;

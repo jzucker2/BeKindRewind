@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import <BeKindRewind/BKRRequestMatching.h>
 #import <BeKindRewind/BKRVCRActions.h>
 #import <BeKindRewind/BKRTestVCRActions.h>
 
@@ -19,6 +20,7 @@
 @property (nonatomic, strong) NSData *HTTPBody;
 @property (nonatomic, strong) NSData *receivedData;
 @property (nonatomic, strong) id receivedJSON;
+@property (nonatomic, assign) BOOL isSimultaneous; // default is NO, when yes, order is not asserted on this scene
 @property (nonatomic, strong, readonly) NSURL *URL; // can't be set, fetched from URLString
 @property (nonatomic, assign) BOOL hasResponse;
 @property (nonatomic, assign, readonly) BOOL hasError; // calculated by having errorCode and errorDomain
@@ -35,12 +37,16 @@
 @property (nonatomic, assign) BOOL isRecording; // no by default
 @property (nonatomic, assign) BOOL shouldCompareCurrentRequestHTTPHeaderFields; // default is NO
 @property (nonatomic, strong) NSDictionary *currentRequestAllHTTPHeaderFields; // setting this turns hasCurrentRequest to YES automatically
+@property (nonatomic, strong) NSData *actualReceivedData;
+@property (nonatomic, strong) NSURLResponse *actualReceivedResponse;
+@property (nonatomic, strong) NSError *actualReceivedError;
 + (instancetype)result;
 @end
 
 @class BKRScene;
 typedef void (^BKRTestSceneAssertionHandler)(BKRScene *scene);
 typedef void (^BKRTestBatchSceneAssertionHandler)(NSArray<BKRScene *> *scenes);
+typedef BKRTestExpectedResult *(^BKRTestCassetteSceneCreationBlock)(NSUInteger iteration);
 
 typedef void (^BKRTestNetworkCompletionHandler)(NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error);
 typedef void (^BKRTestNetworkTimeoutCompletionHandler)(NSURLSessionTask *task, NSError *error, BKRTestSceneAssertionHandler sceneAssertions);
@@ -54,14 +60,17 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 - (BKRConfiguration *)defaultConfiguration;
 - (void)assertDefaultTestConfiguration:(BKRTestConfiguration *)configuration;
 - (void)insertNewCassetteInRecorder;
+- (BKRPlayableVCR *)playableVCRWithAnyMatcher;
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher;
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption;
+- (BKRVCR *)vcrWithMatcher:(Class<BKRRequestMatching>)matcherClass andCassetteSavingOption:(BOOL)cassetteSavingOption;
 
+- (void)BKRTest_executeSimultaneousNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
 - (void)BKRTest_executeNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
 
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
 
-- (void)BKRTest_executeHTTPBinNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
+- (void)BKRTest_executeHTTPBinNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults simultaneously:(BOOL)simultaneously withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
 
 - (void)BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults withTaskCompletionAssertions:(BKRTestBatchNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestBatchNetworkTimeoutCompletionHandler)timeoutAssertions;
 
@@ -69,11 +78,13 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 - (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 - (BKRPlayer *)playerWithExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
+- (BKRPlayer *)playerWithMatcher:(Class<BKRRequestMatching>)matcherClass withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 
 - (void)setRecorderToEnabledWithExpectation:(BOOL)enabled;
 - (void)setPlayer:(BKRPlayer *)player withExpectationToEnabled:(BOOL)enabled;
 - (void)setRecorderBeginAndEndRecordingBlocks;
 
+- (BKRCassette *)cassetteWithNumberOfScenes:(NSUInteger)numberOfScenes andCassetteCreationBlock:(BKRTestCassetteSceneCreationBlock)sceneCreationBlock;
 - (void)assertCassettePath:(NSString *)cassetteFilePath matchesExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 - (void)assertCreationOfPlayableCassetteWithNumberOfScenes:(NSUInteger)numberOfScenes;
 
@@ -108,6 +119,7 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 //- (void)BKRTest_executeHTTPBinNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions;
 
+- (BKRTestExpectedResult *)HTTPBinSimultaneousDelayedRequestWithDelay:(NSInteger)delay withRecording:(BOOL)isRecording;
 - (BKRTestExpectedResult *)HTTPBinCancelledRequestWithRecording:(BOOL)isRecording;
 - (BKRTestExpectedResult *)HTTPBinGetRequestWithQueryString:(NSString *)queryString withRecording:(BOOL)isRecording;
 - (BKRTestExpectedResult *)HTTPBinPostRequestWithRecording:(BOOL)isRecording;

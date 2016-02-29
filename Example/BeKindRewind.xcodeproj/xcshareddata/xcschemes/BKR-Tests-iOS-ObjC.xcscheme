@@ -41,6 +41,9 @@
                <Test
                   Identifier = "BKRBaseTestCase">
                </Test>
+               <Test
+                  Identifier = "BKRMatcherTestCase">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

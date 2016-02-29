@@ -22,14 +22,16 @@
  */
 @property (nonatomic, strong) NSDate *recordingStartTime;
 
+/**
+ *  This is read-only and set by the receiver if anything is actually recorded during the session.
+ */
 @property (nonatomic, assign, readonly) BOOL handledRecording;
 
-- (void)reset;
-
 /**
- *  Update the recordingStartTime to now or set it to nil if BKRRecordingEditor is not enabled
+ *  This resets the BKRRecordingEditor since it interacts with a singleton BKRRecorder. This should be called before
+ *  releasing the instance.
  */
-//- (void)updateRecordingStartTimeWithEnabled:(BOOL)desiredEnabled;
+- (void)reset;
 
 /**
  *  Add raw recordable frame representing a component of a network request to the current cassette
@@ -38,6 +40,11 @@
  */
 - (void)addFrame:(BKRRawFrame *)frame;
 
+/**
+ *  This is called on the receiver's custom queue
+ *
+ *  @param task this is supplied to the beginRecordingBlock executed on the receiver's custom queue
+ */
 - (void)executeBeginRecordingBlockWithTask:(NSURLSessionTask *)task;
 
 /**
@@ -47,7 +54,5 @@
  *  @param task              task that was being recorded
  */
 - (void)executeEndRecordingBlockWithTask:(NSURLSessionTask *)task;
-
-//- (void)resetHandledRecording;
 
 @end

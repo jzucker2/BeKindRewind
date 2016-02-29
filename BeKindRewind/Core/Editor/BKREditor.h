@@ -7,10 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BKRConstants.h"
 
 @class BKRCassette;
 @class BKRScene;
+
+/**
+ *  Thread-safe block to process editor actions with enabled state
+ *  and casseette when the block is being executed.
+ *
+ *  @param updatedEnabled current enabled state of editor
+ *  @param cassette       current cassette when block is being processed.
+ */
+typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *cassette);
 
 /**
  *  This object is responsible for translating BeKindRewind network information between cassettes
@@ -30,8 +38,29 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
+/**
+ *  This is an asynchronous, thead-safe option to toggle enabled on the receiver with a completion
+ *  block. Helpful for using in testing.
+ *
+ *  @param enabled      this determines whether the editor is enabled or disabled.
+ *  @param editingBlock this is called on the receiver's queue
+ */
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock;
+
+/**
+ *  This is a thread-safe, asynchronous, non-blocking method to edit the cassette contained inside
+ *  the editor instance
+ *
+ *  @param cassetteEditingBlock this is called on the receiver's queue
+ */
 - (void)editCassette:(BKRCassetteEditingBlock)cassetteEditingBlock;
+
+/**
+ *  This is a thread-safe, synchronous, blocking method to edit the cassette contained inside
+ *  the editor instance. This blocks on the queue that it is called in
+ *
+ *  @param cassetteEditingBlock this is called on the receiver's queue
+ */
 - (void)editCassetteSynchronously:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
 /**

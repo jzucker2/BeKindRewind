@@ -7,6 +7,7 @@
 //
 
 #import <BeKindRewind/BKRPlayer.h>
+#import <BeKindRewind/BKRAnyMatcher.h>
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
@@ -30,14 +31,14 @@
     BKRTestExpectedResult *getResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     __block BKRPlayer *player = [self playerWithExpectedResults:@[getResult]];
     [self setPlayer:player withExpectationToEnabled:NO];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
     
     getResult.isRecording = NO;
     [self setPlayer:player withExpectationToEnabled:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
@@ -48,7 +49,7 @@
     BKRTestExpectedResult *getResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
     __block BKRPlayer *player = [self playerWithExpectedResults:@[getResult]];
     [self setPlayer:player withExpectationToEnabled:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
@@ -56,7 +57,7 @@
     
     getResult.isRecording = YES;
     [self setPlayer:player withExpectationToEnabled:NO];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
@@ -66,7 +67,7 @@
     BKRTestExpectedResult *getResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     __block BKRPlayer *player = [self playerWithExpectedResults:@[getResult]];
     XCTAssertNotNil(player);
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
@@ -76,7 +77,7 @@
     BKRTestExpectedResult *getResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     __block BKRPlayer *player = [self playerWithExpectedResults:@[getResult]];
     [self setPlayer:player withExpectationToEnabled:NO];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
     }];
@@ -86,7 +87,7 @@
     BKRTestExpectedResult *getResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
     __block BKRPlayer *player = [self playerWithExpectedResults:@[getResult]];
     [self setPlayer:player withExpectationToEnabled:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
@@ -97,7 +98,7 @@
     BKRTestExpectedResult *cancelledResult = [self HTTPBinCancelledRequestWithRecording:NO];
     __block BKRPlayer *player = [self playerWithExpectedResults:@[cancelledResult]];
     [self setPlayer:player withExpectationToEnabled:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[cancelledResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[cancelledResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
@@ -108,7 +109,7 @@
     BKRTestExpectedResult *postResult = [self HTTPBinPostRequestWithRecording:NO];
     __block BKRPlayer *player = [self playerWithExpectedResults:@[postResult]];
     [self setPlayer:player withExpectationToEnabled:YES];
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[postResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[postResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
         
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
@@ -123,7 +124,7 @@
     XCTAssertEqual(player.allScenes.count, 2);
     [self setPlayer:player withExpectationToEnabled:YES];
     
-    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:NO withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
     }];
 }
@@ -137,6 +138,20 @@
     [self setPlayer:player withExpectationToEnabled:YES];
     
     [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions(player.allScenes);
+    }];
+}
+
+- (void)testPlayingTwoSimultaneousGETRequests {
+    BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:NO];
+    BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:NO];
+    
+    __block BKRPlayer *player = [self playerWithMatcher:[BKRAnyMatcher class] withExpectedResults:@[firstResult, secondResult]];
+    XCTAssertEqual(player.allScenes.count, 2);
+    [self setPlayer:player withExpectationToEnabled:YES];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
     }];

@@ -10,6 +10,7 @@
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRCassette+Playable.h"
 #import "BKRScene+Playable.h"
+#import "BKRConstants.h"
 
 @interface BKRPlayingEditor ()
 @end
@@ -74,6 +75,12 @@
                     return finalTestResult;
                 }
             }
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestScheme:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestScheme:requestComponents.scheme withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
+                if (!finalTestResult) {
+                    return finalTestResult;
+                }
+            }
             if ([matcher respondsToSelector:@selector(hasMatchForRequestHost:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
                 finalTestResult = [matcher hasMatchForRequestHost:requestComponents.host withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
                 if (!finalTestResult) {
@@ -88,6 +95,12 @@
             }
             if ([matcher respondsToSelector:@selector(hasMatchForRequestQueryItems:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
                 finalTestResult = [matcher hasMatchForRequestQueryItems:requestComponents.queryItems withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
+                if (!finalTestResult) {
+                    return finalTestResult;
+                }
+            }
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestFragment:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestFragment:requestComponents.fragment withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
                 if (!finalTestResult) {
                     return finalTestResult;
                 }

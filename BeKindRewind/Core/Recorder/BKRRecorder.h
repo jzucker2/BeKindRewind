@@ -25,8 +25,18 @@
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
+/**
+ *  This updates the enabled property of the receiver's custom queue. It calls the 
+ *  completionBlock on the receiver's queue after the property is updated.
+ *
+ *  @param enabled         whether the BKRRecorder should record network events
+ *  @param completionBlock this is called on the receiver's queue after updating the property
+ */
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(void (^)(void))completionBlock;
 
+/**
+ *  This is set if the receiver recorded an event while it was enabled.
+ */
 @property (nonatomic, assign, readonly) BOOL didRecord;
 
 /**
