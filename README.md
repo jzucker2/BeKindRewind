@@ -74,7 +74,7 @@ pod "BeKindRewind"
 After running this test, files will be outputted to the console with a log similar to this:
 
 ```bash
-2015-06-25 20:48:47.968 xctest[97164:1809740] filePath = /Users/jzucker/Library/Developer/CoreSimulator/Devices/F9C2D4BE-9022-48E9-9A27-C89B8E615571/data/Documents/BeKindRewindExampleTestCase.bundle/testSimpleNetworkCall.plist
+2016-02-28 17:12:25.175 xctest[44265:13063191] <BKRRecordableVCR: 0x7f88487052f0>: trying to write cassette to: /Users/jordanz/Library/Developer/CoreSimulator/Devices/6C6825EE-3B1E-48A9-98B7-AEE9FAE2CFC2/data/Documents/BeKindRewindExampleTestCase.bundle/testSimpleNetworkCall.plist
 ```
 
 Drag this into your project as a bundle named after your test case (it is named automatically).
