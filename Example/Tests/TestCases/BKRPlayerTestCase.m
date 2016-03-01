@@ -170,25 +170,7 @@
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        NSLog(@"++++++++++++++++");
-        NSLog(@"%@", player.allScenes);
-        BKRScene *scene = player.allScenes.firstObject;
-        NSLog(@"%@", scene.allFrames);
-        for (BKRFrame *frame in scene.allFrames) {
-            NSLog(@"&&&&&&&&&&&&&&&");
-            NSLog(@"frame: %@", frame.debugDescription);
-            NSLog(@"&&&&&&&&&&&&&&&");
-        }
-        //        for (BKRRequestFrame *frame in scene.allRequestFrames) {
-        //            NSLog(@"&&&&&&&&&&&&&&&");
-        //            NSLog(@"request: %@", frame.debugDescription);
-        //            NSLog(@"&&&&&&&&&&&&&&&");
-        //        }
-        //        NSLog(@"&&&&&&&&&&&&&&&");
-        //        NSLog(@"data: %@", scene.allDataFrames.firstObject.JSONConvertedObject);
-        //        NSLog(@"&&&&&&&&&&&&&&&");
         batchSceneAssertions(player.allScenes);
-        NSLog(@"++++++++++++++++");
     }];
 }
 
