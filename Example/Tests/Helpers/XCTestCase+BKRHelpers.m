@@ -170,7 +170,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended);
         });
     }
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         if (expectedResult.shouldCancel) {
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning, @"If task is still running, then it failed to cancel as expected, this is most likely not a BeKindRewind bug but a system bug");
@@ -820,12 +820,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (NSDictionary *)_HTTPBinResponseAllHeaderFieldsForStreamingWithContentLength:(NSString *)contentLengthString {
     NSMutableDictionary *mutableOriginalDictionary = [[self _HTTPBinResponseAllHeaderFieldsWithContentLength:contentLengthString] mutableCopy];
-    [mutableOriginalDictionary removeObjectForKey:@"Content-Length"];
-    [mutableOriginalDictionary removeObjectForKey:@"access-control-allow-credentials"];
-    mutableOriginalDictionary[@"Access-Control-Allow-Credentials"] = @"true";
+//    [mutableOriginalDictionary removeObjectForKey:@"Content-Length"];
+//    [mutableOriginalDictionary removeObjectForKey:@"access-control-allow-credentials"];
+//    mutableOriginalDictionary[@"Access-Control-Allow-Credentials"] = @"true";
     mutableOriginalDictionary[@"Content-Type"] = @"application/octet-stream";
-    mutableOriginalDictionary[@"Connection"] = @"keep-alive";
-    mutableOriginalDictionary[@"Transfer-Encoding"] = @"Identity";
+//    mutableOriginalDictionary[@"Connection"] = @"keep-alive";
+//    mutableOriginalDictionary[@"Transfer-Encoding"] = @"Identity";
     return mutableOriginalDictionary.copy;
 }
 
@@ -970,22 +970,22 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
     expectedResult.isRecording = isRecording;
     expectedResult.hasCurrentRequest = YES;
-//    expectedResult.URLString = @"https://httpbin.org/drip?numbytes=30000&duration=0&code=200";
+    expectedResult.URLString = @"https://httpbin.org/drip?numbytes=30000&duration=0&code=200";
 //    expectedResult.URLString = @"http://httpbin.org/stream-bytes/30000";
-    NSInteger chunkSize = 3*1024;
-    expectedResult.URLString = [NSString stringWithFormat:@"http://httpbin.org/stream-bytes/30000?chunk_size=%ld", (long)chunkSize];
+//    NSInteger chunkSize = 3*1024;
+//    expectedResult.URLString = [NSString stringWithFormat:@"http://httpbin.org/stream-bytes/30000?chunk_size=%ld", (long)chunkSize];
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.isReceivingChunkedData = YES;
 //    expectedResult.responseAllHeaderFields = [self _HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:@"30000"];
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsForStreamingWithContentLength:@"30000"];
-    if (!expectedResult.isRecording) {
-        // OHHTTPStubs forces a Content-Length header onto all responses that don't contain one, the HTTPBin request for chunked data does not
-        // have this header, so add it for playing requests (this will break if the isRecording BOOL is flipped and this isn't changed
-        NSMutableDictionary *updatedResponseHeaderFields = expectedResult.responseAllHeaderFields.mutableCopy;
-        updatedResponseHeaderFields[@"Content-Length"] = @"30000";
-        expectedResult.responseAllHeaderFields = updatedResponseHeaderFields.copy;
-    }
+//    if (!expectedResult.isRecording) {
+//        // OHHTTPStubs forces a Content-Length header onto all responses that don't contain one, the HTTPBin request for chunked data does not
+//        // have this header, so add it for playing requests (this will break if the isRecording BOOL is flipped and this isn't changed
+//        NSMutableDictionary *updatedResponseHeaderFields = expectedResult.responseAllHeaderFields.mutableCopy;
+//        updatedResponseHeaderFields[@"Content-Length"] = @"30000";
+//        expectedResult.responseAllHeaderFields = updatedResponseHeaderFields.copy;
+//    }
     expectedResult.expectedNumberOfPlayingFrames = 13; // this is based on how data is chunked into cassette frame dictionaries
     expectedResult.expectedNumberOfRecordingFrames = 13;
     expectedResult.receivedData = [self _randomDataWithLength:30000];

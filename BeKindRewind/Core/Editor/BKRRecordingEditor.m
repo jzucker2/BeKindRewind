@@ -90,6 +90,20 @@
                            (!self.item && !networkItem.item) ||
                            ([self.item isEqual:networkItem.item])
                            );
+    // if two equal pieces of NSData (repeating string that is exactly the same length)
+    // are received as part of the same task, then this would mean they are considered equal.
+    // Need to make sure all received data is always considered "unique"
+    // Let through all responses as well, occasionally the system resends responses, these
+    // are used to build the data, and the last time the response is sent needs to be noted,
+    // even if its the same response object
+    if (
+        [self.item isKindOfClass:[NSData class]] ||
+        [networkItem.item isKindOfClass:[NSData class]] ||
+        [self.item isKindOfClass:[NSURLResponse class]] ||
+        [networkItem.item isKindOfClass:[NSURLResponse class]]
+        ) {
+        haveEqualItems = NO;
+    }
     
     return haveEqualIdentifiers && haveEqualItems;
 }

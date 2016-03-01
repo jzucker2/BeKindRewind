@@ -40,8 +40,17 @@
 //#warning this needs to be fixed for chunked replay
 //    BKRDataFrame *dataFrame = self.allDataFrames.firstObject;
     NSMutableData *responseData = [NSMutableData data];
+    NSNumber *secondResponseTimestamp = self.allResponseFrames.lastObject.creationDate;
     for (BKRDataFrame *dataFrame in self.allDataFrames) {
-        [responseData appendData:dataFrame.rawData];
+        // turns out that NSURLSession might record two responses and receive
+        // the first packet of data twice, but it only returns data received after the second
+        // NSURLResponse (including resending NSData itself to simulate receiving
+        // it after). This is hidden from the user when the completion handler
+        // delivers all the data at the end
+        // so check to make sure this data was created after the last response date
+        if ([dataFrame.creationDate compare:secondResponseTimestamp] == NSOrderedDescending) {
+            [responseData appendData:dataFrame.rawData];
+        }
     }
     return responseData.copy;
 }

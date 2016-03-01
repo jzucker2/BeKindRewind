@@ -217,7 +217,7 @@
     }];
 }
 
-- (void)testRecordingChunkedResponseRequest {
+- (void)testRecordingChunkedDataRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {

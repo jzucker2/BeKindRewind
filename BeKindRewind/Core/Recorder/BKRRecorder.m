@@ -121,7 +121,7 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
-    NSLog(@"%s, task (%@), data (%@)", __PRETTY_FUNCTION__, task, data);
+    NSLog(@"%s, task (%@), data.length (%lu)", __PRETTY_FUNCTION__, task, (unsigned long)data.length);
     [self.editor addItem:data forTask:task];
 }
 
