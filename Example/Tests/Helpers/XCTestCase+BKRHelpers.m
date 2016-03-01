@@ -278,7 +278,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     if ([expectedResult.URL.host isEqualToString:@"httpbin.org"]) {
         if (expectedResult.isReceivingChunkedData) {
             XCTAssertNil(JSONObject, @"Shouldn't have a JSON object for chunked data, none of the tests expect it");
-#warning fill out
+            XCTAssertNotNil(data);
+            XCTAssertEqual(data.length, 30000, @"Chunked data should be 30,0000 bytes not %lu", (unsigned long)data.length);
         } else {
             NSDictionary *dataDict = (NSDictionary *)JSONObject;
             XCTAssertTrue([dataDict isKindOfClass:[NSDictionary class]]);
