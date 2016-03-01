@@ -80,14 +80,24 @@
     [self setEnabled:enabled withCompletionHandler:nil];
 }
 
-- (void)addFrame:(BKRRawFrame *)frame {
+- (void)addItem:(id)item forTask:(NSURLSessionTask *)task {
+    if (
+        !item ||
+        !task
+        ) {
+        // don't schedule anything if one piece of data is missing or there's not task
+        return;
+    }
     BKRWeakify(self);
     [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
+        BKRRawFrame *rawFrame = [BKRRawFrame frameWithTask:task];
+        rawFrame.item = item;
+        
         // check if you should record first:
         // 1) have a frame to record
         // 2) record starting time exists and is valid for this frame's creationDate
-        if (![self _shouldRecord:frame]) {
+        if (![self _shouldRecord:rawFrame]) {
             return;
         }
         if (!cassette) {
@@ -95,7 +105,7 @@
             return;
         }
         self->_handledRecording = YES;
-        [cassette addFrame:frame];
+        [cassette addFrame:rawFrame];
     }];
 }
 

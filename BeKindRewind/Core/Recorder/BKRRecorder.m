@@ -8,10 +8,7 @@
 
 #import "BKRRecordingEditor.h"
 #import "BKRRecorder.h"
-#import "BKRCassette+Recordable.h"
-#import "BKRRawFrame+Recordable.h"
 #import "BKROHHTTPStubsWrapper.h"
-#import "BKRScene+Recordable.h"
 #import "BKRNSURLSessionSwizzling.h"
 
 @interface BKRRecorder ()
@@ -122,32 +119,22 @@
 }
 
 - (void)initTask:(NSURLSessionTask *)task {
-    BKRRawFrame *requestFrame = [BKRRawFrame frameWithTask:task];
-    requestFrame.item = task.originalRequest;
-    [self.editor addFrame:requestFrame];
+    [self.editor addItem:task.originalRequest forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
-    BKRRawFrame *dataFrame = [BKRRawFrame frameWithTask:task];
-    dataFrame.item = data.copy;
-    [self.editor addFrame:dataFrame];
+    [self.editor addItem:data.copy forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
-    BKRRawFrame *currentRequestFrame = [BKRRawFrame frameWithTask:task];
-    currentRequestFrame.item = task.currentRequest;
-    [self.editor addFrame:currentRequestFrame];
+    [self.editor addItem:task.currentRequest forTask:task];
     
-    BKRRawFrame *responseFrame = [BKRRawFrame frameWithTask:task];
-    responseFrame.item = response;
-    [self.editor addFrame:responseFrame];
+    [self.editor addItem:response forTask:task];
 }
 
-- (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error {
+- (void)recordTask:(NSURLSessionTask *)task setError:(NSError *)error {
     if (error) {
-        BKRRawFrame *errorFrame = [BKRRawFrame frameWithIdentifier:taskUniqueIdentifier];
-        errorFrame.item = error;
-        [self.editor addFrame:errorFrame];
+        [self.editor addItem:error forTask:task];
     }
 }
 

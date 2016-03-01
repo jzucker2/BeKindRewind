@@ -28,11 +28,14 @@
 @property (nonatomic, assign, readonly) BOOL handledRecording;
 
 /**
- *  Add raw recordable frame representing a component of a network request to the current cassette
+ *  This is the main method used to add information about a task component to a 
+ *  cassette in a thread-safe, non-blocking manner
  *
- *  @param frame component of a network request
+ *  @param item this is the component of the network event 
+ *              (NSURLRequest, NSURLResponse, NSData, NSError, etc.)
+ *  @param task this is the task for which to organize network event components around
  */
-- (void)addFrame:(BKRRawFrame *)frame;
+- (void)addItem:(id)item forTask:(NSURLSessionTask *)task;
 
 /**
  *  This is called on the receiver's custom queue

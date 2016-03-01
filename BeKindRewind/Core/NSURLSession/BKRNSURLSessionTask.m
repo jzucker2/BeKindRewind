@@ -74,7 +74,7 @@
 }
 
 - (void)BKR_setError:(id)arg1 {
-    [[BKRRecorder sharedInstance] recordTask:[(NSURLSessionTask *)self BKR_globallyUniqueIdentifier] setError:arg1];
+    [[BKRRecorder sharedInstance] recordTask:(NSURLSessionTask *)self setError:arg1];
     [self BKR_setError:arg1];
 }
 

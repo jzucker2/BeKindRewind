@@ -112,7 +112,7 @@
  *  @param taskUniqueIdentifier unique identifier for in flight network task
  *  @param arg1 error from network request
  */
-- (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error;
+- (void)recordTask:(NSURLSessionTask *)task setError:(NSError *)error;
 
 /**
  *  Called by networking swizzled classes so that after task recording block will
