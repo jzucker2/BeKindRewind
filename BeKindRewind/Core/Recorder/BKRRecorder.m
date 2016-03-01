@@ -126,8 +126,8 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
-    NSLog(@"%s, task (%@), response (%@)", __PRETTY_FUNCTION__, task, response);
-    [self.editor addItem:response forTask:task];
+    NSLog(@"%s, task (%@), response (%@) MIMEType (%@)", __PRETTY_FUNCTION__, task, response, response.MIMEType);
+    [self.editor addItem:response.copy forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didAddRequest:(NSURLRequest *)request {

@@ -233,6 +233,22 @@
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
 }
 
+- (void)testRecordingChunkedDataRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
+    
+    [self recordVCR:self.vcr];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.vcr.currentCassette.allScenes);
+        XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
+    }];
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[expectedResult]];
+}
+
 // the fixture for this exists, and is asserted in the setUp
 - (void)testPlayingNoMockingWhenVCRIsNotSentPlay {
     BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];

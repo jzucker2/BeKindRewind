@@ -40,8 +40,10 @@
     NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithDictionary:superDict];
     NSDictionary *dict = @{
                            @"URL": self.URL.absoluteString,
-                           @"MIMEType": self.MIMEType.copy
                            };
+    if (self.MIMEType) {
+        plistDict[@"MIMEType"] = self.MIMEType;
+    }
     [plistDict addEntriesFromDictionary:dict];
     if (self.statusCode >= 0) {
         plistDict[@"statusCode"] = @(self.statusCode);

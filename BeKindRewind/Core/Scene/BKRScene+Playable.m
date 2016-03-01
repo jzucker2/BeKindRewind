@@ -37,8 +37,6 @@
 }
 
 - (NSData *)responseData {
-//#warning this needs to be fixed for chunked replay
-//    BKRDataFrame *dataFrame = self.allDataFrames.firstObject;
     NSMutableData *responseData = [NSMutableData data];
     NSNumber *secondResponseTimestamp = self.allResponseFrames.lastObject.creationDate;
     for (BKRDataFrame *dataFrame in self.allDataFrames) {

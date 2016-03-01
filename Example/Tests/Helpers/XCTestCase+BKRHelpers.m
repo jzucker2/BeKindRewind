@@ -1124,7 +1124,13 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         NSArray *frames = scene[@"frames"];
         XCTAssertNotNil(frames);
         NSInteger numberOfRequestChecks = 0;
-        XCTAssertEqual(recording.expectedNumberOfRecordingFrames, frames.count, @"frames: %@", frames);
+        if (recording.isReceivingChunkedData) {
+            XCTAssertGreaterThanOrEqual(recording.expectedNumberOfRecordingFrames, frames.count, @"frames: %@", frames);
+        } else {
+            XCTAssertEqual(recording.expectedNumberOfRecordingFrames, frames.count, @"frames: %@", frames);
+        }
+        NSNumber *responseTimestamp = nil;
+        NSMutableData *finalData = [NSMutableData data];
         for (NSDictionary *frame in frames) {
             XCTAssertEqualObjects(frame[@"uniqueIdentifier"], uniqueIdentifier);
             XCTAssertTrue([frame[@"creationDate"] isKindOfClass:[NSNumber class]]);
@@ -1144,10 +1150,22 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 XCTAssertEqualObjects(frame[@"userInfo"], finalUserInfo);
             } else if ([frameClass isEqualToString:@"BKRDataFrame"]) {
                 XCTAssertNotNil(recording.receivedData, @"How can we have a data frame but not expect data?");
-                [self _assertExpectedResult:recording withData:frame[@"data"]];
+                if (recording.isReceivingChunkedData) {
+                    if ([frame[@"creationDate"] compare:responseTimestamp] == NSOrderedDescending) {
+                        [finalData appendData:frame[@"data"]];
+                    }
+                } else {
+                    finalData = frame[@"data"];
+//                    [self _assertExpectedResult:recording withData:frame[@"data"]];
+                }
+                XCTAssertGreaterThan(finalData.length, 0);
+                XCTAssertNotNil(finalData);
             } else if ([frameClass isEqualToString:@"BKRResponseFrame"]) {
+                responseTimestamp = frame[@"creationDate"];
+                finalData = [NSMutableData data];
+                XCTAssertNotNil(responseTimestamp);
                 XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
-                XCTAssertNotNil(frame[@"MIMEType"]);
+//                XCTAssertNotNil(frame[@"MIMEType"]); // don't need to check for this, it's not used
                 XCTAssertEqual([frame[@"statusCode"] integerValue], recording.responseCode);
                 // check response header fields
                 [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHeaderFields"]];
@@ -1189,6 +1207,9 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             } else {
                 XCTFail(@"frameClass is unknown type: %@", frameClass);
             }
+        }
+        if (!recording.shouldCancel) {
+            [self _assertExpectedResult:recording withData:finalData.copy];
         }
         // assert order of frames and scenes
     }

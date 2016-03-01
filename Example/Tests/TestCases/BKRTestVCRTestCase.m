@@ -227,7 +227,7 @@
     BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:YES];
     BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:YES];
     
-    [self recordVCR:self.vcr];
+    [self recordTestVCR:self.vcr];
     
     BKRWeakify(self);
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -238,6 +238,22 @@
     }];
     XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[firstResult, secondResult]];
+}
+
+- (void)testRecordingChunkedDataRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
+    
+    [self recordTestVCR:self.vcr];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.vcr.currentCassette.allScenes);
+        XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
+    }];
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[expectedResult]];
 }
 
 // the fixture for this exists, and is asserted in the setUp
