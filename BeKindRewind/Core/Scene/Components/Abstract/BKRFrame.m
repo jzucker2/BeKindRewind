@@ -10,7 +10,7 @@
 #import "BKRFrame.h"
 
 @interface BKRFrame ()
-@property (nonatomic, strong, readwrite) NSDate *creationDate;
+@property (nonatomic, strong, readwrite) NSNumber *creationDate;
 @property (nonatomic, copy, readwrite) NSString *uniqueIdentifier;
 
 @end
@@ -20,7 +20,7 @@
 - (instancetype)initWithTask:(NSURLSessionTask *)task {
     self = [super init];
     if (self) {
-        _creationDate = [NSDate date];
+        _creationDate = @([[NSDate date] timeIntervalSince1970]);
         _uniqueIdentifier = task.BKR_globallyUniqueIdentifier;
     }
     return self;
@@ -46,7 +46,7 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier {
     self = [super init];
     if (self) {
-        _creationDate = [NSDate date];
+        _creationDate = @([[NSDate date] timeIntervalSince1970]);
         _uniqueIdentifier = identifier;
     }
     return self;
