@@ -10,6 +10,13 @@
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
+// remove these two after
+#import <BeKindRewind/BKRScene.h>
+#import <BeKindRewind/BKRFrame.h>
+#import <BeKindRewind/BKRResponseFrame.h>
+#import <BeKindRewind/BKRRequestFrame.h>
+#import <BeKindRewind/BKRDataFrame.h>
+
 @interface BKRRecorderTestCase : BKRBaseTestCase
 
 @end
