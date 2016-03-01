@@ -197,16 +197,6 @@
         BKRScene *scene = [BKRRecorder sharedInstance].allScenes.firstObject;
         NSLog(@"%@", scene.allFrames);
         NSLog(@"%@", scene.allFrames);
-//        for (BKRResponseFrame *frame in scene.allResponseFrames) {
-//            NSLog(@"&&&&&&&&&&&&&&&");
-//            NSLog(@"response: %@", frame.debugDescription);
-//            NSLog(@"&&&&&&&&&&&&&&&");
-//        }
-//        for (BKRRequestFrame *frame in scene.allRequestFrames) {
-//            NSLog(@"&&&&&&&&&&&&&&&");
-//            NSLog(@"request: %@", frame.debugDescription);
-//            NSLog(@"&&&&&&&&&&&&&&&");
-//        }
         for (BKRFrame *frame in scene.allFrames) {
             NSLog(@"&&&&&&&&&&&&&&&");
             NSLog(@"frame: %@", frame.debugDescription);
