@@ -668,10 +668,29 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             [framesArray addObject:expectedResponseDict.copy];
         }
         if (result.receivedData) {
-            NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
-            expectedDataDict[@"uniqueIdentifier"] = result.taskUniqueIdentifier;
-            expectedDataDict[@"data"] = result.receivedData;
-            [framesArray addObject:expectedDataDict.copy];
+            if (result.isReceivingChunkedData) {
+                NSData* myBlob = result.receivedData;
+                NSUInteger length = [myBlob length];
+                NSUInteger chunkSize = 3 * 1024;
+                NSUInteger offset = 0;
+                do {
+                    NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
+                    NSData* chunk = [NSData dataWithBytesNoCopy:(char *)[myBlob bytes] + offset
+                                                         length:thisChunkSize
+                                                   freeWhenDone:NO];
+                    offset += thisChunkSize;
+                    // do something with chunk
+                    NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
+                    expectedDataDict[@"uniqueIdentifier"] = result.taskUniqueIdentifier;
+                    expectedDataDict[@"data"] = chunk;
+                    [framesArray addObject:expectedDataDict.copy];
+                } while (offset < length);
+            } else {
+                NSMutableDictionary *expectedDataDict = [self standardDataDictionary];
+                expectedDataDict[@"uniqueIdentifier"] = result.taskUniqueIdentifier;
+                expectedDataDict[@"data"] = result.receivedData;
+                [framesArray addObject:expectedDataDict.copy];
+            }
         }
         if (result.hasError) {
             NSMutableDictionary *expectedErrorDict = [self standardErrorDictionary];
@@ -828,6 +847,17 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
              };
 }
 
+#pragma mark - random
+
+// http://stackoverflow.com/questions/4917968/best-way-to-generate-nsdata-object-with-random-bytes-of-a-specific-length
+- (NSData *)_randomDataWithLength:(NSInteger)length {
+    NSParameterAssert(length);
+    void * bytes = malloc(length);
+    NSData *randomData = [NSData dataWithBytes:bytes length:length];
+    free(bytes);
+    return randomData;
+}
+
 #pragma mark - HTTPBin helpers
 
 - (BKRTestExpectedResult *)HTTPBinCancelledRequestWithRecording:(BOOL)isRecording {
@@ -947,8 +977,16 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.isReceivingChunkedData = YES;
 //    expectedResult.responseAllHeaderFields = [self _HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:@"30000"];
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsForStreamingWithContentLength:@"30000"];
-    expectedResult.expectedNumberOfPlayingFrames = 4;
+    if (!expectedResult.isRecording) {
+        // OHHTTPStubs forces a Content-Length header onto all responses that don't contain one, the HTTPBin request for chunked data does not
+        // have this header, so add it for playing requests (this will break if the isRecording BOOL is flipped and this isn't changed
+        NSMutableDictionary *updatedResponseHeaderFields = expectedResult.responseAllHeaderFields.mutableCopy;
+        updatedResponseHeaderFields[@"Content-Length"] = @"30000";
+        expectedResult.responseAllHeaderFields = updatedResponseHeaderFields.copy;
+    }
+    expectedResult.expectedNumberOfPlayingFrames = 13; // this is based on how data is chunked into cassette frame dictionaries
     expectedResult.expectedNumberOfRecordingFrames = 13;
+    expectedResult.receivedData = [self _randomDataWithLength:30000];
     
     return expectedResult;
 }
