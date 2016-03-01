@@ -18,7 +18,7 @@
 @interface BKRRecordingEditor : BKREditor <BKRPlistSerializer, BKRVCRRecording>
 
 /**
- *  Date at which current recording session begins
+ *  Timestamp at which current recording session begins
  */
 @property (nonatomic, strong) NSNumber *recordingStartTime;
 

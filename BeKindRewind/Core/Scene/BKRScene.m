@@ -16,7 +16,6 @@
 #import "BKRConstants.h"
 
 @interface BKRScene ()
-@property (nonatomic, strong) NSMutableArray<NSString *> *frameOrder;
 @property (nonatomic, strong) NSMutableArray<BKRFrame *> *frames;
 @property (nonatomic) dispatch_queue_t accessingQueue;
 @end
@@ -79,12 +78,13 @@
     return self.allRequestFrames.firstObject;
 }
 
-// return last request if more than 1 or second request if more than 1?
 - (BKRRequestFrame *)currentRequest {
-//    if (self.allRequestFrames.count > 1) {
-//        return [self.allRequestFrames objectAtIndex:1];
-//    }
-//    return nil;
+    // return last request if more than 1 request,
+    // else return nil (assume that first request is the originalRequest and the
+    // last request (excluding the first one) is the currentRequest
+    if (self.allRequestFrames.count <= 1) {
+        return nil;
+    }
     return self.allRequestFrames.lastObject;
 }
 

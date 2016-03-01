@@ -92,7 +92,6 @@
 
 - (instancetype)BKR_initWithTask:(NSURLSessionTask *)task delegate:(id <NSURLSessionDelegate>)delegate delegateQueue:(NSOperationQueue *)queue {
     [task BKR_uniqueify];
-//    [[BKRRecorder sharedInstance] initTask:task];
     return [self BKR_initWithTask:task delegate:delegate delegateQueue:queue];
 }
 
@@ -111,7 +110,7 @@
 
 - (void)BKR__didReceiveResponse:(NSURLResponse *)response sniff:(BOOL)sniff {
     [self.task BKR_uniqueify];
-        
+
     // This can be called multiple times for the same request. Make sure it doesn't
     [[BKRRecorder sharedInstance] recordTask:self.task didReceiveResponse:response];
     [self BKR__didReceiveResponse:response sniff:sniff];

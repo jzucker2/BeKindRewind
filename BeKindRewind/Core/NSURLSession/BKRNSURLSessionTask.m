@@ -79,21 +79,12 @@
 }
 
 - (void)BKR_resume {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
     [(NSURLSessionTask *)self BKR_uniqueify];
     [[BKRRecorder sharedInstance] beginRecording:(NSURLSessionTask *)self];
     [self BKR_resume];
 }
 
-//- (void)BKR_setOriginalRequest:(id)arg1 {
-//    NSLog(@"%s", __PRETTY_FUNCTION__);
-//    [[BKRRecorder sharedInstance] recordTask:(NSURLSessionTask *)self didAddRequest:arg1];
-//    [self BKR_setOriginalRequest:arg1];
-//}
-
 - (void)BKR_updateCurrentRequest:(id)arg1 {
-//    [[BKRRecorder sharedInstance] recordTask:(NSURLSessionTask *)self didUpdateCurrentRequest:arg1];
-    NSLog(@"%s", __PRETTY_FUNCTION__);
     [[BKRRecorder sharedInstance] recordTask:(NSURLSessionTask *)self didAddRequest:arg1];
     [self BKR_updateCurrentRequest:arg1];
 }

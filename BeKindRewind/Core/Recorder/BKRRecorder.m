@@ -106,7 +106,7 @@
 
 - (void)beginRecording:(NSURLSessionTask *)task {
     [self.editor executeBeginRecordingBlockWithTask:task];
-    NSLog(@"set originalRequest");
+    // add the original request
     [self.editor addItem:task.originalRequest forTask:task];
 }
 
@@ -120,13 +120,8 @@
     }
 }
 
-//- (void)initTask:(NSURLSessionTask *)task {
-//    NSLog(@"initTask task (%@) request (%@) HTTPBody (%@) headers (%@)", task, task.originalRequest, task.originalRequest.HTTPBody, task.originalRequest.allHTTPHeaderFields);
-//    [self.editor addItem:task.originalRequest forTask:task];
-//}
-
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
-    [self.editor addItem:data.copy forTask:task];
+    [self.editor addItem:data forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
@@ -134,7 +129,6 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didAddRequest:(NSURLRequest *)request {
-    NSLog(@"updateCurrentRequest task (%@) request (%@) HTTPBody (%@) headers (%@)", task, request, request.HTTPBody, request.allHTTPHeaderFields);
     [self.editor addItem:request forTask:task];
 }
 

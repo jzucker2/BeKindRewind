@@ -11,7 +11,6 @@
 
 @interface BKRFrame ()
 @property (nonatomic, strong, readwrite) NSNumber *creationDate;
-//@property (nonatomic, strong, readwrite) NSNumber *creationTimestamp;
 @property (nonatomic, copy, readwrite) NSString *uniqueIdentifier;
 
 @end
@@ -21,7 +20,6 @@
 - (instancetype)initWithTask:(NSURLSessionTask *)task {
     self = [super init];
     if (self) {
-//        _creationDate = [NSDate date];
         _creationDate = @([[NSDate date] timeIntervalSince1970]);
         _uniqueIdentifier = task.BKR_globallyUniqueIdentifier;
     }
@@ -35,7 +33,6 @@
 - (instancetype)initFromFrame:(BKRFrame *)frame {
     self = [super init];
     if (self) {
-//        _creationDate = frame.creationDate;
         _creationDate = frame.creationDate;
         _uniqueIdentifier = frame.uniqueIdentifier;
     }
@@ -49,7 +46,6 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier {
     self = [super init];
     if (self) {
-//        _creationDate = [NSDate date];
         _creationDate = @([[NSDate date] timeIntervalSince1970]);
         _uniqueIdentifier = identifier;
     }
@@ -71,7 +67,6 @@
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {
     self = [super init];
     if (self) {
-//        _creationDate = dictionary[@"creationDate"];
         _creationDate = dictionary[@"creationDate"];
         _uniqueIdentifier = dictionary[@"uniqueIdentifier"];
     }

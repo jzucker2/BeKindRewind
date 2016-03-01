@@ -59,7 +59,6 @@
 
 - (void)_updateRecordingStartTimeWithEnabled:(BOOL)currentEnabled {
     if (currentEnabled) {
-//        self->_recordingStartTime = [NSDate date];
         self->_recordingStartTime = @([[NSDate date] timeIntervalSince1970]);
     } else {
         self->_recordingStartTime = nil;

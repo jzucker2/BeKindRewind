@@ -78,9 +78,8 @@
 @property (nonatomic, copy, readonly) NSString *uniqueIdentifier;
 
 /**
- *  Date this frame was created, useful for timing and playback control
+ *  Timestamp when this frame was created, useful for timing and playback control
  */
 @property (nonatomic, strong, readonly) NSNumber *creationDate;
-//@property (nonatomic, strong, readonly) NSNumber *creationTimestamp;
 
 @end
