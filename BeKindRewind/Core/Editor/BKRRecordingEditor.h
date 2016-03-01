@@ -20,7 +20,7 @@
 /**
  *  Date at which current recording session begins
  */
-@property (nonatomic, strong) NSDate *recordingStartTime;
+@property (nonatomic, strong) NSNumber *recordingStartTime;
 
 /**
  *  This is read-only and set by the receiver if anything is actually recorded during the session.

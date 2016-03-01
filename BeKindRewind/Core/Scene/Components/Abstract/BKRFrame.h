@@ -80,6 +80,7 @@
 /**
  *  Date this frame was created, useful for timing and playback control
  */
-@property (nonatomic, readonly) NSDate *creationDate;
+@property (nonatomic, strong, readonly) NSNumber *creationDate;
+//@property (nonatomic, strong, readonly) NSNumber *creationTimestamp;
 
 @end

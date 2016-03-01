@@ -47,8 +47,8 @@
 }
 
 
-- (NSDate *)recordingStartTime {
-    __block NSDate *recordingTime = nil;
+- (NSNumber *)recordingStartTime {
+    __block NSNumber *recordingTime = nil;
     BKRWeakify(self);
     dispatch_sync(self.editingQueue, ^{
         BKRStrongify(self);
@@ -59,7 +59,8 @@
 
 - (void)_updateRecordingStartTimeWithEnabled:(BOOL)currentEnabled {
     if (currentEnabled) {
-        self->_recordingStartTime = [NSDate date];
+//        self->_recordingStartTime = [NSDate date];
+        self->_recordingStartTime = @([[NSDate date] timeIntervalSince1970]);
     } else {
         self->_recordingStartTime = nil;
     }

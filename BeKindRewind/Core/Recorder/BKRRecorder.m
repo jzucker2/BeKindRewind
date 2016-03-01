@@ -131,7 +131,7 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didUpdateCurrentRequest:(NSURLRequest *)request {
-    [self.editor addItem:task.currentRequest forTask:task];
+    [self.editor addItem:request forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task setError:(NSError *)error {

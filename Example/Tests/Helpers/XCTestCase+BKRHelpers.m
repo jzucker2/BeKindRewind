@@ -673,7 +673,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (void)assertFramesOrderForScene:(BKRScene *)scene {
-    NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:0];
+//    NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:0];
+    NSNumber *lastDate = @(0);
     for (BKRFrame *frame in scene.allFrames) {
         // can't just assert that creation dates are in order, in case they have the same creation date for whatever reason (likely a result of mocking)
         // so just assert that they are in increasing order or equal (not in decreasing order)
@@ -858,7 +859,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"338"];
-    expectedResult.expectedNumberOfFrames = 4;
+    expectedResult.expectedNumberOfFrames = 6;
     expectedResult.receivedJSON = @{
                                     @"args": argsDict.copy,
                                     @"headers": @{
@@ -1054,7 +1055,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertEqual(recording.expectedNumberOfFrames, frames.count, @"frames: %@", frames);
         for (NSDictionary *frame in frames) {
             XCTAssertEqualObjects(frame[@"uniqueIdentifier"], uniqueIdentifier);
-            XCTAssertTrue([frame[@"creationDate"] isKindOfClass:[NSDate class]]);
+            XCTAssertTrue([frame[@"creationDate"] isKindOfClass:[NSNumber class]]);
             NSString *frameClass = frame[@"class"];
             XCTAssertNotNil(frameClass);
             if ([frameClass isEqualToString:@"BKRErrorFrame"]) {
@@ -1079,7 +1080,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 // check response header fields
                 [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHeaderFields"]];
             } else if ([frameClass isEqualToString:@"BKRRequestFrame"]) {
-                XCTAssertTrue(numberOfRequestChecks < 3, @"only expecting an original request and a current request");
+                XCTAssertTrue(numberOfRequestChecks < 4, @"only expecting an original request and a current request");
                 XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
                 XCTAssertNotNil(frame[@"timeoutInterval"]);
                 XCTAssertNotNil(frame[@"allowsCellularAccess"]);
@@ -1097,7 +1098,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                     if (recording.originalRequestAllHTTPHeaderFields) {
                         XCTAssertEqualObjects(recording.originalRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
                     }
-                } else if (numberOfRequestChecks == 1) {
+                } else if (
+                           (numberOfRequestChecks > 0) &&
+                           (numberOfRequestChecks < 4)
+                           ) {
+                    // expected to have updated current requests
+                } else if (numberOfRequestChecks == 4) {
                     if (recording.currentRequestAllHTTPHeaderFields) {
                         [self _assertExpectedResult:recording withActualCurrentRequestHeaderFields:frame[@"allHTTPHeaderFields"]];
 //                        [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHTTPHeaderFields"]];
