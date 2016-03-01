@@ -15,6 +15,7 @@
 #import <BeKindRewind/BKRFrame.h>
 #import <BeKindRewind/BKRResponseFrame.h>
 #import <BeKindRewind/BKRRequestFrame.h>
+#import <BeKindRewind/BKRDataFrame.h>
 
 @interface BKRRecorderTestCase : BKRBaseTestCase
 
@@ -184,6 +185,9 @@
         NSLog(@"-------------------");
         NSLog(@"result: %@", result);
         NSLog(@"task: %@", task);
+        NSLog(@"task.originalRequest: %@", task.originalRequest);
+        NSLog(@"task.currentRequest: %@", task.currentRequest);
+        NSLog(@"task.currentRequest.allHTTPHeaderFields: %@", task.currentRequest.allHTTPHeaderFields);
         NSLog(@"data: %@", data);
         NSLog(@"response: %@", response);
         NSLog(@"-------------------");
@@ -192,6 +196,22 @@
         NSLog(@"%@", [BKRRecorder sharedInstance].allScenes);
         BKRScene *scene = [BKRRecorder sharedInstance].allScenes.firstObject;
         NSLog(@"%@", scene.allFrames);
+        NSLog(@"%@", scene.allFrames);
+//        for (BKRResponseFrame *frame in scene.allResponseFrames) {
+//            NSLog(@"&&&&&&&&&&&&&&&");
+//            NSLog(@"response: %@", frame.debugDescription);
+//            NSLog(@"&&&&&&&&&&&&&&&");
+//        }
+//        for (BKRRequestFrame *frame in scene.allRequestFrames) {
+//            NSLog(@"&&&&&&&&&&&&&&&");
+//            NSLog(@"request: %@", frame.debugDescription);
+//            NSLog(@"&&&&&&&&&&&&&&&");
+//        }
+        for (BKRFrame *frame in scene.allFrames) {
+            NSLog(@"&&&&&&&&&&&&&&&");
+            NSLog(@"frame: %@", frame.debugDescription);
+            NSLog(@"&&&&&&&&&&&&&&&");
+        }
         NSLog(@"++++++++++++++++");
         batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
     }];
@@ -204,6 +224,8 @@
         NSLog(@"-------------------");
         NSLog(@"result: %@", result);
         NSLog(@"task: %@", task);
+        NSLog(@"task.originalRequest: %@", task.originalRequest);
+        NSLog(@"task.currentRequest: %@", task.currentRequest);
         NSLog(@"data: %@", data);
         NSLog(@"response: %@", response);
         NSLog(@"-------------------");
@@ -212,16 +234,19 @@
         NSLog(@"%@", [BKRRecorder sharedInstance].allScenes);
         BKRScene *scene = [BKRRecorder sharedInstance].allScenes.firstObject;
         NSLog(@"%@", scene.allFrames);
-        for (BKRResponseFrame *frame in scene.allResponseFrames) {
+        for (BKRFrame *frame in scene.allFrames) {
             NSLog(@"&&&&&&&&&&&&&&&");
-            NSLog(@"response: %@", frame.debugDescription);
-            NSLog(@"&&&&&&&&&&&&&&&");
-        }
-        for (BKRRequestFrame *frame in scene.allRequestFrames) {
-            NSLog(@"&&&&&&&&&&&&&&&");
-            NSLog(@"request: %@", frame.debugDescription);
+            NSLog(@"frame: %@", frame.debugDescription);
             NSLog(@"&&&&&&&&&&&&&&&");
         }
+//        for (BKRRequestFrame *frame in scene.allRequestFrames) {
+//            NSLog(@"&&&&&&&&&&&&&&&");
+//            NSLog(@"request: %@", frame.debugDescription);
+//            NSLog(@"&&&&&&&&&&&&&&&");
+//        }
+//        NSLog(@"&&&&&&&&&&&&&&&");
+//        NSLog(@"data: %@", scene.allDataFrames.firstObject.JSONConvertedObject);
+//        NSLog(@"&&&&&&&&&&&&&&&");
         NSLog(@"++++++++++++++++");
         batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
     }];

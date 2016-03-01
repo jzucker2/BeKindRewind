@@ -116,6 +116,8 @@
 
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 {
     NSLog(@"%s, task (%@), request (%@), response (%@)", __PRETTY_FUNCTION__, task, arg1, arg2);
+    [self.editor addItem:arg1 forTask:task];
+    [self.editor addItem:arg2 forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
