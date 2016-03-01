@@ -11,13 +11,49 @@
 #import "BKRRawFrame+Recordable.h"
 #import "BKRConstants.h"
 
+/**
+ *  This object is used to track unique network components
+ *  across NSURLSessionTask instances
+ */
 @interface BKRNetworkItem : NSObject
 
+/**
+ *  This is the network component to compare
+ *  (NSURLRequest, NSURLResponse, NSData, etc.)
+ */
 @property (nonatomic, strong) id item;
+
+/**
+ *  This is the unique identifier assigned to the 
+ *  task by BeKindRewind
+ */
 @property (nonatomic, copy) NSString *uniqueIdentifier;
 
+/**
+ *  Convenience constructor for object
+ *
+ *  @param rawFrame unit of a network event
+ *
+ *  @return newly initialized instance of BKRNetworkItem
+ */
 + (instancetype)itemWithRawFrame:(BKRRawFrame *)rawFrame;
+
+/**
+ *  Designated initializer for object
+ *
+ *  @param rawFrame unit of a network event
+ *
+ *  @return newly initialized instance of BKRNetworkItem
+ */
 - (instancetype)initWithRawFrame:(BKRRawFrame *)rawFrame;
+
+/**
+ *  This is used to test equality
+ *
+ *  @param networkItem other instance to compare
+ *
+ *  @return YES if items are equal and NO if they are not
+ */
 - (BOOL)isEqualToNetworkItem:(BKRNetworkItem *)networkItem;
 
 @end
@@ -46,11 +82,6 @@
         return NO;
     }
     
-//    BOOL haveEqualNames = (!self.name && !person.name) || [self.name isEqualToString:person.name];
-//    BOOL haveEqualBirthdays = (!self.birthday && !person.birthday) || [self.birthday isEqualToDate:person.birthday];
-//    
-//    return haveEqualNames && haveEqualBirthdays;
-    
     BOOL haveEqualIdentifiers = (
                                  (!self.uniqueIdentifier && !networkItem.uniqueIdentifier) ||
                                  [self.uniqueIdentifier isEqualToString:networkItem.uniqueIdentifier]
@@ -61,7 +92,6 @@
                            );
     
     return haveEqualIdentifiers && haveEqualItems;
-    
 }
 
 - (BOOL)isEqual:(id)object {
