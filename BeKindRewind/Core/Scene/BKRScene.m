@@ -80,10 +80,11 @@
 
 // return last request if more than 1 or second request if more than 1?
 - (BKRRequestFrame *)currentRequest {
-    if (self.allRequestFrames.count > 1) {
-        return [self.allRequestFrames objectAtIndex:1];
-    }
-    return nil;
+//    if (self.allRequestFrames.count > 1) {
+//        return [self.allRequestFrames objectAtIndex:1];
+//    }
+//    return nil;
+    return self.allRequestFrames.lastObject;
 }
 
 - (NSPredicate *)_predicateForFramesOfClass:(Class)frameClass {

@@ -84,4 +84,9 @@
     [self BKR_resume];
 }
 
+- (void)BKR_updateCurrentRequest:(id)arg1 {
+    [[BKRRecorder sharedInstance] recordTask:(NSURLSessionTask *)self didUpdateCurrentRequest:arg1];
+    [self BKR_updateCurrentRequest:arg1];
+}
+
 @end

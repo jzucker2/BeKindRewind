@@ -123,5 +123,7 @@
  */
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
 
+- (void)recordTask:(NSURLSessionTask *)task didUpdateCurrentRequest:(NSURLRequest *)request;
+
 
 @end

@@ -127,9 +127,11 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
-    [self.editor addItem:task.currentRequest forTask:task];
-    
     [self.editor addItem:response forTask:task];
+}
+
+- (void)recordTask:(NSURLSessionTask *)task didUpdateCurrentRequest:(NSURLRequest *)request {
+    [self.editor addItem:task.currentRequest forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task setError:(NSError *)error {

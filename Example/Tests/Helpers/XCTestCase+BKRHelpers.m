@@ -1079,7 +1079,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 // check response header fields
                 [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHeaderFields"]];
             } else if ([frameClass isEqualToString:@"BKRRequestFrame"]) {
-                XCTAssertTrue(numberOfRequestChecks < 2, @"only expecting an original request and a current request");
+                XCTAssertTrue(numberOfRequestChecks < 3, @"only expecting an original request and a current request");
                 XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
                 XCTAssertNotNil(frame[@"timeoutInterval"]);
                 XCTAssertNotNil(frame[@"allowsCellularAccess"]);

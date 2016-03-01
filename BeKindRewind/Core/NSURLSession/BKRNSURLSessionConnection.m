@@ -103,23 +103,21 @@
     [self BKR__redirectRequest:arg1 redirectResponse:arg2 completion:arg3];
 }
 
-- (void)BKR__didReceiveData:(id)data;
-{
+- (void)BKR__didReceiveData:(id)data {
     [self.task BKR_uniqueify];
     [[BKRRecorder sharedInstance] recordTask:self.task didReceiveData:data];
     [self BKR__didReceiveData:data];
 }
 
-- (void)BKR__didReceiveResponse:(NSURLResponse *)response sniff:(BOOL)sniff;
-{
+- (void)BKR__didReceiveResponse:(NSURLResponse *)response sniff:(BOOL)sniff {
     [self.task BKR_uniqueify];
+        
     // This can be called multiple times for the same request. Make sure it doesn't
     [[BKRRecorder sharedInstance] recordTask:self.task didReceiveResponse:response];
     [self BKR__didReceiveResponse:response sniff:sniff];
 }
 
-- (void)BKR__didFinishWithError:(NSError *)error;
-{
+- (void)BKR__didFinishWithError:(NSError *)error {
     [self.task BKR_uniqueify];
     [[BKRRecorder sharedInstance] recordTask:self.task didFinishWithError:error];
     [self BKR__didFinishWithError:error];
