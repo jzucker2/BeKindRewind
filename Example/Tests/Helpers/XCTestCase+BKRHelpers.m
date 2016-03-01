@@ -35,7 +35,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     self = [super init];
     if (self) {
         _shouldCancel = NO;
-        _expectedNumberOfFrames = 0;
+        _expectedNumberOfPlayingFrames = 0;
+        _expectedNumberOfRecordingFrames = 0;
         _expectedSceneNumber = 0;
         _responseCode = -1;
         _isSimultaneous = NO;
@@ -586,7 +587,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     for (NSInteger i=0; i<expectedResults.count; i++) {
         BKRTestExpectedResult *result = [expectedResults objectAtIndex:i];
         BKRScene *scene = [scenes objectAtIndex:i];
-        XCTAssertEqual(result.expectedNumberOfFrames, scene.allFrames.count);
+        XCTAssertEqual(result.expectedNumberOfPlayingFrames, scene.allFrames.count);
         
     }
     BKRPlayer *player = [BKRPlayer playerWithMatcherClass:matcherClass];
@@ -647,6 +648,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         }
         if (result.hasError) {
             NSMutableDictionary *expectedErrorDict = [self standardErrorDictionary];
+            expectedErrorDict[@"uniqueIdentifier"] = result.taskUniqueIdentifier;
             expectedErrorDict[@"code"] = @(result.errorCode);
             expectedErrorDict[@"domain"] = result.errorDomain;
             if (result.errorUserInfo) {
@@ -709,14 +711,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (NSMutableDictionary *)standardDataDictionary {
     return [@{
               @"class": @"BKRDataFrame",
-              @"creationDate": [NSDate date],
+              @"creationDate": @([[NSDate date] timeIntervalSince1970]),
               } mutableCopy];
 }
 
 - (NSMutableDictionary *)standardRequestDictionary {
     return [@{
               @"class": @"BKRRequestFrame",
-              @"creationDate": [NSDate date],
+              @"creationDate": @([[NSDate date] timeIntervalSince1970]),
               @"timeoutInterval": @(60),
               @"HTTPShouldUsePipelining": @(NO),
               @"HTTPShouldHandleCookies": @(YES),
@@ -728,7 +730,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (NSMutableDictionary *)standardResponseDictionary {
     return [@{
               @"class": @"BKRResponseFrame",
-              @"creationDate": [NSDate date],
+              @"creationDate": @([[NSDate date] timeIntervalSince1970]),
               @"MIMEType": @"application/json",
               @"statusCode": @(200)
               } mutableCopy];
@@ -737,7 +739,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (NSMutableDictionary *)standardErrorDictionary {
     return [@{
               @"class": @"BKRErrorFrame",
-              @"creationDate": [NSDate date],
+              @"creationDate": @([[NSDate date] timeIntervalSince1970]),
               } mutableCopy];
 }
 
@@ -797,7 +799,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.shouldCancel = YES;
     expectedResult.hasCurrentRequest = NO;
     expectedResult.errorCode = -999;
-    expectedResult.expectedNumberOfFrames = 5;
+    expectedResult.expectedNumberOfPlayingFrames = 2;
+    expectedResult.expectedNumberOfRecordingFrames = 5;
+//    if (expectedResult.isRecording) {
+//        expectedResult.expectedNumberOfFrames = 5;
+//    } else {
+//        expectedResult.expectedNumberOfFrames = 2;
+//    }
+//    expectedResult.expectedNumberOfFrames = 5;
 //    expectedResult.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
     expectedResult.expectedSceneNumber = 0;
     expectedResult.errorDomain = NSURLErrorDomain;
@@ -816,7 +825,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.URLString = @"https://httpbin.org/delay/3";
     expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/delay/%ld", (long)delay];
     expectedResult.hasCurrentRequest = YES;
-    expectedResult.expectedNumberOfFrames = 6;
+    expectedResult.expectedNumberOfRecordingFrames = 6;
+    expectedResult.expectedNumberOfPlayingFrames = 4;
+//    if (expectedResult.isRecording) {
+//        expectedResult.expectedNumberOfFrames = 6;
+//    } else {
+//        expectedResult.expectedNumberOfFrames = 4;
+//    }
+    //    expectedResult.expectedNumberOfFrames = 6;
     //    expectedResult.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
     expectedResult.expectedSceneNumber = 0;
     expectedResult.responseCode = 200;
@@ -859,7 +875,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"338"];
-    expectedResult.expectedNumberOfFrames = 6;
+//    if (expectedResult.isRecording) {
+//        expectedResult.expectedNumberOfFrames = 6;
+//    } else {
+//        expectedResult.expectedNumberOfFrames = 4;
+//    }
+    //    expectedResult.expectedNumberOfFrames = 6;
+    expectedResult.expectedNumberOfPlayingFrames = 4;
+    expectedResult.expectedNumberOfRecordingFrames = 6;
     expectedResult.receivedJSON = @{
                                     @"args": argsDict.copy,
                                     @"headers": @{
@@ -883,7 +906,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.responseAllHeaderFields = [self _HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:@"30000"];
-    expectedResult.expectedNumberOfFrames = 4;
+    expectedResult.expectedNumberOfPlayingFrames = 4;
+    expectedResult.expectedNumberOfRecordingFrames = 6;
     
     return expectedResult;
 }
@@ -929,7 +953,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                             };
     result.responseCode = 200;
     result.expectedSceneNumber = 0;
-    result.expectedNumberOfFrames = 6;
+    result.expectedNumberOfPlayingFrames = 4;
+    result.expectedNumberOfRecordingFrames = 6;
+//    if (result.isRecording) {
+//        result.expectedNumberOfFrames = 6;
+//    } else {
+//        result.expectedNumberOfFrames = 4;
+//    }
+    //    result.expectedNumberOfFrames = 6;
     return result;
 }
 
@@ -943,7 +974,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.responseAllHeaderFields = [self _PNResponseAllHeaderFieldsWithContentLength:@"19"];
-    expectedResult.expectedNumberOfFrames = 6;
+//    if (expectedResult.isRecording) {
+//        expectedResult.expectedNumberOfFrames = 6;
+//    } else {
+//        expectedResult.expectedNumberOfFrames = 4;
+//    }
+    expectedResult.expectedNumberOfRecordingFrames = 6;
+    expectedResult.expectedNumberOfPlayingFrames = 4;
+    //    expectedResult.expectedNumberOfFrames = 6;
     expectedResult.receivedJSON = @[
                                     @([[NSDate date] timeIntervalSince1970])
                                     ];
@@ -1052,7 +1090,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         NSArray *frames = scene[@"frames"];
         XCTAssertNotNil(frames);
         NSInteger numberOfRequestChecks = 0;
-        XCTAssertEqual(recording.expectedNumberOfFrames, frames.count, @"frames: %@", frames);
+        XCTAssertEqual(recording.expectedNumberOfRecordingFrames, frames.count, @"frames: %@", frames);
         for (NSDictionary *frame in frames) {
             XCTAssertEqualObjects(frame[@"uniqueIdentifier"], uniqueIdentifier);
             XCTAssertTrue([frame[@"creationDate"] isKindOfClass:[NSNumber class]]);

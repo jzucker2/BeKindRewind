@@ -30,7 +30,8 @@
 @property (nonatomic, assign) NSInteger responseCode; // if this is set, then hasResponse is automatically set to YES, expects responseAllHeaderFields to be set if this is set
 @property (nonatomic, strong) NSDictionary *responseAllHeaderFields; // if this is set, then hasResponse is automatically set to YES, expects responseCode to be set if this is set
 @property (nonatomic, assign) NSInteger expectedSceneNumber;
-@property (nonatomic, assign) NSInteger expectedNumberOfFrames;
+@property (nonatomic, assign) NSInteger expectedNumberOfRecordingFrames;
+@property (nonatomic, assign) NSInteger expectedNumberOfPlayingFrames;
 @property (nonatomic, assign) BOOL automaticallyAssignSceneNumberForAssertion; // YES by default
 @property (nonatomic, assign) BOOL hasCurrentRequest; // default NO
 @property (nonatomic, strong) NSDictionary *originalRequestAllHTTPHeaderFields;
