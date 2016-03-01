@@ -971,7 +971,9 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.isRecording = isRecording;
     expectedResult.hasCurrentRequest = YES;
 //    expectedResult.URLString = @"https://httpbin.org/drip?numbytes=30000&duration=0&code=200";
-    expectedResult.URLString = @"http://httpbin.org/stream-bytes/30000";
+//    expectedResult.URLString = @"http://httpbin.org/stream-bytes/30000";
+    NSInteger chunkSize = 3*1024;
+    expectedResult.URLString = [NSString stringWithFormat:@"http://httpbin.org/stream-bytes/30000?chunk_size=%ld", (long)chunkSize];
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.isReceivingChunkedData = YES;
