@@ -14,6 +14,7 @@
 #import <BeKindRewind/BKRPlayheadMatcher.h>
 #import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRScene.h>
+#import <BeKindRewind/BKRScene+Playable.h>
 #import <BeKindRewind/BKRFrame.h>
 #import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRDataFrame.h>
@@ -205,9 +206,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             expectedResult.actualReceivedData &&
             !expectedResult.shouldCancel
             ) {
+            XCTAssertGreaterThan(scene.allDataFrames.count, 0, @"There should be data frames for this scene");
+            NSData *responseData = scene.responseData;
+            XCTAssertNotNil(responseData);
+            XCTAssertEqualObjects(expectedResult.actualReceivedData, responseData);
             if (expectedResult.isReceivingChunkedData) {
-#warning fill out
-                
+                XCTAssertGreaterThan(scene.allDataFrames.count, 1, @"Chunked data should have more than 1 data frame");
             } else {
                 [self _assertDataFrame:scene.allDataFrames.firstObject withData:expectedResult.actualReceivedData];
             }
@@ -498,7 +502,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                     XCTAssertNotNil(dataDict[@"origin"]);
                 }
             } else {
-#warning fill out
+                XCTAssertNotNil(data);
+                XCTAssertEqual(data.length, 30000); // maybe make this not hardcoded later?
             }
         }
         if (networkCompletionAssertions) {
