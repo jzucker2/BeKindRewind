@@ -37,8 +37,13 @@
 }
 
 - (NSData *)responseData {
-    BKRDataFrame *dataFrame = self.allDataFrames.firstObject;
-    return dataFrame.rawData;
+//#warning this needs to be fixed for chunked replay
+//    BKRDataFrame *dataFrame = self.allDataFrames.firstObject;
+    NSMutableData *responseData = [NSMutableData data];
+    for (BKRDataFrame *dataFrame in self.allDataFrames) {
+        [responseData appendData:dataFrame.rawData];
+    }
+    return responseData.copy;
 }
 
 - (NSInteger)responseStatusCode {

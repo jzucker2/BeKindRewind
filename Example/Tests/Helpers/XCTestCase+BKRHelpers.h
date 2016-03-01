@@ -26,6 +26,7 @@
 @property (nonatomic, assign) BOOL hasResponse;
 @property (nonatomic, assign, readonly) BOOL hasError; // calculated by having errorCode and errorDomain
 @property (nonatomic, assign) NSInteger errorCode;
+@property (nonatomic, assign) BOOL isReceivingChunkedData; // default is NO
 @property (nonatomic, strong) NSDictionary *errorUserInfo;
 @property (nonatomic, copy) NSString *errorDomain;
 @property (nonatomic, assign) NSInteger responseCode; // if this is set, then hasResponse is automatically set to YES, expects responseAllHeaderFields to be set if this is set

@@ -46,6 +46,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _taskUniqueIdentifier = [NSUUID UUID].UUIDString;
         _shouldCompareCurrentRequestHTTPHeaderFields = NO;
         _isRecording = NO;
+        _isReceivingChunkedData = NO;
         _automaticallyAssignSceneNumberForAssertion = YES;
     }
     return self;
@@ -204,7 +205,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             expectedResult.actualReceivedData &&
             !expectedResult.shouldCancel
             ) {
-            [self _assertDataFrame:scene.allDataFrames.firstObject withData:expectedResult.actualReceivedData];
+            if (expectedResult.isReceivingChunkedData) {
+#warning fill out
+                
+            } else {
+                [self _assertDataFrame:scene.allDataFrames.firstObject withData:expectedResult.actualReceivedData];
+            }
         }
         if (expectedResult.actualReceivedError) {
             [self _assertErrorFrame:scene.allErrorFrames.firstObject withError:expectedResult.actualReceivedError];
@@ -258,29 +264,39 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (void)_assertExpectedResult:(BKRTestExpectedResult *)expectedResult withData:(NSData *)data {
     NSError *JSONError = nil;
-    id JSONObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&JSONError];
-    XCTAssertNil(JSONError, @"Failed to convert data to JSON: %@", JSONError.localizedDescription);
+    id JSONObject = nil;
+    if (!expectedResult.isReceivingChunkedData) {
+        JSONObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&JSONError];
+        XCTAssertNil(JSONError, @"Failed to convert data to JSON: %@", JSONError.localizedDescription);
+    }
+//    id JSONObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&JSONError];
+//    XCTAssertNil(JSONError, @"Failed to convert data to JSON: %@", JSONError.localizedDescription);
     if ([expectedResult.URL.host isEqualToString:@"httpbin.org"]) {
-        NSDictionary *dataDict = (NSDictionary *)JSONObject;
-        XCTAssertTrue([dataDict isKindOfClass:[NSDictionary class]]);
-        if ([expectedResult.HTTPMethod isEqualToString:@"POST"]) {
-            NSDictionary *formDict = dataDict[@"form"];
-            // for this service, need to fish out the data sent
-            NSArray *formKeys = formDict.allKeys;
-            NSString *rawReceivedDataString = formKeys.firstObject;
-            NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-            // ensure that result from network is as expected
-            XCTAssertEqualObjects(expectedResult.HTTPBodyJSON, receivedDataDictionary);
-        } else if (
-                   !expectedResult.HTTPMethod ||
-                   [expectedResult.HTTPMethod isEqualToString:@"GET"]
-                   ) {
-            XCTAssertEqualObjects(dataDict[@"args"], expectedResult.receivedJSON[@"args"]);
-            XCTAssertEqualObjects(dataDict[@"url"], expectedResult.receivedJSON[@"url"]);
-            XCTAssertNotNil(dataDict[@"headers"]);
-            XCTAssertNotNil(dataDict[@"origin"]);
+        if (expectedResult.isReceivingChunkedData) {
+            XCTAssertNil(JSONObject, @"Shouldn't have a JSON object for chunked data, none of the tests expect it");
+#warning fill out
         } else {
-            XCTFail(@"not prepared to handle this type of request: %@", expectedResult.HTTPMethod);
+            NSDictionary *dataDict = (NSDictionary *)JSONObject;
+            XCTAssertTrue([dataDict isKindOfClass:[NSDictionary class]]);
+            if ([expectedResult.HTTPMethod isEqualToString:@"POST"]) {
+                NSDictionary *formDict = dataDict[@"form"];
+                // for this service, need to fish out the data sent
+                NSArray *formKeys = formDict.allKeys;
+                NSString *rawReceivedDataString = formKeys.firstObject;
+                NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                // ensure that result from network is as expected
+                XCTAssertEqualObjects(expectedResult.HTTPBodyJSON, receivedDataDictionary);
+            } else if (
+                       !expectedResult.HTTPMethod ||
+                       [expectedResult.HTTPMethod isEqualToString:@"GET"]
+                       ) {
+                XCTAssertEqualObjects(dataDict[@"args"], expectedResult.receivedJSON[@"args"]);
+                XCTAssertEqualObjects(dataDict[@"url"], expectedResult.receivedJSON[@"url"]);
+                XCTAssertNotNil(dataDict[@"headers"]);
+                XCTAssertNotNil(dataDict[@"origin"]);
+            } else {
+                XCTFail(@"not prepared to handle this type of request: %@", expectedResult.HTTPMethod);
+            }
         }
     } else if ([expectedResult.URL.host isEqualToString:@"pubsub.pubnub.com"]) {
         NSArray *dataArray = (NSArray *)JSONObject;
@@ -465,20 +481,24 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         if (result.shouldCancel) {
             
         } else {
-            NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-            if ([result.HTTPMethod isEqualToString:@"POST"]) {
-                NSDictionary *formDict = dataDict[@"form"];
-                // for this service, need to fish out the data sent
-                NSArray *formKeys = formDict.allKeys;
-                NSString *rawReceivedDataString = formKeys.firstObject;
-                NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-                // ensure that result from network is as expected
-                XCTAssertEqualObjects(result.HTTPBodyJSON, receivedDataDictionary);
+            if (!result.isReceivingChunkedData) {
+                NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+                if ([result.HTTPMethod isEqualToString:@"POST"]) {
+                    NSDictionary *formDict = dataDict[@"form"];
+                    // for this service, need to fish out the data sent
+                    NSArray *formKeys = formDict.allKeys;
+                    NSString *rawReceivedDataString = formKeys.firstObject;
+                    NSDictionary *receivedDataDictionary = [NSJSONSerialization JSONObjectWithData:[rawReceivedDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                    // ensure that result from network is as expected
+                    XCTAssertEqualObjects(result.HTTPBodyJSON, receivedDataDictionary);
+                } else {
+                    XCTAssertEqualObjects(dataDict[@"args"], result.receivedJSON[@"args"]);
+                    XCTAssertEqualObjects(dataDict[@"url"], result.receivedJSON[@"url"]);
+                    XCTAssertNotNil(dataDict[@"headers"]);
+                    XCTAssertNotNil(dataDict[@"origin"]);
+                }
             } else {
-                XCTAssertEqualObjects(dataDict[@"args"], result.receivedJSON[@"args"]);
-                XCTAssertEqualObjects(dataDict[@"url"], result.receivedJSON[@"url"]);
-                XCTAssertNotNil(dataDict[@"headers"]);
-                XCTAssertNotNil(dataDict[@"origin"]);
+#warning fill out
             }
         }
         if (networkCompletionAssertions) {
@@ -773,6 +793,17 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
              };
 }
 
+- (NSDictionary *)_HTTPBinResponseAllHeaderFieldsForStreamingWithContentLength:(NSString *)contentLengthString {
+    NSMutableDictionary *mutableOriginalDictionary = [[self _HTTPBinResponseAllHeaderFieldsWithContentLength:contentLengthString] mutableCopy];
+    [mutableOriginalDictionary removeObjectForKey:@"Content-Length"];
+    [mutableOriginalDictionary removeObjectForKey:@"access-control-allow-credentials"];
+    mutableOriginalDictionary[@"Access-Control-Allow-Credentials"] = @"true";
+    mutableOriginalDictionary[@"Content-Type"] = @"application/octet-stream";
+    mutableOriginalDictionary[@"Connection"] = @"keep-alive";
+    mutableOriginalDictionary[@"Transfer-Encoding"] = @"Identity";
+    return mutableOriginalDictionary.copy;
+}
+
 - (NSDictionary *)_HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:(NSString *)contentLengthString {
     NSMutableDictionary *mutableOriginalDictionary = [[self _HTTPBinResponseAllHeaderFieldsWithContentLength:contentLengthString] mutableCopy];
     mutableOriginalDictionary[@"Content-Type"] = @"application/octet-stream";
@@ -907,9 +938,11 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.URLString = @"http://httpbin.org/stream-bytes/30000";
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
-    expectedResult.responseAllHeaderFields = [self _HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:@"30000"];
+    expectedResult.isReceivingChunkedData = YES;
+//    expectedResult.responseAllHeaderFields = [self _HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:@"30000"];
+    expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsForStreamingWithContentLength:@"30000"];
     expectedResult.expectedNumberOfPlayingFrames = 4;
-    expectedResult.expectedNumberOfRecordingFrames = 4;
+    expectedResult.expectedNumberOfRecordingFrames = 13;
     
     return expectedResult;
 }
@@ -1141,17 +1174,17 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                     }
                 } else if (
                            (numberOfRequestChecks > 0) &&
-                           (numberOfRequestChecks < 2)
+                           (numberOfRequestChecks < recording.numberOfExpectedRequestFrames)
                            ) {
                     // expected to have updated current requests
-                } else if (numberOfRequestChecks == 2) {
+                } else if (numberOfRequestChecks == recording.numberOfExpectedRequestFrames) {
                     if (recording.currentRequestAllHTTPHeaderFields) {
                         [self _assertExpectedResult:recording withActualCurrentRequestHeaderFields:frame[@"allHTTPHeaderFields"]];
 //                        [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHTTPHeaderFields"]];
 //                        XCTAssertEqualObjects(recording.currentRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
                     }
                 } else {
-                    XCTFail(@"not expecting to have more than 2 requests: %@", frame);
+                    XCTFail(@"not expecting to have more than %ld requests: %@", (long)recording.numberOfExpectedRequestFrames, frame);
                 }
                 numberOfRequestChecks++;
                 

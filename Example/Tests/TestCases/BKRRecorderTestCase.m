@@ -217,7 +217,7 @@
     }];
 }
 
-- (void)DISABLE_testRecordingChunkedResponseRequest {
+- (void)testRecordingChunkedResponseRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -249,6 +249,7 @@
 //        NSLog(@"&&&&&&&&&&&&&&&");
         NSLog(@"++++++++++++++++");
         batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
 }
 
