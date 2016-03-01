@@ -11,9 +11,76 @@
 #import "BKRRawFrame+Recordable.h"
 #import "BKRConstants.h"
 
+@interface BKRNetworkItem : NSObject
+
+@property (nonatomic, strong) id item;
+@property (nonatomic, copy) NSString *uniqueIdentifier;
+
++ (instancetype)itemWithRawFrame:(BKRRawFrame *)rawFrame;
+- (instancetype)initWithRawFrame:(BKRRawFrame *)rawFrame;
+- (BOOL)isEqualToNetworkItem:(BKRNetworkItem *)networkItem;
+
+@end
+
+@implementation BKRNetworkItem
+
+- (instancetype)initWithRawFrame:(BKRRawFrame *)rawFrame {
+    self = [super init];
+    if (self) {
+        _uniqueIdentifier = rawFrame.uniqueIdentifier;
+        _item = rawFrame.item;
+    }
+    return self;
+}
+
++ (instancetype)itemWithRawFrame:(BKRRawFrame *)rawFrame {
+    return [[self alloc] initWithRawFrame:rawFrame];
+}
+
+- (NSUInteger)hash {
+    return [self.item hash] ^ [self.uniqueIdentifier hash];
+}
+
+- (BOOL)isEqualToNetworkItem:(BKRNetworkItem *)networkItem {
+    if (!networkItem) {
+        return NO;
+    }
+    
+//    BOOL haveEqualNames = (!self.name && !person.name) || [self.name isEqualToString:person.name];
+//    BOOL haveEqualBirthdays = (!self.birthday && !person.birthday) || [self.birthday isEqualToDate:person.birthday];
+//    
+//    return haveEqualNames && haveEqualBirthdays;
+    
+    BOOL haveEqualIdentifiers = (
+                                 (!self.uniqueIdentifier && !networkItem.uniqueIdentifier) ||
+                                 [self.uniqueIdentifier isEqualToString:networkItem.uniqueIdentifier]
+                                 );
+    BOOL haveEqualItems = (
+                           (!self.item && !networkItem.item) ||
+                           ([self.item isEqual:networkItem.item])
+                           );
+    
+    return haveEqualIdentifiers && haveEqualItems;
+    
+}
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    }
+    
+    if (![object isKindOfClass:[BKRNetworkItem class]]) {
+        return NO;
+    }
+    
+    return [self isEqualToNetworkItem:(BKRNetworkItem *)object];
+}
+
+@end
+
 @interface BKRRecordingEditor ()
 @property (nonatomic, assign, readwrite) BOOL handledRecording;
-
+@property (nonatomic, strong) NSMutableSet<BKRNetworkItem *> *objectsAdded;
 @end
 
 @implementation BKRRecordingEditor
@@ -27,6 +94,7 @@
     if (self) {
         _handledRecording = NO;
         _recordingStartTime = nil;
+        _objectsAdded = [NSMutableSet set];
     }
     return self;
 }
@@ -38,6 +106,7 @@
     BKRWeakify(self);
     [super resetWithCompletionBlock:^void (void){
         BKRStrongify(self);
+        [self->_objectsAdded removeAllObjects];
         self->_handledRecording = NO;
         self->_recordingStartTime = nil;
         if (completionBlock) {
@@ -93,6 +162,16 @@
         BKRStrongify(self);
         BKRRawFrame *rawFrame = [BKRRawFrame frameWithTask:task];
         rawFrame.item = item;
+        BKRNetworkItem *networkItem = [BKRNetworkItem itemWithRawFrame:rawFrame];
+        // don't add the same object twice,
+        // this happens with NSURLResponse, especially when it has headers
+        // "Content-Type" = "application/octet-stream"
+        // This can also be an issue if the same NSURLRequest is used
+        // in different NSURLSessionTask instances
+        if ([self->_objectsAdded containsObject:networkItem]) {
+            // already recorded this, return
+            return;
+        }
         
         // check if you should record first:
         // 1) have a frame to record
@@ -106,6 +185,7 @@
         }
         self->_handledRecording = YES;
         [cassette addFrame:rawFrame];
+        [self->_objectsAdded addObject:networkItem];
     }];
 }
 

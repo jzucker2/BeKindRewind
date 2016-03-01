@@ -115,9 +115,7 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 {
-    if (!self.enabled) {
-        return;
-    }
+    NSLog(@"%s, task (%@), request (%@), response (%@)", __PRETTY_FUNCTION__, task, arg1, arg2);
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
@@ -125,6 +123,7 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
+    NSLog(@"%s, task (%@), response (%@)", __PRETTY_FUNCTION__, task, response);
     [self.editor addItem:response forTask:task];
 }
 

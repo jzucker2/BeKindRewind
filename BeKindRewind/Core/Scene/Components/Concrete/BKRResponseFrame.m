@@ -63,4 +63,9 @@
     return self;
 }
 
+- (NSString *)debugDescription {
+    NSString *superDescription = [super debugDescription];
+    return [NSString stringWithFormat:@"%@, status: %ld, allHeaderFields: %@", superDescription, (long)self.statusCode, self.allHeaderFields];
+}
+
 @end

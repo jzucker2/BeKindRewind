@@ -37,6 +37,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _shouldCancel = NO;
         _expectedNumberOfPlayingFrames = 0;
         _expectedNumberOfRecordingFrames = 0;
+        _numberOfExpectedRequestFrames = 2; // (originalRequest and currentRequest)
         _expectedSceneNumber = 0;
         _responseCode = -1;
         _isSimultaneous = NO;
@@ -800,7 +801,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.hasCurrentRequest = NO;
     expectedResult.errorCode = -999;
     expectedResult.expectedNumberOfPlayingFrames = 2;
-    expectedResult.expectedNumberOfRecordingFrames = 5;
+    expectedResult.expectedNumberOfRecordingFrames = 3;
 //    if (expectedResult.isRecording) {
 //        expectedResult.expectedNumberOfFrames = 5;
 //    } else {
@@ -825,7 +826,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.URLString = @"https://httpbin.org/delay/3";
     expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/delay/%ld", (long)delay];
     expectedResult.hasCurrentRequest = YES;
-    expectedResult.expectedNumberOfRecordingFrames = 6;
+    expectedResult.expectedNumberOfRecordingFrames = 4;
     expectedResult.expectedNumberOfPlayingFrames = 4;
 //    if (expectedResult.isRecording) {
 //        expectedResult.expectedNumberOfFrames = 6;
@@ -882,7 +883,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 //    }
     //    expectedResult.expectedNumberOfFrames = 6;
     expectedResult.expectedNumberOfPlayingFrames = 4;
-    expectedResult.expectedNumberOfRecordingFrames = 6;
+    expectedResult.expectedNumberOfRecordingFrames = 4;
     expectedResult.receivedJSON = @{
                                     @"args": argsDict.copy,
                                     @"headers": @{
@@ -902,12 +903,13 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
     expectedResult.isRecording = isRecording;
     expectedResult.hasCurrentRequest = YES;
-    expectedResult.URLString = @"https://httpbin.org/drip?numbytes=30000&duration=0&code=200";
+//    expectedResult.URLString = @"https://httpbin.org/drip?numbytes=30000&duration=0&code=200";
+    expectedResult.URLString = @"http://httpbin.org/stream-bytes/30000";
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.responseAllHeaderFields = [self _HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:@"30000"];
     expectedResult.expectedNumberOfPlayingFrames = 4;
-    expectedResult.expectedNumberOfRecordingFrames = 6;
+    expectedResult.expectedNumberOfRecordingFrames = 4;
     
     return expectedResult;
 }
@@ -915,7 +917,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (BKRTestExpectedResult *)HTTPBinRedirectWithRecording:(BOOL)isRecording {
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
     expectedResult.isRecording = isRecording;
-    expectedResult.URLString = @"http://httpbin.org/redirect/6";
+    expectedResult.URLString = @"http://httpbin.org/redirect/3";
     
     return expectedResult;
 }
@@ -954,7 +956,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     result.responseCode = 200;
     result.expectedSceneNumber = 0;
     result.expectedNumberOfPlayingFrames = 4;
-    result.expectedNumberOfRecordingFrames = 6;
+    result.expectedNumberOfRecordingFrames = 5;
+    result.numberOfExpectedRequestFrames = 3; // POST includes HTTPBody, this gets stripped and generates an extra request when that occurs
 //    if (result.isRecording) {
 //        result.expectedNumberOfFrames = 6;
 //    } else {
@@ -979,7 +982,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 //    } else {
 //        expectedResult.expectedNumberOfFrames = 4;
 //    }
-    expectedResult.expectedNumberOfRecordingFrames = 6;
+    expectedResult.expectedNumberOfRecordingFrames = 4;
     expectedResult.expectedNumberOfPlayingFrames = 4;
     //    expectedResult.expectedNumberOfFrames = 6;
     expectedResult.receivedJSON = @[
@@ -1118,7 +1121,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 // check response header fields
                 [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHeaderFields"]];
             } else if ([frameClass isEqualToString:@"BKRRequestFrame"]) {
-                XCTAssertTrue(numberOfRequestChecks < 4, @"only expecting an original request and a current request");
+                XCTAssertTrue(numberOfRequestChecks < recording.numberOfExpectedRequestFrames, @"only expecting an original request and a current request");
                 XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
                 XCTAssertNotNil(frame[@"timeoutInterval"]);
                 XCTAssertNotNil(frame[@"allowsCellularAccess"]);
@@ -1138,10 +1141,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                     }
                 } else if (
                            (numberOfRequestChecks > 0) &&
-                           (numberOfRequestChecks < 4)
+                           (numberOfRequestChecks < 2)
                            ) {
                     // expected to have updated current requests
-                } else if (numberOfRequestChecks == 4) {
+                } else if (numberOfRequestChecks == 2) {
                     if (recording.currentRequestAllHTTPHeaderFields) {
                         [self _assertExpectedResult:recording withActualCurrentRequestHeaderFields:frame[@"allHTTPHeaderFields"]];
 //                        [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHTTPHeaderFields"]];
