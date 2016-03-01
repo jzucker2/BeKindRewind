@@ -10,6 +10,10 @@
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
+// remove these two after
+#import <BeKindRewind/BKRScene.h>
+#import <BeKindRewind/BKRFrame.h>
+
 @interface BKRRecorderTestCase : BKRBaseTestCase
 
 @end
@@ -152,13 +156,22 @@
     }];
 }
 
-- (void)DISABLE_testRecordingChunkedResponseRequest {
+- (void)testRecordingChunkedResponseRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        NSLog(@"-------------------");
         NSLog(@"result: %@", result);
         NSLog(@"task: %@", task);
+        NSLog(@"data: %@", data);
+        NSLog(@"response: %@", response);
+        NSLog(@"-------------------");
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        NSLog(@"++++++++++++++++");
+        NSLog(@"%@", [BKRRecorder sharedInstance].allScenes);
+        BKRScene *scene = [BKRRecorder sharedInstance].allScenes.firstObject;
+        NSLog(@"%@", scene.allFrames);
+        NSLog(@"++++++++++++++++");
         batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
     }];
 }
