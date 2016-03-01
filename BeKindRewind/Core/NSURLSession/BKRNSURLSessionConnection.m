@@ -32,16 +32,14 @@
 @implementation BKRNSURLSessionConnection
 @dynamic task;
 
-+ (void)swizzleNSURLSessionConnection
-{
++ (void)swizzleNSURLSessionConnection {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         [self _swizzleNSURLSessionConnection];
     });
 }
 
-+ (void)_swizzleNSURLSessionConnection;
-{
++ (void)_swizzleNSURLSessionConnection {
     NSString *overrideSessionConnectionClassString = nil;
 #if TARGET_OS_IOS
     if ([[[UIDevice currentDevice] systemVersion] hasPrefix:@"8"]) {
@@ -90,13 +88,7 @@
     }
 }
 
-- (instancetype)BKR_initWithTask:(NSURLSessionTask *)task delegate:(id <NSURLSessionDelegate>)delegate delegateQueue:(NSOperationQueue *)queue {
-    [task BKR_uniqueify];
-    return [self BKR_initWithTask:task delegate:delegate delegateQueue:queue];
-}
-
-- (void)BKR__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(id)arg3;
-{
+- (void)BKR__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(id)arg3 {
     [self.task BKR_uniqueify];
     [[BKRRecorder sharedInstance] recordTask:self.task redirectRequest:arg1 redirectResponse:arg2];
     [self BKR__redirectRequest:arg1 redirectResponse:arg2 completion:arg3];
