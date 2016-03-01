@@ -797,7 +797,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.shouldCancel = YES;
     expectedResult.hasCurrentRequest = NO;
     expectedResult.errorCode = -999;
-    expectedResult.expectedNumberOfFrames = 2;
+    expectedResult.expectedNumberOfFrames = 5;
 //    expectedResult.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
     expectedResult.expectedSceneNumber = 0;
     expectedResult.errorDomain = NSURLErrorDomain;
@@ -816,7 +816,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.URLString = @"https://httpbin.org/delay/3";
     expectedResult.URLString = [NSString stringWithFormat:@"https://httpbin.org/delay/%ld", (long)delay];
     expectedResult.hasCurrentRequest = YES;
-    expectedResult.expectedNumberOfFrames = 4;
+    expectedResult.expectedNumberOfFrames = 6;
     //    expectedResult.currentRequestAllHTTPHeaderFields = [self _HTTPBinCurrentRequestAllHTTPHeaderFields];
     expectedResult.expectedSceneNumber = 0;
     expectedResult.responseCode = 200;
@@ -929,7 +929,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                             };
     result.responseCode = 200;
     result.expectedSceneNumber = 0;
-    result.expectedNumberOfFrames = 4;
+    result.expectedNumberOfFrames = 6;
     return result;
 }
 
@@ -943,7 +943,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseCode = 200;
     expectedResult.responseAllHeaderFields = [self _PNResponseAllHeaderFieldsWithContentLength:@"19"];
-    expectedResult.expectedNumberOfFrames = 4;
+    expectedResult.expectedNumberOfFrames = 6;
     expectedResult.receivedJSON = @[
                                     @([[NSDate date] timeIntervalSince1970])
                                     ];

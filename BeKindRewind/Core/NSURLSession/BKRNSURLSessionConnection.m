@@ -92,7 +92,7 @@
 
 - (instancetype)BKR_initWithTask:(NSURLSessionTask *)task delegate:(id <NSURLSessionDelegate>)delegate delegateQueue:(NSOperationQueue *)queue {
     [task BKR_uniqueify];
-    [[BKRRecorder sharedInstance] initTask:task];
+//    [[BKRRecorder sharedInstance] initTask:task];
     return [self BKR_initWithTask:task delegate:delegate delegateQueue:queue];
 }
 

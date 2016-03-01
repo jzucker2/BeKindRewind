@@ -106,6 +106,8 @@
 
 - (void)beginRecording:(NSURLSessionTask *)task {
     [self.editor executeBeginRecordingBlockWithTask:task];
+    NSLog(@"set originalRequest");
+    [self.editor addItem:task.originalRequest forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
@@ -118,9 +120,10 @@
     }
 }
 
-- (void)initTask:(NSURLSessionTask *)task {
-    [self.editor addItem:task.originalRequest forTask:task];
-}
+//- (void)initTask:(NSURLSessionTask *)task {
+//    NSLog(@"initTask task (%@) request (%@) HTTPBody (%@) headers (%@)", task, task.originalRequest, task.originalRequest.HTTPBody, task.originalRequest.allHTTPHeaderFields);
+//    [self.editor addItem:task.originalRequest forTask:task];
+//}
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
     [self.editor addItem:data.copy forTask:task];
@@ -130,7 +133,8 @@
     [self.editor addItem:response forTask:task];
 }
 
-- (void)recordTask:(NSURLSessionTask *)task didUpdateCurrentRequest:(NSURLRequest *)request {
+- (void)recordTask:(NSURLSessionTask *)task didAddRequest:(NSURLRequest *)request {
+    NSLog(@"updateCurrentRequest task (%@) request (%@) HTTPBody (%@) headers (%@)", task, request, request.HTTPBody, request.allHTTPHeaderFields);
     [self.editor addItem:request forTask:task];
 }
 

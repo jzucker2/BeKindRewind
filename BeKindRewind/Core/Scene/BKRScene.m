@@ -16,6 +16,7 @@
 #import "BKRConstants.h"
 
 @interface BKRScene ()
+@property (nonatomic, strong) NSMutableArray<NSString *> *frameOrder;
 @property (nonatomic, strong) NSMutableArray<BKRFrame *> *frames;
 @property (nonatomic) dispatch_queue_t accessingQueue;
 @end

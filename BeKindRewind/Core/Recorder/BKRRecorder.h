@@ -74,12 +74,12 @@
  */
 - (void)beginRecording:(NSURLSessionTask *)task;
 
-/**
- *  Called by networking swizzled classes to set the original request
- *
- *  @param task NSURLSessionTask that just began executing
- */
-- (void)initTask:(NSURLSessionTask *)task;
+///**
+// *  Called by networking swizzled classes to set the original request
+// *
+// *  @param task NSURLSessionTask that just began executing
+// */
+//- (void)initTask:(NSURLSessionTask *)task;
 
 /**
  *  Called by networking swizzled classes to record redirects
@@ -123,7 +123,7 @@
  */
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
 
-- (void)recordTask:(NSURLSessionTask *)task didUpdateCurrentRequest:(NSURLRequest *)request;
+- (void)recordTask:(NSURLSessionTask *)task didAddRequest:(NSURLRequest *)request;
 
 
 @end
