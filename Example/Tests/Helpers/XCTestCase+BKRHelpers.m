@@ -211,7 +211,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             XCTAssertNotNil(responseData);
             XCTAssertEqualObjects(expectedResult.actualReceivedData, responseData);
             if (expectedResult.isReceivingChunkedData) {
-                XCTAssertGreaterThan(scene.allDataFrames.count, 1, @"Chunked data should have more than 1 data frame");
+                XCTAssertGreaterThan(scene.allDataFrames.count, 1, @"Chunked data should have more than 1 data frame %@", scene.allDataFrames);
             } else {
                 [self _assertDataFrame:scene.allDataFrames.firstObject withData:expectedResult.actualReceivedData];
             }
