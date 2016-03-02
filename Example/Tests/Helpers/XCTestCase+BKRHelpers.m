@@ -963,6 +963,21 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.isRecording = isRecording;
     expectedResult.URLString = @"https://httpbin.org/redirect/3";
     expectedResult.isRedirecting = YES;
+    expectedResult.receivedJSON = @{
+                                    @"args": @{},
+                                    @"headers": @{
+                                            @"Accept": @"*/*",
+                                            @"Accept-Endcoding": @"gzip, deflate",
+                                            @"Accept-Language": @"en-us",
+                                            @"Host": @"httpbin.org",
+                                            @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0",
+                                            },
+                                    @"origin": @"98.210.195.88",
+                                    @"url": @"https://httpbin.org/get",
+                                    };
+    expectedResult.responseCode = 200;
+#warning need to handle all the extra redirect request/responses, this data only tests the final request/response
+    expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"306"];
     
     return expectedResult;
 }
