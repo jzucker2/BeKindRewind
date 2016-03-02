@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>creationDate</key>
-	<date>2016-03-01T06:22:57Z</date>
+	<date>2016-03-02T00:06:48Z</date>
 	<key>scenes</key>
 	<array>
 		<dict>
@@ -23,55 +23,11 @@
 					<key>class</key>
 					<string>BKRRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456813377.0861909</real>
+					<real>1456877208.385725</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>5D7AED04-BF1F-4C13-A8FD-DC8497FC1580</string>
-				</dict>
-				<dict>
-					<key>HTTPMethod</key>
-					<string>GET</string>
-					<key>HTTPShouldHandleCookies</key>
-					<true/>
-					<key>HTTPShouldUsePipelining</key>
-					<false/>
-					<key>URL</key>
-					<string>https://httpbin.org/delay/10</string>
-					<key>allHTTPHeaderFields</key>
-					<dict/>
-					<key>allowsCellularAccess</key>
-					<true/>
-					<key>class</key>
-					<string>BKRRequestFrame</string>
-					<key>creationDate</key>
-					<real>1456813377.0865691</real>
-					<key>timeoutInterval</key>
-					<real>60</real>
-					<key>uniqueIdentifier</key>
-					<string>5D7AED04-BF1F-4C13-A8FD-DC8497FC1580</string>
-				</dict>
-				<dict>
-					<key>HTTPMethod</key>
-					<string>GET</string>
-					<key>HTTPShouldHandleCookies</key>
-					<true/>
-					<key>HTTPShouldUsePipelining</key>
-					<false/>
-					<key>URL</key>
-					<string>https://httpbin.org/delay/10</string>
-					<key>allHTTPHeaderFields</key>
-					<dict/>
-					<key>allowsCellularAccess</key>
-					<true/>
-					<key>class</key>
-					<string>BKRRequestFrame</string>
-					<key>creationDate</key>
-					<real>1456813377.0870039</real>
-					<key>timeoutInterval</key>
-					<real>60</real>
-					<key>uniqueIdentifier</key>
-					<string>5D7AED04-BF1F-4C13-A8FD-DC8497FC1580</string>
+					<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -96,11 +52,11 @@
 					<key>class</key>
 					<string>BKRRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456813377.087543</real>
+					<real>1456877208.3859479</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>5D7AED04-BF1F-4C13-A8FD-DC8497FC1580</string>
+					<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
 				</dict>
 				<dict>
 					<key>class</key>
@@ -108,11 +64,11 @@
 					<key>code</key>
 					<integer>-999</integer>
 					<key>creationDate</key>
-					<real>1456813377.6342921</real>
+					<real>1456877208.924402</real>
 					<key>domain</key>
 					<string>NSURLErrorDomain</string>
 					<key>uniqueIdentifier</key>
-					<string>5D7AED04-BF1F-4C13-A8FD-DC8497FC1580</string>
+					<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
 					<key>userInfo</key>
 					<dict>
 						<key>NSErrorFailingURLKey</key>
@@ -125,7 +81,7 @@
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>5D7AED04-BF1F-4C13-A8FD-DC8497FC1580</string>
+			<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
 		</dict>
 	</array>
 	<key>version</key>
