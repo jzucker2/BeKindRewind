@@ -29,7 +29,6 @@
     NSURLSessionDataTask *basicGetTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(response);
-        NSLog(@"response: %@", response);
         XCTAssertNotNil(data);
         NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         XCTAssertNil(error);
