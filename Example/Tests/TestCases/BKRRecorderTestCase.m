@@ -152,14 +152,42 @@
     }];
 }
 
-- (void)DISABLE_testRecordingChunkedResponseRequest {
+//- (void)DISABLE_testRecordingRedirectRequest {
+//    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:YES];
+//    
+//    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+//        NSLog(@"-------------------");
+//        NSLog(@"result: %@", result);
+//        NSLog(@"task: %@", task);
+//        NSLog(@"task.originalRequest: %@", task.originalRequest);
+//        NSLog(@"task.currentRequest: %@", task.currentRequest);
+//        NSLog(@"task.currentRequest.allHTTPHeaderFields: %@", task.currentRequest.allHTTPHeaderFields);
+//        NSLog(@"data: %@", data);
+//        NSLog(@"response: %@", response);
+//        NSLog(@"-------------------");
+//    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+//        NSLog(@"++++++++++++++++");
+//        NSLog(@"%@", [BKRRecorder sharedInstance].allScenes);
+//        BKRScene *scene = [BKRRecorder sharedInstance].allScenes.firstObject;
+//        NSLog(@"%@", scene.allFrames);
+//        NSLog(@"%@", scene.allFrames);
+//        for (BKRFrame *frame in scene.allFrames) {
+//            NSLog(@"&&&&&&&&&&&&&&&");
+//            NSLog(@"frame: %@", frame.debugDescription);
+//            NSLog(@"&&&&&&&&&&&&&&&");
+//        }
+//        NSLog(@"++++++++++++++++");
+//        batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+//    }];
+//}
+
+- (void)testRecordingChunkedDataRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-        NSLog(@"result: %@", result);
-        NSLog(@"task: %@", task);
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
 }
 

@@ -11,9 +11,120 @@
 #import "BKRRawFrame+Recordable.h"
 #import "BKRConstants.h"
 
+/**
+ *  This object is used to track unique network components
+ *  across NSURLSessionTask instances
+ */
+@interface BKRNetworkItem : NSObject
+
+/**
+ *  This is the network component to compare
+ *  (NSURLRequest, NSURLResponse, NSData, etc.)
+ */
+@property (nonatomic, strong) id item;
+
+/**
+ *  This is the unique identifier assigned to the 
+ *  task by BeKindRewind
+ */
+@property (nonatomic, copy) NSString *uniqueIdentifier;
+
+/**
+ *  Convenience constructor for object
+ *
+ *  @param rawFrame unit of a network event
+ *
+ *  @return newly initialized instance of BKRNetworkItem
+ */
++ (instancetype)itemWithRawFrame:(BKRRawFrame *)rawFrame;
+
+/**
+ *  Designated initializer for object
+ *
+ *  @param rawFrame unit of a network event
+ *
+ *  @return newly initialized instance of BKRNetworkItem
+ */
+- (instancetype)initWithRawFrame:(BKRRawFrame *)rawFrame;
+
+/**
+ *  This is used to test equality
+ *
+ *  @param networkItem other instance to compare
+ *
+ *  @return YES if items are equal and NO if they are not
+ */
+- (BOOL)isEqualToNetworkItem:(BKRNetworkItem *)networkItem;
+
+@end
+
+@implementation BKRNetworkItem
+
+- (instancetype)initWithRawFrame:(BKRRawFrame *)rawFrame {
+    self = [super init];
+    if (self) {
+        _uniqueIdentifier = rawFrame.uniqueIdentifier;
+        _item = rawFrame.item;
+    }
+    return self;
+}
+
++ (instancetype)itemWithRawFrame:(BKRRawFrame *)rawFrame {
+    return [[self alloc] initWithRawFrame:rawFrame];
+}
+
+- (NSUInteger)hash {
+    return [self.item hash] ^ [self.uniqueIdentifier hash];
+}
+
+- (BOOL)isEqualToNetworkItem:(BKRNetworkItem *)networkItem {
+    if (!networkItem) {
+        return NO;
+    }
+    
+    BOOL haveEqualIdentifiers = (
+                                 (!self.uniqueIdentifier && !networkItem.uniqueIdentifier) ||
+                                 [self.uniqueIdentifier isEqualToString:networkItem.uniqueIdentifier]
+                                 );
+    BOOL haveEqualItems = (
+                           (!self.item && !networkItem.item) ||
+                           ([self.item isEqual:networkItem.item])
+                           );
+    // if two equal pieces of NSData (repeating string that is exactly the same length)
+    // are received as part of the same task, then this would mean they are considered equal.
+    // Need to make sure all received data is always considered "unique"
+    // Let through all responses as well, occasionally the system resends responses, these
+    // are used to build the data, and the last time the response is sent needs to be noted,
+    // even if its the same response object
+    if (
+        [self.item isKindOfClass:[NSData class]] ||
+        [networkItem.item isKindOfClass:[NSData class]] ||
+        [self.item isKindOfClass:[NSURLResponse class]] ||
+        [networkItem.item isKindOfClass:[NSURLResponse class]]
+        ) {
+        haveEqualItems = NO;
+    }
+    
+    return haveEqualIdentifiers && haveEqualItems;
+}
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    }
+    
+    if (![object isKindOfClass:[BKRNetworkItem class]]) {
+        return NO;
+    }
+    
+    return [self isEqualToNetworkItem:(BKRNetworkItem *)object];
+}
+
+@end
+
 @interface BKRRecordingEditor ()
 @property (nonatomic, assign, readwrite) BOOL handledRecording;
-
+@property (nonatomic, strong) NSMutableSet<BKRNetworkItem *> *objectsAdded;
 @end
 
 @implementation BKRRecordingEditor
@@ -27,6 +138,7 @@
     if (self) {
         _handledRecording = NO;
         _recordingStartTime = nil;
+        _objectsAdded = [NSMutableSet set];
     }
     return self;
 }
@@ -38,6 +150,7 @@
     BKRWeakify(self);
     [super resetWithCompletionBlock:^void (void){
         BKRStrongify(self);
+        [self->_objectsAdded removeAllObjects];
         self->_handledRecording = NO;
         self->_recordingStartTime = nil;
         if (completionBlock) {
@@ -93,6 +206,16 @@
         BKRStrongify(self);
         BKRRawFrame *rawFrame = [BKRRawFrame frameWithTask:task];
         rawFrame.item = item;
+        BKRNetworkItem *networkItem = [BKRNetworkItem itemWithRawFrame:rawFrame];
+        // don't add the same object twice,
+        // this happens with NSURLResponse, especially when it has headers
+        // "Content-Type" = "application/octet-stream"
+        // This can also be an issue if the same NSURLRequest is used
+        // in different NSURLSessionTask instances
+        if ([self->_objectsAdded containsObject:networkItem]) {
+            // already recorded this, return
+            return;
+        }
         
         // check if you should record first:
         // 1) have a frame to record
@@ -106,6 +229,7 @@
         }
         self->_handledRecording = YES;
         [cassette addFrame:rawFrame];
+        [self->_objectsAdded addObject:networkItem];
     }];
 }
 

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>creationDate</key>
-	<date>2016-03-01T06:22:59Z</date>
+	<date>2016-03-02T00:06:50Z</date>
 	<key>scenes</key>
 	<array>
 		<dict>
@@ -23,55 +23,11 @@
 					<key>class</key>
 					<string>BKRRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456813379.132393</real>
+					<real>1456877210.718397</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>B2E89152-906F-4D20-8CE2-3E9BB1FE1C78</string>
-				</dict>
-				<dict>
-					<key>HTTPMethod</key>
-					<string>GET</string>
-					<key>HTTPShouldHandleCookies</key>
-					<true/>
-					<key>HTTPShouldUsePipelining</key>
-					<false/>
-					<key>URL</key>
-					<string>https://pubsub.pubnub.com/time/0</string>
-					<key>allHTTPHeaderFields</key>
-					<dict/>
-					<key>allowsCellularAccess</key>
-					<true/>
-					<key>class</key>
-					<string>BKRRequestFrame</string>
-					<key>creationDate</key>
-					<real>1456813379.132825</real>
-					<key>timeoutInterval</key>
-					<real>60</real>
-					<key>uniqueIdentifier</key>
-					<string>B2E89152-906F-4D20-8CE2-3E9BB1FE1C78</string>
-				</dict>
-				<dict>
-					<key>HTTPMethod</key>
-					<string>GET</string>
-					<key>HTTPShouldHandleCookies</key>
-					<true/>
-					<key>HTTPShouldUsePipelining</key>
-					<false/>
-					<key>URL</key>
-					<string>https://pubsub.pubnub.com/time/0</string>
-					<key>allHTTPHeaderFields</key>
-					<dict/>
-					<key>allowsCellularAccess</key>
-					<true/>
-					<key>class</key>
-					<string>BKRRequestFrame</string>
-					<key>creationDate</key>
-					<real>1456813379.13328</real>
-					<key>timeoutInterval</key>
-					<real>60</real>
-					<key>uniqueIdentifier</key>
-					<string>B2E89152-906F-4D20-8CE2-3E9BB1FE1C78</string>
+					<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -96,11 +52,11 @@
 					<key>class</key>
 					<string>BKRRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456813379.133902</real>
+					<real>1456877210.718611</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>B2E89152-906F-4D20-8CE2-3E9BB1FE1C78</string>
+					<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
@@ -127,25 +83,25 @@
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1456813379.212794</real>
+					<real>1456877210.791043</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>B2E89152-906F-4D20-8CE2-3E9BB1FE1C78</string>
+					<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1456813379.212814</real>
+					<real>1456877210.791074</real>
 					<key>data</key>
-					<data>WzE0NTY4MTMzNzkxOTQ1MzI5XQ==</data>
+					<data>WzE0NTY4NzcyMTE2Mzg4MDY2XQ==</data>
 					<key>uniqueIdentifier</key>
-					<string>B2E89152-906F-4D20-8CE2-3E9BB1FE1C78</string>
+					<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>B2E89152-906F-4D20-8CE2-3E9BB1FE1C78</string>
+			<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
 		</dict>
 		<dict>
 			<key>frames</key>
@@ -164,55 +120,11 @@
 					<key>class</key>
 					<string>BKRRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456813379.213638</real>
+					<real>1456877210.791674</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>106E0CCB-D813-411D-B74D-EFC10D930101</string>
-				</dict>
-				<dict>
-					<key>HTTPMethod</key>
-					<string>GET</string>
-					<key>HTTPShouldHandleCookies</key>
-					<true/>
-					<key>HTTPShouldUsePipelining</key>
-					<false/>
-					<key>URL</key>
-					<string>https://pubsub.pubnub.com/time/0</string>
-					<key>allHTTPHeaderFields</key>
-					<dict/>
-					<key>allowsCellularAccess</key>
-					<true/>
-					<key>class</key>
-					<string>BKRRequestFrame</string>
-					<key>creationDate</key>
-					<real>1456813379.213987</real>
-					<key>timeoutInterval</key>
-					<real>60</real>
-					<key>uniqueIdentifier</key>
-					<string>106E0CCB-D813-411D-B74D-EFC10D930101</string>
-				</dict>
-				<dict>
-					<key>HTTPMethod</key>
-					<string>GET</string>
-					<key>HTTPShouldHandleCookies</key>
-					<true/>
-					<key>HTTPShouldUsePipelining</key>
-					<false/>
-					<key>URL</key>
-					<string>https://pubsub.pubnub.com/time/0</string>
-					<key>allHTTPHeaderFields</key>
-					<dict/>
-					<key>allowsCellularAccess</key>
-					<true/>
-					<key>class</key>
-					<string>BKRRequestFrame</string>
-					<key>creationDate</key>
-					<real>1456813379.214277</real>
-					<key>timeoutInterval</key>
-					<real>60</real>
-					<key>uniqueIdentifier</key>
-					<string>106E0CCB-D813-411D-B74D-EFC10D930101</string>
+					<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -237,11 +149,11 @@
 					<key>class</key>
 					<string>BKRRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456813379.216299</real>
+					<real>1456877210.791799</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>106E0CCB-D813-411D-B74D-EFC10D930101</string>
+					<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
@@ -268,25 +180,25 @@
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1456813379.293416</real>
+					<real>1456877210.870519</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>106E0CCB-D813-411D-B74D-EFC10D930101</string>
+					<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1456813379.293477</real>
+					<real>1456877210.870611</real>
 					<key>data</key>
-					<data>WzE0NTY4MTMzNzkyNzM3ODcyXQ==</data>
+					<data>WzE0NTY4NzcyMTE3MTc1NDE5XQ==</data>
 					<key>uniqueIdentifier</key>
-					<string>106E0CCB-D813-411D-B74D-EFC10D930101</string>
+					<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>106E0CCB-D813-411D-B74D-EFC10D930101</string>
+			<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
 		</dict>
 	</array>
 	<key>version</key>

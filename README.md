@@ -127,6 +127,12 @@ These are set automatically. Feel free to override with appropriate values but i
 
 ```
 
+## Notes
+
+BeKindRewind will only record network events if the NSURLSessionTask is sent a `resume` message. When NSURLSessionTask objects are created, they are in a NSURLSessionTaskStateSuspended and will not start recording until the `resume` is sent. Once the `resume` is sent, it will record everything until the end of the test (protected by your XCTestExpectation
+
+It is recommended you use the BKRTestVCR subclass for recording. It automatically handles issues around asynchronous execution and XCTestCase.
+
 ## Basic Testing Strategy
 
 Try to avoid writing a test that is dependent upon state. Instead, ensure that when `isRecording == YES` that the test can be fully recorded for playback, including setUp and tearDown. This eases development and ensures that the test isn't written on a condition that wouldn't be recreated when another developer tries to update your test with a new recording.
@@ -145,7 +151,6 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 
 ## Release criteria
 * proper support for redirects
-* handle multi-part data
 * tests for matcher classes
 * tests for OSX, tvOS
 

@@ -115,9 +115,8 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 {
-    if (!self.enabled) {
-        return;
-    }
+    [self.editor addItem:arg1 forTask:task];
+    [self.editor addItem:arg2 forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
@@ -125,7 +124,7 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
-    [self.editor addItem:response forTask:task];
+    [self.editor addItem:response.copy forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didAddRequest:(NSURLRequest *)request {

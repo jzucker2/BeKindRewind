@@ -20,11 +20,13 @@
 @property (nonatomic, strong) NSData *HTTPBody;
 @property (nonatomic, strong) NSData *receivedData;
 @property (nonatomic, strong) id receivedJSON;
+@property (nonatomic, assign) NSInteger numberOfExpectedRequestFrames; // default is 2 (originalRequest and currentRequest)
 @property (nonatomic, assign) BOOL isSimultaneous; // default is NO, when yes, order is not asserted on this scene
 @property (nonatomic, strong, readonly) NSURL *URL; // can't be set, fetched from URLString
 @property (nonatomic, assign) BOOL hasResponse;
 @property (nonatomic, assign, readonly) BOOL hasError; // calculated by having errorCode and errorDomain
 @property (nonatomic, assign) NSInteger errorCode;
+@property (nonatomic, assign) BOOL isReceivingChunkedData; // default is NO
 @property (nonatomic, strong) NSDictionary *errorUserInfo;
 @property (nonatomic, copy) NSString *errorDomain;
 @property (nonatomic, assign) NSInteger responseCode; // if this is set, then hasResponse is automatically set to YES, expects responseAllHeaderFields to be set if this is set

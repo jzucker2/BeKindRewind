@@ -40,8 +40,10 @@
     NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithDictionary:superDict];
     NSDictionary *dict = @{
                            @"URL": self.URL.absoluteString,
-                           @"MIMEType": self.MIMEType.copy
                            };
+    if (self.MIMEType) {
+        plistDict[@"MIMEType"] = self.MIMEType;
+    }
     [plistDict addEntriesFromDictionary:dict];
     if (self.statusCode >= 0) {
         plistDict[@"statusCode"] = @(self.statusCode);
@@ -61,6 +63,11 @@
         _allHeaderFields = [[NSDictionary alloc] initWithDictionary:dictionary[@"allHeaderFields"] copyItems:YES];
     }
     return self;
+}
+
+- (NSString *)debugDescription {
+    NSString *superDescription = [super debugDescription];
+    return [NSString stringWithFormat:@"%@, status: %ld, allHeaderFields: %@", superDescription, (long)self.statusCode, self.allHeaderFields];
 }
 
 @end

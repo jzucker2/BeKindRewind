@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>creationDate</key>
-	<date>2016-03-01T06:22:58Z</date>
+	<date>2016-03-02T00:06:49Z</date>
 	<key>scenes</key>
 	<array>
 		<dict>
@@ -23,55 +23,11 @@
 					<key>class</key>
 					<string>BKRRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456813378.392175</real>
+					<real>1456877209.744294</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>3D195F36-65A8-42A6-BA75-D7E41210EB93</string>
-				</dict>
-				<dict>
-					<key>HTTPMethod</key>
-					<string>GET</string>
-					<key>HTTPShouldHandleCookies</key>
-					<true/>
-					<key>HTTPShouldUsePipelining</key>
-					<false/>
-					<key>URL</key>
-					<string>https://httpbin.org/get?test=test</string>
-					<key>allHTTPHeaderFields</key>
-					<dict/>
-					<key>allowsCellularAccess</key>
-					<true/>
-					<key>class</key>
-					<string>BKRRequestFrame</string>
-					<key>creationDate</key>
-					<real>1456813378.392574</real>
-					<key>timeoutInterval</key>
-					<real>60</real>
-					<key>uniqueIdentifier</key>
-					<string>3D195F36-65A8-42A6-BA75-D7E41210EB93</string>
-				</dict>
-				<dict>
-					<key>HTTPMethod</key>
-					<string>GET</string>
-					<key>HTTPShouldHandleCookies</key>
-					<true/>
-					<key>HTTPShouldUsePipelining</key>
-					<false/>
-					<key>URL</key>
-					<string>https://httpbin.org/get?test=test</string>
-					<key>allHTTPHeaderFields</key>
-					<dict/>
-					<key>allowsCellularAccess</key>
-					<true/>
-					<key>class</key>
-					<string>BKRRequestFrame</string>
-					<key>creationDate</key>
-					<real>1456813378.392881</real>
-					<key>timeoutInterval</key>
-					<real>60</real>
-					<key>uniqueIdentifier</key>
-					<string>3D195F36-65A8-42A6-BA75-D7E41210EB93</string>
+					<string>E78A24B5-6DAE-4E00-A276-B2F3377CB85E</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -96,11 +52,11 @@
 					<key>class</key>
 					<string>BKRRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456813378.393407</real>
+					<real>1456877209.744482</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>3D195F36-65A8-42A6-BA75-D7E41210EB93</string>
+					<string>E78A24B5-6DAE-4E00-A276-B2F3377CB85E</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
@@ -125,25 +81,25 @@
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1456813378.76248</real>
+					<real>1456877210.160739</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>3D195F36-65A8-42A6-BA75-D7E41210EB93</string>
+					<string>E78A24B5-6DAE-4E00-A276-B2F3377CB85E</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1456813378.762507</real>
+					<real>1456877210.160865</real>
 					<key>data</key>
 					<data>ewogICJhcmdzIjogewogICAgInRlc3QiOiAidGVzdCIKICB9LCAKICAiaGVhZGVycyI6IHsKICAgICJBY2NlcHQiOiAiKi8qIiwgCiAgICAiQWNjZXB0LUVuY29kaW5nIjogImd6aXAsIGRlZmxhdGUiLCAKICAgICJBY2NlcHQtTGFuZ3VhZ2UiOiAiZW4tdXMiLCAKICAgICJIb3N0IjogImh0dHBiaW4ub3JnIiwgCiAgICAiVXNlci1BZ2VudCI6ICJ4Y3Rlc3QgKHVua25vd24gdmVyc2lvbikgQ0ZOZXR3b3JrLzc1OC4wLjIgRGFyd2luLzE1LjMuMCIKICB9LCAKICAib3JpZ2luIjogIjk4LjIxMC4xOTUuODEiLCAKICAidXJsIjogImh0dHBzOi8vaHR0cGJpbi5vcmcvZ2V0P3Rlc3Q9dGVzdCIKfQo=</data>
 					<key>uniqueIdentifier</key>
-					<string>3D195F36-65A8-42A6-BA75-D7E41210EB93</string>
+					<string>E78A24B5-6DAE-4E00-A276-B2F3377CB85E</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>3D195F36-65A8-42A6-BA75-D7E41210EB93</string>
+			<string>E78A24B5-6DAE-4E00-A276-B2F3377CB85E</string>
 		</dict>
 	</array>
 	<key>version</key>
