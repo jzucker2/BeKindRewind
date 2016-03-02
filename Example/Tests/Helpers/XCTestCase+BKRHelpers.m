@@ -1125,7 +1125,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertNotNil(frames);
         NSInteger numberOfRequestChecks = 0;
         if (recording.isReceivingChunkedData) {
+            // chunked data has numerous extra data frames, don't bother calculating exactly
+            // this method builds the expected NSData object and directly compares it to what is expected
             XCTAssertGreaterThanOrEqual(recording.expectedNumberOfRecordingFrames, frames.count, @"frames: %@", frames);
+        } else if ([recording.HTTPMethod isEqualToString:@"POST"]) {
+            // POST sometimes has an extra request
+            XCTAssertLessThanOrEqual(recording.expectedNumberOfRecordingFrames, frames.count, @"frames: %@", frames);
         } else {
             XCTAssertEqual(recording.expectedNumberOfRecordingFrames, frames.count, @"frames: %@", frames);
         }
