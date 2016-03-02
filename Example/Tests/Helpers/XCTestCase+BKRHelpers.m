@@ -961,7 +961,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (BKRTestExpectedResult *)HTTPBinRedirectWithRecording:(BOOL)isRecording {
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
     expectedResult.isRecording = isRecording;
-    expectedResult.URLString = @"http://httpbin.org/redirect/3";
+    expectedResult.URLString = @"https://httpbin.org/redirect/3";
     expectedResult.isRedirecting = YES;
     
     return expectedResult;
