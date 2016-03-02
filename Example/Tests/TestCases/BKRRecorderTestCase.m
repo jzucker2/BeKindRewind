@@ -195,6 +195,7 @@
         }
         NSLog(@"++++++++++++++++");
         batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
+        XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
     }];
 }
 
