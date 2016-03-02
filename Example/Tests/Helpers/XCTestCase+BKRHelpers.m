@@ -49,6 +49,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _isRecording = NO;
         _isReceivingChunkedData = NO;
         _automaticallyAssignSceneNumberForAssertion = YES;
+        _redirectRequestHTTPHeaderFields = nil;
+        _redirectResponseAllHeaderFields = nil;
+        _numberOfRedirects = 0;
+        _redirectResponseStatusCode = -1;
         _isRedirecting = NO;
     }
     return self;
@@ -120,6 +124,24 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _hasCurrentRequest = YES;
     } else {
         _hasCurrentRequest = NO;
+    }
+}
+
+- (void)setNumberOfRedirects:(NSInteger)numberOfRedirects {
+    _numberOfRedirects = numberOfRedirects;
+    if (_numberOfRedirects > 0) {
+        _isRedirecting = YES;
+    } else {
+        _isRedirecting = NO;
+    }
+}
+
+- (void)setRedirectResponseStatusCode:(NSInteger)redirectResponseStatusCode {
+    _redirectResponseStatusCode = redirectResponseStatusCode;
+    if (_redirectResponseStatusCode > 0) {
+        _isRedirecting = YES;
+    } else {
+        _isRedirecting = NO;
     }
 }
 
@@ -195,6 +217,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (BKRTestSceneAssertionHandler)_assertionHandlerForExpectedResult:(BKRTestExpectedResult *)expectedResult andTask:(NSURLSessionTask *)task {
     BKRTestSceneAssertionHandler sceneAssertions = ^void (BKRScene *scene) {
+#warning update for redirects
         [self _assertRequestFrame:scene.originalRequest withRequest:task.originalRequest andIgnoreHeaderFields:YES];
         if (expectedResult.hasCurrentRequest) {
             // when we are playing, OHHTTPStubs does not mock adjusting the currentRequest to have different headers like a server would with a live NSURLSessionTask
@@ -628,6 +651,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
+#warning need to handle redirects properly
     NSDate *expectedCassetteDictCreationDate = [NSDate date];
     NSMutableArray<NSDictionary *> *expectedResultSceneDicts = [NSMutableArray array];
     for (BKRTestExpectedResult *result in expectedResults) {
@@ -829,6 +853,13 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     return mutableOriginalDictionary.copy;
 }
 
+- (NSDictionary *)_HTTPBinRedirectResponseAllHeaderFieldsWithLocation:(NSString *)location {
+    NSMutableDictionary *mutableOriginalDictionary = [[self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"0"] mutableCopy];
+    mutableOriginalDictionary[@"Content-Type"] = @"text/html; charset=utf-8";
+    mutableOriginalDictionary[@"Location"] = location;
+    return mutableOriginalDictionary.copy;
+}
+
 - (NSDictionary *)_HTTPBinChunkedResponseAllHeaderFieldsWithContentLength:(NSString *)contentLengthString {
     NSMutableDictionary *mutableOriginalDictionary = [[self _HTTPBinResponseAllHeaderFieldsWithContentLength:contentLengthString] mutableCopy];
     mutableOriginalDictionary[@"Content-Type"] = @"application/octet-stream";
@@ -981,7 +1012,15 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                                     };
     expectedResult.responseCode = 200;
 #warning need to handle all the extra redirect request/responses, this data only tests the final request/response
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"306"];
+    expectedResult.numberOfExpectedRequestFrames = 5;
+    expectedResult.expectedNumberOfRecordingFrames = 10;
+    expectedResult.expectedNumberOfPlayingFrames = 10;
+    expectedResult.redirectResponseStatusCode = 302;
+    expectedResult.numberOfRedirects = 3;
+    expectedResult.redirectRequestHTTPHeaderFields = expectedResult.currentRequestAllHTTPHeaderFields;
+    expectedResult.redirectResponseAllHeaderFields = [self _HTTPBinRedirectResponseAllHeaderFieldsWithLocation:@"something"];
     
     return expectedResult;
 }
@@ -1098,6 +1137,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (void)assertCassettePath:(NSString *)cassetteFilePath matchesExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
+#warning update for redirects
     XCTAssertTrue([BKRFilePathHelper filePathExists:cassetteFilePath]);
     NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
     XCTAssertTrue([cassetteDictionary isKindOfClass:[NSDictionary class]]);

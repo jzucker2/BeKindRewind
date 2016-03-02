@@ -27,6 +27,10 @@
 @property (nonatomic, assign, readonly) BOOL hasError; // calculated by having errorCode and errorDomain
 @property (nonatomic, assign) NSInteger errorCode;
 @property (nonatomic, assign) BOOL isRedirecting; // default is NO
+@property (nonatomic, assign) NSInteger numberOfRedirects; // default is 0, if this is set to non-zero, then isRedirecting is automatically set to YES
+@property (nonatomic, strong) NSDictionary *redirectRequestHTTPHeaderFields;
+@property (nonatomic, strong) NSDictionary *redirectResponseAllHeaderFields;
+@property (nonatomic, assign) NSInteger redirectResponseStatusCode; // default is NO, if this is set, then isRedirecting is automatically set to YES
 @property (nonatomic, assign) BOOL isReceivingChunkedData; // default is NO
 @property (nonatomic, strong) NSDictionary *errorUserInfo;
 @property (nonatomic, copy) NSString *errorDomain;
