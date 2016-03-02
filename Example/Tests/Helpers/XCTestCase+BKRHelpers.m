@@ -201,7 +201,11 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             [self _assertRequestFrame:scene.currentRequest withRequest:task.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
         }
         if (expectedResult.actualReceivedResponse) {
-            [self _assertResponseFrame:scene.allResponseFrames.firstObject withResponse:expectedResult.actualReceivedResponse];
+            BKRResponseFrame *responseToTest = scene.allResponseFrames.firstObject;
+            if (expectedResult.isRedirecting) {
+                responseToTest = scene.allResponseFrames.lastObject;
+            }
+            [self _assertResponseFrame:responseToTest withResponse:expectedResult.actualReceivedResponse];
         }
         if (
             expectedResult.actualReceivedData &&
