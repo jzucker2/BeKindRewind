@@ -3,9 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>creationDate</key>
-	<date>2016-02-12T00:29:19Z</date>
-	<key>version</key>
-	<string>0.9.0</string>
+	<date>2016-03-02T00:06:48Z</date>
 	<key>scenes</key>
 	<array>
 		<dict>
@@ -25,11 +23,40 @@
 					<key>class</key>
 					<string>BKRRequestFrame</string>
 					<key>creationDate</key>
-					<date>2016-02-12T00:29:19Z</date>
+					<real>1456877208.385725</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>6B78000D-2E10-4D1F-AE22-0EDA33F57590</string>
+					<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
+				</dict>
+				<dict>
+					<key>HTTPMethod</key>
+					<string>GET</string>
+					<key>HTTPShouldHandleCookies</key>
+					<true/>
+					<key>HTTPShouldUsePipelining</key>
+					<false/>
+					<key>URL</key>
+					<string>https://httpbin.org/delay/10</string>
+					<key>allHTTPHeaderFields</key>
+					<dict>
+						<key>Accept</key>
+						<string>*/*</string>
+						<key>Accept-Encoding</key>
+						<string>gzip, deflate</string>
+						<key>Accept-Language</key>
+						<string>en-us</string>
+					</dict>
+					<key>allowsCellularAccess</key>
+					<true/>
+					<key>class</key>
+					<string>BKRRequestFrame</string>
+					<key>creationDate</key>
+					<real>1456877208.3859479</real>
+					<key>timeoutInterval</key>
+					<real>60</real>
+					<key>uniqueIdentifier</key>
+					<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
 				</dict>
 				<dict>
 					<key>class</key>
@@ -37,11 +64,11 @@
 					<key>code</key>
 					<integer>-999</integer>
 					<key>creationDate</key>
-					<date>2016-02-12T00:29:20Z</date>
+					<real>1456877208.924402</real>
 					<key>domain</key>
 					<string>NSURLErrorDomain</string>
 					<key>uniqueIdentifier</key>
-					<string>6B78000D-2E10-4D1F-AE22-0EDA33F57590</string>
+					<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
 					<key>userInfo</key>
 					<dict>
 						<key>NSErrorFailingURLKey</key>
@@ -54,8 +81,10 @@
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>6B78000D-2E10-4D1F-AE22-0EDA33F57590</string>
+			<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
 		</dict>
 	</array>
+	<key>version</key>
+	<string>0.9.5</string>
 </dict>
 </plist>

@@ -85,4 +85,12 @@
     }];
 }
 
+- (void)testPlayingChunkedDataRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:NO];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+}
+
 @end

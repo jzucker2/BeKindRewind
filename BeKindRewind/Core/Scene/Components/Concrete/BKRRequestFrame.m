@@ -104,4 +104,9 @@
     return self;
 }
 
+- (NSString *)debugDescription {
+    NSString *superDescription = [super debugDescription];
+    return [NSString stringWithFormat:@"%@, URL: %@, Method: %@, Body: %@, allHTTPHeaderFields: %@", superDescription, self.URL.absoluteString, self.HTTPMethod, self.HTTPBody, self.allHTTPHeaderFields];
+}
+
 @end

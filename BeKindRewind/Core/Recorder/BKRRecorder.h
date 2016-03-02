@@ -75,13 +75,6 @@
 - (void)beginRecording:(NSURLSessionTask *)task;
 
 /**
- *  Called by networking swizzled classes to set the original request
- *
- *  @param task NSURLSessionTask that just began executing
- */
-- (void)initTask:(NSURLSessionTask *)task;
-
-/**
  *  Called by networking swizzled classes to record redirects
  *
  *  @param task in flight network task
@@ -112,7 +105,7 @@
  *  @param taskUniqueIdentifier unique identifier for in flight network task
  *  @param arg1 error from network request
  */
-- (void)recordTask:(NSString *)taskUniqueIdentifier setError:(NSError *)error;
+- (void)recordTask:(NSURLSessionTask *)task setError:(NSError *)error;
 
 /**
  *  Called by networking swizzled classes so that after task recording block will
@@ -122,6 +115,15 @@
  *  @param arg1 error or nil from network request
  */
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
+
+/**
+ *  Called by network to record requests associated with a network event. This
+ *  covers the originalRequest and the currentRequest associated with the task
+ *
+ *  @param task    executing network task
+ *  @param request request associated with the network task
+ */
+- (void)recordTask:(NSURLSessionTask *)task didAddRequest:(NSURLRequest *)request;
 
 
 @end

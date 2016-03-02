@@ -11,6 +11,10 @@
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
+// remove after debugging
+#import <BeKindRewind/BKRScene.h>
+#import <BeKindRewind/BKRFrame.h>
+
 @interface BKRPlayerTestCase : BKRBaseTestCase
 
 @end
@@ -152,6 +156,19 @@
     [self setPlayer:player withExpectationToEnabled:YES];
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions(player.allScenes);
+    }];
+}
+
+- (void)testPlayingChunkedDataRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:NO];
+    
+    __block BKRPlayer *player = [self playerWithExpectedResults:@[expectedResult]];
+    XCTAssertEqual(player.allScenes.count, 1);
+    [self setPlayer:player withExpectationToEnabled:YES];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
     }];
