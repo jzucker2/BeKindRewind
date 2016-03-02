@@ -49,6 +49,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _isRecording = NO;
         _isReceivingChunkedData = NO;
         _automaticallyAssignSceneNumberForAssertion = YES;
+        _isRedirecting = NO;
     }
     return self;
 }
@@ -961,6 +962,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
     expectedResult.isRecording = isRecording;
     expectedResult.URLString = @"http://httpbin.org/redirect/3";
+    expectedResult.isRedirecting = YES;
     
     return expectedResult;
 }

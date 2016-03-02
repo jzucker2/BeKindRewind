@@ -67,7 +67,7 @@
 
 - (NSString *)debugDescription {
     NSString *superDescription = [super debugDescription];
-    return [NSString stringWithFormat:@"%@, status: %ld, allHeaderFields: %@", superDescription, (long)self.statusCode, self.allHeaderFields];
+    return [NSString stringWithFormat:@"%@, URL: %@, statusCode: %ld, allHeaderFields: %@", superDescription, self.URL.absoluteString, (long)self.statusCode, self.allHeaderFields];
 }
 
 @end

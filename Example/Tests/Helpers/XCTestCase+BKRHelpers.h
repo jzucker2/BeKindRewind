@@ -26,6 +26,7 @@
 @property (nonatomic, assign) BOOL hasResponse;
 @property (nonatomic, assign, readonly) BOOL hasError; // calculated by having errorCode and errorDomain
 @property (nonatomic, assign) NSInteger errorCode;
+@property (nonatomic, assign) BOOL isRedirecting; // default is NO
 @property (nonatomic, assign) BOOL isReceivingChunkedData; // default is NO
 @property (nonatomic, strong) NSDictionary *errorUserInfo;
 @property (nonatomic, copy) NSString *errorDomain;
