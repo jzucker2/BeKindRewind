@@ -263,7 +263,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended);
         });
     }
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
+#warning change back to 10
+    [self waitForExpectationsWithTimeout:50 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         if (expectedResult.shouldCancel) {
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning, @"If task is still running, then it failed to cancel as expected, this is most likely not a BeKindRewind bug but a system bug");
@@ -771,7 +772,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             enableChangeExpectation = nil;
         });
     }];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+#warning set back to 5 after
+    [self waitForExpectationsWithTimeout:50 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
 }

@@ -74,56 +74,98 @@
     if (!currentScenes.count) {
         return;
     }
-    __block NSUInteger callCount = 0;
+    __block NSUInteger responseCount = 0;
+    // this is synchronous and blocking in this queue
     [currentScenes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRScene * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSUInteger currentSceneIndex = idx;
+        NSLog(@"+++++++++++++++++++++++++++++++++");
+        NSLog(@"currentSceneIndex: %lu", (unsigned long)currentSceneIndex);
+        NSLog(@"start currentScenes iteration responseCount: %lu", (unsigned long)responseCount);
         [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-            BOOL finalTestResult = [matcher hasMatchForRequest:request withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
+            NSLog(@"=================================");
+            NSLog(@"currentSceneIndex: %lu", (unsigned long)currentSceneIndex);
+            NSLog(@"start test responseCount: %lu", (unsigned long)responseCount);
+            BOOL finalTestResult = [matcher hasMatchForRequest:request withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
             if (!finalTestResult) {
+                NSLog(@"return NO");
                 return finalTestResult;
             }
             NSURLComponents *requestComponents = [NSURLComponents componentsWithString:request.URL.absoluteString];
-            if ([matcher respondsToSelector:@selector(hasMatchForRequestScheme:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
-                finalTestResult = [matcher hasMatchForRequestScheme:requestComponents.scheme withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
+            // does order matter? This is executed in the order of the NSURLComponents class header properties
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestScheme:withCurrentSceneIndex:responseCount:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestScheme:requestComponents.scheme withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
                 if (!finalTestResult) {
+                    NSLog(@"return NO");
                     return finalTestResult;
                 }
             }
-            if ([matcher respondsToSelector:@selector(hasMatchForRequestScheme:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
-                finalTestResult = [matcher hasMatchForRequestScheme:requestComponents.scheme withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestUser:withCurrentSceneIndex:responseCount:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestUser:requestComponents.user withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
                 if (!finalTestResult) {
+                    NSLog(@"return NO");
                     return finalTestResult;
                 }
             }
-            if ([matcher respondsToSelector:@selector(hasMatchForRequestHost:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
-                finalTestResult = [matcher hasMatchForRequestHost:requestComponents.host withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestPassword:withCurrentSceneIndex:responseCount:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestPassword:requestComponents.password withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
                 if (!finalTestResult) {
+                    NSLog(@"return NO");
                     return finalTestResult;
                 }
             }
-            if ([matcher respondsToSelector:@selector(hasMatchForRequestPath:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
-                finalTestResult = [matcher hasMatchForRequestPath:requestComponents.path withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestHost:withCurrentSceneIndex:responseCount:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestHost:requestComponents.host withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
                 if (!finalTestResult) {
+                    NSLog(@"return NO");
                     return finalTestResult;
                 }
             }
-            if ([matcher respondsToSelector:@selector(hasMatchForRequestQueryItems:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
-                finalTestResult = [matcher hasMatchForRequestQueryItems:requestComponents.queryItems withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestPort:withCurrentSceneIndex:responseCount:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestPort:requestComponents.port withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
                 if (!finalTestResult) {
+                    NSLog(@"return NO");
                     return finalTestResult;
                 }
             }
-            if ([matcher respondsToSelector:@selector(hasMatchForRequestFragment:withFirstMatchedIndex:currentNetworkCalls:inPlayableScenes:)]) {
-                finalTestResult = [matcher hasMatchForRequestFragment:requestComponents.fragment withFirstMatchedIndex:idx currentNetworkCalls:callCount inPlayableScenes:currentScenes];
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestPath:withCurrentSceneIndex:responseCount:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestPath:requestComponents.path withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
                 if (!finalTestResult) {
+                    NSLog(@"return NO");
                     return finalTestResult;
                 }
             }
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestQueryItems:withCurrentSceneIndex:responseCount:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestQueryItems:requestComponents.queryItems withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
+                if (!finalTestResult) {
+                    NSLog(@"return NO");
+                    return finalTestResult;
+                }
+            }
+            if ([matcher respondsToSelector:@selector(hasMatchForRequestFragment:withCurrentSceneIndex:responseCount:inPlayableScenes:)]) {
+                finalTestResult = [matcher hasMatchForRequestFragment:requestComponents.fragment withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
+                if (!finalTestResult) {
+                    NSLog(@"return NO");
+                    return finalTestResult;
+                }
+            }
+            NSLog(@"currentSceneIndex: %lu", (unsigned long)currentSceneIndex);
+            NSLog(@"end test responseCount: %lu", (unsigned long)responseCount);
+            NSLog(@"=================================");
             return finalTestResult;
         } withStubResponse:^BKRScene * _Nonnull(NSURLRequest * _Nonnull request) {
-            // check on this increment call to make sure it happens properly
-            return [matcher matchForRequest:request withFirstMatchedIndex:idx currentNetworkCalls:callCount++ inPlayableScenes:currentScenes];
+            // increment responseCount after passing it in
+            NSLog(@"---------------------------------");
+            NSLog(@"currentSceneIndex: %lu", (unsigned long)currentSceneIndex);
+            NSLog(@"response responseCount: %lu", (unsigned long)responseCount);
+            NSLog(@"---------------------------------");
+            return [matcher matchForRequest:request withCurrentSceneIndex:currentSceneIndex responseCount:responseCount++ inPlayableScenes:currentScenes];
         }];
+        NSLog(@"currentSceneIndex: %lu", (unsigned long)currentSceneIndex);
+        NSLog(@"end currentScenes iteration responseCount: %lu", (unsigned long)responseCount);
+        NSLog(@"+++++++++++++++++++++++++++++++++");
     }];
+    NSLog(@"now completion block");
+    // performed synchronously after above method
     if (completionBlock) {
         completionBlock(YES, cassette);
     }

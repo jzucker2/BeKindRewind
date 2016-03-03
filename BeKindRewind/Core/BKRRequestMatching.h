@@ -38,7 +38,7 @@
  *
  *  @return a BKRPlayableScene to use as a stub for this request
  */
-- (BKRScene *)matchForRequest:(NSURLRequest *)request withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;;
+- (BKRScene *)matchForRequest:(NSURLRequest *)request withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 /**
  *  This is used by the test block to check whether a stubbed response should be provided for
@@ -55,7 +55,7 @@
  *  and continues live and uninterrupted. If YES is returned, and other optional boolean methods are
  *  implemented, then they will be executed as well.
  */
-- (BOOL)hasMatchForRequest:(NSURLRequest *)request withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequest:(NSURLRequest *)request withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 @optional
 
@@ -75,7 +75,7 @@
  *
  *  @return whether or not to stub the request
  */
-- (BOOL)hasMatchForRequestScheme:(NSString *)scheme withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequestScheme:(NSString *)scheme withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 /**
  *  Convenience callback for testing the user of a request for possible stubbing
@@ -87,7 +87,7 @@
  *
  *  @return whether or not to stub the request
  */
-- (BOOL)hasMatchForRequestUser:(NSString *)user withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequestUser:(NSString *)user withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 /**
  *  Convenience callback for testing the password of a request for possible stubbing
@@ -99,7 +99,7 @@
  *
  *  @return whether or not to stub the request
  */
-- (BOOL)hasMatchForRequestPassword:(NSString *)password withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequestPassword:(NSString *)password withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 /**
  *  Convenience callback for testing the port of a request for possible stubbing
@@ -111,7 +111,7 @@
  *
  *  @return whether or not to stub the request
  */
-- (BOOL)hasMatchForRequestPort:(NSNumber *)port withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequestPort:(NSNumber *)port withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 /**
  *  Convenience callback for testing the fragment of a request for possible stubbing
@@ -123,7 +123,7 @@
  *
  *  @return whether or not to stub the request
  */
-- (BOOL)hasMatchForRequestFragment:(NSString *)fragment withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequestFragment:(NSString *)fragment withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 /**
  *  Convenience callback for testing the host of a request for possible stubbing
@@ -135,7 +135,7 @@
  *
  *  @return whether or not to stub the request
  */
-- (BOOL)hasMatchForRequestHost:(NSString *)host withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequestHost:(NSString *)host withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 /**
  *  Convenience callback for testing the path of a request for possible stubbing
@@ -147,7 +147,7 @@
  *
  *  @return whether or not to stub the request
  */
-- (BOOL)hasMatchForRequestPath:(NSString *)path withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequestPath:(NSString *)path withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 /**
  *  Convenience callback for testing the query items of a request for possible stubbing
@@ -159,6 +159,6 @@
  *
  *  @return whether or not to stub the request
  */
-- (BOOL)hasMatchForRequestQueryItems:(NSArray<NSURLQueryItem *> *)queryItems withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequestQueryItems:(NSArray<NSURLQueryItem *> *)queryItems withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 
 @end

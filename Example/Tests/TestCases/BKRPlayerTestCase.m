@@ -177,7 +177,7 @@
     }];
 }
 
-- (void)DISABLE_testPlayingRedirectRequest {
+- (void)testPlayingRedirectRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:YES];
     
     __block BKRPlayer *player = [self playerWithExpectedResults:@[expectedResult]];
