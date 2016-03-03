@@ -54,6 +54,9 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _numberOfRedirects = 0;
         _redirectResponseStatusCode = -1;
         _isRedirecting = NO;
+        _redirectURLString = nil;
+        _redirectURL = nil;
+        _redirectHTTPMethod = nil;
     }
     return self;
 }
@@ -145,6 +148,73 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }
 }
 
+- (void)setRedirectURL:(NSURL *)redirectURL {
+    _redirectURL = redirectURL;
+    if (_redirectURL) {
+        _isRedirecting = YES;
+        _redirectURLString = _redirectURL.absoluteString;
+    } else {
+        _redirectURLString = nil;
+    }
+}
+
+- (void)setRedirectHTTPMethod:(NSString *)redirectHTTPMethod {
+    _redirectHTTPMethod = redirectHTTPMethod;
+    if (_redirectHTTPMethod) {
+        _isRedirecting = YES;
+    }
+}
+
+- (void)setRedirectURLString:(NSString *)redirectURLString {
+    _redirectURLString = redirectURLString;
+    if (_redirectURLString) {
+        _isRedirecting = YES;
+        _redirectURL = [NSURL URLWithString:redirectURLString];
+    } else {
+        _redirectURL = nil;
+    }
+}
+
+- (void)setFinalRedirectURL:(NSURL *)finalRedirectURL {
+    _finalRedirectURL = finalRedirectURL;
+    if (_finalRedirectURL) {
+        _isRedirecting = YES;
+        _finalRedirectURLString = _finalRedirectURL.absoluteString;
+    } else {
+        _finalRedirectURLString = nil;
+    }
+}
+
+- (void)setFinalRedirectURLString:(NSString *)finalRedirectURLString {
+    _finalRedirectURLString = finalRedirectURLString;
+    if (_finalRedirectURLString) {
+        _isRedirecting = YES;
+        _finalRedirectURL = [NSURL URLWithString:_finalRedirectURLString];
+    } else {
+        _finalRedirectURL = nil;
+    }
+}
+
+- (NSString *)redirectLocationWithPath:(NSString *)path {
+    return [self.redirectURL.path stringByAppendingPathComponent:path];
+}
+
+- (NSString *)redirectLocationWithForRedirection:(NSInteger)redirectionNumber {
+    return [self redirectLocationWithPath:[NSString stringWithFormat:@"%ld", (long)redirectionNumber]];
+}
+
+- (NSString *)redirectURLFullStringWithPath:(NSString *)path {
+    return [self.redirectURL URLByAppendingPathComponent:path].absoluteString;
+}
+
+- (NSString *)redirectURLFullStringWithRedirection:(NSInteger)redirectionNumber {
+    return [self redirectURLFullStringWithPath:[NSString stringWithFormat:@"%ld", (long)redirectionNumber]];
+}
+
+- (NSString *)finalRedirectLocation {
+    return [NSString stringWithFormat:@"/%@", self.finalRedirectURL.lastPathComponent];
+}
+
 @end
 
 @implementation XCTestCase (BKRHelpers)
@@ -217,11 +287,15 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (BKRTestSceneAssertionHandler)_assertionHandlerForExpectedResult:(BKRTestExpectedResult *)expectedResult andTask:(NSURLSessionTask *)task {
     BKRTestSceneAssertionHandler sceneAssertions = ^void (BKRScene *scene) {
-#warning update for redirects
+        NSMutableArray<BKRFrame *> *assertFrames = scene.allFrames.mutableCopy;
+        XCTAssertNotNil(assertFrames);
+        XCTAssertGreaterThan(assertFrames.count, 0);
         [self _assertRequestFrame:scene.originalRequest withRequest:task.originalRequest andIgnoreHeaderFields:YES];
+        [assertFrames removeObject:scene.originalRequest];
         if (expectedResult.hasCurrentRequest) {
             // when we are playing, OHHTTPStubs does not mock adjusting the currentRequest to have different headers like a server would with a live NSURLSessionTask
             [self _assertRequestFrame:scene.currentRequest withRequest:task.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
+            [assertFrames removeObject:scene.currentRequest];
         }
         if (expectedResult.actualReceivedResponse) {
             BKRResponseFrame *responseToTest = scene.allResponseFrames.firstObject;
@@ -229,7 +303,9 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 responseToTest = scene.allResponseFrames.lastObject;
             }
             [self _assertResponseFrame:responseToTest withResponse:expectedResult.actualReceivedResponse];
+            [assertFrames removeObject:responseToTest];
         }
+        // test data before request responses to make redirect testing easier
         if (
             expectedResult.actualReceivedData &&
             !expectedResult.shouldCancel
@@ -243,10 +319,73 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             } else {
                 [self _assertDataFrame:scene.allDataFrames.firstObject withData:expectedResult.actualReceivedData];
             }
+            [assertFrames removeObjectsInArray:scene.allDataFrames];
         }
         if (expectedResult.actualReceivedError) {
             [self _assertErrorFrame:scene.allErrorFrames.firstObject withError:expectedResult.actualReceivedError];
+            [assertFrames removeObject:scene.allErrorFrames.firstObject];
         }
+        
+        // now test extra requests and responses
+        if (expectedResult.isRedirecting) {
+            // original request (first request), current request (last request), and final response
+            // are already tested, we need to assert on everything else
+            // only frames left in assertFrames array should be the request/responses for redirecting
+            // data and original and current request and frames have already been asserted and removed
+            // at this point, we are asserting on the information in the scenes, because none of this data was returned
+            // by the NSURLSessionTask completion handler
+            XCTAssertGreaterThan(expectedResult.numberOfRedirects, 0, @"If request is to redirect, expected number of redirects should be greater than 0");
+            // there should be a request/response pair for each redirect, so divide by 2
+            XCTAssertEqual(expectedResult.numberOfRedirects, assertFrames.count/2);
+            NSInteger redirectCount = expectedResult.numberOfRedirects;
+            // expected order is response, request for each redirect, so make sure that order is present in recordings
+            NSArray<BKRFrame *> *iteratingAssertFrames = assertFrames.copy;
+            for (NSInteger i=0; i < iteratingAssertFrames.count; i++) {
+                BKRFrame *frame = iteratingAssertFrames[i];
+                XCTAssertNotNil(frame);
+                if (0 == (i%2)) {
+                    // if even, then it should be a BKRRequestdFrame
+                    XCTAssertTrue([frame isKindOfClass:[BKRRequestFrame class]], @"Even redirect frames should be of BKRRequestFrame class not %@", NSStringFromClass(frame.class));
+                    BKRRequestFrame *requestFrame = (BKRRequestFrame *)frame;
+                    XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], requestFrame.URL.absoluteString);
+                    if (
+                        expectedResult.HTTPMethod ||
+                        requestFrame.HTTPMethod
+                        ) {
+                        XCTAssertEqualObjects(expectedResult.redirectHTTPMethod, requestFrame.HTTPMethod);
+                    }
+                    XCTAssertEqualObjects(expectedResult.redirectRequestHTTPHeaderFields, requestFrame.allHTTPHeaderFields);
+                } else {
+                    // if odd, then it should be a BKRResponseFrame
+                    XCTAssertTrue([frame isKindOfClass:[BKRResponseFrame class]], @"Odd redirect frames should be of BKRResponseFrame class not %@", NSStringFromClass(frame.class));
+                    BKRResponseFrame *responseFrame = (BKRResponseFrame *)frame;
+                    XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], responseFrame.URL.absoluteString);
+                    // let's assert on everything else too
+                    [self _assertExpectedResponseHeaderFields:expectedResult.redirectResponseAllHeaderFields withRecording:expectedResult.isRecording withActualResponseHeaderFields:responseFrame.allHeaderFields];
+                    // assume every response is the end of a request/response pair, so decrement redirectCount
+                    NSString *expectedLocation = [expectedResult redirectLocationWithForRedirection:--redirectCount];
+                    if (!redirectCount) {
+                        expectedLocation = expectedResult.finalRedirectLocation;
+                    }
+                    XCTAssertEqualObjects(expectedLocation, responseFrame.allHeaderFields[@"Location"]);
+                }
+                [assertFrames removeObject:frame];
+                
+            }
+            
+        } else if (expectedResult.isReceivingChunkedData) {
+            // sometimes chunked data responses have an extra response, remove the response tested above,
+            // than extra ones
+            NSMutableArray<BKRResponseFrame *> *responseFrames = scene.allResponseFrames.mutableCopy;
+            if (responseFrames.count > 1) {
+                [responseFrames removeObject:scene.allResponseFrames.firstObject];
+            }
+            [assertFrames removeObjectsInArray:responseFrames];
+        } else {
+            // sometimes cancelled or POST have extra or inconsistent and request frames
+            [assertFrames removeObjectsInArray:scene.allRequestFrames];
+        }
+        XCTAssertEqual(assertFrames.count, 0, @"Shouldn't be any frames left to assert");
         [self assertFramesOrderForScene:scene];
     };
     
@@ -373,23 +512,29 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (void)_assertExpectedResult:(BKRTestExpectedResult *)expectedResult withActualResponseHeaderFields:(NSDictionary *)actualResponseHeaderFields {
-    XCTAssertEqual(expectedResult.responseAllHeaderFields.count, actualResponseHeaderFields.count);
+    [self _assertExpectedResponseHeaderFields:expectedResult.responseAllHeaderFields withRecording:expectedResult.isRecording withActualResponseHeaderFields:actualResponseHeaderFields];
+}
+
+- (void)_assertExpectedResponseHeaderFields:(NSDictionary *)expectedResponseHeaderFields withRecording:(BOOL)isRecording withActualResponseHeaderFields:(NSDictionary *)actualResponseHeaderFields {
+    XCTAssertEqual(expectedResponseHeaderFields.count, actualResponseHeaderFields.count);
     NSArray *actualResponseKeysArray = actualResponseHeaderFields.allKeys;
     for (NSInteger i=0; i<actualResponseHeaderFields.count; i++) {
         NSString *actualResponseKey = actualResponseKeysArray[i];
-        XCTAssertNotNil(expectedResult.responseAllHeaderFields[actualResponseKey]);
+        XCTAssertNotNil(expectedResponseHeaderFields[actualResponseKey]);
         if ([actualResponseKey isEqualToString:@"Date"]) {
-            if (expectedResult.isRecording) {
-                XCTAssertNotEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
+            if (isRecording) {
+                XCTAssertNotEqualObjects(expectedResponseHeaderFields[actualResponseKey], actualResponseHeaderFields[actualResponseKey]);
                 XCTAssertNotEqualObjects(actualResponseHeaderFields[actualResponseKey], kBKRTestHTTPBinResponseDateStringValue);
             } else {
-                XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
+                XCTAssertEqualObjects(expectedResponseHeaderFields[actualResponseKey], actualResponseHeaderFields[actualResponseKey]);
                 XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], kBKRTestHTTPBinResponseDateStringValue, @"This should be equal to the constant used for stubbing testing. Make sure to update the plist files for the test if this fails");
             }
         } else if ([actualResponseKey isEqualToString:@"Content-Length"]) {
-            XCTAssertEqualWithAccuracy([actualResponseHeaderFields[actualResponseKey] integerValue], [expectedResult.responseAllHeaderFields[actualResponseKey] integerValue], 35);
+            XCTAssertEqualWithAccuracy([expectedResponseHeaderFields[actualResponseKey] integerValue], [actualResponseHeaderFields[actualResponseKey] integerValue], 35);
+        } else if ([actualResponseKey isEqualToString:@"Location"]) {
+            // this should be covered elsewhere, maybe pass in a block at some point in the future?
         } else {
-            XCTAssertEqualObjects(actualResponseHeaderFields[actualResponseKey], expectedResult.responseAllHeaderFields[actualResponseKey]);
+            XCTAssertEqualObjects(expectedResponseHeaderFields[actualResponseKey], actualResponseHeaderFields[actualResponseKey]);
         }
     }
 }
@@ -651,7 +796,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
-#warning need to handle redirects properly
     NSDate *expectedCassetteDictCreationDate = [NSDate date];
     NSMutableArray<NSDictionary *> *expectedResultSceneDicts = [NSMutableArray array];
     for (BKRTestExpectedResult *result in expectedResults) {
@@ -679,6 +823,22 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             expectedOriginalRequestDict[@"allHTTPHeaderFields"] = result.originalRequestAllHTTPHeaderFields;
         }
         [framesArray addObject:expectedOriginalRequestDict.copy];
+#warning need to handle redirects properly
+        // now add redirects if they exist
+        if (result.isRedirecting) {
+            for (NSInteger i=0; i<result.numberOfRedirects; i++) {
+                NSMutableDictionary *expectedRedirectRequestDict = expectedOriginalRequestDict.mutableCopy;
+                expectedRedirectRequestDict[@"URL"] = [NSString stringWithFormat:@"%@%ld", result.redirectURLString, (long)i];
+//                expectedRedirectRequestDict[@"HTTPMethod"] = @"GET";
+                [framesArray addObject:expectedRedirectRequestDict.copy];
+                
+                NSMutableDictionary *expectedRedirectResponseDict = [self standardResponseDictionary];
+                expectedRedirectRequestDict[@"statusCode"] = @(result.redirectResponseStatusCode);
+                expectedRedirectRequestDict[@"URL"] =
+                expectedRedirectRequestDict[@"allHeaderFields"] = result.redirectResponseAllHeaderFields; // need to update for number
+                [framesArray addObject:expectedRedirectResponseDict.copy];
+            }
+        }
         
         if (expectedCurrentRequestDict) {
             if (
@@ -996,8 +1156,9 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (BKRTestExpectedResult *)HTTPBinRedirectWithRecording:(BOOL)isRecording {
     BKRTestExpectedResult *expectedResult = [BKRTestExpectedResult result];
     expectedResult.isRecording = isRecording;
-    expectedResult.URLString = @"https://httpbin.org/redirect/3";
+    expectedResult.URLString = @"https://httpbin.org/relative-redirect/3";
     expectedResult.isRedirecting = YES;
+    expectedResult.finalRedirectURLString = @"https://httpbin.org/get";
     expectedResult.receivedJSON = @{
                                     @"args": @{},
                                     @"headers": @{
@@ -1008,10 +1169,9 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                                             @"User-Agent": @"xctest (unknown version) CFNetwork/758.2.8 Darwin/15.3.0",
                                             },
                                     @"origin": @"98.210.195.88",
-                                    @"url": @"https://httpbin.org/get",
+                                    @"url": expectedResult.finalRedirectURLString,
                                     };
     expectedResult.responseCode = 200;
-#warning need to handle all the extra redirect request/responses, this data only tests the final request/response
     expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"306"];
     expectedResult.numberOfExpectedRequestFrames = 5;
@@ -1020,6 +1180,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.redirectResponseStatusCode = 302;
     expectedResult.numberOfRedirects = 3;
     expectedResult.redirectRequestHTTPHeaderFields = expectedResult.currentRequestAllHTTPHeaderFields;
+    expectedResult.redirectURLString = @"https://httpbin.org/relative-redirect/";
+    expectedResult.redirectHTTPMethod = @"GET";
     expectedResult.redirectResponseAllHeaderFields = [self _HTTPBinRedirectResponseAllHeaderFieldsWithLocation:@"something"];
     
     return expectedResult;

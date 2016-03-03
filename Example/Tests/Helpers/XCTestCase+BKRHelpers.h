@@ -31,7 +31,11 @@
 @property (nonatomic, strong) NSDictionary *redirectRequestHTTPHeaderFields;
 @property (nonatomic, strong) NSDictionary *redirectResponseAllHeaderFields;
 @property (nonatomic, assign) NSInteger redirectResponseStatusCode; // default is NO, if this is set, then isRedirecting is automatically set to YES
+@property (nonatomic, copy) NSString *redirectURLString; // updating this automatically updates redirectURL and isRedirecting to YES
+@property (nonatomic, strong) NSURL *redirectURL; // updating this automatically updates redirectURLString and isRedirecting to YES
 @property (nonatomic, assign) BOOL isReceivingChunkedData; // default is NO
+@property (nonatomic, copy) NSURL *finalRedirectURL; // setting this automatically sets finalRedirectURLString and isRedirecting to YES
+@property (nonatomic, copy) NSString *finalRedirectURLString; // setting this automatically sets finalRedirectURL and isRedirecting to YES
 @property (nonatomic, strong) NSDictionary *errorUserInfo;
 @property (nonatomic, copy) NSString *errorDomain;
 @property (nonatomic, assign) NSInteger responseCode; // if this is set, then hasResponse is automatically set to YES, expects responseAllHeaderFields to be set if this is set
@@ -48,7 +52,13 @@
 @property (nonatomic, strong) NSData *actualReceivedData;
 @property (nonatomic, strong) NSURLResponse *actualReceivedResponse;
 @property (nonatomic, strong) NSError *actualReceivedError;
+@property (nonatomic, copy) NSString *redirectHTTPMethod; // setting this automatically sets isRedirecting to YES
 + (instancetype)result;
+- (NSString *)redirectLocationWithPath:(NSString *)path;
+- (NSString *)redirectLocationWithForRedirection:(NSInteger)redirectionNumber;
+- (NSString *)redirectURLFullStringWithPath:(NSString *)path;
+- (NSString *)redirectURLFullStringWithRedirection:(NSInteger)redirectionNumber;
+- (NSString *)finalRedirectLocation;
 @end
 
 @class BKRScene;
