@@ -824,7 +824,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         NSMutableDictionary *expectedCurrentRequestDict = nil;
         if (result.hasCurrentRequest) {
             expectedCurrentRequestDict = expectedOriginalRequestDict.mutableCopy;
-            expectedCurrentRequestDict[@"URL"] = result.finalRedirectURLString;
+            if (result.isRedirecting) {
+                expectedCurrentRequestDict[@"URL"] = result.finalRedirectURLString;
+            }
+            expectedCurrentRequestDict[@"creationDate"] = @([[NSDate date] timeIntervalSince1970]);
             if (
                 result.currentRequestAllHTTPHeaderFields &&
                 result.shouldCompareCurrentRequestHTTPHeaderFields
@@ -837,7 +840,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         }
         [framesArray addObject:expectedOriginalRequestDict.copy];
 #warning need to handle redirects properly
-//        XCTFail(@"warning");
         // now add redirects if they exist
         if (result.isRedirecting) {
             for (NSInteger i=0; i<result.numberOfRedirects; i++) {
