@@ -78,10 +78,10 @@
  *  Called by networking swizzled classes to record redirects
  *
  *  @param task in flight network task
- *  @param arg1 redirect request
- *  @param arg2 response for redirect
+ *  @param request redirect request
+ *  @param response response for redirect
  */
-- (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2;
+- (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response;
 
 /**
  *  Called by networking swizzled classes to record data received from the network request
@@ -114,7 +114,7 @@
  *  @param task recently finished network task
  *  @param arg1 error or nil from network request
  */
-- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1;
+- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)error;
 
 /**
  *  Called by network to record requests associated with a network event. This

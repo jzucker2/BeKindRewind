@@ -14,6 +14,9 @@
 // remove after debugging
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRFrame.h>
+#import <BeKindRewind/BKRResponseFrame.h>
+#import <BeKindRewind/BKRRequestFrame.h>
+#import <BeKindRewind/BKRDataFrame.h>
 
 @interface BKRPlayerTestCase : BKRBaseTestCase
 
@@ -171,6 +174,40 @@
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions(player.allScenes);
+    }];
+}
+
+- (void)DISABLE_testPlayingRedirectRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:YES];
+    
+    __block BKRPlayer *player = [self playerWithExpectedResults:@[expectedResult]];
+    XCTAssertEqual(player.allScenes.count, 1);
+    [self setPlayer:player withExpectationToEnabled:YES];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        NSLog(@"-------------------");
+        NSLog(@"result: %@", result);
+        NSLog(@"task: %@", task);
+        NSLog(@"task.originalRequest: %@", task.originalRequest);
+        NSLog(@"task.currentRequest: %@", task.currentRequest);
+        NSLog(@"task.currentRequest.allHTTPHeaderFields: %@", task.currentRequest.allHTTPHeaderFields);
+        NSLog(@"data: %@", data);
+        NSLog(@"response: %@", response);
+        NSLog(@"-------------------");
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        NSLog(@"++++++++++++++++");
+        NSLog(@"%@", player.allScenes);
+        BKRScene *scene = player.allScenes.firstObject;
+        NSLog(@"%@", scene.allFrames);
+        NSLog(@"%@", scene.allFrames);
+        for (BKRFrame *frame in scene.allFrames) {
+            NSLog(@"&&&&&&&&&&&&&&&");
+            NSLog(@"frame: %@", frame.debugDescription);
+            NSLog(@"&&&&&&&&&&&&&&&");
+        }
+        NSLog(@"++++++++++++++++");
+        batchSceneAssertions(player.allScenes);
+        XCTAssertEqual(player.allScenes.count, 1);
     }];
 }
 

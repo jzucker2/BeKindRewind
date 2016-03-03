@@ -110,13 +110,13 @@
     [self.editor addItem:task.originalRequest forTask:task];
 }
 
-- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)arg1 {
+- (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)error {
     [self.editor executeEndRecordingBlockWithTask:task];
 }
 
-- (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 {
-    [self.editor addItem:arg1 forTask:task];
-    [self.editor addItem:arg2 forTask:task];
+- (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response {
+    [self.editor addItem:response forTask:task];
+    [self.editor addItem:request forTask:task];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
