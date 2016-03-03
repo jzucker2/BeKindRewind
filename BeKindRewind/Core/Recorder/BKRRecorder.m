@@ -115,7 +115,6 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response {
-#warning should order matter here? might make it easier to parse for playing
     [self.editor addItem:response forTask:task];
     [self.editor addItem:request forTask:task];
 }
