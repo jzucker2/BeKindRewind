@@ -161,4 +161,18 @@
     }];
 }
 
+- (void)testRecordingRedirectRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:YES];
+    
+    self.expectedResults = @[expectedResult];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.currentVCR.currentCassette.allScenes);
+        XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, 1);
+    }];
+}
+
 @end
