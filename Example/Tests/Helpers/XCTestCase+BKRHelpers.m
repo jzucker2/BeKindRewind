@@ -824,6 +824,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         NSMutableDictionary *expectedCurrentRequestDict = nil;
         if (result.hasCurrentRequest) {
             expectedCurrentRequestDict = expectedOriginalRequestDict.mutableCopy;
+            expectedCurrentRequestDict[@"URL"] = result.finalRedirectURLString;
             if (
                 result.currentRequestAllHTTPHeaderFields &&
                 result.shouldCompareCurrentRequestHTTPHeaderFields
@@ -841,14 +842,23 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         if (result.isRedirecting) {
             for (NSInteger i=0; i<result.numberOfRedirects; i++) {
                 NSMutableDictionary *expectedRedirectRequestDict = expectedOriginalRequestDict.mutableCopy;
-                expectedRedirectRequestDict[@"URL"] = [NSString stringWithFormat:@"%@%ld", result.redirectURLString, (long)i];
+                NSInteger redirectNumber = result.numberOfRedirects-i;
+                NSString *redirectURLString = [result redirectURLFullStringWithRedirection:redirectNumber];
+                expectedRedirectRequestDict[@"URL"] = redirectURLString;
 //                expectedRedirectRequestDict[@"HTTPMethod"] = @"GET";
+                expectedRedirectRequestDict[@"allHTTPHeaderFields"] = result.redirectRequestHTTPHeaderFields;
+                expectedRedirectRequestDict[@"creationDate"] = @([[NSDate date] timeIntervalSince1970]);
                 [framesArray addObject:expectedRedirectRequestDict.copy];
                 
                 NSMutableDictionary *expectedRedirectResponseDict = [self standardResponseDictionary];
-                expectedRedirectRequestDict[@"statusCode"] = @(result.redirectResponseStatusCode);
-                expectedRedirectRequestDict[@"URL"] =
-                expectedRedirectRequestDict[@"allHeaderFields"] = result.redirectResponseAllHeaderFields; // need to update for number
+                expectedRedirectResponseDict[@"URL"] = redirectURLString;
+                expectedRedirectResponseDict[@"statusCode"] = @(result.redirectResponseStatusCode);
+                expectedRedirectResponseDict[@"creationDate"] = @([[NSDate date] timeIntervalSince1970]);
+                NSString *locationString = [result redirectLocationWithForRedirection:(redirectNumber-1)];
+                if ((redirectNumber-1) == 0) {
+                    locationString = result.finalRedirectLocation;
+                }
+                expectedRedirectResponseDict[@"allHeaderFields"] = [self _HTTPBinRedirectResponseAllHeaderFieldsWithLocation:locationString];
                 [framesArray addObject:expectedRedirectResponseDict.copy];
             }
         }
