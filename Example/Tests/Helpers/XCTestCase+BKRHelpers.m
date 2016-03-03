@@ -872,6 +872,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 ) {
                 expectedCurrentRequestDict[@"allHTTPHeaderFields"] = result.currentRequestAllHTTPHeaderFields;
             }
+            expectedCurrentRequestDict[@"creationDate"] = @([[NSDate date] timeIntervalSince1970]);
             [framesArray addObject:expectedCurrentRequestDict.copy];
         }
         if (result.hasResponse) {
@@ -935,7 +936,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (void)assertFramesOrderForScene:(BKRScene *)scene {
-//    NSDate *lastDate = [NSDate dateWithTimeIntervalSince1970:0];
     NSNumber *lastDate = @(0);
     for (BKRFrame *frame in scene.allFrames) {
         // can't just assert that creation dates are in order, in case they have the same creation date for whatever reason (likely a result of mocking)
