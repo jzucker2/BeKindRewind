@@ -824,6 +824,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         }
         [framesArray addObject:expectedOriginalRequestDict.copy];
 #warning need to handle redirects properly
+        XCTFail(@"warning");
         // now add redirects if they exist
         if (result.isRedirecting) {
             for (NSInteger i=0; i<result.numberOfRedirects; i++) {
@@ -1299,7 +1300,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 }
 
 - (void)assertCassettePath:(NSString *)cassetteFilePath matchesExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
-#warning update for redirects
     XCTAssertTrue([BKRFilePathHelper filePathExists:cassetteFilePath]);
     NSDictionary *cassetteDictionary = [BKRFilePathHelper dictionaryForPlistFilePath:cassetteFilePath];
     XCTAssertTrue([cassetteDictionary isKindOfClass:[NSDictionary class]]);
@@ -1359,7 +1359,23 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         }
         NSNumber *responseTimestamp = nil;
         NSMutableData *finalData = [NSMutableData data];
-        for (NSDictionary *frame in frames) {
+        // if it's redirecting, then expect order to be:
+        // 1) originalRequest
+        // then for each redirect
+        // 2) redirect request
+        // 3) redirect response
+        // these might repeat for each redirect
+        // then location of final response generates
+        // 4) currentRequest (last request)
+        // 5) final response (this is returned by the task completion handler)
+        // 6) any data (probably only 1)
+#warning update for redirects
+//        NSInteger numberOfRequestFramesLeft = recording.numberOfExpectedRequestFrames;
+        NSInteger requestFramesCount = 0;
+        NSInteger responseFramesCount = 0;
+        for (NSInteger i=0; i < frames.count; i++) {
+            NSDictionary *frame = frames[i];
+            XCTAssertNotNil(frame);
             XCTAssertEqualObjects(frame[@"uniqueIdentifier"], uniqueIdentifier);
             XCTAssertTrue([frame[@"creationDate"] isKindOfClass:[NSNumber class]]);
             NSString *frameClass = frame[@"class"];
@@ -1384,56 +1400,99 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                     }
                 } else {
                     finalData = frame[@"data"];
-//                    [self _assertExpectedResult:recording withData:frame[@"data"]];
                 }
                 XCTAssertGreaterThan(finalData.length, 0);
                 XCTAssertNotNil(finalData);
             } else if ([frameClass isEqualToString:@"BKRResponseFrame"]) {
+                if (recording.isRedirecting) {
+//                    XCTFail(@"redirect");
+                    if (responseFramesCount == 0) {
+                        XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+                        XCTAssertEqual([frame[@"statusCode"] integerValue], recording.redirectResponseStatusCode);
+                        // check response header fields
+                        [self _assertExpectedResponseHeaderFields:frame[@"allHeaderFields"] withRecording:recording.isRecording withActualResponseHeaderFields:recording.responseAllHeaderFields];
+                    } else if (
+                               (responseFramesCount > 0) &&
+                               (responseFramesCount < recording.numberOfRedirects/2)
+                               ) {
+                        NSLog(@"what");
+                    } else if (responseFramesCount == recording.numberOfRedirects/2) {
+                        NSLog(@"what");
+                    } else {
+                        XCTFail(@"Shouldn't be more than the expected number of response frames");
+                    }
+                    responseFramesCount++;
+                } else {
+                    XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+                    XCTAssertEqual([frame[@"statusCode"] integerValue], recording.responseCode);
+                    // check response header fields
+                    [self _assertExpectedResponseHeaderFields:recording.responseAllHeaderFields withRecording:recording.isRecording withActualResponseHeaderFields:frame[@"allHeaderFields"]];
+                }
                 responseTimestamp = frame[@"creationDate"];
                 finalData = [NSMutableData data];
                 XCTAssertNotNil(responseTimestamp);
-                XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+//                XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
 //                XCTAssertNotNil(frame[@"MIMEType"]); // don't need to check for this, it's not used
-                XCTAssertEqual([frame[@"statusCode"] integerValue], recording.responseCode);
-                // check response header fields
-                [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHeaderFields"]];
+//                XCTAssertEqual([frame[@"statusCode"] integerValue], recording.responseCode);
+//                // check response header fields
+//                [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHeaderFields"]];
             } else if ([frameClass isEqualToString:@"BKRRequestFrame"]) {
-                // POST can have 3 or 4 requests, too much effort to assert on
-                if (![recording.HTTPMethod isEqualToString:@"POST"]) {
-                    XCTAssertTrue(numberOfRequestChecks < recording.numberOfExpectedRequestFrames, @"only expecting an original request and a current request");
+                if (recording.isRedirecting) {
+//                    XCTFail(@"redirect");
+                    if (requestFramesCount == 0) {
+                        XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+//                        XCTAssertEqual([frame[@"statusCode"] integerValue], recording.responseCode);
+                        // check response header fields
+//                        [self _assertExpectedResponseHeaderFields:frame[@"allHeaderFields"] withRecording:recording.isRecording withActualResponseHeaderFields:recording.responseAllHeaderFields];
+                    } else if (
+                               (requestFramesCount > 0) &&
+                               (requestFramesCount < recording.numberOfExpectedRequestFrames)
+                               ) {
+                        NSLog(@"what");
+                    } else if (responseFramesCount == recording.numberOfExpectedRequestFrames) {
+                        NSLog(@"what");
+                    } else {
+                        XCTFail(@"Shouldn't be more than the expected number of request frames");
+                    }
+                    requestFramesCount++;
+                } else {
+                    // POST can have 3 or 4 requests, too much effort to assert on
+                    if (![recording.HTTPMethod isEqualToString:@"POST"]) {
+                        XCTAssertTrue(numberOfRequestChecks < recording.numberOfExpectedRequestFrames, @"only expecting an original request and a current request");
+                    }
+                    XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
+                    if (recording.HTTPMethod) {
+                        XCTAssertEqualObjects(recording.HTTPMethod, frame[@"HTTPMethod"]);
+                    }
+                    if (numberOfRequestChecks == 0) {
+                        // original request has the upload data, the current request does not
+                        if (recording.HTTPBody) {
+                            XCTAssertEqualObjects(recording.HTTPBody, frame[@"HTTPBody"]);
+                        }
+                        // should assert on headers too
+                        if (recording.originalRequestAllHTTPHeaderFields) {
+                            XCTAssertEqualObjects(recording.originalRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
+                        }
+                    } else if (
+                               (numberOfRequestChecks > 0) &&
+                               (numberOfRequestChecks < recording.numberOfExpectedRequestFrames)
+                               ) {
+                        // expected to have updated current requests
+                    } else if (numberOfRequestChecks == recording.numberOfExpectedRequestFrames) {
+                        if (recording.currentRequestAllHTTPHeaderFields) {
+                            [self _assertExpectedResult:recording withActualCurrentRequestHeaderFields:frame[@"allHTTPHeaderFields"]];
+                            //                        [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHTTPHeaderFields"]];
+                            //                        XCTAssertEqualObjects(recording.currentRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
+                        }
+                    } else {
+                        XCTFail(@"not expecting to have more than %ld requests: %@", (long)recording.numberOfExpectedRequestFrames, frame);
+                    }
+                    numberOfRequestChecks++;
                 }
-                XCTAssertEqualObjects(frame[@"URL"], recording.URLString);
                 XCTAssertNotNil(frame[@"timeoutInterval"]);
                 XCTAssertNotNil(frame[@"allowsCellularAccess"]);
                 XCTAssertNotNil(frame[@"HTTPShouldHandleCookies"]);
                 XCTAssertNotNil(frame[@"HTTPShouldUsePipelining"]);
-                if (recording.HTTPMethod) {
-                    XCTAssertEqualObjects(recording.HTTPMethod, frame[@"HTTPMethod"]);
-                }
-                if (numberOfRequestChecks == 0) {
-                    // original request has the upload data, the current request does not
-                    if (recording.HTTPBody) {
-                        XCTAssertEqualObjects(recording.HTTPBody, frame[@"HTTPBody"]);
-                    }
-                    // should assert on headers too
-                    if (recording.originalRequestAllHTTPHeaderFields) {
-                        XCTAssertEqualObjects(recording.originalRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
-                    }
-                } else if (
-                           (numberOfRequestChecks > 0) &&
-                           (numberOfRequestChecks < recording.numberOfExpectedRequestFrames)
-                           ) {
-                    // expected to have updated current requests
-                } else if (numberOfRequestChecks == recording.numberOfExpectedRequestFrames) {
-                    if (recording.currentRequestAllHTTPHeaderFields) {
-                        [self _assertExpectedResult:recording withActualCurrentRequestHeaderFields:frame[@"allHTTPHeaderFields"]];
-//                        [self _assertExpectedResult:recording withActualResponseHeaderFields:frame[@"allHTTPHeaderFields"]];
-//                        XCTAssertEqualObjects(recording.currentRequestAllHTTPHeaderFields, frame[@"allHTTPHeaderFields"]);
-                    }
-                } else {
-                    XCTFail(@"not expecting to have more than %ld requests: %@", (long)recording.numberOfExpectedRequestFrames, frame);
-                }
-                numberOfRequestChecks++;
                 
             } else {
                 XCTFail(@"frameClass is unknown type: %@", frameClass);
