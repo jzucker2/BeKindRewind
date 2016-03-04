@@ -21,6 +21,7 @@
 #import "BKRErrorFrame.h"
 #import "BKRRequestFrame.h"
 #import "BKRResponseFrame.h"
+#import "BKRRedirectFrame.h"
 
 // Request Matching Protocol
 #import "BKRRequestMatching.h"
