@@ -7,6 +7,7 @@
 //
 
 #import "BKRRecordingEditor.h"
+#import "BKRConstants.h"
 #import "BKRRecorder.h"
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRNSURLSessionSwizzling.h"
@@ -107,7 +108,7 @@
 - (void)beginRecording:(NSURLSessionTask *)task {
     [self.editor executeBeginRecordingBlockWithTask:task];
     // add the original request
-    [self.editor addItem:task.originalRequest forTask:task];
+    [self.editor addItem:task.originalRequest forTask:task withContext:BKRRecordingContextBeginning];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)error {
@@ -115,25 +116,37 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response {
-    [self.editor addItem:response forTask:task];
-    [self.editor addItem:request forTask:task];
+//    [self.editor addItem:response forTask:task withContext:BKRRecordingContextRedirecting];
+//    [self.editor addItem:request forTask:task withContext:BKRRecordingContextRedirecting];
+    // protect from possibly being nil
+    NSMutableDictionary *addItemDict = [NSMutableDictionary dictionary];
+    if (request) {
+        addItemDict[kBKRRedirectRequestKey] = request;
+    }
+    if (response) {
+        addItemDict[kBKRRedirectResponseKey] = response;
+    }
+    if (addItemDict.allKeys.count) {
+        [self.editor addItem:addItemDict.copy forTask:task withContext:BKRRecordingContextRedirecting];
+    }
+//    [self.editor addItem:@[response, request] forTask:task withContext:BKRRecordingContextRedirecting];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
-    [self.editor addItem:data forTask:task];
+    [self.editor addItem:data forTask:task withContext:BKRRecordingContextExecuting];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveResponse:(NSURLResponse *)response {
-    [self.editor addItem:response.copy forTask:task];
+    [self.editor addItem:response.copy forTask:task withContext:BKRRecordingContextExecuting];
 }
 
-- (void)recordTask:(NSURLSessionTask *)task didAddRequest:(NSURLRequest *)request {
-    [self.editor addItem:request forTask:task];
+- (void)recordTask:(NSURLSessionTask *)task didAddCurrentRequest:(NSURLRequest *)request {
+    [self.editor addItem:request forTask:task withContext:BKRRecordingContextAddingCurrentRequest];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task setError:(NSError *)error {
     if (error) {
-        [self.editor addItem:error forTask:task];
+        [self.editor addItem:error forTask:task withContext:BKRRecordingContextExecuting];
     }
 }
 

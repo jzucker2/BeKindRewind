@@ -95,3 +95,9 @@
 - (void)addRequest:(NSURLRequest *)request;
 
 @end
+
+@interface BKROriginalRequestFrame : BKRRequestFrame
+@end
+
+@interface BKRCurrentRequestFrame : BKRRequestFrame
+@end

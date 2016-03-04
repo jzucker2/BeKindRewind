@@ -117,13 +117,14 @@
 - (void)recordTask:(NSURLSessionTask *)task didFinishWithError:(NSError *)error;
 
 /**
- *  Called by network to record requests associated with a network event. This
- *  covers the originalRequest and the currentRequest associated with the task
+ *  Called by network to record current requests added that are associated with
+ *  a network event. This is not for originalRequest but only for the currentRequest
+ *  associated with the task (which may change multiple times during the task's lifecycle)
  *
  *  @param task    executing network task
  *  @param request request associated with the network task
  */
-- (void)recordTask:(NSURLSessionTask *)task didAddRequest:(NSURLRequest *)request;
+- (void)recordTask:(NSURLSessionTask *)task didAddCurrentRequest:(NSURLRequest *)request;
 
 
 @end

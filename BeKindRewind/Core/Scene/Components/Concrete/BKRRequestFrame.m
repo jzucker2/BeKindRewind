@@ -110,3 +110,9 @@
 }
 
 @end
+
+@implementation BKROriginalRequestFrame
+@end
+
+@implementation BKRCurrentRequestFrame
+@end

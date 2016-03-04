@@ -54,6 +54,9 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.accessingQueue, ^{
         BKRStrongify(self);
+        if (!frame) {
+            return;
+        }
         [self->_frames addObject:frame];
     });
 }

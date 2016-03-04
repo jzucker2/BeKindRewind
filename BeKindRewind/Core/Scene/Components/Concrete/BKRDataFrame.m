@@ -43,7 +43,7 @@
 //    if (JSON) {
 //        plistDict[@"JSON"] = JSON;
 //    }
-    return [[NSDictionary alloc] initWithDictionary:plistDict copyItems:YES];
+    return [[NSDictionary alloc] initWithDictionary:plistDict.copy copyItems:YES];
 }
 
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary {

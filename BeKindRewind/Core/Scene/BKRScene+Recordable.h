@@ -7,6 +7,7 @@
 //
 
 #import "BKRScene.h"
+#import "BKRConstants.h"
 #import "BKRPlistSerializing.h"
 
 @class BKRRawFrame;
@@ -22,27 +23,30 @@
  *  Designated initializer for a recordable scene created from
  *  a single piece of a network request
  *
- *  @param frame component of a network request
+ *  @param frame   component of a network request
+ *  @param context helps determine the type of frame subclass to store item as
  *
  *  @return instance of a recordable scene
  */
-- (instancetype)initFromFrame:(BKRRawFrame *)frame;
+- (instancetype)initFromFrame:(BKRRawFrame *)frame withContext:(BKRRecordingContext)context;
 
 /**
  *  Convenience initializer for a recordable scene created from
  *  a single piece of a network request
  *
- *  @param frame component of a network request
+ *  @param frame   component of a network request
+ *  @param context helps determine the type of frame subclass to store item as
  *
  *  @return instance of a recordable scene
  */
-+ (instancetype)sceneFromFrame:(BKRRawFrame *)frame;
++ (instancetype)sceneFromFrame:(BKRRawFrame *)frame withContext:(BKRRecordingContext)context;
 
 /**
  *  Add component of a network request as a frame
  *
- *  @param frame component of network request
+ *  @param frame   component of network request
+ *  @param context helps determine the type of frame subclass to store item as
  */
-- (void)addFrame:(BKRRawFrame *)frame;
+- (void)addFrame:(BKRRawFrame *)frame withContext:(BKRRecordingContext)context;
 
 @end
