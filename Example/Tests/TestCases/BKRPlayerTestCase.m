@@ -132,6 +132,9 @@
     [self setPlayer:player withExpectationToEnabled:YES];
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:NO withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        NSLog(@"%@", result.URLString);
+        NSLog(@"%@", result.receivedJSON);
+        NSLog(@"%@", task.debugDescription);
         batchSceneAssertions(player.allScenes);
     }];
 }

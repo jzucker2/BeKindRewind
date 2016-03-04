@@ -76,13 +76,18 @@
     }
     __block NSUInteger responseCount = 0;
     // this is synchronous and blocking in this queue
+    // since we are doing reverse enumeration and the currentScenes
+    // array is passed in the correct way, we need to invert the index
+    // when we pass it to the matcher
     [currentScenes enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRScene * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSUInteger currentSceneIndex = idx;
+//        NSUInteger currentSceneIndex = idx;
         NSLog(@"+++++++++++++++++++++++++++++++++");
-        NSLog(@"currentSceneIndex: %lu", (unsigned long)currentSceneIndex);
+        NSLog(@"currentSceneIndex: %lu", (unsigned long)idx);
         NSLog(@"start currentScenes iteration responseCount: %lu", (unsigned long)responseCount);
         [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
             NSLog(@"=================================");
+            NSUInteger currentSceneIndex = currentScenes.count -1 - idx; // -1 for CS counting
+//            NSNumber *currentSceneIndex
             NSLog(@"currentSceneIndex: %lu", (unsigned long)currentSceneIndex);
             NSLog(@"start test responseCount: %lu", (unsigned long)responseCount);
             BOOL finalTestResult = [matcher hasMatchForRequest:request withCurrentSceneIndex:currentSceneIndex responseCount:responseCount inPlayableScenes:currentScenes];
@@ -155,12 +160,13 @@
         } withStubResponse:^BKRScene * _Nonnull(NSURLRequest * _Nonnull request) {
             // increment responseCount after passing it in
             NSLog(@"---------------------------------");
+            NSUInteger currentSceneIndex = idx;
             NSLog(@"currentSceneIndex: %lu", (unsigned long)currentSceneIndex);
             NSLog(@"response responseCount: %lu", (unsigned long)responseCount);
             NSLog(@"---------------------------------");
             return [matcher matchForRequest:request withCurrentSceneIndex:currentSceneIndex responseCount:responseCount++ inPlayableScenes:currentScenes];
         }];
-        NSLog(@"currentSceneIndex: %lu", (unsigned long)currentSceneIndex);
+        NSLog(@"currentSceneIndex: %lu", (unsigned long)idx);
         NSLog(@"end currentScenes iteration responseCount: %lu", (unsigned long)responseCount);
         NSLog(@"+++++++++++++++++++++++++++++++++");
     }];
