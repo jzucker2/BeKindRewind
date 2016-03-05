@@ -11,6 +11,7 @@
 #import "BKRDataFrame.h"
 #import "BKRRequestFrame.h"
 #import "BKRResponseFrame.h"
+#import "BKRRedirectFrame.h"
 #import "BKRRawFrame.h"
 #import "BKRErrorFrame.h"
 #import "BKRConstants.h"
@@ -77,18 +78,24 @@
     return (NSArray<BKRErrorFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRErrorFrame class]]];
 }
 
+- (NSArray<BKRCurrentRequestFrame *> *)allCurrentRequestFrames {
+    return (NSArray<BKRCurrentRequestFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRCurrentRequestFrame class]]];
+}
+
+- (NSArray<BKRRedirectFrame *> *)allRedirectFrames {
+    return (NSArray<BKRRedirectFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRRedirectFrame class]]];
+}
+
 - (BKRRequestFrame *)originalRequest {
     return self.allRequestFrames.firstObject;
 }
 
-- (BKRRequestFrame *)currentRequest {
-    // return last request if more than 1 request,
-    // else return nil (assume that first request is the originalRequest and the
-    // last request (excluding the first one) is the currentRequest
-    if (self.allRequestFrames.count <= 1) {
-        return nil;
-    }
-    return self.allRequestFrames.lastObject;
+- (BKRCurrentRequestFrame *)currentRequest {
+    // since current requests are sorted, use the last object in the current requests array
+    // this is equivalent to task.currentRequest at the end of the task's lifecycle
+    // the first currentRequest frame is the first time the server adjust's the originalRequest
+    // or the first redirect request
+    return self.allCurrentRequestFrames.lastObject;
 }
 
 - (NSPredicate *)_predicateForFramesOfClass:(Class)frameClass {

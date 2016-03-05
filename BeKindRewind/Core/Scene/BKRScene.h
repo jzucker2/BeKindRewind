@@ -12,6 +12,9 @@
 @class BKRDataFrame;
 @class BKRErrorFrame;
 @class BKRRequestFrame;
+@class BKROriginalRequestFrame;
+@class BKRCurrentRequestFrame;
+@class BKRRedirectFrame;
 @class BKRResponseFrame;
 
 /**
@@ -73,6 +76,10 @@
  */
 - (NSArray<BKRRequestFrame *> *)allRequestFrames;
 
+- (NSArray<BKRRedirectFrame *> *)allRedirectFrames;
+
+- (NSArray<BKRCurrentRequestFrame *> *)allCurrentRequestFrames;
+
 /**
  *  Ordered (by creation date) array of only error frames in scene
  *
@@ -85,14 +92,14 @@
  *
  *  @return frame containing information related to a NSURLRequest
  */
-- (BKRRequestFrame *)originalRequest;
+- (BKROriginalRequestFrame *)originalRequest;
 
 /**
  *  Current request for a network request (in case the server modifies the request, as can happen with a NSURLSessionTask).
  *
  *  @return frame containing information related to a NSURLRequest
  */
-- (BKRRequestFrame *)currentRequest;
+- (BKRCurrentRequestFrame *)currentRequest;
 
 
 @end
