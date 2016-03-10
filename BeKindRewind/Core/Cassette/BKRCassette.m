@@ -72,7 +72,7 @@
 }
 
 - (NSArray<BKRScene *> *)_scenesSortedByClapboardFrameCreationDate:(NSDictionary<NSString *, BKRScene *> *)aScenesDictionary {
-    return [aScenesDictionary.allValues sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
+    return [aScenesDictionary.allValues scenesSortedByClapboardFrameCreationDate];
 }
 
 - (void)editScenesDictionary:(BKRCassetteSceneDictionaryAccessBlock)sceneDictionaryAccessBlock {

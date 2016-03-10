@@ -101,5 +101,10 @@
  */
 - (BKRCurrentRequestFrame *)currentRequest;
 
+@end
+
+@interface NSArray (BKRScene)
+
+- (NSArray<BKRScene *> *)scenesSortedByClapboardFrameCreationDate;
 
 @end

@@ -9,6 +9,7 @@
 #import <OHHTTPStubs/OHHTTPStubs.h>
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRScene+Playable.h"
+#import "BKRResponseStub.h"
 
 @implementation BKROHHTTPStubsWrapper
 
@@ -16,11 +17,11 @@
     [OHHTTPStubs removeAllStubs];
 }
 
-+ (OHHTTPStubsResponse *)_responseForScene:(BKRScene *)scene {
-    if (scene.responseError) {
-        return [OHHTTPStubsResponse responseWithError:scene.responseError];
++ (OHHTTPStubsResponse *)_responseForStub:(BKRResponseStub *)responseStub {
+    if (responseStub.error) {
+        return [OHHTTPStubsResponse responseWithError:responseStub.error];
     }
-    return [OHHTTPStubsResponse responseWithData:scene.responseData statusCode:(int)scene.responseStatusCode headers:scene.responseHeaders];
+    return [OHHTTPStubsResponse responseWithData:responseStub.data statusCode:(int)responseStub.statusCode headers:responseStub.headers];
 }
 
 + (BOOL)hasStubs {
@@ -31,7 +32,7 @@
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return testBlock(request);
     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        return [self _responseForScene:responseBlock(request)];
+        return [self _responseForStub:responseBlock(request)];
     }];
 }
 

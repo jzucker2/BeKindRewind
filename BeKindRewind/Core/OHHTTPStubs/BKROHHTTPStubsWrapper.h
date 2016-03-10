@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class BKRScene;
+@class BKRResponseStub;
 
 /**
  *  Test block wrapper around OHHTTPStubs test block
@@ -27,7 +28,7 @@ typedef BOOL (^BKRStubsTestBlock)(NSURLRequest* _Nonnull request);
  *
  *  @return BKRPlayableScene to use as a stub
  */
-typedef BKRScene* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
+typedef BKRResponseStub* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
 
 /**
  *  Wrapper object for abstracting the OHHTTPStubs framework

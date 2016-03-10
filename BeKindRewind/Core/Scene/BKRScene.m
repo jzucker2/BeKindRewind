@@ -103,3 +103,11 @@
 }
 
 @end
+
+@implementation NSArray (BKRScene)
+
+- (NSArray<BKRScene *> *)scenesSortedByClapboardFrameCreationDate {
+    return [self sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
+}
+
+@end

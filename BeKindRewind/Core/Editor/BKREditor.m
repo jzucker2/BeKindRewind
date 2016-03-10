@@ -94,6 +94,17 @@
     return cassette;
 }
 
+- (void)readCassette:(BKRCassetteEditingBlock)cassetteEditingBlock {
+    if (!cassetteEditingBlock) {
+        return;
+    }
+    BKRWeakify(self);
+    dispatch_sync(self.editingQueue, ^{
+        BKRStrongify(self);
+        cassetteEditingBlock(self->_enabled, self->_currentCassette);
+    });
+}
+
 - (NSArray<BKRScene *> *)allScenes {
     return self.currentCassette.allScenes;
 }

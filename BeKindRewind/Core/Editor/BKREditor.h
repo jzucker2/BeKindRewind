@@ -63,6 +63,9 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  */
 - (void)editCassetteSynchronously:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
+// synchronous and blocking, thread-safe, dispatch_sync
+- (void)readCassette:(BKRCassetteEditingBlock)cassetteEditingBlock;
+
 /**
  *  Separate queue for processing editing actions
  */
