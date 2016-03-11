@@ -12,6 +12,8 @@
 @class BKRSceneResponseStub;
 @class BKRResponseStub;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  *  Test block wrapper around OHHTTPStubs test block
  *
@@ -67,8 +69,10 @@ typedef void (^BKRStubCompletionBlock)(NSURLRequest *request, BKRResponseStub *r
  */
 + (void)stubRequestPassingTest:(nonnull BKRStubsTestBlock)testBlock withStubResponse:(nonnull BKRStubsResponseBlock)responseBlock;
 
-+ (void)onStubActivation:(BKRStubActivationBlock)stubActivationBlock;
-+ (void)onStubRedirectResponse:(BKRStubRedirectBlock)stubRedirectBlock;
-+ (void)onStubCompletion:(BKRStubCompletionBlock)stubCompletionBlock;
++ (void)onStubActivation:(nullable BKRStubActivationBlock)stubActivationBlock;
++ (void)onStubRedirectResponse:(nullable BKRStubRedirectBlock)stubRedirectBlock;
++ (void)onStubCompletion:(nullable BKRStubCompletionBlock)stubCompletionBlock;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 @property (nonatomic, strong, readonly) BKRScene *scene;
 @property (nonatomic, assign) BKRPlayingSceneState state;
 @property (nonatomic, strong, readonly) NSMutableSet<BKRResponseStub *> *responseStubs;
+@property (nonatomic, strong, readonly) NSMutableSet<NSURLRequest *> *requests;
 
 @end
 
@@ -38,6 +39,10 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 - (void)startRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub;
 - (void)redirectOriginalRequest:(NSURLRequest *)request withRedirectRequest:(NSURLRequest *)redirectRequest withResponseStub:(BKRResponseStub *)responseStub;
 - (void)completeRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub error:(NSError *)error;
+- (NSArray<BKRPlayingContextItem *> *)inactiveItems;
+- (NSArray<BKRPlayingContextItem *> *)activeItems;
+- (NSArray<BKRPlayingContextItem *> *)redirectingItems;
+- (NSArray<BKRPlayingContextItem *> *)completedItems;
 //- (NSUInteger)countForRequest:(NSURLRequest *)request;
 //- (BOOL)activateScene:(BKRScene *)scene;
 //- (BOOL)completeScene:(BKRScene *)scene;

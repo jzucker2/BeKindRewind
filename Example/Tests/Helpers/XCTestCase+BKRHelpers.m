@@ -291,22 +291,28 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         NSMutableArray<BKRFrame *> *assertFrames = scene.allFrames.mutableCopy;
         XCTAssertNotNil(assertFrames);
         XCTAssertGreaterThan(assertFrames.count, 0);
-        [self _assertRequestFrame:scene.originalRequest withRequest:task.originalRequest andIgnoreHeaderFields:YES];
-        [assertFrames removeObject:scene.originalRequest];
-        // might be more than one original request frame, remove until we reach one that has header fields
-        // also don't want to include frames with empty header field dictionaries
-        for (BKRRequestFrame *frame in scene.allRequestFrames) {
-            if (
-                !frame.allHTTPHeaderFields ||
-                !frame.allHTTPHeaderFields.allKeys.count
-                ) {
-                [assertFrames removeObject:frame];
-            } else {
-                break;
-            }
-        }
+        BKROriginalRequestFrame *originalRequestFrame = scene.originalRequest;
+        XCTAssertNotNil(originalRequestFrame);
+        XCTAssertTrue([originalRequestFrame isMemberOfClass:[BKROriginalRequestFrame class]]);
+        [self _assertRequestFrame:originalRequestFrame withRequest:task.originalRequest andIgnoreHeaderFields:YES];
+        [assertFrames removeObject:originalRequestFrame];
+//        // might be more than one original request frame, remove until we reach one that has header fields
+//        // also don't want to include frames with empty header field dictionaries
+//        for (BKRRequestFrame *frame in scene.allRequestFrames) {
+//            if (
+//                !frame.allHTTPHeaderFields ||
+//                !frame.allHTTPHeaderFields.allKeys.count
+//                ) {
+//                [assertFrames removeObject:frame];
+//            } else {
+//                break;
+//            }
+//        }
         if (expectedResult.hasCurrentRequest) {
             // when we are playing, OHHTTPStubs does not mock adjusting the currentRequest to have different headers like a server would with a live NSURLSessionTask
+            BKRCurrentRequestFrame *currentRequestFrame = scene.currentRequest;
+            XCTAssertNotNil(currentRequestFrame);
+            XCTAssertTrue([currentRequestFrame isMemberOfClass:[BKRCurrentRequestFrame class]]);
             [self _assertRequestFrame:scene.currentRequest withRequest:task.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
             [assertFrames removeObject:scene.currentRequest];
         }

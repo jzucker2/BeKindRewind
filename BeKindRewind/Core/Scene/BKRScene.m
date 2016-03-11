@@ -63,7 +63,8 @@
 }
 
 - (NSArray<BKRRequestFrame *> *)allRequestFrames {
-    return (NSArray<BKRRequestFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRRequestFrame class]]];
+    NSPredicate *isKindOfClassPredicate = [NSPredicate predicateWithFormat:@"self isKindOfClass: %@", [BKRRequestFrame class]];
+    return (NSArray<BKRRequestFrame *> *)[self.allFrames filteredArrayUsingPredicate:isKindOfClassPredicate];
 }
 
 - (NSArray<BKRResponseFrame *> *)allResponseFrames {
@@ -86,8 +87,9 @@
     return (NSArray<BKRRedirectFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRRedirectFrame class]]];
 }
 
-- (BKRRequestFrame *)originalRequest {
-    return self.allRequestFrames.firstObject;
+- (BKROriginalRequestFrame *)originalRequest {
+    // there should only be a single BKROriginalRequestFrame
+    return (BKROriginalRequestFrame *)[self.allRequestFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKROriginalRequestFrame class]]].firstObject;
 }
 
 - (BKRCurrentRequestFrame *)currentRequest {

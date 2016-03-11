@@ -23,7 +23,7 @@
     return YES;
 }
 
-- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
+- (BKRSceneResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
     return nil;
 }
 

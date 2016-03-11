@@ -92,7 +92,13 @@
 
 - (void)startRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub {
     BKRLogMethod;
-    
+//    for (BKRPlayingContextItem *item in self.allItems) {
+//        if ([item.responseStubs containsObject:responseStub]) {
+//            item.state = BKRPlayingSceneStateActive;
+//            break;
+//        }
+//    }
+    [self _updateStateToState:BKRPlayingSceneStateActive forResponseStub:responseStub];
 //    NSString *requestURLString = request.URL.absoluteString;
 //    if (!requestURLString) {
 //        return;
@@ -107,10 +113,61 @@
 
 - (void)redirectOriginalRequest:(NSURLRequest *)request withRedirectRequest:(NSURLRequest *)redirectRequest withResponseStub:(BKRResponseStub *)responseStub {
     BKRLogMethod;
+    [self _updateStateToState:BKRPlayingSceneStateRedirecting forResponseStub:responseStub];
+//    for (BKRPlayingContextItem *item in self.allItems) {
+//        if ([item.responseStubs containsObject:responseStub]) {
+//            item.state = BKRPlayingSceneStateRedirecting;
+//            break;
+//        }
+//    }
 }
 
 - (void)completeRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub error:(NSError *)error {
     BKRLogMethod;
+    [self _updateStateToState:BKRPlayingSceneStateCompleted forResponseStub:responseStub];
+//    [self.allItems enumerateObjectsUsingBlock:^(BKRPlayingContextItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        if ([obj.responseStubs containsObject:responseStub]) {
+//            obj.state = BKRPlayingSceneStateCompleted;
+//            *stop = YES;
+//        }
+//    }];
+//    for (BKRPlayingContextItem *item in self.allItems) {
+//        if ([item.responseStubs containsObject:responseStub]) {
+//            item.state = BKRPlayingSceneStateCompleted;
+//            break; // stop after this
+//        }
+//    }
+}
+
+- (void)_updateStateToState:(BKRPlayingSceneState)updatedState forResponseStub:(BKRResponseStub *)responseStub {
+    [self.allItems enumerateObjectsUsingBlock:^(BKRPlayingContextItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj.responseStubs containsObject:responseStub]) {
+            obj.state = updatedState;
+            *stop = YES;
+        }
+    }];
+}
+
+- (NSArray<BKRPlayingContextItem *> *)inactiveItems {
+    return [self.allItems filteredArrayUsingPredicate:[self _predicateForItemWithState:BKRPlayingSceneStateInactive]];
+}
+
+- (NSArray<BKRPlayingContextItem *> *)activeItems {
+    return [self.allItems filteredArrayUsingPredicate:[self _predicateForItemWithState:BKRPlayingSceneStateActive]];
+}
+
+- (NSArray<BKRPlayingContextItem *> *)redirectingItems {
+    return [self.allItems filteredArrayUsingPredicate:[self _predicateForItemWithState:BKRPlayingSceneStateRedirecting]];
+}
+
+- (NSArray<BKRPlayingContextItem *> *)completedItems {
+    return [self.allItems filteredArrayUsingPredicate:[self _predicateForItemWithState:BKRPlayingSceneStateCompleted]];
+}
+
+- (NSPredicate *)_predicateForItemWithState:(BKRPlayingSceneState)state {
+    [NSString stringWithFormat:@"%ld", (long)state];
+    return [NSPredicate predicateWithFormat:@"self.state == %ld", (long)state];
+//    return [NSPredicate predicateWithFormat:]
 }
 
 //- (NSUInteger)countForRequest:(NSURLRequest *)request {
