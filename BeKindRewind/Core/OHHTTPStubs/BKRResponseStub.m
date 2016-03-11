@@ -8,6 +8,7 @@
 
 #import <OHHTTPStubs/OHHTTPStubsResponse.h>
 #import "BKRResponseStub.h"
+#import "BKRScene.h"
 
 @interface BKRResponseStub ()
 @property (nonatomic, assign, readwrite) int statusCode;
@@ -50,6 +51,28 @@
 
 + (instancetype)responseWithError:(NSError *)error {
     return [[self alloc] initWithData:nil statusCode:0 headers:nil error:error];
+}
+
+@end
+
+@interface BKRSceneResponseStub ()
+@property (nonatomic, strong, readwrite) BKRScene *scene;
+@property (nonatomic, strong, readwrite) BKRResponseStub *responseStub;
+@end
+
+@implementation BKRSceneResponseStub
+
+- (instancetype)initResponseWithScene:(BKRScene *)scene responseStub:(BKRResponseStub *)responseStub {
+    self = [super init];
+    if (self) {
+        _scene = scene;
+        _responseStub = responseStub;
+    }
+    return self;
+}
+
++ (instancetype)responseWithScene:(BKRScene *)scene responseStub:(BKRResponseStub *)responseStub {
+    return [[self alloc] initResponseWithScene:scene responseStub:responseStub];
 }
 
 @end

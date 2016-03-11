@@ -20,6 +20,7 @@
     self = [super init];
     if (self) {
         _scene = scene;
+        _state = BKRPlayingSceneStateInactive;
     }
     return self;
 }
@@ -91,6 +92,7 @@
 
 - (void)startRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub {
     BKRLogMethod;
+    
 //    NSString *requestURLString = request.URL.absoluteString;
 //    if (!requestURLString) {
 //        return;
@@ -147,6 +149,7 @@
 //
 - (id)copyWithZone:(NSZone *)zone {
     BKRPlayingContext *context = [[[self class] allocWithZone:zone] init];
+    context.allItems = self.allItems;
 //    context.activeScenes = self.activeScenes;
 //    context.completedScenes = self.completedScenes;
 //    context.allScenes = self.allScenes;

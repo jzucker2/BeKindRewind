@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 //@class BKRScene;
-@class BKRResponseStub;
+@class BKRSceneResponseStub;
 @class BKRPlayingContext;
 
 /**
@@ -41,7 +41,7 @@
  *  @return a BKRPlayableScene to use as a stub for this request
  */
 //- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context;
+- (BKRSceneResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context;
 
 /**
  *  This is used by the test block to check whether a stubbed response should be provided for

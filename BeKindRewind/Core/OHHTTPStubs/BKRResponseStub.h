@@ -19,3 +19,14 @@
 + (instancetype)responseWithError:(NSError *)error;
 + (instancetype)responseWithStubsResponse:(OHHTTPStubsResponse *)response;
 @end
+
+@class BKRScene;
+
+@interface BKRSceneResponseStub : NSObject
+
++ (instancetype)responseWithScene:(BKRScene *)scene responseStub:(BKRResponseStub *)responseStub;
+
+@property (nonatomic, strong, readonly) BKRScene *scene;
+@property (nonatomic, strong, readonly) BKRResponseStub *responseStub;
+
+@end

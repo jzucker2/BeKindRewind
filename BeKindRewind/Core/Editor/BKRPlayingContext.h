@@ -11,7 +11,7 @@
 typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
     BKRPlayingSceneStateInactive = 0,
     BKRPlayingSceneStateActive,
-    BKRPlayingSceneStateRunning,
+    BKRPlayingSceneStateRedirecting,
     BKRPlayingSceneStateCompleted
 };
 
@@ -24,6 +24,7 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 
 @property (nonatomic, strong, readonly) BKRScene *scene;
 @property (nonatomic, assign) BKRPlayingSceneState state;
+@property (nonatomic, strong, readonly) NSMutableSet<BKRResponseStub *> *responseStubs;
 
 @end
 

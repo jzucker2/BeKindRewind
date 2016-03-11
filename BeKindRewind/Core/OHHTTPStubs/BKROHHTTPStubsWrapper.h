@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class BKRScene;
+@class BKRSceneResponseStub;
 @class BKRResponseStub;
 
 /**
@@ -28,7 +29,7 @@ typedef BOOL (^BKRStubsTestBlock)(NSURLRequest* _Nonnull request);
  *
  *  @return BKRPlayableScene to use as a stub
  */
-typedef BKRResponseStub* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
+typedef BKRSceneResponseStub* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
 
 typedef void (^BKRStubActivationBlock)(NSURLRequest *request, BKRResponseStub *responseStub);
 typedef void (^BKRStubRedirectBlock)(NSURLRequest *request, NSURLRequest *redirectRequest, BKRResponseStub *responseStub);
