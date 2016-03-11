@@ -10,7 +10,6 @@
 #import "BKRResponseStub.h"
 
 @interface BKRResponseStub ()
-@property (nonatomic, strong, readwrite, nullable) NSData *data;
 @property (nonatomic, assign, readwrite) int statusCode;
 @property (nonatomic, strong, readwrite, nullable) NSDictionary *headers;
 @property (nonatomic, strong, readwrite, nullable) NSError *error; // if there is not nil then the other things
@@ -19,9 +18,16 @@
 @implementation BKRResponseStub
 
 - (instancetype)initWithData:(NSData *)data statusCode:(int)statusCode headers:(NSDictionary *)headers error:(NSError *)error {
+    NSInputStream *inputStream = [NSInputStream inputStreamWithData:data?:[NSData data]];
+    self = [self initWithInputStream:inputStream dataSize:data.length statusCode:statusCode headers:headers error:error];
+    return self;
+}
+
+- (instancetype)initWithInputStream:(NSInputStream *)inputStream dataSize:(unsigned long long)dataSize statusCode:(int)statusCode headers:(NSDictionary *)headers error:(NSError *)error {
     self = [super init];
     if (self) {
-        _data = data;
+        _inputStream = inputStream;
+        _dataSize = dataSize;
         _statusCode = statusCode;
         _headers = headers;
         _error = error;
@@ -30,10 +36,7 @@
 }
 
 - (instancetype)initWithStubsResponse:(OHHTTPStubsResponse *)response {
-    self = [self initWithData:nil statusCode:response.statusCode headers:response.httpHeaders error:response.error];
-    if (self) {
-        
-    }
+    self = [self initWithInputStream:response.inputStream dataSize:response.dataSize statusCode:response.statusCode headers:response.httpHeaders error:response.error];
     return self;
 }
 

@@ -10,7 +10,8 @@
 
 @class OHHTTPStubsResponse;
 @interface BKRResponseStub : NSObject
-@property (nonatomic, strong, readonly, nullable) NSData *data;
+@property (nonatomic, strong, readonly, nullable) NSInputStream *inputStream;
+@property (nonatomic, assign, readonly) unsigned long long dataSize;
 @property (nonatomic, assign, readonly) int statusCode;
 @property (nonatomic, strong, readonly, nullable) NSDictionary *headers;
 @property (nonatomic, strong, readonly, nullable) NSError *error; // if there is not nil then the other things are ignored

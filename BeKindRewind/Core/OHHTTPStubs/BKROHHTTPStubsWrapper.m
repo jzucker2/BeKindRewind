@@ -21,7 +21,7 @@
     if (responseStub.error) {
         return [OHHTTPStubsResponse responseWithError:responseStub.error];
     }
-    return [OHHTTPStubsResponse responseWithData:responseStub.data statusCode:(int)responseStub.statusCode headers:responseStub.headers];
+    return [[OHHTTPStubsResponse alloc] initWithInputStream:responseStub.inputStream dataSize:responseStub.dataSize statusCode:responseStub.statusCode headers:responseStub.headers];
 }
 
 + (BOOL)hasStubs {
