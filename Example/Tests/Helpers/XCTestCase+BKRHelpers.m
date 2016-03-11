@@ -595,7 +595,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     [self _assertExpectedResponseHeaderFields:expectedResult.responseAllHeaderFields withRecording:expectedResult.isRecording withActualResponseHeaderFields:actualResponseHeaderFields];
 }
 
-- (void)_assertExpectedResponseHeaderFields:(NSDictionary *)expectedResponseHeaderFields withRecording:(BOOL)isRecording withActualResponseHeaderFields:(NSDictionary *)actualResponseHeaderFields {
+- (void)_assertExpectedResponseHeaderFields:(NSDictionary *)expectedResponseHeaderFields withRecording:(BOOL)isRecording withActualResponseHeaderFields:(NSDictionary *)receivedResponseHeaderFields {
+    NSMutableDictionary *slimmingHeaderFields = receivedResponseHeaderFields.mutableCopy;
+    if (slimmingHeaderFields[kBKRSceneUUIDKey]) {
+        [slimmingHeaderFields removeObjectForKey:kBKRSceneUUIDKey];
+    }
+    NSDictionary *actualResponseHeaderFields = slimmingHeaderFields.copy;
     XCTAssertEqual(expectedResponseHeaderFields.count, actualResponseHeaderFields.count);
     NSArray *actualResponseKeysArray = actualResponseHeaderFields.allKeys;
     for (NSInteger i=0; i<actualResponseHeaderFields.count; i++) {
@@ -1378,7 +1383,13 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     XCTAssertNotNil(response);
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSHTTPURLResponse *castedDataTaskResponse = (NSHTTPURLResponse *)response;
-        XCTAssertEqualObjects(responseFrame.allHeaderFields, castedDataTaskResponse.allHeaderFields);
+        NSDictionary *responseHeaderFields = castedDataTaskResponse.allHeaderFields;
+        if (castedDataTaskResponse.allHeaderFields[kBKRSceneUUIDKey]) {
+            NSMutableDictionary *slimming = responseHeaderFields.mutableCopy;
+            [slimming removeObjectForKey:kBKRSceneUUIDKey];
+            responseHeaderFields = slimming.copy;
+        }
+        XCTAssertEqualObjects(responseFrame.allHeaderFields, responseHeaderFields);
         XCTAssertEqual(responseFrame.statusCode, castedDataTaskResponse.statusCode);
     }
 }
@@ -1403,7 +1414,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     XCTAssertEqual(errorFrame.code, error.code);
     XCTAssertEqualObjects(errorFrame.domain, error.domain);
     if (errorFrame.userInfo || error.userInfo) {
-        XCTAssertEqualObjects(errorFrame.userInfo, error.userInfo);
+        NSMutableDictionary *errorFrameDictionary = errorFrame.userInfo.mutableCopy;
+        XCTAssertNotNil(errorFrameDictionary[kBKRSceneUUIDKey]);
+        [errorFrameDictionary removeObjectForKey:kBKRSceneUUIDKey];
+        XCTAssertEqualObjects(errorFrameDictionary.copy, error.userInfo);
     }
 }
 

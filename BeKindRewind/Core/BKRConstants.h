@@ -33,6 +33,7 @@ typedef NS_ENUM(NSInteger, BKRRecordingContext) {
 
 static NSString * const kBKRRedirectRequestKey = @"BKRRedirectRequestKey";
 static NSString * const kBKRRedirectResponseKey = @"BKRRedirectResponseKey";
+static NSString * const kBKRSceneUUIDKey = @"BKRSceneUUIDKey";
 
 /**
  *  Block for execution before a NSURLSessionTask begins recording

@@ -60,7 +60,9 @@
 
 - (NSDictionary *)responseHeaders {
     BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
-    return responseFrame.allHeaderFields;
+    NSMutableDictionary *responseHeaders = responseFrame.allHeaderFields.mutableCopy;
+    responseHeaders[kBKRSceneUUIDKey] = self.uniqueIdentifier;
+    return responseHeaders.copy;
 }
 
 - (NSError *)responseError {

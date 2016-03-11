@@ -9,6 +9,8 @@
 #import "BKRScene.h"
 #import "BKRPlistSerializing.h"
 
+//extern NSString *const kBKRSceneUUIDKey;
+
 /**
  *  This category handles the data associated with a network
  *  request and is intended to be used for stubbing.

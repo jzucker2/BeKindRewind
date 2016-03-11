@@ -7,6 +7,7 @@
 //
 
 #import "BKRErrorFrame.h"
+#import "BKRConstants.h"
 
 @interface BKRErrorFrame ()
 @property (nonatomic, readwrite) NSInteger code;
@@ -19,7 +20,9 @@
 - (void)addError:(NSError *)error {
     self.code = error.code;
     self.domain = error.domain;
-    self.userInfo = [[NSDictionary alloc] initWithDictionary:error.userInfo copyItems:YES];
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo copyItems:YES];
+    userInfo[kBKRSceneUUIDKey] = self.uniqueIdentifier;
+    self.userInfo = userInfo.copy;
 }
 
 - (NSError *)error {

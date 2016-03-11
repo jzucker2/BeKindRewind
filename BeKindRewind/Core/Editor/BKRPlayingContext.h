@@ -43,6 +43,7 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 - (NSArray<BKRPlayingContextItem *> *)activeItems;
 - (NSArray<BKRPlayingContextItem *> *)redirectingItems;
 - (NSArray<BKRPlayingContextItem *> *)completedItems;
+- (void)addSceneResponseStub:(BKRSceneResponseStub *)sceneResponseStub forRequest:(NSURLRequest *)request;
 //- (NSUInteger)countForRequest:(NSURLRequest *)request;
 //- (BOOL)activateScene:(BKRScene *)scene;
 //- (BOOL)completeScene:(BKRScene *)scene;

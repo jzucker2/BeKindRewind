@@ -21,6 +21,7 @@
     if (self) {
         _scene = scene;
         _state = BKRPlayingSceneStateInactive;
+        _responseStubs = [NSMutableSet set];
     }
     return self;
 }
@@ -77,7 +78,7 @@
 //        _completedScenes = [NSMutableSet set];
 //        _requests = [NSMutableDictionary dictionary];
 //        _responseCount = 0;
-        NSMutableArray<BKRPlayingContextItem *> *items = [NSMutableArray array];
+        __block NSMutableArray<BKRPlayingContextItem *> *items = [NSMutableArray array];
         [scenes enumerateObjectsUsingBlock:^(BKRScene * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [items addObject:[BKRPlayingContextItem itemWithScene:obj]];
         }];
@@ -91,52 +92,18 @@
 }
 
 - (void)startRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub {
-    BKRLogMethod;
-//    for (BKRPlayingContextItem *item in self.allItems) {
-//        if ([item.responseStubs containsObject:responseStub]) {
-//            item.state = BKRPlayingSceneStateActive;
-//            break;
-//        }
-//    }
+    NSLog(@"%s request (%@, %@) responseStub (%@)", __PRETTY_FUNCTION__, request, request.allHTTPHeaderFields, responseStub);
     [self _updateStateToState:BKRPlayingSceneStateActive forResponseStub:responseStub];
-//    NSString *requestURLString = request.URL.absoluteString;
-//    if (!requestURLString) {
-//        return;
-//    }
-//    if (self.requests[requestURLString]) {
-//        NSInteger requestCount = [self.requests[requestURLString] integerValue];
-//        self.requests[requestURLString] = @(++requestCount);
-//    } else {
-//        self.requests[requestURLString] = @(1);
-//    }
 }
 
 - (void)redirectOriginalRequest:(NSURLRequest *)request withRedirectRequest:(NSURLRequest *)redirectRequest withResponseStub:(BKRResponseStub *)responseStub {
-    BKRLogMethod;
+    NSLog(@"%s request (%@, %@) redirectRequest (%@, %@) responseStub (%@)", __PRETTY_FUNCTION__, request, request.allHTTPHeaderFields, redirectRequest, redirectRequest.allHTTPHeaderFields, responseStub);
     [self _updateStateToState:BKRPlayingSceneStateRedirecting forResponseStub:responseStub];
-//    for (BKRPlayingContextItem *item in self.allItems) {
-//        if ([item.responseStubs containsObject:responseStub]) {
-//            item.state = BKRPlayingSceneStateRedirecting;
-//            break;
-//        }
-//    }
 }
 
 - (void)completeRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub error:(NSError *)error {
-    BKRLogMethod;
+    NSLog(@"%s request (%@, %@) responseStub (%@) error (%@)", __PRETTY_FUNCTION__, request, request.allHTTPHeaderFields, responseStub, error);
     [self _updateStateToState:BKRPlayingSceneStateCompleted forResponseStub:responseStub];
-//    [self.allItems enumerateObjectsUsingBlock:^(BKRPlayingContextItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        if ([obj.responseStubs containsObject:responseStub]) {
-//            obj.state = BKRPlayingSceneStateCompleted;
-//            *stop = YES;
-//        }
-//    }];
-//    for (BKRPlayingContextItem *item in self.allItems) {
-//        if ([item.responseStubs containsObject:responseStub]) {
-//            item.state = BKRPlayingSceneStateCompleted;
-//            break; // stop after this
-//        }
-//    }
 }
 
 - (void)_updateStateToState:(BKRPlayingSceneState)updatedState forResponseStub:(BKRResponseStub *)responseStub {
@@ -204,6 +171,11 @@
 //    self.responseCount++;
 //}
 //
+
+- (void)addSceneResponseStub:(id)sceneResponseStub forRequest:(NSURLRequest *)request {
+    
+}
+
 - (id)copyWithZone:(NSZone *)zone {
     BKRPlayingContext *context = [[[self class] allocWithZone:zone] init];
     context.allItems = self.allItems;

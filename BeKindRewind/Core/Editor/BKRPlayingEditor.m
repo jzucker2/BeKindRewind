@@ -120,6 +120,7 @@
         BKRStrongify(self);
         responseStub = [matcher matchForRequest:request withContext:self->_context.copy];
 #warning update context for response
+        [self->_context addSceneResponseStub:responseStub forRequest:request];
 //        [self->_context addRequest:request];
 //        [self->_context incrementResponseCount];
     }];
