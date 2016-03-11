@@ -20,7 +20,6 @@
 
 - (BOOL)hasMatchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
 //    BKRScene *playhead = [context currentUnstartedScenes];
-    NSLog(@"context: %@", context);
     return YES;
 }
 

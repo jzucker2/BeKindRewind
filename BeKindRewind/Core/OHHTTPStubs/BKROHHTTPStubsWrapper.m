@@ -40,4 +40,25 @@
     [OHHTTPStubs setEnabled:enabled];
 }
 
++ (void)onStubActivation:(BKRStubActivationBlock)stubActivationBlock {
+    [OHHTTPStubs onStubActivation:^(NSURLRequest * _Nonnull request, id<OHHTTPStubsDescriptor>  _Nonnull stub, OHHTTPStubsResponse * _Nonnull responseStub) {
+//        if (stubActivationBlock) {
+//            return stubActivationBlock(request, [BKRResponseStub responseWithStubsResponse:responseStub]);
+//        }
+        return stubActivationBlock(request, [BKRResponseStub responseWithStubsResponse:responseStub]);
+    }];
+}
+
++ (void)onStubRedirectResponse:(BKRStubRedirectBlock)stubRedirectBlock {
+    [OHHTTPStubs onStubRedirectResponse:^(NSURLRequest * _Nonnull request, NSURLRequest * _Nonnull redirectRequest, id<OHHTTPStubsDescriptor>  _Nonnull stub, OHHTTPStubsResponse * _Nonnull responseStub) {
+        return stubRedirectBlock(request, redirectRequest, [BKRResponseStub responseWithStubsResponse:responseStub]);
+    }];
+}
+
++ (void)onStubCompletion:(BKRStubCompletionBlock)stubCompletionBlock {
+    [OHHTTPStubs afterStubFinish:^(NSURLRequest * _Nonnull request, id<OHHTTPStubsDescriptor>  _Nonnull stub, OHHTTPStubsResponse * _Nonnull responseStub, NSError * _Nonnull error) {
+        return stubCompletionBlock(request, [BKRResponseStub responseWithStubsResponse:responseStub], error);
+    }];
+}
+
 @end

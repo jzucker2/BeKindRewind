@@ -6,6 +6,7 @@
 //
 //
 
+#import <OHHTTPStubs/OHHTTPStubsResponse.h>
 #import "BKRResponseStub.h"
 
 @interface BKRResponseStub ()
@@ -26,6 +27,18 @@
         _error = error;
     }
     return self;
+}
+
+- (instancetype)initWithStubsResponse:(OHHTTPStubsResponse *)response {
+    self = [self initWithData:nil statusCode:response.statusCode headers:response.httpHeaders error:response.error];
+    if (self) {
+        
+    }
+    return self;
+}
+
++ (instancetype)responseWithStubsResponse:(OHHTTPStubsResponse *)response {
+    return [[self alloc] initWithStubsResponse:response];
 }
 
 + (instancetype)responseWithData:(NSData *)data statusCode:(int)statusCode headers:(NSDictionary *)headers {

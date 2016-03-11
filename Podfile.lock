@@ -17,10 +17,19 @@ PODS:
 
 DEPENDENCIES:
   - BeKindRewind (from `.`)
+  - OHHTTPStubs (from `https://github.com/jzucker2/OHHTTPStubs.git`, branch `on-stub-end-one-place`)
 
 EXTERNAL SOURCES:
   BeKindRewind:
     :path: .
+  OHHTTPStubs:
+    :branch: on-stub-end-one-place
+    :git: https://github.com/jzucker2/OHHTTPStubs.git
+
+CHECKOUT OPTIONS:
+  OHHTTPStubs:
+    :commit: f76ea0f55dad34b20a15cde0eb610055aab94775
+    :git: https://github.com/jzucker2/OHHTTPStubs.git
 
 SPEC CHECKSUMS:
   BeKindRewind: ae9d7d9bedefab40fa5341769d5f54fad3e1e3a5

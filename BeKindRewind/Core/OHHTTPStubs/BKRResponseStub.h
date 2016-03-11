@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class OHHTTPStubsResponse;
 @interface BKRResponseStub : NSObject
 @property (nonatomic, strong, readonly, nullable) NSData *data;
 @property (nonatomic, assign, readonly) int statusCode;
@@ -15,4 +16,5 @@
 @property (nonatomic, strong, readonly, nullable) NSError *error; // if there is not nil then the other things are ignored
 + (instancetype)responseWithData:(NSData *)data statusCode:(int)statusCode headers:(NSDictionary *)headers;
 + (instancetype)responseWithError:(NSError *)error;
++ (instancetype)responseWithStubsResponse:(OHHTTPStubsResponse *)response;
 @end

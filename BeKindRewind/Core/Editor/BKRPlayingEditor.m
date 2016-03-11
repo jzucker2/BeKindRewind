@@ -16,22 +16,64 @@
 
 @interface BKRPlayingEditor ()
 @property (nonatomic, strong) BKRPlayingContext *context;
-//@property (nonatomic, copy, readonly) BKRStubsTestBlock stubsTestBlock;
-//@property (nonatomic, copy, readonly) BKRStubsResponseBlock stubsResponseBlock;
 @end
 
 @implementation BKRPlayingEditor
 
 @synthesize matcher = _matcher;
-//@synthesize stubsTestBlock = _stubsTestBlock;
-//@synthesize stubsResponseBlock = _stubsResponseBlock;
 
 - (instancetype)initWithMatcher:(id<BKRRequestMatching>)matcher {
     self = [super init];
     if (self) {
         _matcher = matcher;
+        BKRWeakify(self);
+        [BKROHHTTPStubsWrapper onStubActivation:^(NSURLRequest *request, BKRResponseStub *responseStub) {
+            BKRStrongify(self);
+            [self _stubActivationWithRequest:request responseStub:responseStub];
+        }];
+        [BKROHHTTPStubsWrapper onStubRedirectResponse:^(NSURLRequest *request, NSURLRequest *redirectRequest, BKRResponseStub *responseStub) {
+            BKRStrongify(self);
+            [self _stubRedirectWithRequest:request redirectRequest:redirectRequest responseStub:responseStub];
+        }];
+        [BKROHHTTPStubsWrapper onStubCompletion:^(NSURLRequest *request, BKRResponseStub *responseStub, NSError *error) {
+            BKRStrongify(self);
+            [self _stubCompletionWithRequest:request responseStub:responseStub error:error];
+        }];
     }
     return self;
+}
+
+- (void)_stubActivationWithRequest:(NSURLRequest *)request responseStub:(BKRResponseStub *)responseStub {
+    BKRWeakify(self);
+    [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        BKRStrongify(self);
+        if (!updatedEnabled) {
+            return;
+        }
+        [self->_context startRequest:request withResponseStub:responseStub];
+    }];
+}
+
+- (void)_stubRedirectWithRequest:(NSURLRequest *)request redirectRequest:(NSURLRequest *)redirectRequest responseStub:(BKRResponseStub *)responseStub {
+    BKRWeakify(self);
+    [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        BKRStrongify(self);
+        if (!updatedEnabled) {
+            return;
+        }
+        [self->_context redirectOriginalRequest:request withRedirectRequest:redirectRequest withResponseStub:responseStub];
+    }];
+}
+
+- (void)_stubCompletionWithRequest:(NSURLRequest *)request responseStub:(BKRResponseStub *)responseStub error:(NSError *)error {
+    BKRWeakify(self);
+    [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        BKRStrongify(self);
+        if (!updatedEnabled) {
+            return;
+        }
+        [self->_context completeRequest:request withResponseStub:responseStub error:error];
+    }];
 }
 
 + (instancetype)editorWithMatcher:(id<BKRRequestMatching>)matcher {
@@ -77,8 +119,9 @@
     [self editCassetteSynchronously:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         responseStub = [matcher matchForRequest:request withContext:self->_context.copy];
-        [self->_context addRequest:request];
-        [self->_context incrementResponseCount];
+#warning update context for response
+//        [self->_context addRequest:request];
+//        [self->_context incrementResponseCount];
     }];
     return responseStub;
 }
@@ -102,26 +145,14 @@
 }
 
 - (void)_addStubsForMatcher:(id<BKRRequestMatching>)matcher withCompletionHandler:(BKRCassetteEditingBlock)completionBlock {
-    NSArray<BKRScene *> *currentScenes = (NSArray<BKRScene *> *)self->_context.allScenes;
-    // reverse array: http://stackoverflow.com/questions/586370/how-can-i-reverse-a-nsarray-in-objective-c
-    if (!currentScenes.count) {
-        return;
-    }
     [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-//        return [self]
-//        BOOL finalTestResult = [matcher hasMatchForRequest:request withContext:self->_context.copy];
-//        // add in other checks as well
-//        return finalTestResult;
         return [self _hasMatchForRequest:request withMatcher:matcher];
     } withStubResponse:^BKRResponseStub * _Nonnull(NSURLRequest * _Nonnull request) {
-//        BKRResponseStub *responseStub = [matcher matchForRequest:request withContext:self->_context.copy];
         BKRResponseStub *responseStub = [self _responseStubForRequest:request withMatcher:matcher];
-//        [self->_context addRequest:request];
-//        [self->_context incrementResponseCount];
         return responseStub;
     }];
-    NSLog(@"now completion block");
     // performed synchronously after above method
+    // this is called within the "com.BKR.editingQueue" queue that is part of the superclass
     if (completionBlock) {
         completionBlock(YES, nil); // ok to pass in nil for cassette, nothing else uses this value
     }

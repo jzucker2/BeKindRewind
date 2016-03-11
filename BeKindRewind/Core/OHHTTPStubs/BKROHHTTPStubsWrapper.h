@@ -30,6 +30,10 @@ typedef BOOL (^BKRStubsTestBlock)(NSURLRequest* _Nonnull request);
  */
 typedef BKRResponseStub* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
 
+typedef void (^BKRStubActivationBlock)(NSURLRequest *request, BKRResponseStub *responseStub);
+typedef void (^BKRStubRedirectBlock)(NSURLRequest *request, NSURLRequest *redirectRequest, BKRResponseStub *responseStub);
+typedef void (^BKRStubCompletionBlock)(NSURLRequest *request, BKRResponseStub *responseStub, NSError *error);
+
 /**
  *  Wrapper object for abstracting the OHHTTPStubs framework
  */
@@ -61,5 +65,9 @@ typedef BKRResponseStub* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnu
  *  @param responseBlock if a network request is to be mocked, then this determines the data used in the stub
  */
 + (void)stubRequestPassingTest:(nonnull BKRStubsTestBlock)testBlock withStubResponse:(nonnull BKRStubsResponseBlock)responseBlock;
+
++ (void)onStubActivation:(BKRStubActivationBlock)stubActivationBlock;
++ (void)onStubRedirectResponse:(BKRStubRedirectBlock)stubRedirectBlock;
++ (void)onStubCompletion:(BKRStubCompletionBlock)stubCompletionBlock;
 
 @end

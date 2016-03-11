@@ -20,7 +20,7 @@
     self = [super init];
     if (self) {
         _enabled = NO;
-        _editingQueue = dispatch_queue_create("com.BKR.CassetteHandler", DISPATCH_QUEUE_CONCURRENT);
+        _editingQueue = dispatch_queue_create("com.BKR.editingQueue", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }

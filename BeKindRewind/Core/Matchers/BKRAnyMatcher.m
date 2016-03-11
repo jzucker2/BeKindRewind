@@ -19,7 +19,7 @@
 }
 
 - (BOOL)hasMatchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
-    BOOL hasMatch = NO;
+//    BOOL hasMatch = NO;
     
     return YES;
 }

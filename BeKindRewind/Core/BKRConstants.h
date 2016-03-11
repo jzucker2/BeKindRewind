@@ -9,6 +9,8 @@
 #ifndef BKRConstants_h
 #define BKRConstants_h
 
+#define BKRLogMethod NSLog(@"%s", __PRETTY_FUNCTION__)
+
 #define BKRWeakify(__var) \
 __weak __typeof__(__var) __var ## _weak_ = (__var)
 
@@ -18,7 +20,7 @@ _Pragma("clang diagnostic ignored  \"-Wshadow\""); \
 __strong __typeof__(__var) __var = __var ## _weak_; \
 _Pragma("clang diagnostic pop") \
 
-// the NO if statement doesn't run but is a compiler check to test if the object containst the key
+// the NO if statement doesn't run but is a compiler check to test if the object contains the key
 #define BKRKey(object, selector) ({ __typeof(object) testObject = nil; if (NO) { (void)((testObject).selector); } @#selector; })
 
 typedef NS_ENUM(NSInteger, BKRRecordingContext) {
