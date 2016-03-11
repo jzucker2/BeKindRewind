@@ -24,7 +24,14 @@
 }
 
 - (BKRSceneResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
-    return nil;
+    BKRScene *scene = context.allItems[0].scene;
+    BKRResponseStub *stub = nil;
+    if (scene.responseError) {
+        stub = [BKRResponseStub responseWithError:scene.responseError];
+    } else {
+        stub = [BKRResponseStub responseWithData:scene.responseData statusCode:(int)scene.responseStatusCode headers:scene.responseHeaders];
+    }
+    return [BKRSceneResponseStub responseWithScene:context.allItems[0].scene responseStub:stub];
 }
 
 //// should also handle current request for everything, not just comparing to original request

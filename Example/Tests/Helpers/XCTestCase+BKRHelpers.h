@@ -128,6 +128,9 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 #pragma mark - Plist builders
 
+- (NSMutableDictionary *)standardOriginalRequestDictionary;
+- (NSMutableDictionary *)standardCurrentRequestDictionary;
+- (NSMutableDictionary *)standardRedirectDictionary;
 - (NSMutableDictionary *)standardRequestDictionary;
 - (NSMutableDictionary *)standardResponseDictionary;
 - (NSMutableDictionary *)standardDataDictionary;
