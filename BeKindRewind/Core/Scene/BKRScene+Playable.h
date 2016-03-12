@@ -9,7 +9,7 @@
 #import "BKRScene.h"
 #import "BKRPlistSerializing.h"
 
-//extern NSString *const kBKRSceneUUIDKey;
+@class BKRResponseStub;
 
 /**
  *  This category handles the data associated with a network
@@ -17,33 +17,36 @@
  */
 @interface BKRScene (Playable) <BKRPlistDeserializer>
 
-/**
- *  Data associated with a network request
- *
- *  @return object representing serialized data returned from the network request
- */
-- (NSData *)responseData;
+- (BKRResponseStub *)finalResponseStub;
+- (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
 
-/**
- *  Status code returned from server
- *
- *  @return integer value for HTTP status code
- */
-- (NSInteger)responseStatusCode;
-
-/**
- *  Headers contained in server response
- *
- *  @return headers as dictionary
- */
-- (NSDictionary *)responseHeaders;
-
-/**
- *  Error returned representing any potential networking issues
- *
- *  @return object should contain the elements included in a
- *  NSURLErrorDomain error
- */
-- (NSError *)responseError;
+///**
+// *  Data associated with a network request
+// *
+// *  @return object representing serialized data returned from the network request
+// */
+//- (NSData *)responseData;
+//
+///**
+// *  Status code returned from server
+// *
+// *  @return integer value for HTTP status code
+// */
+//- (NSInteger)responseStatusCode;
+//
+///**
+// *  Headers contained in server response
+// *
+// *  @return headers as dictionary
+// */
+//- (NSDictionary *)responseHeaders;
+//
+///**
+// *  Error returned representing any potential networking issues
+// *
+// *  @return object should contain the elements included in a
+// *  NSURLErrorDomain error
+// */
+//- (NSError *)responseError;
 
 @end

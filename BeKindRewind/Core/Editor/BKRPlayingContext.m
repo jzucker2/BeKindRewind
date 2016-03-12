@@ -20,6 +20,7 @@
     self = [super init];
     if (self) {
         _scene = scene;
+        _redirectCount = scene.allRedirectFrames.count;
         _state = BKRPlayingSceneStateInactive;
         _responseStubs = [NSMutableSet set];
     }

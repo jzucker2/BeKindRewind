@@ -17,6 +17,7 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 
 @class BKRScene;
 @class BKRResponseStub;
+@class BKRSceneResponseStub;
 
 @interface BKRPlayingContextItem : NSObject
 
@@ -24,6 +25,7 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 
 @property (nonatomic, strong, readonly) BKRScene *scene;
 @property (nonatomic, assign) BKRPlayingSceneState state;
+@property (nonatomic, assign) NSUInteger redirectCount;
 @property (nonatomic, strong, readonly) NSMutableSet<BKRResponseStub *> *responseStubs;
 @property (nonatomic, strong, readonly) NSMutableSet<NSURLRequest *> *requests;
 

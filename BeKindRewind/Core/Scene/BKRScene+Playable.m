@@ -12,6 +12,8 @@
 #import "BKRErrorFrame.h"
 #import "BKRDataFrame.h"
 #import "BKRRequestFrame.h"
+#import "BKRRedirectFrame.h"
+#import "BKRResponseStub.h"
 #import "BKRConstants.h"
 
 @implementation BKRScene (Playable)
@@ -36,7 +38,7 @@
     });
 }
 
-- (NSData *)responseData {
+- (NSData *)_responseData {
     NSMutableData *responseData = [NSMutableData data];
     NSNumber *secondResponseTimestamp = self.allResponseFrames.lastObject.creationDate;
     for (BKRDataFrame *dataFrame in self.allDataFrames) {
@@ -53,21 +55,43 @@
     return responseData.copy;
 }
 
-- (NSInteger)responseStatusCode {
+- (NSInteger)_responseStatusCode {
     BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
     return responseFrame.statusCode;
 }
 
-- (NSDictionary *)responseHeaders {
-    BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
+- (NSDictionary *)_responseHeadersForFrame:(BKRResponseFrame *)responseFrame {
+//    BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
     NSMutableDictionary *responseHeaders = responseFrame.allHeaderFields.mutableCopy;
     responseHeaders[kBKRSceneUUIDKey] = self.uniqueIdentifier;
     return responseHeaders.copy;
 }
 
-- (NSError *)responseError {
+- (NSError *)_responseError {
     BKRErrorFrame *responseFrame = self.allErrorFrames.firstObject;
     return responseFrame.error;
+}
+
+- (BKRResponseStub *)finalResponseStub {
+    NSError *responseError = [self _responseError];
+    if (!responseError) {
+        BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
+        return [BKRResponseStub responseWithData:[self _responseData] statusCode:(int)[self _responseStatusCode] headers:[self _responseHeadersForFrame:responseFrame]];
+    }
+    return [BKRResponseStub responseWithError:responseError];
+}
+
+- (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber {
+    if (!self.allRedirectFrames[redirectNumber]) {
+        NSError *error = [NSError errorWithDomain:@"BeKindRewind" code:-999 userInfo:@{
+                                                                                       NSLocalizedDescriptionKey: @"",
+                                                                                       NSLocalizedFailureReasonErrorKey: @"",
+                                                                                       }];
+        return [BKRResponseStub responseWithError:error];
+    }
+    BKRRedirectFrame *redirectFrame = self.allRedirectFrames[redirectNumber];
+    NSDictionary *headers = [self _responseHeadersForFrame:redirectFrame.responseFrame];
+    return [BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
 }
 
 - (NSString *)debugDescription {
