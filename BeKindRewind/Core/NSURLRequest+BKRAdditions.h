@@ -10,6 +10,6 @@
 
 @interface NSURLRequest (BKRAdditions)
 
-- (BOOL)isRedirect;
+- (BOOL)BKR_isEquivalentToRequest:(NSURLRequest *)otherRequest;
 
 @end

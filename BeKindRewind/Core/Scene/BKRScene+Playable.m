@@ -88,11 +88,16 @@
 }
 
 - (BOOL)hasFinalResponseForRequest:(NSURLRequest *)request {
-//    return [self.originalRequest.URL.absoluteString isEqualToString:request.URL.absoluteString];
-    return NO;
+    return [self.originalRequest.URL.absoluteString isEqualToString:request.URL.absoluteString];
+//    return NO;
 }
 
 - (BOOL)hasRedirectResponseStubForRequest:(NSURLRequest *)request {
+    for (BKRRedirectFrame *redirectFrame in self.allRedirectFrames) {
+        if ([redirectFrame.requestFrame.URL.absoluteString isEqualToString:request.URL.absoluteString]) {
+            return YES;
+        }
+    }
     return NO;
 }
 
