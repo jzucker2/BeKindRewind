@@ -10,6 +10,7 @@
 #import "BKRPlistSerializing.h"
 
 @class BKRResponseStub;
+//@class BKRSceneResponseStub;
 
 /**
  *  This category handles the data associated with a network
@@ -17,8 +18,13 @@
  */
 @interface BKRScene (Playable) <BKRPlistDeserializer>
 
+- (NSUInteger)numberOfRedirects;
+- (BOOL)hasRedirects;
 - (BKRResponseStub *)finalResponseStub;
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
+- (BOOL)hasFinalResponseStubForRequest:(NSURLRequest *)request;
+- (BOOL)hasRedirectResponseStubForRequest:(NSURLRequest *)request;
+- (BOOL)hasResponseForRequest:(NSURLRequest *)request;
 
 ///**
 // *  Data associated with a network request

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class BKRScene;
-@class BKRSceneResponseStub;
+//@class BKRSceneResponseStub;
 @class BKRResponseStub;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -31,7 +31,7 @@ typedef BOOL (^BKRStubsTestBlock)(NSURLRequest* _Nonnull request);
  *
  *  @return BKRPlayableScene to use as a stub
  */
-typedef BKRSceneResponseStub* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
+typedef BKRResponseStub* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
 
 typedef void (^BKRStubActivationBlock)(NSURLRequest *request, BKRResponseStub *responseStub);
 typedef void (^BKRStubRedirectBlock)(NSURLRequest *request, NSURLRequest *redirectRequest, BKRResponseStub *responseStub);

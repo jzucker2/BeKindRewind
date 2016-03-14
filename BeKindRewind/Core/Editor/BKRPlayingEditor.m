@@ -113,14 +113,15 @@
     return finalTestResult;
 }
 
-- (BKRSceneResponseStub *)_responseStubForRequest:(NSURLRequest *)request withMatcher:(id<BKRRequestMatching>)matcher {
-    __block BKRSceneResponseStub *responseStub = nil;
+- (BKRResponseStub *)_responseStubForRequest:(NSURLRequest *)request withMatcher:(id<BKRRequestMatching>)matcher {
+    __block BKRResponseStub *responseStub = nil;
     BKRWeakify(self);
     [self editCassetteSynchronously:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         responseStub = [matcher matchForRequest:request withContext:self->_context.copy];
 #warning update context for response
-        [self->_context addSceneResponseStub:responseStub forRequest:request];
+//        [self->_context addSceneResponseStub:responseStub forRequest:request];
+        [self->_context addResponseStub:responseStub forRequest:request];
 //        [self->_context addRequest:request];
 //        [self->_context incrementResponseCount];
     }];
@@ -148,9 +149,9 @@
 - (void)_addStubsForMatcher:(id<BKRRequestMatching>)matcher withCompletionHandler:(BKRCassetteEditingBlock)completionBlock {
     [BKROHHTTPStubsWrapper stubRequestPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [self _hasMatchForRequest:request withMatcher:matcher];
-    } withStubResponse:^BKRSceneResponseStub * _Nonnull(NSURLRequest * _Nonnull request) {
-        BKRSceneResponseStub *sceneResponseStub = [self _responseStubForRequest:request withMatcher:matcher];
-        return sceneResponseStub;
+    } withStubResponse:^BKRResponseStub * _Nonnull(NSURLRequest * _Nonnull request) {
+        BKRResponseStub *responseStub = [self _responseStubForRequest:request withMatcher:matcher];
+        return responseStub;
     }];
     // performed synchronously after above method
     // this is called within the "com.BKR.editingQueue" queue that is part of the superclass

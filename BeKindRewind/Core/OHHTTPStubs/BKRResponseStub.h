@@ -20,21 +20,23 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)responseWithData:(nullable NSData *)data statusCode:(int)statusCode headers:(nullable NSDictionary *)headers;
 + (instancetype)responseWithError:(NSError *)error;
 + (instancetype)responseWithStubsResponse:(OHHTTPStubsResponse *)response;
+- (NSString *)sceneIdentifier;
+- (BOOL)isError;
 @end
 
 @class BKRScene;
 
 @interface BKRSceneResponseStub : NSObject
 
-//+ (instancetype)responseWithScene:(BKRScene *)scene responseStub:(BKRResponseStub *)responseStub;
-+ (instancetype)responseWithSceneIndex:(NSInteger)sceneIdx frameIndex:(NSInteger)frameIdx;
++ (instancetype)responseWithScene:(BKRScene *)scene responseStub:(BKRResponseStub *)responseStub;
+//+ (instancetype)responseWithSceneIndex:(NSInteger)sceneIdx frameIndex:(NSInteger)frameIdx;
 
-@property (nonatomic, assign, readonly) NSInteger sceneIndex;
-@property (nonatomic, assign, readonly) NSInteger frameIndex;
+//@property (nonatomic, assign, readonly) NSInteger sceneIndex;
+//@property (nonatomic, assign, readonly) NSInteger frameIndex;
 
-//@property (nonatomic, strong, readonly) BKRScene *scene;
+@property (nonatomic, strong, readonly) BKRScene *scene;
 
-//@property (nonatomic, strong, readonly) BKRResponseStub *responseStub;
+@property (nonatomic, strong, readonly) BKRResponseStub *responseStub;
 
 @end
 

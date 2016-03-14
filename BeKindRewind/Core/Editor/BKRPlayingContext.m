@@ -7,6 +7,7 @@
 //
 
 #import "BKRPlayingContext.h"
+#import "BKRResponseStub.h"
 #import "BKRConstants.h"
 #import "BKRScene.h"
 
@@ -109,10 +110,14 @@
 
 - (void)_updateStateToState:(BKRPlayingSceneState)updatedState forResponseStub:(BKRResponseStub *)responseStub {
     [self.allItems enumerateObjectsUsingBlock:^(BKRPlayingContextItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj.responseStubs containsObject:responseStub]) {
+        if ([obj.scene.uniqueIdentifier isEqualToString:responseStub.sceneIdentifier]) {
             obj.state = updatedState;
             *stop = YES;
         }
+//        if ([obj.responseStubs containsObject:responseStub]) {
+//            obj.state = updatedState;
+//            *stop = YES;
+//        }
     }];
 }
 
@@ -173,7 +178,11 @@
 //}
 //
 
-- (void)addSceneResponseStub:(id)sceneResponseStub forRequest:(NSURLRequest *)request {
+//- (void)addSceneResponseStub:(id)sceneResponseStub forRequest:(NSURLRequest *)request {
+//    
+//}
+
+- (void)addResponseStub:(BKRResponseStub *)responseStub forRequest:(NSURLRequest *)request {
     
 }
 

@@ -9,6 +9,7 @@
 #import <OHHTTPStubs/OHHTTPStubsResponse.h>
 #import "BKRResponseStub.h"
 #import "BKRScene.h"
+#import "BKRConstants.h"
 
 @interface BKRResponseStub ()
 @property (nonatomic, assign, readwrite) int statusCode;
@@ -51,6 +52,24 @@
 
 + (instancetype)responseWithError:(NSError *)error {
     return [[self alloc] initWithData:nil statusCode:0 headers:nil error:error];
+}
+
+- (BOOL)isError {
+    return (self.error != nil);
+}
+
+- (NSString *)sceneIdentifier {
+    NSString *sceneUUID = nil;
+    if (self.isError) {
+        NSDictionary *errorUserInfo = self.error.userInfo;
+        sceneUUID = errorUserInfo[kBKRSceneUUIDKey];
+    }
+    if (sceneUUID) {
+        return sceneUUID;
+    }
+    NSDictionary *headers = self.headers;
+    sceneUUID = headers[kBKRSceneUUIDKey];
+    return sceneUUID;
 }
 
 @end

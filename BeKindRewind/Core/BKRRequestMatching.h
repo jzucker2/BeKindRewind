@@ -7,10 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+// imported to simplify building matchers
+#import "BKRResponseStub.h"
+#import "BKRScene+Playable.h"
+#import "BKRPlayingContext.h"
 
 //@class BKRScene;
-@class BKRSceneResponseStub;
-@class BKRPlayingContext;
+//@class BKRSceneResponseStub;
+//@class BKRPlayingContext;
 
 /**
  This protocol is adopted by the object used to construct the rules for network
@@ -41,7 +45,7 @@
  *  @return a BKRPlayableScene to use as a stub for this request
  */
 //- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-- (BKRSceneResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context;
+- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context;
 
 /**
  *  This is used by the test block to check whether a stubbed response should be provided for
