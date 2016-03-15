@@ -17,11 +17,11 @@
     [OHHTTPStubs removeAllStubs];
 }
 
-+ (OHHTTPStubsResponse *)_responseForStub:(BKRSceneResponseStub *)sceneResponseStub {
-    if (sceneResponseStub.responseStub.error) {
-        return [OHHTTPStubsResponse responseWithError:sceneResponseStub.responseStub.error];
++ (OHHTTPStubsResponse *)_responseForStub:(BKRResponseStub *)responseStub {
+    if (responseStub.isError) {
+        return [OHHTTPStubsResponse responseWithError:responseStub.error];
     }
-    return [[OHHTTPStubsResponse alloc] initWithInputStream:sceneResponseStub.responseStub.inputStream dataSize:sceneResponseStub.responseStub.dataSize statusCode:sceneResponseStub.responseStub.statusCode headers:sceneResponseStub.responseStub.headers];
+    return [[OHHTTPStubsResponse alloc] initWithInputStream:responseStub.inputStream dataSize:responseStub.dataSize statusCode:responseStub.statusCode headers:responseStub.headers];
 }
 
 + (BOOL)hasStubs {

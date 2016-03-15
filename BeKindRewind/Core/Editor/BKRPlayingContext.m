@@ -137,6 +137,11 @@
     return [self.allItems filteredArrayUsingPredicate:[self _predicateForItemWithState:BKRPlayingSceneStateCompleted]];
 }
 
+- (NSArray<BKRPlayingContextItem *> *)incompleteItems {
+    NSCompoundPredicate *activeOrRedirectingPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[[self _predicateForItemWithState:BKRPlayingSceneStateActive], [self _predicateForItemWithState:BKRPlayingSceneStateRedirecting]]];
+    return [self.allItems filteredArrayUsingPredicate:activeOrRedirectingPredicate];
+}
+
 - (NSPredicate *)_predicateForItemWithState:(BKRPlayingSceneState)state {
     [NSString stringWithFormat:@"%ld", (long)state];
     return [NSPredicate predicateWithFormat:@"self.state == %ld", (long)state];

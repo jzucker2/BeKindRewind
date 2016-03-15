@@ -41,10 +41,11 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 - (void)startRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub;
 - (void)redirectOriginalRequest:(NSURLRequest *)request withRedirectRequest:(NSURLRequest *)redirectRequest withResponseStub:(BKRResponseStub *)responseStub;
 - (void)completeRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub error:(NSError *)error;
-- (NSArray<BKRPlayingContextItem *> *)inactiveItems;
-- (NSArray<BKRPlayingContextItem *> *)activeItems;
-- (NSArray<BKRPlayingContextItem *> *)redirectingItems;
-- (NSArray<BKRPlayingContextItem *> *)completedItems;
+- (NSArray<BKRPlayingContextItem *> *)inactiveItems; // never started
+- (NSArray<BKRPlayingContextItem *> *)incompleteItems; // active and redirecting items
+- (NSArray<BKRPlayingContextItem *> *)activeItems; // loading but not redirecting
+- (NSArray<BKRPlayingContextItem *> *)redirectingItems; // redirecting, active
+- (NSArray<BKRPlayingContextItem *> *)completedItems; // done, finished
 - (void)addResponseStub:(BKRResponseStub *)responseStub forRequest:(NSURLRequest *)request;
 //- (void)addSceneResponseStub:(BKRSceneResponseStub *)sceneResponseStub forRequest:(NSURLRequest *)request;
 //- (NSUInteger)countForRequest:(NSURLRequest *)request;

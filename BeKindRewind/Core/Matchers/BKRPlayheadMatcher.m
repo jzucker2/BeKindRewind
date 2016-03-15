@@ -19,8 +19,7 @@
 }
 
 - (BOOL)hasMatchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
-//    BKRScene *playhead = [context currentUnstartedScenes];
-    return YES;
+    return ([self matchForRequest:request withContext:context] != nil);
 }
 
 - (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
@@ -33,6 +32,9 @@
 //    }
     
 //    return scene.finalResponseStub;
+    for (BKRPlayingContextItem *item in context.incompleteItems) {
+        NSLog(@"item: %@", item);
+    }
     return nil;
 }
 

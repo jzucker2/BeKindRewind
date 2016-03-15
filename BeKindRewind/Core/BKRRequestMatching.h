@@ -11,6 +11,7 @@
 #import "BKRResponseStub.h"
 #import "BKRScene+Playable.h"
 #import "BKRPlayingContext.h"
+#import "NSURLRequest+BKRAdditions.h"
 
 //@class BKRScene;
 //@class BKRSceneResponseStub;
