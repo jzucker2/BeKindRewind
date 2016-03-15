@@ -25,6 +25,10 @@
     if (![requestComponents.user isEqualToString:otherComponents.user]) {
         return NO;
     }
+    if (![requestComponents.password isEqualToString:otherComponents.password]) {
+        return NO;
+    }
+    return YES;
 }
 
 - (BOOL)_compareComponentsForOtherRequest:(NSURLRequest *)otherRequest {
