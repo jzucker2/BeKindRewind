@@ -994,6 +994,9 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                     NSURL *expectedErrorURLValue = result.errorUserInfo[NSURLErrorFailingURLErrorKey];
                     adjustedUserInfo[NSURLErrorFailingURLErrorKey] = expectedErrorURLValue.absoluteString;
                 }
+                if (result.errorUserInfo) {
+                    adjustedUserInfo[kBKRSceneUUIDKey] = result.taskUniqueIdentifier;
+                }
                 expectedErrorDict[@"userInfo"] = adjustedUserInfo.copy;
             }
             [framesArray addObject:expectedErrorDict.copy];
@@ -1192,7 +1195,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.errorUserInfo = @{
                                      NSURLErrorFailingURLErrorKey: [NSURL URLWithString:expectedResult.URLString],
                                      NSURLErrorFailingURLStringErrorKey: expectedResult.URLString,
-                                     NSLocalizedDescriptionKey: @"cancelled"
+                                     NSLocalizedDescriptionKey: @"cancelled",
                                      };
     return expectedResult;
 }
