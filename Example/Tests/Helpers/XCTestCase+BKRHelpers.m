@@ -920,13 +920,14 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         if (result.isRedirecting) {
             for (NSInteger i=0; i<result.numberOfRedirects; i++) {
                 NSMutableDictionary *expectedRedirectRequestDict = expectedOriginalRequestDict.mutableCopy;
+                expectedRedirectRequestDict[@"class"] = @"BKRRequestFrame";
                 NSInteger redirectNumber = result.numberOfRedirects-i;
                 NSString *redirectURLString = [result redirectURLFullStringWithRedirection:redirectNumber];
                 expectedRedirectRequestDict[@"URL"] = redirectURLString;
 //                expectedRedirectRequestDict[@"HTTPMethod"] = @"GET";
                 expectedRedirectRequestDict[@"allHTTPHeaderFields"] = result.redirectRequestHTTPHeaderFields;
                 expectedRedirectRequestDict[@"creationDate"] = @([[NSDate date] timeIntervalSince1970]);
-                [framesArray addObject:expectedRedirectRequestDict.copy];
+//                [framesArray addObject:expectedRedirectRequestDict.copy];
                 
                 NSMutableDictionary *expectedRedirectResponseDict = [self standardResponseDictionary];
                 expectedRedirectResponseDict[@"URL"] = redirectURLString;
@@ -937,7 +938,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                     locationString = result.finalRedirectLocation;
                 }
                 expectedRedirectResponseDict[@"allHeaderFields"] = [self _HTTPBinRedirectResponseAllHeaderFieldsWithLocation:locationString];
-                [framesArray addObject:expectedRedirectResponseDict.copy];
+                
+                NSDictionary *redirectDict = @{
+                                               @"request": expectedRedirectRequestDict.copy,
+                                               @"response": expectedRedirectResponseDict.copy
+                                               };
+                [framesArray addObject:redirectDict];
             }
         }
         
