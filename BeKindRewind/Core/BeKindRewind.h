@@ -16,6 +16,9 @@
 #import "BKRScene.h"
 #import "BKRScene+Playable.h"
 
+// Playing information
+#import "BKRPlayhead.h"
+
 // Frame information
 #import "BKRDataFrame.h"
 #import "BKRErrorFrame.h"
@@ -25,6 +28,7 @@
 
 // Request Matching Protocol
 #import "BKRRequestMatching.h"
+#import "NSURLRequest+BKRAdditions.h"
 
 // Request Matchers
 #import "BKRAnyMatcher.h"

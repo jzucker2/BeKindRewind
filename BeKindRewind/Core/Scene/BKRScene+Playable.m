@@ -87,14 +87,13 @@
     return self.allRedirectFrames.count;
 }
 
-- (BOOL)hasFinalResponseForRequest:(NSURLRequest *)request {
-    return [self.originalRequest.URL.absoluteString isEqualToString:request.URL.absoluteString];
-//    return NO;
+- (BOOL)hasFinalResponseStubForRequest:(NSURLRequest *)request {
+    return [self.originalRequestURLAbsoluteString isEqualToString:request.URL.absoluteString];
 }
 
 - (BOOL)hasRedirectResponseStubForRequest:(NSURLRequest *)request {
     for (BKRRedirectFrame *redirectFrame in self.allRedirectFrames) {
-        if ([redirectFrame.requestFrame.URL.absoluteString isEqualToString:request.URL.absoluteString]) {
+        if ([redirectFrame.requestFrame.URLAbsoluteString isEqualToString:request.URL.absoluteString]) {
             return YES;
         }
     }
@@ -102,11 +101,19 @@
 }
 
 - (BOOL)hasResponseForRequest:(NSURLRequest *)request {
-    return ([self hasFinalResponseForRequest:request] || [self hasRedirectResponseStubForRequest:request]);
+    return ([self hasFinalResponseStubForRequest:request] || [self hasRedirectResponseStubForRequest:request]);
 }
 
 - (BOOL)hasRedirects {
     return (self.numberOfRedirects > 0);
+}
+
+- (BKRRequestFrame *)requestFrameForRedirect:(NSUInteger)redirectNumber {
+    if (!self.allRedirectFrames[redirectNumber]) {
+        return nil;
+    }
+    BKRRedirectFrame *redirectFrame = self.allRedirectFrames[redirectNumber];
+    return redirectFrame.requestFrame;
 }
 
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber {
@@ -123,6 +130,15 @@
     NSDictionary *headers = [self _responseHeadersForFrame:redirectFrame.responseFrame];
 //    return [BKRSceneResponseStub responseWithScene:self responseStub:[BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers]];
     return [BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
+}
+
+- (NSString *)originalRequestURLAbsoluteString {
+    return self.originalRequest.URLAbsoluteString;
+}
+
+- (NSString *)requestURLAbsoluteStringForRedirect:(NSUInteger)redirectNumber {
+    BKRRequestFrame *requestFrame = [self requestFrameForRedirect:redirectNumber];
+    return requestFrame.URLAbsoluteString;
 }
 
 - (NSString *)debugDescription {

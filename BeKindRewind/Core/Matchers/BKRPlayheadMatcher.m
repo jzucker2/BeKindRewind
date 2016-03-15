@@ -8,6 +8,7 @@
 
 #import "BKRPlayheadMatcher.h"
 //#import "BKRScene+Playable.h"
+//#import "BKRScene+Playable.h"
 ////#import "BKRRequestFrame.h"
 //#import "BKRPlayingContext.h"
 //#import "BKRResponseStub.h"
@@ -18,11 +19,11 @@
     return [[self alloc] init];
 }
 
-- (BOOL)hasMatchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
-    return ([self matchForRequest:request withContext:context] != nil);
+- (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead {
+    return ([self matchForRequest:request withPlayhead:playhead] != nil);
 }
 
-- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
+- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead {
 //    BKRScene *scene = context.allItems[0].scene;
 //    BKRResponseStub *stub = nil;
 //    if (scene.responseError) {
@@ -32,10 +33,22 @@
 //    }
     
 //    return scene.finalResponseStub;
-    for (BKRPlayingContextItem *item in context.incompleteItems) {
+    BKRResponseStub *responseStub = nil;
+    for (BKRPlayheadItem *item in playhead.incompleteItems) {
         NSLog(@"item: %@", item);
+        BKRScene *scene = item.scene;
+        if ([scene hasResponseForRequest:request]) {
+            if (
+                item.redirectsRemaining &&
+                [scene hasRedirectResponseStubForRequest:request]
+                ) {
+                responseStub = [scene responseStubForRedirect:item.redirectsRemaining];
+            } else if ([scene hasFinalResponseStubForRequest:request]) {
+                responseStub = [scene finalResponseStub];
+            }
+        }
     }
-    return nil;
+    return responseStub;
 }
 
 //// should also handle current request for everything, not just comparing to original request

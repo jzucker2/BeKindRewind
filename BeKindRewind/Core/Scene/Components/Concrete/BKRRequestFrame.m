@@ -56,6 +56,10 @@
     return self.requestComponents.path;
 }
 
+- (NSString *)URLAbsoluteString {
+    return self.URL.absoluteString;
+}
+
 - (NSString *)requestScheme {
     return self.requestComponents.scheme;
 }

@@ -10,7 +10,7 @@
 #import "BKRScene+Playable.h"
 #import "BKRRequestFrame.h"
 #import "BKRResponseStub.h"
-#import "BKRPlayingContext.h"
+#import "BKRPlayhead.h"
 
 @implementation BKRAnyMatcher
 
@@ -18,13 +18,13 @@
     return [[self alloc] init];
 }
 
-- (BOOL)hasMatchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
+- (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead {
 //    BOOL hasMatch = NO;
     
     return YES;
 }
 
-- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context {
+- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead {
     return nil;
 }
 

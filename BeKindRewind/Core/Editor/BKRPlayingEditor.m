@@ -7,7 +7,8 @@
 //
 
 #import "BKRPlayingEditor.h"
-#import "BKRPlayingContext.h"
+//#import "BKRPlayingContext.h"
+#import "BKRPlayhead.h"
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRCassette+Playable.h"
 #import "BKRScene+Playable.h"
@@ -15,7 +16,7 @@
 #import "BKRResponseStub.h"
 
 @interface BKRPlayingEditor ()
-@property (nonatomic, strong) BKRPlayingContext *context;
+@property (nonatomic, strong) BKRPlayhead *playhead;
 @end
 
 @implementation BKRPlayingEditor
@@ -50,7 +51,7 @@
         if (!updatedEnabled) {
             return;
         }
-        [self->_context startRequest:request withResponseStub:responseStub];
+        [self->_playhead startRequest:request withResponseStub:responseStub];
     }];
 }
 
@@ -61,7 +62,7 @@
         if (!updatedEnabled) {
             return;
         }
-        [self->_context redirectOriginalRequest:request withRedirectRequest:redirectRequest withResponseStub:responseStub];
+        [self->_playhead redirectOriginalRequest:request withRedirectRequest:redirectRequest withResponseStub:responseStub];
     }];
 }
 
@@ -72,7 +73,7 @@
         if (!updatedEnabled) {
             return;
         }
-        [self->_context completeRequest:request withResponseStub:responseStub error:error];
+        [self->_playhead completeRequest:request withResponseStub:responseStub error:error];
     }];
 }
 
@@ -89,10 +90,10 @@
     [super setEnabled:enabled withCompletionHandler:^void(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         if (updatedEnabled) {
-            self->_context = [BKRPlayingContext contextWithScenes:cassette.allScenes];
+            self->_playhead = [BKRPlayhead contextWithScenes:cassette.allScenes];
             [self _addStubsForMatcher:self->_matcher withCompletionHandler:editingBlock];
         } else {
-            self->_context = nil;
+            self->_playhead = nil;
             [self _removeAllStubs];
             if (editingBlock) {
                 editingBlock(updatedEnabled, cassette);
@@ -107,7 +108,7 @@
     BKRWeakify(self);
     [self readCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
-        finalTestResult = [matcher hasMatchForRequest:request withContext:self->_context.copy];
+        finalTestResult = [matcher hasMatchForRequest:request withPlayhead:self->_playhead.copy];
         // add all the other checks here
     }];
     return finalTestResult;
@@ -118,10 +119,11 @@
     BKRWeakify(self);
     [self editCassetteSynchronously:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
-        responseStub = [matcher matchForRequest:request withContext:self->_context.copy];
+//        responseStub = [matcher matchForRequest:request withContext:self->_playhead.copy];
+        responseStub = [matcher matchForRequest:request withPlayhead:self->_playhead.copy];
 #warning update context for response
 //        [self->_context addSceneResponseStub:responseStub forRequest:request];
-        [self->_context addResponseStub:responseStub forRequest:request];
+        [self->_playhead addResponseStub:responseStub forRequest:request];
 //        [self->_context addRequest:request];
 //        [self->_context incrementResponseCount];
     }];
@@ -135,7 +137,7 @@
         if ([self->_matcher respondsToSelector:@selector(reset)]) {
             [self->_matcher reset];
         }
-        self->_context = nil;
+        self->_playhead = nil;
         if (completionBlock) {
             completionBlock();
         }

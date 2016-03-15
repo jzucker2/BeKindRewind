@@ -10,7 +10,8 @@
 // imported to simplify building matchers
 #import "BKRResponseStub.h"
 #import "BKRScene+Playable.h"
-#import "BKRPlayingContext.h"
+//#import "BKRPlayingContext.h"
+#import "BKRPlayhead.h"
 #import "NSURLRequest+BKRAdditions.h"
 
 //@class BKRScene;
@@ -46,7 +47,7 @@
  *  @return a BKRPlayableScene to use as a stub for this request
  */
 //- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context;
+- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead;
 
 /**
  *  This is used by the test block to check whether a stubbed response should be provided for
@@ -64,7 +65,7 @@
  *  implemented, then they will be executed as well.
  */
 //- (BOOL)hasMatchForRequest:(NSURLRequest *)request withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-- (BOOL)hasMatchForRequest:(NSURLRequest *)request withContext:(BKRPlayingContext *)context;
+- (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead;
 
 @optional
 

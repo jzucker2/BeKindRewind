@@ -48,6 +48,11 @@
 @property (nonatomic, copy, readonly) NSURL *URL;
 
 /**
+ *  The absoluteString of the URL
+ */
+@property (nonatomic, copy, readonly) NSString *URLAbsoluteString;
+
+/**
  *  The timeout of the request
  */
 @property (nonatomic, readonly) NSTimeInterval timeoutInterval;

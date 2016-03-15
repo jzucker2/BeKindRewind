@@ -20,6 +20,9 @@
 
 - (NSUInteger)numberOfRedirects;
 - (BOOL)hasRedirects;
+- (BKRRequestFrame *)requestFrameForRedirect:(NSUInteger)redirectNumber;
+- (NSString *)originalRequestURLAbsoluteString;
+- (NSString *)requestURLAbsoluteStringForRedirect:(NSUInteger)redirectNumber;
 - (BKRResponseStub *)finalResponseStub;
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
 - (BOOL)hasFinalResponseStubForRequest:(NSURLRequest *)request;
