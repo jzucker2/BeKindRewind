@@ -61,7 +61,6 @@
 }
 
 - (NSDictionary *)_responseHeadersForFrame:(BKRResponseFrame *)responseFrame {
-//    BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
     NSMutableDictionary *responseHeaders = responseFrame.allHeaderFields.mutableCopy;
     responseHeaders[kBKRSceneUUIDKey] = self.uniqueIdentifier;
     return responseHeaders.copy;
@@ -76,10 +75,8 @@
     NSError *responseError = [self _responseError];
     if (!responseError) {
         BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
-//        return [BKRSceneResponseStub responseWithScene:self responseStub:[BKRResponseStub responseWithData:[self _responseData] statusCode:(int)[self _responseStatusCode] headers:[self _responseHeadersForFrame:responseFrame]]];
         return [BKRResponseStub responseWithData:[self _responseData] statusCode:(int)[self _responseStatusCode] headers:[self _responseHeadersForFrame:responseFrame]];
     }
-//    return [BKRSceneResponseStub responseWithScene:self responseStub:[BKRResponseStub responseWithError:responseError]];
     return [BKRResponseStub responseWithError:responseError];
 }
 
@@ -91,7 +88,7 @@
     return [self.originalRequestURLAbsoluteString isEqualToString:request.URL.absoluteString];
 }
 
-- (BOOL)hasRedirectResponseStubForRequest:(NSURLRequest *)request {
+- (BOOL)hasRedirectResponseStubForRemainingRequest:(NSURLRequest *)request {
     for (BKRRedirectFrame *redirectFrame in self.allRedirectFrames) {
         if ([redirectFrame.requestFrame.URLAbsoluteString isEqualToString:request.URL.absoluteString]) {
             return YES;
@@ -101,34 +98,33 @@
 }
 
 - (BOOL)hasResponseForRequest:(NSURLRequest *)request {
-    return ([self hasFinalResponseStubForRequest:request] || [self hasRedirectResponseStubForRequest:request]);
+    return ([self hasFinalResponseStubForRequest:request] || [self hasRedirectResponseStubForRemainingRequest:request]);
 }
 
 - (BOOL)hasRedirects {
     return (self.numberOfRedirects > 0);
 }
 
-- (BKRRequestFrame *)requestFrameForRedirect:(NSUInteger)redirectNumber {
-    if (!self.allRedirectFrames[redirectNumber]) {
-        return nil;
-    }
-    BKRRedirectFrame *redirectFrame = self.allRedirectFrames[redirectNumber];
-    return redirectFrame.requestFrame;
+- (BKRRequestFrame *)requestFrameForRemainingRedirect:(NSUInteger)remainingRedirect {
+    return [self redirectFrameForRemainingRedirect:remainingRedirect].requestFrame;
 }
 
-- (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber {
-    if (!self.allRedirectFrames[redirectNumber]) {
+- (BKRRedirectFrame *)redirectFrameForRemainingRedirect:(NSUInteger)remainingRedirect {
+    NSUInteger redirectFrameIndex = self.numberOfRedirects-remainingRedirect;
+    return self.allRedirectFrames[redirectFrameIndex];
+}
+
+- (BKRResponseStub *)responseStubForRemainingRedirect:(NSUInteger)remainingRedirect {
+    BKRRedirectFrame *redirectFrame = [self redirectFrameForRemainingRedirect:remainingRedirect];
+    if (!redirectFrame) {
         NSError *error = [NSError errorWithDomain:@"BeKindRewind" code:-999 userInfo:@{
                                                                                        NSLocalizedDescriptionKey: @"No expected to redirect this many times",
                                                                                        NSLocalizedFailureReasonErrorKey: @"Too many redirects encountered!",
                                                                                        kBKRSceneUUIDKey: self.uniqueIdentifier
                                                                                        }];
-//        return [BKRSceneResponseStub responseWithScene:self responseStub:[BKRResponseStub responseWithError:error]];
         return [BKRResponseStub responseWithError:error];
     }
-    BKRRedirectFrame *redirectFrame = self.allRedirectFrames[redirectNumber];
     NSDictionary *headers = [self _responseHeadersForFrame:redirectFrame.responseFrame];
-//    return [BKRSceneResponseStub responseWithScene:self responseStub:[BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers]];
     return [BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
 }
 
@@ -136,9 +132,8 @@
     return self.originalRequest.URLAbsoluteString;
 }
 
-- (NSString *)requestURLAbsoluteStringForRedirect:(NSUInteger)redirectNumber {
-    BKRRequestFrame *requestFrame = [self requestFrameForRedirect:redirectNumber];
-    return requestFrame.URLAbsoluteString;
+- (NSString *)requestURLAbsoluteStringForRemainingRedirect:(NSUInteger)remainingRedirect {
+    return [self requestFrameForRemainingRedirect:remainingRedirect].URLAbsoluteString;
 }
 
 - (NSString *)debugDescription {

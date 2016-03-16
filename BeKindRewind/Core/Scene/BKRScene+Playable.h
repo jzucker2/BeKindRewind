@@ -20,13 +20,14 @@
 
 - (NSUInteger)numberOfRedirects;
 - (BOOL)hasRedirects;
-- (BKRRequestFrame *)requestFrameForRedirect:(NSUInteger)redirectNumber;
+- (BKRRequestFrame *)requestFrameForRemainingRedirect:(NSUInteger)remainingRedirect;
 - (NSString *)originalRequestURLAbsoluteString;
-- (NSString *)requestURLAbsoluteStringForRedirect:(NSUInteger)redirectNumber;
+- (BKRRedirectFrame *)redirectFrameForRemainingRedirect:(NSUInteger)remainingRedirect;
+- (NSString *)requestURLAbsoluteStringForRemainingRedirect:(NSUInteger)remainingRedirect;
 - (BKRResponseStub *)finalResponseStub;
-- (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
+- (BKRResponseStub *)responseStubForRemainingRedirect:(NSUInteger)remainingRedirect;
 - (BOOL)hasFinalResponseStubForRequest:(NSURLRequest *)request;
-- (BOOL)hasRedirectResponseStubForRequest:(NSURLRequest *)request;
+- (BOOL)hasRedirectResponseStubForRemainingRequest:(NSURLRequest *)request;
 - (BOOL)hasResponseForRequest:(NSURLRequest *)request;
 
 ///**

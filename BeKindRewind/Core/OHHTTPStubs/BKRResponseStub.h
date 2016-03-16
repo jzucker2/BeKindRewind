@@ -24,20 +24,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isError;
 @end
 
-@class BKRScene;
-
-@interface BKRSceneResponseStub : NSObject
-
-+ (instancetype)responseWithScene:(BKRScene *)scene responseStub:(BKRResponseStub *)responseStub;
-//+ (instancetype)responseWithSceneIndex:(NSInteger)sceneIdx frameIndex:(NSInteger)frameIdx;
-
-//@property (nonatomic, assign, readonly) NSInteger sceneIndex;
-//@property (nonatomic, assign, readonly) NSInteger frameIndex;
-
-@property (nonatomic, strong, readonly) BKRScene *scene;
-
-@property (nonatomic, strong, readonly) BKRResponseStub *responseStub;
-
-@end
-
 NS_ASSUME_NONNULL_END

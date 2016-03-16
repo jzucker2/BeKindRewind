@@ -73,25 +73,3 @@
 }
 
 @end
-
-@interface BKRSceneResponseStub ()
-@property (nonatomic, strong, readwrite) BKRScene *scene;
-@property (nonatomic, strong, readwrite) BKRResponseStub *responseStub;
-@end
-
-@implementation BKRSceneResponseStub
-
-- (instancetype)initResponseWithScene:(BKRScene *)scene responseStub:(BKRResponseStub *)responseStub {
-    self = [super init];
-    if (self) {
-        _scene = scene;
-        _responseStub = responseStub;
-    }
-    return self;
-}
-
-+ (instancetype)responseWithScene:(BKRScene *)scene responseStub:(BKRResponseStub *)responseStub {
-    return [[self alloc] initResponseWithScene:scene responseStub:responseStub];
-}
-
-@end
