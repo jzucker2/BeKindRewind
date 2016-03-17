@@ -20,16 +20,18 @@
 
 - (NSUInteger)numberOfRedirects;
 - (BOOL)hasRedirects;
-- (BKRRequestFrame *)requestFrameForRemainingRedirect:(NSUInteger)remainingRedirect;
 - (NSString *)originalRequestURLAbsoluteString;
-- (BKRRedirectFrame *)redirectFrameForRemainingRedirect:(NSUInteger)remainingRedirect;
-- (NSString *)requestURLAbsoluteStringForRemainingRedirect:(NSUInteger)remainingRedirect;
 - (BKRResponseStub *)finalResponseStub;
-- (BKRResponseStub *)responseStubForRemainingRedirect:(NSUInteger)remainingRedirect;
-- (BOOL)hasFinalResponseStubForRequest:(NSURLRequest *)request;
-- (BOOL)hasRedirectResponseStubForRemainingRequest:(NSURLRequest *)request;
-- (BOOL)hasResponseForRequest:(NSURLRequest *)request;
+//- (BOOL)hasFinalResponseStubForRequest:(NSURLRequest *)request;
+//- (BOOL)hasRedirectResponseStubForRemainingRequest:(NSURLRequest *)request;
+//- (BOOL)hasResponseForRequest:(NSURLRequest *)request;
 - (BKRResponseStub *)responseStubForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
+
+- (BKRRequestFrame *)requestFrameForRedirect:(NSUInteger)redirectNumber;
+- (BKRRedirectFrame *)redirectFrameForRedirect:(NSUInteger)redirectNumber;
+- (NSString *)requestURLAbsoluteStringForRedirect:(NSUInteger)redirectNumber;
+- (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
+
 
 ///**
 // *  Data associated with a network request

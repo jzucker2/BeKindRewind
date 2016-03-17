@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)responseWithStubsResponse:(OHHTTPStubsResponse *)response;
 - (NSString *)sceneIdentifier;
 - (BOOL)isError;
+- (BOOL)isRedirect;
 @end
 
 NS_ASSUME_NONNULL_END

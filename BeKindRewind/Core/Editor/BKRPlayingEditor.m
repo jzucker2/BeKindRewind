@@ -90,7 +90,7 @@
     [super setEnabled:enabled withCompletionHandler:^void(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         if (updatedEnabled) {
-            self->_playhead = [BKRPlayhead contextWithScenes:cassette.allScenes];
+            self->_playhead = [BKRPlayhead playheadWithScenes:cassette.allScenes];
             [self _addStubsForMatcher:self->_matcher withCompletionHandler:editingBlock];
         } else {
             self->_playhead = nil;

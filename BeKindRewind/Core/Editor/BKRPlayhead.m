@@ -43,6 +43,20 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
     return self.scene.numberOfRedirects;
 }
 
+- (BOOL)expectsRedirect {
+    return ((self.expectedNumberOfRedirects - self.redirectsCompleted) > 0);
+}
+
+- (NSUInteger)numberOfRedirectsStubbed {
+    __block NSUInteger redirectsStubbed = 0;
+    [self.responseStubs enumerateObjectsUsingBlock:^(BKRResponseStub * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.isRedirect) {
+            redirectsStubbed++;
+        }
+    }];
+    return redirectsStubbed;
+}
+
 @end
 
 @interface BKRPlayhead () <NSCopying>
@@ -108,7 +122,7 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 //    return [self.allItems filteredArrayUsingPredicate:[self _predicateForItemWithState:BKRPlayingSceneStateRedirecting]];
     return [self.allItems BKR_select:^BOOL(id obj) {
         BKRPlayheadItem *item = (BKRPlayheadItem *)obj;
-        return (item.expectedNumberOfRedirects-item.redirectsCompleted) > 0;
+        return item.expectsRedirect;
     }];
 }
 

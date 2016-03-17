@@ -28,6 +28,9 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 @property (nonatomic, strong, readonly) NSMutableArray<BKRResponseStub *> *responseStubs;
 @property (nonatomic, strong, readonly) NSMutableArray<NSURLRequest *> *requests;
 
+- (NSUInteger)numberOfRedirectsStubbed; // count number of BKRResponseStubs in responseStubs
+- (BOOL)expectsRedirect; // just means that the redirectsCompleted is less than the expectedNumberOfRedirects
+
 @end
 
 // assumed to be called in thread-safe manner, no locking or queueing inside this object, no thread-safety!

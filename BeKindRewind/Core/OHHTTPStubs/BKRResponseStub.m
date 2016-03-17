@@ -58,6 +58,22 @@
     return (self.error != nil);
 }
 
+- (BOOL)isRedirect {
+    NSDictionary *headers = self.headers;
+    BOOL hasRedirectLocationHeaderKey = (
+                                         headers &&
+                                         headers[@"Location"]
+                                         );
+    BOOL hasRedirectStatusCode = (
+                                  (self.statusCode > 300) &&
+                                  (self.statusCode < 400)
+                                  );
+    return (
+            hasRedirectLocationHeaderKey &&
+            hasRedirectStatusCode
+            );
+}
+
 - (NSString *)sceneIdentifier {
     NSString *sceneUUID = nil;
     if (self.isError) {

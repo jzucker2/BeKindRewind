@@ -88,13 +88,12 @@
     return (self.numberOfRedirects > 0);
 }
 
-- (BKRRequestFrame *)requestFrameForRemainingRedirect:(NSUInteger)remainingRedirect {
-    return [self redirectFrameForRemainingRedirect:remainingRedirect].requestFrame;
+- (BKRRequestFrame *)requestFrameForRedirect:(NSUInteger)redirectNumber {
+    return [self redirectFrameForRedirect:redirectNumber].requestFrame;
 }
 
-- (BKRRedirectFrame *)redirectFrameForRemainingRedirect:(NSUInteger)remainingRedirect {
-    NSUInteger redirectFrameIndex = self.numberOfRedirects-remainingRedirect;
-    return self.allRedirectFrames[redirectFrameIndex];
+- (BKRRedirectFrame *)redirectFrameForRedirect:(NSUInteger)redirectNumber {
+    return self.allRedirectFrames[redirectNumber];
 }
 
 - (BKRResponseStub *)responseStubForRedirectFrame:(BKRRedirectFrame *)redirectFrame {
@@ -110,8 +109,8 @@
     return [BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
 }
 
-- (BKRResponseStub *)responseStubForRemainingRedirect:(NSUInteger)remainingRedirect {
-    BKRRedirectFrame *redirectFrame = [self redirectFrameForRemainingRedirect:remainingRedirect];
+- (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber {
+    BKRRedirectFrame *redirectFrame = [self redirectFrameForRedirect:redirectNumber];
     return [self responseStubForRedirectFrame:redirectFrame];
 }
 
@@ -119,8 +118,8 @@
     return self.originalRequest.URLAbsoluteString;
 }
 
-- (NSString *)requestURLAbsoluteStringForRemainingRedirect:(NSUInteger)remainingRedirect {
-    return [self requestFrameForRemainingRedirect:remainingRedirect].URLAbsoluteString;
+- (NSString *)requestURLAbsoluteStringForRedirect:(NSUInteger)redirectNumber {
+    return [self requestFrameForRedirect:redirectNumber].URLAbsoluteString;
 }
 
 - (NSString *)debugDescription {

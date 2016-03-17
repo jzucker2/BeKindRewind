@@ -27,12 +27,12 @@
         // try to match final request first
         if (
             [request BKR_isEquivalentToRequestFrame:scene.originalRequest options:options] &&
-            !item.redirectsRemaining
+            !item.expectsRedirect
             ) {
             responseStub = scene.finalResponseStub;
-        } else if (item.redirectsRemaining) {
+        } else if (item.expectsRedirect) {
             // else match redirects if we still expect some
-            BKRRedirectFrame *redirectFrame = [scene redirectFrameForRemainingRedirect:item.redirectsRemaining];
+            BKRRedirectFrame *redirectFrame = [scene redirectFrameForRedirect:item.numberOfRedirectsStubbed];
             if ([request BKR_isEquivalentToRequestFrame:redirectFrame.requestFrame options:options]) {
                 responseStub = [scene responseStubForRedirectFrame:redirectFrame];
             }
