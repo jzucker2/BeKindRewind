@@ -7,30 +7,28 @@
 //
 
 #import "NSURLRequest+BKRAdditions.h"
+#import "BKRRequestFrame.h"
 #import "BKRConstants.h"
 
 NSString *kBKRShouldIgnoreQueryItemsOrder = @"BKRShouldIgnoreQueryItemsOrder";
 NSString *kBKRIgnoreQueryItemNames = @"BKRIgnoreQueryItemNames";
 NSString *kBKRIgnoreNSURLComponentsProperties = @"BKRIgnoreNSURLComponentsProperties";
+NSString *kBKRCompareHTTPBody = @"BKRCompareHTTPBodyKey";
 
 @implementation NSURLRequest (BKRAdditions)
 
 - (BOOL)BKR_isEquivalentToRequest:(NSURLRequest *)otherRequest options:(NSDictionary *)options {
-//    @property (nullable, copy) NSString *scheme; // Attempting to set the scheme with an invalid scheme string will cause an exception.
-//    @property (nullable, copy) NSString *user;
-//    @property (nullable, copy) NSString *password;
-//    @property (nullable, copy) NSString *host;
-//    @property (nullable, copy) NSNumber *port; // Attempting to set a negative port number will cause an exception.
-//    @property (nullable, copy) NSString *path;
-//    @property (nullable, copy) NSString *query;
-//    @property (nullable, copy) NSString *fragment;
+    return [self BKR_isEquivalentToRequestURLString:otherRequest.URL.absoluteString options:options];
+}
+
+- (BOOL)BKR_isEquivalentToRequestURLString:(NSString *)otherRequestURLString options:(NSDictionary *)options {
     __block NSArray<NSString *> *componentProperties = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         componentProperties = @[@"scheme", @"user", @"password", @"host", @"port", @"path", @"queryItems", @"fragment"];
     });
     NSURLComponents *requestComponents = [NSURLComponents componentsWithString:self.URL.absoluteString];
-    NSURLComponents *otherRequestComponents = [NSURLComponents componentsWithString:otherRequest.URL.absoluteString];
+    NSURLComponents *otherRequestComponents = [NSURLComponents componentsWithString:otherRequestURLString];
     
     BOOL ignoreQueryItemsOrder = NO;
     NSArray<NSString *> *ignoreNSURLComponentsProperties = nil;
@@ -70,8 +68,9 @@ NSString *kBKRIgnoreNSURLComponentsProperties = @"BKRIgnoreNSURLComponentsProper
                 finalRequestQueryItems = [temporaryRequestQueryItems filteredArrayUsingPredicate:removeIgnoringQueryItemNamesPredicate];
                 finalOtherRequestQueryItems = [temporaryOtherRequestQueryItems filteredArrayUsingPredicate:removeIgnoringQueryItemNamesPredicate];
             }
+#warning this seems off
             if (!finalOtherRequestQueryItems && !finalOtherRequestQueryItems) {
-                return YES;
+                continue;
             }
             if (
                 (!finalRequestQueryItems && finalOtherRequestQueryItems) ||
@@ -117,6 +116,21 @@ NSString *kBKRIgnoreNSURLComponentsProperties = @"BKRIgnoreNSURLComponentsProper
     }
     // if both don't exist, then return YES
     return YES;
+}
+
+- (BOOL)BKR_isEquivalentToRequestFrame:(BKRRequestFrame *)requestFrame options:(NSDictionary *)options {
+    BOOL shouldCompareHTTPBody = NO;
+    if (options) {
+        if (options[kBKRCompareHTTPBody]) {
+            shouldCompareHTTPBody = [options[kBKRCompareHTTPBody] boolValue];
+        }
+    }
+    if (shouldCompareHTTPBody) {
+        if (![self.HTTPBody isEqualToData:requestFrame.HTTPBody]) {
+            return NO;
+        }
+    }
+    return [self BKR_isEquivalentToRequestURLString:requestFrame.URLAbsoluteString options:options];
 }
 
 @end

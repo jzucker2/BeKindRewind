@@ -84,23 +84,6 @@
     return self.allRedirectFrames.count;
 }
 
-- (BOOL)hasFinalResponseStubForRequest:(NSURLRequest *)request {
-    return [self.originalRequestURLAbsoluteString isEqualToString:request.URL.absoluteString];
-}
-
-- (BOOL)hasRedirectResponseStubForRemainingRequest:(NSURLRequest *)request {
-    for (BKRRedirectFrame *redirectFrame in self.allRedirectFrames) {
-        if ([redirectFrame.requestFrame.URLAbsoluteString isEqualToString:request.URL.absoluteString]) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
-- (BOOL)hasResponseForRequest:(NSURLRequest *)request {
-    return ([self hasFinalResponseStubForRequest:request] || [self hasRedirectResponseStubForRemainingRequest:request]);
-}
-
 - (BOOL)hasRedirects {
     return (self.numberOfRedirects > 0);
 }
@@ -114,8 +97,7 @@
     return self.allRedirectFrames[redirectFrameIndex];
 }
 
-- (BKRResponseStub *)responseStubForRemainingRedirect:(NSUInteger)remainingRedirect {
-    BKRRedirectFrame *redirectFrame = [self redirectFrameForRemainingRedirect:remainingRedirect];
+- (BKRResponseStub *)responseStubForRedirectFrame:(BKRRedirectFrame *)redirectFrame {
     if (!redirectFrame) {
         NSError *error = [NSError errorWithDomain:@"BeKindRewind" code:-999 userInfo:@{
                                                                                        NSLocalizedDescriptionKey: @"No expected to redirect this many times",
@@ -126,6 +108,11 @@
     }
     NSDictionary *headers = [self _responseHeadersForFrame:redirectFrame.responseFrame];
     return [BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
+}
+
+- (BKRResponseStub *)responseStubForRemainingRedirect:(NSUInteger)remainingRedirect {
+    BKRRedirectFrame *redirectFrame = [self redirectFrameForRemainingRedirect:remainingRedirect];
+    return [self responseStubForRedirectFrame:redirectFrame];
 }
 
 - (NSString *)originalRequestURLAbsoluteString {

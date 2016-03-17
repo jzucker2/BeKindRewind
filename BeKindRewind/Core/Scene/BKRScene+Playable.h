@@ -29,6 +29,7 @@
 - (BOOL)hasFinalResponseStubForRequest:(NSURLRequest *)request;
 - (BOOL)hasRedirectResponseStubForRemainingRequest:(NSURLRequest *)request;
 - (BOOL)hasResponseForRequest:(NSURLRequest *)request;
+- (BKRResponseStub *)responseStubForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
 
 ///**
 // *  Data associated with a network request

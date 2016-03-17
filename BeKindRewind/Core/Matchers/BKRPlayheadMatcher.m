@@ -21,22 +21,32 @@
 - (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead {
     BKRResponseStub *responseStub = nil;
     for (BKRPlayheadItem *item in playhead.incompleteItems) {
-        NSLog(@"item: %@", item);
         BKRScene *scene = item.scene;
-        if ([scene hasResponseForRequest:request]) {
-            if (
-                item.redirectsRemaining &&
-                [scene hasRedirectResponseStubForRemainingRequest:request]
-                ) {
-                responseStub = [scene responseStubForRemainingRedirect:item.redirectsRemaining];
-            } else if ([scene hasFinalResponseStubForRequest:request]) {
-                responseStub = [scene finalResponseStub];
+        NSDictionary *options = [self requestComparisonOptions];
+#warning update matcher
+        // try to match final request first
+        if (
+            [request BKR_isEquivalentToRequestFrame:scene.originalRequest options:options] &&
+            !item.redirectsRemaining
+            ) {
+            responseStub = scene.finalResponseStub;
+        } else if (item.redirectsRemaining) {
+            // else match redirects if we still expect some
+            BKRRedirectFrame *redirectFrame = [scene redirectFrameForRemainingRedirect:item.redirectsRemaining];
+            if ([request BKR_isEquivalentToRequestFrame:redirectFrame.requestFrame options:options]) {
+                responseStub = [scene responseStubForRedirectFrame:redirectFrame];
             }
         }
     }
     return responseStub;
 }
 
-//// should also handle current request for everything, not just comparing to original request
+- (NSDictionary *)requestComparisonOptions {
+    return @{
+             kBKRShouldIgnoreQueryItemsOrder: @YES,
+             };
+}
+
+//// should also handle current request for everything, not just comparing to original request ?
 
 @end

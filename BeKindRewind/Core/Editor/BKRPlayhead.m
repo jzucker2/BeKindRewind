@@ -9,7 +9,8 @@
 #import "BKRPlayhead.h"
 #import "BKRResponseStub.h"
 #import "BKRConstants.h"
-#import "BKRScene.h"
+#import "BKRScene+Playable.h"
+#import "NSArray+BKRAdditions.h"
 
 //typedef returnType (^TypeName)(parameterTypes);
 //TypeName blockName = ^returnType(parameters) {...};
@@ -25,7 +26,8 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
     self = [super init];
     if (self) {
         _scene = scene;
-        _redirectsRemaining = scene.allRedirectFrames.count;
+//        _redirectsRemaining = scene.allRedirectFrames.count;
+        _redirectsCompleted = 0;
         _state = BKRPlayingSceneStateInactive;
         _responseStubs = [NSMutableArray array];
         _requests = [NSMutableArray array];
@@ -35,6 +37,10 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 
 + (instancetype)itemWithScene:(BKRScene *)scene {
     return [[self alloc] initItemWithScene:scene];
+}
+
+- (NSUInteger)expectedNumberOfRedirects {
+    return self.scene.numberOfRedirects;
 }
 
 @end
@@ -57,7 +63,7 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
     return self;
 }
 
-+ (instancetype)contextWithScenes:(NSArray<BKRScene *> *)scenes {
++ (instancetype)playheadWithScenes:(NSArray<BKRScene *> *)scenes {
     return [[self alloc] initWithScenes:scenes];
 }
 
@@ -68,8 +74,11 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 
 - (void)redirectOriginalRequest:(NSURLRequest *)request withRedirectRequest:(NSURLRequest *)redirectRequest withResponseStub:(BKRResponseStub *)responseStub {
     NSLog(@"%s request (%@, %@) redirectRequest (%@, %@) responseStub (%@)", __PRETTY_FUNCTION__, request, request.allHTTPHeaderFields, redirectRequest, redirectRequest.allHTTPHeaderFields, responseStub);
-    [self _updateStateToState:BKRPlayingSceneStateRedirecting forResponseStub:responseStub withExtraProcessingBlock:^(BKRPlayheadItem *item) {
-        item.redirectsRemaining--;
+//    [self _updateStateToState:BKRPlayingSceneStateRedirecting forResponseStub:responseStub withExtraProcessingBlock:^(BKRPlayheadItem *item) {
+//        item.redirectsRemaining--;
+//    }];
+    [self _updateFirstPlayheadItemMatchingResponseStub:responseStub withUpdateBlock:^(BKRPlayheadItem *item) {
+        item.redirectsCompleted--;
     }];
 }
 
@@ -85,19 +94,6 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
             updateItemBlock(item);
         }
     }];
-//    [self.allItems enumerateObjectsUsingBlock:^(BKRPlayheadItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        if ([obj.scene.uniqueIdentifier isEqualToString:responseStub.sceneIdentifier]) {
-//            obj.state = updatedState;
-//            if (updateItemBlock) {
-//                updateItemBlock(obj);
-//            }
-//            *stop = YES;
-//        }
-//        //        if ([obj.responseStubs containsObject:responseStub]) {
-//        //            obj.state = updatedState;
-//        //            *stop = YES;
-//        //        }
-//    }];
 }
 
 - (NSArray<BKRPlayheadItem *> *)inactiveItems {
@@ -109,7 +105,11 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 }
 
 - (NSArray<BKRPlayheadItem *> *)redirectingItems {
-    return [self.allItems filteredArrayUsingPredicate:[self _predicateForItemWithState:BKRPlayingSceneStateRedirecting]];
+//    return [self.allItems filteredArrayUsingPredicate:[self _predicateForItemWithState:BKRPlayingSceneStateRedirecting]];
+    return [self.allItems BKR_select:^BOOL(id obj) {
+        BKRPlayheadItem *item = (BKRPlayheadItem *)obj;
+        return (item.expectedNumberOfRedirects-item.redirectsCompleted) > 0;
+    }];
 }
 
 - (NSArray<BKRPlayheadItem *> *)completedItems {
@@ -144,23 +144,11 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
         [item.responseStubs addObject:responseStub];
         [item.requests addObject:request];
     }];
-//    [self.allItems enumerateObjectsUsingBlock:^(BKRPlayheadItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        if ([obj.scene.uniqueIdentifier isEqualToString:responseStub.sceneIdentifier]) {
-//            [obj.responseStubs addObject:responseStub];
-//            [obj.requests addObject:request];
-//            *stop = YES;
-//        }
-//    }];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
     BKRPlayhead *playhead = [[[self class] allocWithZone:zone] init];
     playhead.allItems = self.allItems;
-    //    context.activeScenes = self.activeScenes;
-    //    context.completedScenes = self.completedScenes;
-    //    context.allScenes = self.allScenes;
-    //    context.responseCount = self.responseCount;
-    //    context.requests = self.requests;
     return playhead;
 }
 

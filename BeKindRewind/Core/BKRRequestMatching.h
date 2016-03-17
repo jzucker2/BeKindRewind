@@ -10,6 +10,8 @@
 // imported to simplify building matchers
 #import "BKRResponseStub.h"
 #import "BKRScene+Playable.h"
+#import "BKRRedirectFrame.h"
+#import "BKRRequestFrame.h"
 //#import "BKRPlayingContext.h"
 #import "BKRPlayhead.h"
 #import "NSURLRequest+BKRAdditions.h"

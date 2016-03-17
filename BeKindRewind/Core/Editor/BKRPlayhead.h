@@ -11,7 +11,6 @@
 typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
     BKRPlayingSceneStateInactive = 0,
     BKRPlayingSceneStateActive,
-    BKRPlayingSceneStateRedirecting,
     BKRPlayingSceneStateCompleted
 };
 
@@ -24,7 +23,8 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 
 @property (nonatomic, strong, readonly) BKRScene *scene;
 @property (nonatomic, assign) BKRPlayingSceneState state;
-@property (nonatomic, assign) NSUInteger redirectsRemaining;
+@property (nonatomic, assign, readonly) NSUInteger expectedNumberOfRedirects;
+@property (nonatomic, assign) NSUInteger redirectsCompleted;
 @property (nonatomic, strong, readonly) NSMutableArray<BKRResponseStub *> *responseStubs;
 @property (nonatomic, strong, readonly) NSMutableArray<NSURLRequest *> *requests;
 
@@ -35,13 +35,13 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 
 @property (nonatomic, strong, readonly) NSArray<BKRPlayheadItem *> *allItems;
 
-+ (instancetype)contextWithScenes:(NSArray<BKRScene *> *)scenes;
++ (instancetype)playheadWithScenes:(NSArray<BKRScene *> *)scenes;
 - (void)startRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub;
 - (void)redirectOriginalRequest:(NSURLRequest *)request withRedirectRequest:(NSURLRequest *)redirectRequest withResponseStub:(BKRResponseStub *)responseStub;
 - (void)completeRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub error:(NSError *)error;
 - (NSArray<BKRPlayheadItem *> *)inactiveItems; // never started
-- (NSArray<BKRPlayheadItem *> *)incompleteItems; // active and redirecting items
-- (NSArray<BKRPlayheadItem *> *)activeItems; // loading but not redirecting
+- (NSArray<BKRPlayheadItem *> *)incompleteItems; // inactive and active items
+- (NSArray<BKRPlayheadItem *> *)activeItems; // active and/or redirecting (does not include items that haven't started or already finished)
 - (NSArray<BKRPlayheadItem *> *)redirectingItems; // redirecting, active
 - (NSArray<BKRPlayheadItem *> *)completedItems; // done, finished
 - (void)addResponseStub:(BKRResponseStub *)responseStub forRequest:(NSURLRequest *)request;

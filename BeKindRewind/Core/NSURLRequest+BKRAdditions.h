@@ -11,6 +11,9 @@
 extern NSString * kBKRShouldIgnoreQueryItemsOrder;
 extern NSString * kBKRIgnoreQueryItemNames;
 extern NSString * kBKRIgnoreNSURLComponentsProperties;
+extern NSString * kBKRCompareHTTPBody;
+
+@class BKRRequestFrame;
 
 @interface NSURLRequest (BKRAdditions)
 
@@ -24,5 +27,9 @@ extern NSString * kBKRIgnoreNSURLComponentsProperties;
  *  @return whether or not the two instances of NSURLRequest are equal, after considering the options.
  */
 - (BOOL)BKR_isEquivalentToRequest:(NSURLRequest *)otherRequest options:(NSDictionary *)options;
+
+- (BOOL)BKR_isEquivalentToRequestFrame:(BKRRequestFrame *)requestFrame options:(NSDictionary *)options;
+
+- (BOOL)BKR_isEquivalentToRequestURLString:(NSString *)otherRequestURLString options:(NSDictionary *)options;
 
 @end
