@@ -34,6 +34,8 @@
             // else match redirects if we still expect some
 #warning redirect calculation seems off
             BKRRedirectFrame *redirectFrame = [scene redirectFrameForRedirect:item.numberOfRedirectsStubbed];
+            // need to build a proper URL from a redirect, example:
+            // [[NSURL URLWithString:@"/" relativeToURL:request.URL] absoluteURL]
             if ([request BKR_isEquivalentToRequestFrame:redirectFrame.requestFrame options:options]) {
                 responseStub = [scene responseStubForRedirectFrame:redirectFrame];
             }
