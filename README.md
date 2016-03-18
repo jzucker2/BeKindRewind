@@ -195,8 +195,10 @@ Jordan Zucker, jordan.zucker@gmail.com
 BeKindRewind is available under the MIT license. See the LICENSE file for more info.
 
 ## Release criteria
-* proper support for redirects
 * tests for matcher classes
+* rewrite NSURLRequest comparison method (add better tests)
+* update to use OHHTTPStubs with my additions added
+* fix broken tests (playing and recording for new scene architecture)
 * tests for OSX, tvOS
 
 ## Future features
