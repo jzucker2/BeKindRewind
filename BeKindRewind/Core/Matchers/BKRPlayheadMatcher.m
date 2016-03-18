@@ -20,10 +20,10 @@
 
 - (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead {
     BKRResponseStub *responseStub = nil;
+    NSLog(@"%s request (%@", __PRETTY_FUNCTION__, request.URL.absoluteString);
     for (BKRPlayheadItem *item in playhead.incompleteItems) {
         BKRScene *scene = item.scene;
         NSDictionary *options = [self requestComparisonOptions];
-#warning update matcher
         // try to match final request first
         if (
             [request BKR_isEquivalentToRequestFrame:scene.originalRequest options:options] &&
@@ -32,6 +32,7 @@
             responseStub = scene.finalResponseStub;
         } else if (item.expectsRedirect) {
             // else match redirects if we still expect some
+#warning redirect calculation seems off
             BKRRedirectFrame *redirectFrame = [scene redirectFrameForRedirect:item.numberOfRedirectsStubbed];
             if ([request BKR_isEquivalentToRequestFrame:redirectFrame.requestFrame options:options]) {
                 responseStub = [scene responseStubForRedirectFrame:redirectFrame];

@@ -93,6 +93,9 @@
 }
 
 - (BKRRedirectFrame *)redirectFrameForRedirect:(NSUInteger)redirectNumber {
+    if (redirectNumber >= self.allRedirectFrames.count) {
+        return nil;
+    }
     return self.allRedirectFrames[redirectNumber];
 }
 

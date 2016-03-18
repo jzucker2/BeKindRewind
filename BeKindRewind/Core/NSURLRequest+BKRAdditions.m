@@ -22,6 +22,9 @@ NSString *kBKRCompareHTTPBody = @"BKRCompareHTTPBodyKey";
 }
 
 - (BOOL)BKR_isEquivalentToRequestURLString:(NSString *)otherRequestURLString options:(NSDictionary *)options {
+    if (!otherRequestURLString) {
+        return NO;
+    }
     __block NSArray<NSString *> *componentProperties = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

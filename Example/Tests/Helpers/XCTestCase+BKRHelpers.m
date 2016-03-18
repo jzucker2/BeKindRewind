@@ -373,6 +373,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                     // if even, then it should be a BKRCurrentRequestFrame
                     XCTAssertTrue([frame isKindOfClass:[BKRCurrentRequestFrame class]], @"Even (%ld) redirect frames should be of BKRRequestFrame class not %@", (long)i, NSStringFromClass(frame.class));
                     BKRCurrentRequestFrame *requestFrame = (BKRCurrentRequestFrame *)frame;
+#warning need to rewrite this
                     XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], requestFrame.URL.absoluteString);
                     if (
                         expectedResult.HTTPMethod ||
