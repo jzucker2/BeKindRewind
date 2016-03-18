@@ -15,6 +15,7 @@
 #import "BKRRedirectFrame.h"
 #import "BKRResponseStub.h"
 #import "BKRConstants.h"
+#import "NSURL+BKRAdditions.h"
 
 @implementation BKRScene (Playable)
 
@@ -62,6 +63,18 @@
 
 - (NSDictionary *)_responseHeadersForFrame:(BKRResponseFrame *)responseFrame {
     NSMutableDictionary *responseHeaders = responseFrame.allHeaderFields.mutableCopy;
+    NSString *redirectLocation = responseHeaders[@"Location"];
+    if (redirectLocation) {
+        NSURLComponents *redirectComponents = [NSURLComponents componentsWithString:redirectLocation];
+        if (!redirectComponents.scheme) {
+            // we need to build an absolute path URL for OHHTTPStubs
+#warning fix this!
+            NSURL *temporaryRedirectLocationURL = [NSURL URLWithString:redirectLocation];
+            NSURL *baseURL = [responseFrame.URL BKR_baseURL];
+            NSURL *finalRedirectLocationURL = [NSURL URLWithString:redirectLocation relativeToURL:baseURL];
+            responseHeaders[@"Location"] = finalRedirectLocationURL.absoluteString;
+        }
+    }
     responseHeaders[kBKRSceneUUIDKey] = self.uniqueIdentifier;
     return responseHeaders.copy;
 }

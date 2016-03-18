@@ -196,6 +196,7 @@
         NSLog(@"task.currentRequest: %@", task.currentRequest);
         NSLog(@"task.currentRequest.allHTTPHeaderFields: %@", task.currentRequest.allHTTPHeaderFields);
         NSLog(@"data: %@", data);
+        NSLog(@"JSONdata: %@", [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil]);
         NSLog(@"response: %@", response);
         NSLog(@"-------------------");
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
