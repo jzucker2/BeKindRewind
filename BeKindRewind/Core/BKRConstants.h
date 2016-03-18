@@ -6,6 +6,8 @@
 //
 //
 
+#import <Foundation/Foundation.h>
+
 #ifndef BKRConstants_h
 #define BKRConstants_h
 
