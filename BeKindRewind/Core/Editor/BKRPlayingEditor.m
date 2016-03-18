@@ -109,7 +109,6 @@
     [self readCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         finalTestResult = [matcher hasMatchForRequest:request withPlayhead:self->_playhead.copy];
-        // add all the other checks here
     }];
     return finalTestResult;
 }
@@ -119,13 +118,9 @@
     BKRWeakify(self);
     [self editCassetteSynchronously:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
-//        responseStub = [matcher matchForRequest:request withContext:self->_playhead.copy];
         responseStub = [matcher matchForRequest:request withPlayhead:self->_playhead.copy];
 #warning update context for response
-//        [self->_context addSceneResponseStub:responseStub forRequest:request];
         [self->_playhead addResponseStub:responseStub forRequest:request];
-//        [self->_context addRequest:request];
-//        [self->_context incrementResponseCount];
     }];
     return responseStub;
 }
