@@ -68,8 +68,7 @@
         NSURLComponents *redirectComponents = [NSURLComponents componentsWithString:redirectLocation];
         if (!redirectComponents.scheme) {
             // we need to build an absolute path URL for OHHTTPStubs
-#warning fix this!
-            NSURL *temporaryRedirectLocationURL = [NSURL URLWithString:redirectLocation];
+#warning fix this! (pretty sure this works actually, just need to fix tests)
             NSURL *baseURL = [responseFrame.URL BKR_baseURL];
             NSURL *finalRedirectLocationURL = [NSURL URLWithString:redirectLocation relativeToURL:baseURL];
             responseHeaders[@"Location"] = finalRedirectLocationURL.absoluteString;
