@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 @property (nonatomic, assign) BKRPlayingSceneState state;
 @property (nonatomic, assign, readonly) NSUInteger expectedNumberOfRedirects;
 @property (nonatomic, assign) NSUInteger redirectsCompleted;
+- (BOOL)hasFinalResponseStub;
 @property (nonatomic, strong, readonly) NSMutableArray<BKRResponseStub *> *responseStubs;
 @property (nonatomic, strong, readonly) NSMutableArray<NSURLRequest *> *requests;
 

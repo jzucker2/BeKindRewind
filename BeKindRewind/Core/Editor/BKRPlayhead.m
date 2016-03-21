@@ -49,12 +49,20 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 
 - (NSUInteger)numberOfRedirectsStubbed {
     __block NSUInteger redirectsStubbed = 0;
-    [self.responseStubs enumerateObjectsUsingBlock:^(BKRResponseStub * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.responseStubs.copy enumerateObjectsUsingBlock:^(BKRResponseStub * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.isRedirect) {
             redirectsStubbed++;
         }
     }];
     return redirectsStubbed;
+}
+
+- (BOOL)hasFinalResponseStub {
+    return [self.responseStubs.copy BKR_any:^BOOL(id obj) {
+        BKRResponseStub *responseStub = (BKRResponseStub *)obj;
+        // if the BKRPlayheadItem contains a non redirect response, it has a finalResponseStub
+        return (!responseStub.isRedirect);
+    }];
 }
 
 @end

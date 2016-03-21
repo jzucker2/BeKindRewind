@@ -6,7 +6,7 @@ use_frameworks!
 
 target 'BKR-Tests-iOS-ObjC', :exclusive => true do
   platform :ios, '8.0'
-  pod "OHHTTPStubs", :git => 'https://github.com/jzucker2/OHHTTPStubs.git', :branch => 'on-stub-end-one-place'
+  pod "OHHTTPStubs", :git => 'https://github.com/AliSoftware/OHHTTPStubs.git', :branch => 'master'
   pod "BeKindRewind", :path => "."
 end
 
