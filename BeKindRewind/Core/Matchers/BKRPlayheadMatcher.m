@@ -35,6 +35,8 @@
             !item.expectsRedirect
             ) {
             responseStub = scene.finalResponseStub;
+            // stop looping when we have a match
+            break;
         } else if (item.expectsRedirect) {
             // else match redirects if we still expect some
 #warning redirect calculation seems off
@@ -43,6 +45,8 @@
             // [[NSURL URLWithString:@"/" relativeToURL:request.URL] absoluteURL]
             if ([request BKR_isEquivalentToRequestFrame:redirectFrame.requestFrame options:options]) {
                 responseStub = [scene responseStubForRedirectFrame:redirectFrame];
+                // stop looping when we have a match
+                break;
             }
         }
     }
