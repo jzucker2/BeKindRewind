@@ -200,6 +200,7 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * update to use OHHTTPStubs with my additions added
 * fix broken tests (playing and recording for new scene architecture)
 * tests for OSX, tvOS
+* recording empty cassette is YES by default instead of NO
 
 ## Future features
 * swift tests (at least basic)/Swift Package Manager
