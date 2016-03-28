@@ -492,7 +492,12 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             XCTAssertNotNil(error);
             XCTAssertEqual(expectedResult.errorCode, error.code);
             XCTAssertEqualObjects(expectedResult.errorDomain, error.domain);
-            XCTAssertEqualObjects(expectedResult.errorUserInfo, error.userInfo);
+            NSMutableDictionary *adjustedErrorUserInfo = error.userInfo.mutableCopy;
+            if (adjustedErrorUserInfo[kBKRSceneUUIDKey]) {
+                XCTAssertTrue([adjustedErrorUserInfo[kBKRSceneUUIDKey] isKindOfClass:[NSString class]]);
+                [adjustedErrorUserInfo removeObjectForKey:kBKRSceneUUIDKey];
+            }
+            XCTAssertEqualObjects(expectedResult.errorUserInfo, adjustedErrorUserInfo.copy);
         } else {
             XCTAssertNil(error);
             XCTAssertNotNil(data);
@@ -1427,11 +1432,17 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     XCTAssertNotNil(error);
     XCTAssertEqual(errorFrame.code, error.code);
     XCTAssertEqualObjects(errorFrame.domain, error.domain);
+//    XCTAssertEqualObjects(errorFrame.userInfo, error.userInfo);
     if (errorFrame.userInfo || error.userInfo) {
         NSMutableDictionary *errorFrameDictionary = errorFrame.userInfo.mutableCopy;
         XCTAssertNotNil(errorFrameDictionary[kBKRSceneUUIDKey]);
         [errorFrameDictionary removeObjectForKey:kBKRSceneUUIDKey];
-        XCTAssertEqualObjects(errorFrameDictionary.copy, error.userInfo);
+        NSMutableDictionary *adjustedErrorUserInfo = error.userInfo.mutableCopy;
+        if (adjustedErrorUserInfo[kBKRSceneUUIDKey]) {
+            XCTAssertTrue([adjustedErrorUserInfo[kBKRSceneUUIDKey] isKindOfClass:[NSString class]]);
+            [adjustedErrorUserInfo removeObjectForKey:kBKRSceneUUIDKey];
+        }
+        XCTAssertEqualObjects(errorFrameDictionary.copy, adjustedErrorUserInfo.copy);
     }
 }
 

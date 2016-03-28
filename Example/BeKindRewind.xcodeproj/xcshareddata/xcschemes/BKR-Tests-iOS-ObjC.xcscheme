@@ -44,6 +44,9 @@
                <Test
                   Identifier = "BKRMatcherTestCase">
                </Test>
+               <Test
+                  Identifier = "BKRNSURLRequestAdditionsTestCase">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
