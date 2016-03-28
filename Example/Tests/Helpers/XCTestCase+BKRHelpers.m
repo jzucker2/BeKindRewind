@@ -1552,7 +1552,13 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                     }
                     finalUserInfo = comparingDictionary.copy;
                 }
-                XCTAssertEqualObjects(frame[@"userInfo"], finalUserInfo);
+                NSMutableDictionary *finalFrameUserInfo = [frame[@"userInfo"] mutableCopy];
+                if (finalFrameUserInfo[kBKRSceneUUIDKey]) {
+                    XCTAssertTrue([finalFrameUserInfo[kBKRSceneUUIDKey] isKindOfClass:[NSString class]]);
+                    [finalFrameUserInfo removeObjectForKey:kBKRSceneUUIDKey];
+                }
+                XCTAssertEqualObjects(finalFrameUserInfo.copy, finalUserInfo);
+//                XCTAssertEqualObjects(frame[@"userInfo"], recording.errorUserInfo);
             } else if ([frameClass isEqualToString:@"BKRDataFrame"]) {
                 XCTAssertNotNil(recording.receivedData, @"How can we have a data frame but not expect data?");
                 if (recording.isReceivingChunkedData) {
