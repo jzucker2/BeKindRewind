@@ -212,7 +212,7 @@
         }
         NSLog(@"++++++++++++++++");
         batchSceneAssertions(player.allScenes);
-        XCTAssertEqual(player.allScenes.count, 1);
+//        XCTAssertEqual(player.allScenes.coutnt, 1);
     }];
 }
 
