@@ -78,7 +78,6 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 - (BKRConfiguration *)defaultConfiguration;
 - (void)assertDefaultTestConfiguration:(BKRTestConfiguration *)configuration;
 - (void)insertNewCassetteInRecorder;
-- (BKRPlayableVCR *)playableVCRWithAnyMatcher;
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher;
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption;
 - (BKRVCR *)vcrWithMatcher:(Class<BKRRequestMatching>)matcherClass andCassetteSavingOption:(BOOL)cassetteSavingOption;

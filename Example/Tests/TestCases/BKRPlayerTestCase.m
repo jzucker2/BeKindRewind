@@ -7,7 +7,6 @@
 //
 
 #import <BeKindRewind/BKRPlayer.h>
-#import <BeKindRewind/BKRAnyMatcher.h>
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 

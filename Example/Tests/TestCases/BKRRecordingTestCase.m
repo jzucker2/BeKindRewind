@@ -7,7 +7,6 @@
 //
 
 #import <BeKindRewind/BKRTestConfiguration.h>
-#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRTestCase.h>
 #import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRTestCaseFilePathHelper.h>
@@ -21,14 +20,6 @@
 
 - (BOOL)isRecording {
     return YES;
-}
-
-- (BKRTestConfiguration *)testConfiguration {
-    BKRTestConfiguration *configuration = [super testConfiguration];
-    if (self.invocation.selector == @selector(testRecordingTwoSimultaneousGETRequests)) {
-        configuration.matcherClass = [BKRAnyMatcher class];
-    }
-    return configuration;
 }
 
 - (void)setUp {

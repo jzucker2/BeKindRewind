@@ -27,11 +27,7 @@
     XCTAssertNotNil(self.testPlayingFilePath);
     XCTAssertTrue([BKRFilePathHelper filePathExists:self.testPlayingFilePath]);
     
-    if (self.invocation.selector == @selector(testPlayingTwoSimultaneousGETRequests)) {
-        self.vcr = [self playableVCRWithAnyMatcher];
-    } else {
-        self.vcr = [self playableVCRWithPlayheadMatcher];
-    }
+    self.vcr = [self playableVCRWithPlayheadMatcher];
     XCTAssertNotNil(self.vcr);
     
     [self insertCassetteFilePath:self.testPlayingFilePath intoVCR:self.vcr];

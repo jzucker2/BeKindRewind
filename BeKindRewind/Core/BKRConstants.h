@@ -11,8 +11,6 @@
 #ifndef BKRConstants_h
 #define BKRConstants_h
 
-#define BKRLogMethod NSLog(@"%s", __PRETTY_FUNCTION__)
-
 #define BKRWeakify(__var) \
 __weak __typeof__(__var) __var ## _weak_ = (__var)
 

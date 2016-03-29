@@ -12,7 +12,6 @@
 #import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
 #import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
 #import <BeKindRewind/BKRPlayheadMatcher.h>
-#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRScene.h>
 #import <BeKindRewind/BKRScene+Playable.h>
 #import <BeKindRewind/BKRFrame.h>
@@ -233,11 +232,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (BKRPlayableVCR *)playableVCRWithPlayheadMatcher {
     return [BKRPlayableVCR defaultVCR];
-}
-
-- (BKRPlayableVCR *)playableVCRWithAnyMatcher {
-    BKRConfiguration *configuration = [BKRConfiguration configurationWithMatcherClass:[BKRAnyMatcher class]];
-    return [BKRPlayableVCR vcrWithConfiguration:configuration];
 }
 
 - (BKRVCR *)vcrWithPlayheadMatcherAndCassetteSavingOption:(BOOL)cassetteSavingOption {

@@ -8,7 +8,6 @@
 
 #import <BeKindRewind/BKRVCR.h>
 #import <BeKindRewind/BKRCassette.h>
-#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
@@ -35,11 +34,6 @@
         self.vcr = [self vcrWithPlayheadMatcherAndCassetteSavingOption:YES];
     } else if (self.invocation.selector == @selector(testRecordingNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
         self.vcr = [self vcrWithPlayheadMatcherAndCassetteSavingOption:NO];
-    } else if (
-        (self.invocation.selector == @selector(testRecordingTwoSimultaneousGETRequests)) ||
-        (self.invocation.selector == @selector(testPlayingTwoSimultaneousGETRequests))
-        ) {
-        self.vcr = [self vcrWithMatcher:[BKRAnyMatcher class] andCassetteSavingOption:NO];
     } else {
         self.vcr = [self vcrWithPlayheadMatcherAndCassetteSavingOption:NO];
     }
