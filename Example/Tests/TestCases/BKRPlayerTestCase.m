@@ -10,13 +10,6 @@
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
 
-// remove after debugging
-#import <BeKindRewind/BKRScene.h>
-#import <BeKindRewind/BKRFrame.h>
-#import <BeKindRewind/BKRResponseFrame.h>
-#import <BeKindRewind/BKRRequestFrame.h>
-#import <BeKindRewind/BKRDataFrame.h>
-
 @interface BKRPlayerTestCase : BKRBaseTestCase
 
 @end
@@ -181,35 +174,16 @@
 }
 
 - (void)testPlayingRedirectRequest {
-    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:YES];
+    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:NO];
     
     __block BKRPlayer *player = [self playerWithExpectedResults:@[expectedResult]];
     XCTAssertEqual(player.allScenes.count, 1);
     [self setPlayer:player withExpectationToEnabled:YES];
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
-        NSLog(@"-------------------");
-        NSLog(@"result: %@", result);
-        NSLog(@"task: %@", task);
-        NSLog(@"task.originalRequest: %@", task.originalRequest);
-        NSLog(@"task.currentRequest: %@", task.currentRequest);
-        NSLog(@"task.currentRequest.allHTTPHeaderFields: %@", task.currentRequest.allHTTPHeaderFields);
-        NSLog(@"data: %@", data);
-        NSLog(@"JSONdata: %@", [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil]);
-        NSLog(@"response: %@", response);
-        NSLog(@"-------------------");
+        
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        NSLog(@"++++++++++++++++");
-        NSLog(@"%@", player.allScenes);
-        BKRScene *scene = player.allScenes.firstObject;
-        NSLog(@"%@", scene.allFrames);
-        NSLog(@"%@", scene.allFrames);
-        for (BKRFrame *frame in scene.allFrames) {
-            NSLog(@"&&&&&&&&&&&&&&&");
-            NSLog(@"frame: %@", frame.debugDescription);
-            NSLog(@"&&&&&&&&&&&&&&&");
-        }
-        NSLog(@"++++++++++++++++");
+        
         batchSceneAssertions(player.allScenes);
     }];
 }

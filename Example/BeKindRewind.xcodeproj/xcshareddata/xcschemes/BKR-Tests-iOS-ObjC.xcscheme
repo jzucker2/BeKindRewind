@@ -48,9 +48,6 @@
                   Identifier = "BKRPlayableVCRTestCase">
                </Test>
                <Test
-                  Identifier = "BKRPlayerTestCase/testPlayingRedirectRequest">
-               </Test>
-               <Test
                   Identifier = "BKRPlayingTestCase">
                </Test>
                <Test

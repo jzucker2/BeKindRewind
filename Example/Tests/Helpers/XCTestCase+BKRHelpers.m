@@ -359,95 +359,35 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             XCTAssertGreaterThan(expectedResult.numberOfRedirects, 0, @"If request is to redirect, expected number of redirects should be greater than 0");
             NSArray<BKRFrame *> *iteratingAssertFrames = assertFrames.copy;
             NSInteger redirectCount = expectedResult.numberOfRedirects;
-            BKRCurrentRequestFrame *lastCurrentRequestFrame = nil;
+//            BKRCurrentRequestFrame *lastCurrentRequestFrame = nil;
             for (NSInteger i=0; i < iteratingAssertFrames.count; i++) {
                 BKRFrame *frame = iteratingAssertFrames[i];
                 XCTAssertNotNil(frame);
-                if (0 == (i%2)) {
-                    // if even, then it should be a BKRCurrentRequestFrame
-                    XCTAssertTrue([frame isKindOfClass:[BKRCurrentRequestFrame class]], @"Even (%ld) redirect frames should be of BKRRequestFrame class not %@", (long)i, NSStringFromClass(frame.class));
-                    BKRCurrentRequestFrame *requestFrame = (BKRCurrentRequestFrame *)frame;
-#warning need to rewrite this
-                    XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], requestFrame.URL.absoluteString);
-                    if (
-                        expectedResult.HTTPMethod ||
-                        requestFrame.HTTPMethod
-                        ) {
-                        XCTAssertEqualObjects(expectedResult.redirectHTTPMethod, requestFrame.HTTPMethod);
-                    }
-                    XCTAssertEqualObjects(expectedResult.redirectRequestHTTPHeaderFields, requestFrame.allHTTPHeaderFields);
-                    lastCurrentRequestFrame = requestFrame;
-                } else {
-                    // if odd, then it should be a BKRRedirectFrame
-                    XCTAssertTrue([frame isKindOfClass:[BKRRedirectFrame class]], @"Odd (%ld) redirect frames should be of BKRResponseFrame class not %@", (long)i, NSStringFromClass(frame.class));
-                    BKRRedirectFrame *redirectFrame = (BKRRedirectFrame *)frame;
-                    XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], redirectFrame.responseFrame.URL.absoluteString);
-                    // assert on expected request
-                    XCTAssertEqualObjects(lastCurrentRequestFrame.URL.absoluteString, redirectFrame.responseFrame.URL.absoluteString);
-                    
-                    
-
-                    XCTAssertNotNil(redirectFrame.responseFrame.allHeaderFields);
-                    NSString *redirectLocation = redirectFrame.responseFrame.allHeaderFields[@"Location"];
-                    XCTAssertNotNil(redirectLocation);
-                    XCTAssertEqualObjects(lastCurrentRequestFrame.allHTTPHeaderFields, redirectFrame.requestFrame.allHTTPHeaderFields);
-                    XCTAssertEqualObjects(redirectLocation, redirectFrame.requestFrame.URL.path);
-                    
-                    // let's assert on everything else too
-                    [self _assertExpectedResponseHeaderFields:expectedResult.redirectResponseAllHeaderFields withRecording:expectedResult.isRecording withActualResponseHeaderFields:redirectFrame.responseFrame.allHeaderFields];
-                    // assume every response is the end of a request/response pair, so decrement redirectCount
-                    NSString *expectedLocation = [expectedResult redirectLocationWithForRedirection:--redirectCount];
-                    if (!redirectCount) {
-                        expectedLocation = expectedResult.finalRedirectLocation;
-                    }
-                    XCTAssertEqualObjects(expectedLocation, redirectLocation);
+                // all frames should be of type redirect
+                BKRRedirectFrame *redirectFrame = (BKRRedirectFrame *)frame;
+                XCTAssertTrue([redirectFrame isKindOfClass:[BKRRedirectFrame class]]);
+                XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], redirectFrame.requestFrame.URL.absoluteString);
+                if (
+                    expectedResult.HTTPMethod ||
+                    redirectFrame.requestFrame.HTTPMethod
+                    ) {
+                    XCTAssertEqualObjects(expectedResult.redirectHTTPMethod, redirectFrame.requestFrame.HTTPMethod);
                 }
+                XCTAssertEqualObjects(expectedResult.redirectRequestHTTPHeaderFields, redirectFrame.requestFrame.allHTTPHeaderFields);
+                XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], redirectFrame.responseFrame.URL.absoluteString);
+                XCTAssertNotNil(redirectFrame.responseFrame.allHeaderFields);
+                NSString *redirectLocation = redirectFrame.responseFrame.allHeaderFields[@"Location"];
+                XCTAssertNotNil(redirectLocation);
+                // let's assert on everything else too
+                [self _assertExpectedResponseHeaderFields:expectedResult.redirectResponseAllHeaderFields withRecording:expectedResult.isRecording withActualResponseHeaderFields:redirectFrame.responseFrame.allHeaderFields];
+                // assume every response is the end of a request/response pair, so decrement redirectCount
+                NSString *expectedLocation = [expectedResult redirectLocationWithForRedirection:--redirectCount];
+                if (!redirectCount) {
+                    expectedLocation = expectedResult.finalRedirectLocation;
+                }
+                XCTAssertEqualObjects(expectedLocation, redirectLocation);
                 [assertFrames removeObject:frame];
             }
-//            // original request (first request), current request (last request), and final response
-//            // are already tested, we need to assert on everything else
-//            // only frames left in assertFrames array should be the request/responses for redirecting
-//            // data and original and current request and frames have already been asserted and removed
-//            // at this point, we are asserting on the information in the scenes, because none of this data was returned
-//            // by the NSURLSessionTask completion handler
-//            XCTAssertGreaterThan(expectedResult.numberOfRedirects, 0, @"If request is to redirect, expected number of redirects should be greater than 0");
-//            // there should be a request/response pair for each redirect, so divide by 2
-//            XCTAssertEqual(expectedResult.numberOfRedirects, assertFrames.count/2);
-//            NSInteger redirectCount = expectedResult.numberOfRedirects;
-//            // expected order is response, request for each redirect, so make sure that order is present in recordings
-//            NSArray<BKRFrame *> *iteratingAssertFrames = assertFrames.copy;
-//            for (NSInteger i=0; i < iteratingAssertFrames.count; i++) {
-//                BKRFrame *frame = iteratingAssertFrames[i];
-//                XCTAssertNotNil(frame);
-//                if (0 == (i%2)) {
-//                    // if even, then it should be a BKRRequestdFrame
-//                    XCTAssertTrue([frame isKindOfClass:[BKRRequestFrame class]], @"Even (%ld) redirect frames should be of BKRRequestFrame class not %@", (long)i, NSStringFromClass(frame.class));
-//                    BKRRequestFrame *requestFrame = (BKRRequestFrame *)frame;
-//                    XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], requestFrame.URL.absoluteString);
-//                    if (
-//                        expectedResult.HTTPMethod ||
-//                        requestFrame.HTTPMethod
-//                        ) {
-//                        XCTAssertEqualObjects(expectedResult.redirectHTTPMethod, requestFrame.HTTPMethod);
-//                    }
-//                    XCTAssertEqualObjects(expectedResult.redirectRequestHTTPHeaderFields, requestFrame.allHTTPHeaderFields);
-//                } else {
-//                    // if odd, then it should be a BKRResponseFrame
-//                    XCTAssertTrue([frame isKindOfClass:[BKRResponseFrame class]], @"Odd (%ld) redirect frames should be of BKRResponseFrame class not %@", (long)i, NSStringFromClass(frame.class));
-//                    BKRResponseFrame *responseFrame = (BKRResponseFrame *)frame;
-//                    XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], responseFrame.URL.absoluteString);
-//                    // let's assert on everything else too
-//                    [self _assertExpectedResponseHeaderFields:expectedResult.redirectResponseAllHeaderFields withRecording:expectedResult.isRecording withActualResponseHeaderFields:responseFrame.allHeaderFields];
-//                    // assume every response is the end of a request/response pair, so decrement redirectCount
-//                    NSString *expectedLocation = [expectedResult redirectLocationWithForRedirection:--redirectCount];
-//                    if (!redirectCount) {
-//                        expectedLocation = expectedResult.finalRedirectLocation;
-//                    }
-//                    XCTAssertEqualObjects(expectedLocation, responseFrame.allHeaderFields[@"Location"]);
-//                }
-//                [assertFrames removeObject:frame];
-//
-//            }
             
         } else if (expectedResult.isReceivingChunkedData) {
             // sometimes chunked data responses have an extra response, remove the response tested above,
@@ -521,8 +461,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         JSONObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&JSONError];
         XCTAssertNil(JSONError, @"Failed to convert data to JSON: %@", JSONError.localizedDescription);
     }
-//    id JSONObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&JSONError];
-//    XCTAssertNil(JSONError, @"Failed to convert data to JSON: %@", JSONError.localizedDescription);
     if ([expectedResult.URL.host isEqualToString:@"httpbin.org"]) {
         if (expectedResult.isReceivingChunkedData) {
             XCTAssertNil(JSONObject, @"Shouldn't have a JSON object for chunked data, none of the tests expect it");
@@ -1316,7 +1254,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"306"];
     expectedResult.numberOfExpectedRequestFrames = 5;
     expectedResult.expectedNumberOfRecordingFrames = 10;
-    expectedResult.expectedNumberOfPlayingFrames = 10;
+    expectedResult.expectedNumberOfPlayingFrames = 7;
     expectedResult.redirectResponseStatusCode = 302;
     expectedResult.numberOfRedirects = 3;
     expectedResult.redirectRequestHTTPHeaderFields = expectedResult.currentRequestAllHTTPHeaderFields;

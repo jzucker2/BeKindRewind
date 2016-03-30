@@ -30,8 +30,12 @@
         BKRScene *scene = item.scene;
         NSDictionary *options = [self requestComparisonOptions];
         // try to match final request first
+        BOOL matchesRequest = (
+                               ([request BKR_isEquivalentToRequestFrame:scene.originalRequest options:options]) ||
+                               ([request BKR_isEquivalentToRequestFrame:scene.currentRequest options:options])
+                               );
         if (
-            [request BKR_isEquivalentToRequestFrame:scene.originalRequest options:options] &&
+            matchesRequest &&
             !item.expectsRedirect
             ) {
             responseStub = scene.finalResponseStub;
@@ -39,7 +43,6 @@
             break;
         } else if (item.expectsRedirect) {
             // else match redirects if we still expect some
-#warning redirect calculation seems off
             BKRRedirectFrame *redirectFrame = [scene redirectFrameForRedirect:item.numberOfRedirectsStubbed];
             // need to build a proper URL from a redirect, example:
             // [[NSURL URLWithString:@"/" relativeToURL:request.URL] absoluteURL]
@@ -58,7 +61,5 @@
              kBKRShouldIgnoreQueryItemsOrder: @YES,
              };
 }
-
-//// should also handle current request for everything, not just comparing to original request ?
 
 @end

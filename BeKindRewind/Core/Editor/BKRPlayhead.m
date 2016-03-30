@@ -44,7 +44,7 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 }
 
 - (BOOL)expectsRedirect {
-    return ((self.expectedNumberOfRedirects - self.redirectsCompleted) > 0);
+    return ((self.expectedNumberOfRedirects - self.numberOfRedirectsStubbed) > 0);
 }
 
 - (NSUInteger)numberOfRedirectsStubbed {
