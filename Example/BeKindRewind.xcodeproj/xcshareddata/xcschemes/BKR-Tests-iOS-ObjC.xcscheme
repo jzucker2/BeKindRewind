@@ -45,7 +45,19 @@
                   Identifier = "BKRMatcherTestCase">
                </Test>
                <Test
-                  Identifier = "BKRNSURLRequestAdditionsTestCase">
+                  Identifier = "BKRPlayableVCRTestCase">
+               </Test>
+               <Test
+                  Identifier = "BKRPlayerTestCase/testPlayingRedirectRequest">
+               </Test>
+               <Test
+                  Identifier = "BKRPlayingTestCase">
+               </Test>
+               <Test
+                  Identifier = "BKRTestVCRTestCase">
+               </Test>
+               <Test
+                  Identifier = "BKRVCRTestCase">
                </Test>
             </SkippedTests>
          </TestableReference>

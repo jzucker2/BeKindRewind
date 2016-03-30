@@ -25,11 +25,8 @@ NSString *kBKRCompareHTTPBody = @"BKRCompareHTTPBodyKey";
     if (!otherRequestURLString) {
         return NO;
     }
-    __block NSArray<NSString *> *componentProperties = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        componentProperties = @[@"scheme", @"user", @"password", @"host", @"port", @"path", @"queryItems", @"fragment"];
-    });
+
+    NSArray<NSString *> *componentProperties = [self _URLComponentProperties];
     NSURLComponents *requestComponents = [NSURLComponents componentsWithString:self.URL.absoluteString];
     NSURLComponents *otherRequestComponents = [NSURLComponents componentsWithString:otherRequestURLString];
     
@@ -67,18 +64,23 @@ NSString *kBKRCompareHTTPBody = @"BKRCompareHTTPBodyKey";
             NSMutableArray<NSURLQueryItem *> *temporaryRequestQueryItems = requestComponents.queryItems.mutableCopy;
             NSMutableArray<NSURLQueryItem *> *temporaryOtherRequestQueryItems = otherRequestComponents.queryItems.mutableCopy;
             if (ignoreQueryItemNames.count) {
-                NSPredicate *removeIgnoringQueryItemNamesPredicate = [NSPredicate predicateWithFormat:@"name IN %@", ignoreQueryItemNames];
+                NSPredicate *removeIgnoringQueryItemNamesPredicate = [NSPredicate predicateWithFormat:@"NOT (name IN %@)", ignoreQueryItemNames];
                 finalRequestQueryItems = [temporaryRequestQueryItems filteredArrayUsingPredicate:removeIgnoringQueryItemNamesPredicate];
                 finalOtherRequestQueryItems = [temporaryOtherRequestQueryItems filteredArrayUsingPredicate:removeIgnoringQueryItemNamesPredicate];
+            } else {
+                // if we are not ignoring a specific query item, then assign all query items for comparison
+                finalRequestQueryItems = temporaryRequestQueryItems.copy;
+                finalOtherRequestQueryItems = temporaryOtherRequestQueryItems.copy;
             }
-#warning this seems off
             if (!finalOtherRequestQueryItems && !finalOtherRequestQueryItems) {
+                // neither object has query items, continue comparing other components
                 continue;
             }
             if (
                 (!finalRequestQueryItems && finalOtherRequestQueryItems) ||
                 (finalRequestQueryItems && !finalOtherRequestQueryItems)
                 ) {
+                // if there are no query items for one of the two objects we are comparing, then they cannot be equal
                 return NO;
             }
             if (ignoreQueryItemsOrder) {
@@ -134,6 +136,15 @@ NSString *kBKRCompareHTTPBody = @"BKRCompareHTTPBodyKey";
         }
     }
     return [self BKR_isEquivalentToRequestURLString:requestFrame.URLAbsoluteString options:options];
+}
+
+- (NSArray *)_URLComponentProperties {
+    static NSArray<NSString *> *componentProperties = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        componentProperties = @[@"scheme", @"user", @"password", @"host", @"port", @"path", @"queryItems", @"fragment"];
+    });
+    return componentProperties;
 }
 
 @end
