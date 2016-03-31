@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @class BKRScene;
-//@class BKRSceneResponseStub;
 @class BKRResponseStub;
 
 NS_ASSUME_NONNULL_BEGIN
