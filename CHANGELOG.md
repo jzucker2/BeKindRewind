@@ -48,7 +48,7 @@
 * Significant rewrite with extended tests.
 * Increased stability.
 
-## [0.6.0](https://github.com/jzucker2/BeKindRewind/releases/tag/0.5.4)
+## [0.6.0](https://github.com/jzucker2/BeKindRewind/releases/tag/0.6.0)
 
 * Fully working VCR subclasses (for recording and playing).
 
