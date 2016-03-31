@@ -16,17 +16,21 @@
 #import "BKRScene.h"
 #import "BKRScene+Playable.h"
 
+// Playing information
+#import "BKRPlayhead.h"
+
 // Frame information
 #import "BKRDataFrame.h"
 #import "BKRErrorFrame.h"
 #import "BKRRequestFrame.h"
 #import "BKRResponseFrame.h"
+#import "BKRRedirectFrame.h"
 
 // Request Matching Protocol
 #import "BKRRequestMatching.h"
+#import "NSURLRequest+BKRAdditions.h"
 
 // Request Matchers
-#import "BKRAnyMatcher.h"
 #import "BKRPlayheadMatcher.h"
 
 //  This is used by the framework to uniquefy

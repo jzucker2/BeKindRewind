@@ -7,20 +7,25 @@
 //
 
 #import <Foundation/Foundation.h>
+// imported to simplify building matchers
+#import "BKRResponseStub.h"
+#import "BKRScene+Playable.h"
+#import "BKRRedirectFrame.h"
+#import "BKRRequestFrame.h"
+#import "BKRPlayhead.h"
+#import "NSURLRequest+BKRAdditions.h"
 
-@class BKRScene;
 
 /**
- This protocol is adopted by the object used to construct the rules for network
- request playback matching performed by the BKRPlayer. This is where you should
- define the rules used to match network requests during playback.
- 
+ *  This protocol is adopted by the object used to construct the rules for network
+ *  request playback matching performed by the BKRPlayer. This is where you should
+ *  define the rules used to match network requests during playback.
  */
 @protocol BKRRequestMatching <NSObject>
 
 /**
  *  This is used as the constructor of the matcher, it must be provided.
- *  @note Typically you can just provide a standard init
+ *  @note Typically you can just provide a standard init like `self = [super init];`
  *
  *  @return instance of a matcher class conforming to this protocol
  */
@@ -31,134 +36,42 @@
  *  When this block executes, the test block will have already passed.
  *  @warning undefined if nil is returned.
  *
- *  @param request      request which is to receive a mocked response
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
+ *  @param request  request which is to receive a mocked response
+ *  @param playhead this object tracks everything that occurs during a playing session.
  *
- *  @return a BKRPlayableScene to use as a stub for this request
+ *  @return a BKRResponseStub that mocks the network activity for this request.
  */
-- (BKRScene *)matchForRequest:(NSURLRequest *)request withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;;
+- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead;
 
 /**
  *  This is used by the test block to check whether a stubbed response should be provided for
  *  a request.
  *
- *  @param request      possible request to stub
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @note implement optional fine grained methods to simplify matcher
+ *  @param request  possible request to stub
+ *  @param playhead this object tracks everything that occurs during a playing session.
  *
  *  @return whether or not to stub the request. If NO is returned, then the request is not stubbed
- *  and continues live and uninterrupted. If YES is returned, and other optional boolean methods are
- *  implemented, then they will be executed as well.
+ *  and continues live and uninterrupted. If YES is returned then this request will be stubbed with
+ *  the BKRResponseStub returned by `matchForRequest:withPlayhead:`.
  */
-- (BOOL)hasMatchForRequest:(NSURLRequest *)request withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead;
 
 @optional
 
 /**
- *  If the matcher class stores information between recordings, then this can be implemented to reset matcher state.
- *  This can be expected to be called whenever the VCR calls reset
+ *  If the matcher class stores information between recordings, then this can be 
+ *  implemented to reset matcher state. This can be expected to be called 
+ *  whenever the VCR calls reset
  */
 - (void)reset;
 
 /**
- *  Convenience callback for testing the scheme of a request for possible stubbing
+ *  This can be used to refine the matcher used in the NSURLRequest+BKRAdditions category. 
+ *  This should be passed in as the options parameter to the method
+ *  `BKR_isEquivalentToRequestFrame:(BKRRequestFrame *)requestFrame options:(NSDictionary *)options`
  *
- *  @param scheme       scheme from request URL currently being tested
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @return whether or not to stub the request
+ *  @return dictionary containing keys matching the constants in NSURLRequest+BKRAdditions header
  */
-- (BOOL)hasMatchForRequestScheme:(NSString *)scheme withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-
-/**
- *  Convenience callback for testing the user of a request for possible stubbing
- *
- *  @param user         user from request URL currently being tested
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @return whether or not to stub the request
- */
-- (BOOL)hasMatchForRequestUser:(NSString *)user withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-
-/**
- *  Convenience callback for testing the password of a request for possible stubbing
- *
- *  @param password     password from request URL currently being tested
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @return whether or not to stub the request
- */
-- (BOOL)hasMatchForRequestPassword:(NSString *)password withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-
-/**
- *  Convenience callback for testing the port of a request for possible stubbing
- *
- *  @param port         port from request URL currently being tested
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @return whether or not to stub the request
- */
-- (BOOL)hasMatchForRequestPort:(NSNumber *)port withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-
-/**
- *  Convenience callback for testing the fragment of a request for possible stubbing
- *
- *  @param fragment     fragment from request URL currently being tested
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @return whether or not to stub the request
- */
-- (BOOL)hasMatchForRequestFragment:(NSString *)fragment withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-
-/**
- *  Convenience callback for testing the host of a request for possible stubbing
- *
- *  @param password     host from request URL currently being tested
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @return whether or not to stub the request
- */
-- (BOOL)hasMatchForRequestHost:(NSString *)host withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-
-/**
- *  Convenience callback for testing the path of a request for possible stubbing
- *
- *  @param path         path from request URL currently being tested
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @return whether or not to stub the request
- */
-- (BOOL)hasMatchForRequestPath:(NSString *)path withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
-
-/**
- *  Convenience callback for testing the query items of a request for possible stubbing
- *
- *  @param queryItems   array of NSURLQueryItem objects from request URL currently being tested
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @return whether or not to stub the request
- */
-- (BOOL)hasMatchForRequestQueryItems:(NSArray<NSURLQueryItem *> *)queryItems withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes;
+- (NSDictionary *)requestComparisonOptions;
 
 @end

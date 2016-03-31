@@ -7,13 +7,8 @@
 //
 
 #import <BeKindRewind/BKRPlayer.h>
-#import <BeKindRewind/BKRAnyMatcher.h>
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
-
-// remove after debugging
-#import <BeKindRewind/BKRScene.h>
-#import <BeKindRewind/BKRFrame.h>
 
 @interface BKRPlayerTestCase : BKRBaseTestCase
 
@@ -151,7 +146,7 @@
     BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:NO];
     BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:NO];
     
-    __block BKRPlayer *player = [self playerWithMatcher:[BKRAnyMatcher class] withExpectedResults:@[firstResult, secondResult]];
+    __block BKRPlayer *player = [self playerWithExpectedResults:@[firstResult, secondResult]];
     XCTAssertEqual(player.allScenes.count, 2);
     [self setPlayer:player withExpectationToEnabled:YES];
     
@@ -170,6 +165,21 @@
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions(player.allScenes);
+    }];
+}
+
+- (void)testPlayingRedirectRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:NO];
+    
+    __block BKRPlayer *player = [self playerWithExpectedResults:@[expectedResult]];
+    XCTAssertEqual(player.allScenes.count, 1);
+    [self setPlayer:player withExpectationToEnabled:YES];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+        
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        
         batchSceneAssertions(player.allScenes);
     }];
 }

@@ -14,7 +14,7 @@
 
 // frames and scenes share unique identifiers, this comes from the recorded task
 // if the frame matches a scene unique identifier, then add it to the scene
-- (void)addFrame:(BKRRawFrame *)frame {
+- (void)addFrame:(BKRRawFrame *)frame withContext:(BKRRecordingContext)context {
     if (!frame.item) {
         // Can't add a blank frame!
         return;
@@ -28,9 +28,9 @@
         }
         if (currentScenesDictionary[frame.uniqueIdentifier]) {
             BKRScene *existingScene = currentScenesDictionary[frame.uniqueIdentifier];
-            [existingScene addFrame:frame];
+            [existingScene addFrame:frame withContext:context];
         } else {
-            BKRScene *newScene = [BKRScene sceneFromFrame:frame];
+            BKRScene *newScene = [BKRScene sceneFromFrame:frame withContext:context];
             [self addSceneToScenesDictionary:newScene];
         }
     }];

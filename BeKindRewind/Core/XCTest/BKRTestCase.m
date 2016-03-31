@@ -79,7 +79,8 @@
         [self.currentVCR play];
         assertionState = BKRVCRStatePlaying;
     }
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+    NSTimeInterval setUpExpectationTimeout = [[self.currentVCR currentConfiguration] setUpExpectationTimeout];
+    [self waitForExpectationsWithTimeout:setUpExpectationTimeout handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
     XCTAssertEqual(self.currentVCR.state, assertionState);
@@ -94,7 +95,8 @@
         }];
     }
     [self.currentVCR reset]; // reset for BKRRecorder mostly
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+    NSTimeInterval tearDownExpectationTimeout = [[self.currentVCR currentConfiguration] tearDownExpectationTimeout];
+    [self waitForExpectationsWithTimeout:tearDownExpectationTimeout handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
     self.currentVCR = nil; // clear the VCR so that it can't possibly carry over to the next test

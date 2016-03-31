@@ -8,7 +8,6 @@
 
 #import <BeKindRewind/BKRRecordableVCR.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
-#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRConfiguration.h>
 #import "BKRBaseTestCase.h"
@@ -37,9 +36,6 @@
         self.vcr = [BKRRecordableVCR vcrWithConfiguration:configuration];
     } else if (self.invocation.selector == @selector(testRecordingNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
         configuration.shouldSaveEmptyCassette = NO;
-        self.vcr = [BKRRecordableVCR vcrWithConfiguration:configuration];
-    } else if (self.invocation.selector == @selector(testRecordingTwoSimultaneousGETRequests)) {
-        configuration.matcherClass = [BKRAnyMatcher class];
         self.vcr = [BKRRecordableVCR vcrWithConfiguration:configuration];
     } else {
         self.vcr = [BKRRecordableVCR defaultVCR];
@@ -227,6 +223,22 @@
 
 - (void)testRecordingChunkedDataRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
+    
+    [self recordVCR:self.vcr];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.vcr.currentCassette.allScenes);
+        XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
+    }];
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[expectedResult]];
+}
+
+- (void)testRecordingRedirectRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:YES];
     
     [self recordVCR:self.vcr];
     

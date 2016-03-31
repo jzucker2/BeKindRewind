@@ -17,5 +17,4 @@
  *  video, the BKRVCR records and plays back network activity in Objective-C and Swift.
  */
 @interface BKRVCR : NSObject <BKRVCRActions>
-
 @end

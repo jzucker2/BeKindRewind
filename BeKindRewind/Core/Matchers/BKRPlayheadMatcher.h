@@ -18,5 +18,4 @@
  *  used for matching
  */
 @interface BKRPlayheadMatcher : NSObject <BKRRequestMatching>
-
 @end

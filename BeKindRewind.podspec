@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "BeKindRewind"
-  s.version          = "0.9.5"
+  s.version          = "0.10.0"
   s.summary          = "A simple way to record and replay network requests for testing and debugging."
   s.description      = <<-DESC
                         Provides an XCTestCase subclass for easily
@@ -27,10 +27,9 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '9.0'
   s.osx.deployment_target = '10.9'
   s.requires_arc = true
-  s.dependency 'OHHTTPStubs', '~> 4.7.1'
+  s.dependency 'OHHTTPStubs', '~> 5.0.0'
   s.framework = 'XCTest'
   s.source_files = 'BeKindRewind/Core/**/*'
-#  s.prefix_header_contents = '#import "BKRConstants.h"'
   s.prepare_command = 'ruby plist_resource_creator.rb'
 
 #s.source_files = 'Pod/Classes/**/*'
@@ -39,8 +38,6 @@ Pod::Spec.new do |s|
   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 
 #  s.subspec 'Recorder' do |recorder|
 #    recorder.ios.deployment_target = '8.0'

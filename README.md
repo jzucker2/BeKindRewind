@@ -46,9 +46,10 @@ pod "BeKindRewind"
 - (void)testSimpleNetworkCall {
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://httpbin.org/get?test=test"]];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
-    
-    // don't forget to create a test expectation
-    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+
+    // don't forget to create a test expectation, this has the __block annotation because to avoid a retain cycle
+    // XCTestExpectation is necessary for asynchronous network activity, BeKindRewind will take care of everything else
+    __block XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
     NSURLSessionDataTask *basicGetTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(response);
@@ -62,19 +63,19 @@ pod "BeKindRewind"
     [basicGetTask resume];
     // explicitly wait for the expectation
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
-        if (error) {
-        	 // Assert fail if timeout encounters an error
-        	 XCTAssertNil(error);
-        }
+        // Assert fail if timeout encounters an error
+        XCTAssertNil(error);
     }];
 }
+
+@end
 
 ```
 
 After running this test, files will be outputted to the console with a log similar to this:
 
 ```bash
-2016-02-28 17:12:25.175 xctest[44265:13063191] <BKRRecordableVCR: 0x7f88487052f0>: trying to write cassette to: /Users/jordanz/Library/Developer/CoreSimulator/Devices/6C6825EE-3B1E-48A9-98B7-AEE9FAE2CFC2/data/Documents/BeKindRewindExampleTestCase.bundle/testSimpleNetworkCall.plist
+2016-03-02 10:09:27.630 xctest[92201:14865359] <BKRRecordableVCR: 0x7fb0a9714ce0>: trying to write cassette to: /Users/jordanz/Library/Developer/CoreSimulator/Devices/611CC72A-11D4-4DD2-8471-FF2F65413BC7/data/Documents/BeKindRewindExampleTestCase.bundle/testSimpleNetworkCall.plist
 ```
 
 Drag this into your project as a bundle named after your test case (it is named automatically).
@@ -87,7 +88,51 @@ Then flip the `isRecording` value to NO:
 }
 ```
 
-Then on subsequent runs, the tests will use the recorded files to respond to matched network requests.
+Then on subsequent runs, the tests will use the recorded files to respond to matched network requests. It helps to ensure recordings are being used by asserting on information that is specific to your recordings. An example is modifying the above test so that it asserts on the Date header in the NSHTTPURLResponse object returned during the test execution. Here's an example of how to update the test after creating a recording.
+
+```objective-c
+#import <BeKindRewind/BeKindRewind.h>
+
+@interface BeKindRewindExampleTestCase : BKRTestCase
+@end
+
+@implementation BeKindRewindExampleTestCase
+
+- (BOOL)isRecording {
+    return NO;
+}
+
+- (void)testSimpleNetworkCall {
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://httpbin.org/get?test=test"]];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
+
+    // don't forget to create a test expectation, this has the __block annotation because to avoid a retain cycle
+    // XCTestExpectation is necessary for asynchronous network activity, BeKindRewind will take care of everything else
+    __block XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    NSURLSessionDataTask *basicGetTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(response);
+        XCTAssertNotNil(data);
+        NSDictionary *dataDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        XCTAssertNil(error);
+        XCTAssertEqualObjects(dataDict[@"args"], @{@"test" : @"test"});
+        // Now this ensures that the recording returned is the stub and not an accidental "live" request. This is
+        // important for stable testing
+        XCTAssertEqualObjects([(NSHTTPURLResponse *)response allHeaderFields][@"Date"], @"Wed, 02 Mar 2016 18:09:28 GMT");
+        // fulfill the expectation
+        [networkExpectation fulfill];
+    }];
+    [basicGetTask resume];
+    // explicitly wait for the expectation
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        // Assert fail if timeout encounters an error
+        XCTAssertNil(error);
+    }];
+}
+
+@end
+
+```
 
 ## BKRTestCase Defaults
 
@@ -150,13 +195,13 @@ Jordan Zucker, jordan.zucker@gmail.com
 BeKindRewind is available under the MIT license. See the LICENSE file for more info.
 
 ## Release criteria
-* proper support for redirects
 * tests for matcher classes
 * tests for OSX, tvOS
+* recording empty cassette is YES by default instead of NO
 
 ## Future features
 * swift tests (at least basic)/Swift Package Manager
-* Code example for playing back in the README (not just recording)
+* Small tutorial to show how to drag in recordings to the project
 * explain fixture write directory hack for easy recording
 * Separate into subspecs
 * add code coverage

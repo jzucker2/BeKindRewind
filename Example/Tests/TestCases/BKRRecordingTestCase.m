@@ -7,7 +7,6 @@
 //
 
 #import <BeKindRewind/BKRTestConfiguration.h>
-#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRTestCase.h>
 #import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRTestCaseFilePathHelper.h>
@@ -21,14 +20,6 @@
 
 - (BOOL)isRecording {
     return YES;
-}
-
-- (BKRTestConfiguration *)testConfiguration {
-    BKRTestConfiguration *configuration = [super testConfiguration];
-    if (self.invocation.selector == @selector(testRecordingTwoSimultaneousGETRequests)) {
-        configuration.matcherClass = [BKRAnyMatcher class];
-    }
-    return configuration;
 }
 
 - (void)setUp {
@@ -149,6 +140,20 @@
 
 - (void)testRecordingChunkedDataRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
+    
+    self.expectedResults = @[expectedResult];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.currentVCR.currentCassette.allScenes);
+        XCTAssertEqual(self.currentVCR.currentCassette.allScenes.count, 1);
+    }];
+}
+
+- (void)testRecordingRedirectRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:YES];
     
     self.expectedResults = @[expectedResult];
     

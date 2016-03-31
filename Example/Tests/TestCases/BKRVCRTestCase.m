@@ -8,7 +8,6 @@
 
 #import <BeKindRewind/BKRVCR.h>
 #import <BeKindRewind/BKRCassette.h>
-#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
@@ -35,11 +34,6 @@
         self.vcr = [self vcrWithPlayheadMatcherAndCassetteSavingOption:YES];
     } else if (self.invocation.selector == @selector(testRecordingNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
         self.vcr = [self vcrWithPlayheadMatcherAndCassetteSavingOption:NO];
-    } else if (
-        (self.invocation.selector == @selector(testRecordingTwoSimultaneousGETRequests)) ||
-        (self.invocation.selector == @selector(testPlayingTwoSimultaneousGETRequests))
-        ) {
-        self.vcr = [self vcrWithMatcher:[BKRAnyMatcher class] andCassetteSavingOption:NO];
     } else {
         self.vcr = [self vcrWithPlayheadMatcherAndCassetteSavingOption:NO];
     }
@@ -235,6 +229,22 @@
 
 - (void)testRecordingChunkedDataRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
+    
+    [self recordVCR:self.vcr];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.vcr.currentCassette.allScenes);
+        XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
+    }];
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[expectedResult]];
+}
+
+- (void)testRecordingRedirectRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:YES];
     
     [self recordVCR:self.vcr];
     

@@ -9,6 +9,8 @@
 #import "BKRScene.h"
 #import "BKRPlistSerializing.h"
 
+@class BKRResponseStub;
+
 /**
  *  This category handles the data associated with a network
  *  request and is intended to be used for stubbing.
@@ -16,32 +18,67 @@
 @interface BKRScene (Playable) <BKRPlistDeserializer>
 
 /**
- *  Data associated with a network request
+ *  This is the number of redirects associated with this scene.
  *
- *  @return object representing serialized data returned from the network request
+ *  @return number of times this should redirect.
  */
-- (NSData *)responseData;
+- (NSUInteger)numberOfRedirects;
 
 /**
- *  Status code returned from server
+ *  Convenience method for checking whether a scene contains redirects.
  *
- *  @return integer value for HTTP status code
+ *  @return If `YES` then the scene contains redirect responses. If `NO` 
+ *          then it contains no redirect responses.
  */
-- (NSInteger)responseStatusCode;
+- (BOOL)hasRedirects;
 
 /**
- *  Headers contained in server response
+ *  Represents the last response for a scene (which includes any final error or data).
  *
- *  @return headers as dictionary
+ *  @return response stub to mock a request
  */
-- (NSDictionary *)responseHeaders;
+- (BKRResponseStub *)finalResponseStub;
 
 /**
- *  Error returned representing any potential networking issues
+ *  Represents a redirect response for a scene (constructed from a 
+ *  BKRRedirectFrame instance contained within the scene).
  *
- *  @return object should contain the elements included in a
- *  NSURLErrorDomain error
+ *  @param redirectFrame this should be contained by the receiver
+ *
+ *  @return stub to mock a redirect for a request
  */
-- (NSError *)responseError;
+- (BKRResponseStub *)responseStubForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
+
+/**
+ *  This represents information associated with a specific redirect contained by the receiver.
+ *
+ *  @param redirectNumber the specific redirect to look for
+ *
+ *  @return returns the an instance of BKRRequestFrame associated with the 
+ *          BKRRedirectFrame representing this redirectNumber. This will be nil
+ *          if there is no redirect for redirectNumber
+ */
+- (BKRRequestFrame *)requestFrameForRedirect:(NSUInteger)redirectNumber;
+
+/**
+ *  This represents information associated with a specific redirect contained by the receiver.
+ *
+ *  @param redirectNumber the specific redirect to look for
+ *
+ *  @return returns the an instance of BKRRedirectFrame associated with this redirectNumber.
+ *          This will be nil if there is no redirect for redirectNumber
+ */
+- (BKRRedirectFrame *)redirectFrameForRedirect:(NSUInteger)redirectNumber;
+
+/**
+ *  This creates a response stub that represents information associated with a 
+ *  specific redirect contained by the receiver.
+ *
+ *  @param redirectNumber the specific redirect to look for
+ *
+ *  @return returns the a response stub associated with this redirectNumber.
+ *          This will be nil if there is no redirect for redirectNumber
+ */
+- (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
 
 @end

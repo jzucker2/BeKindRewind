@@ -48,6 +48,11 @@
 @property (nonatomic, copy, readonly) NSURL *URL;
 
 /**
+ *  The absoluteString of the URL
+ */
+@property (nonatomic, copy, readonly) NSString *URLAbsoluteString;
+
+/**
  *  The timeout of the request
  */
 @property (nonatomic, readonly) NSTimeInterval timeoutInterval;
@@ -94,4 +99,18 @@
  */
 - (void)addRequest:(NSURLRequest *)request;
 
+@end
+
+/**
+ *  This subclass represents the NSURLRequest associated with the `originalRequest` 
+ *  property of a NSURLSessionTask instance.
+ */
+@interface BKROriginalRequestFrame : BKRRequestFrame
+@end
+
+/**
+ *  This subclass represents the NSURLRequest associated with the `currentRequest`
+ *  property of a NSURLSessionTask instance.
+ */
+@interface BKRCurrentRequestFrame : BKRRequestFrame
 @end
