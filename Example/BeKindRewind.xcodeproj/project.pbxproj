@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		51062DB41CAD8CF200656AC5 /* CHANGELOG.md in Sources */ = {isa = PBXBuildFile; fileRef = 51062DB31CAD8CF200656AC5 /* CHANGELOG.md */; };
 		515C56321C7E8B8800691220 /* BKRDefaultTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */; };
 		515C56381C7EDE1100691220 /* BKRRecorderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56371C7EDE1100691220 /* BKRRecorderTestCase.m */; };
 		515C563A1C7EDE1B00691220 /* BKRPlayerTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */; };
@@ -505,7 +504,6 @@
 			files = (
 				515C56671C7FF82400691220 /* BKRMatcherTestCase.m in Sources */,
 				51B9BA051C59FFE8006156C2 /* BKRCassetteTestCase.m in Sources */,
-				51062DB41CAD8CF200656AC5 /* CHANGELOG.md in Sources */,
 				518436C11C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m in Sources */,
 				51CEB9D31C4EBF000030A02D /* BKRRecordingTestCase.m in Sources */,
 				975674E01C72C88300922EC6 /* BKRRecordableVCRTestCase.m in Sources */,

@@ -30,7 +30,6 @@ Pod::Spec.new do |s|
   s.dependency 'OHHTTPStubs', '~> 5.0.0'
   s.framework = 'XCTest'
   s.source_files = 'BeKindRewind/Core/**/*'
-#  s.prefix_header_contents = '#import "BKRConstants.h"'
   s.prepare_command = 'ruby plist_resource_creator.rb'
 
 #s.source_files = 'Pod/Classes/**/*'
@@ -39,8 +38,6 @@ Pod::Spec.new do |s|
   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 
 #  s.subspec 'Recorder' do |recorder|
 #    recorder.ios.deployment_target = '8.0'

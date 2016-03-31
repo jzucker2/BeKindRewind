@@ -258,8 +258,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateSuspended);
         });
     }
-#warning change back to 10
-    [self waitForExpectationsWithTimeout:50 handler:^(NSError * _Nullable error) {
+
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         if (expectedResult.shouldCancel) {
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning, @"If task is still running, then it failed to cancel as expected, this is most likely not a BeKindRewind bug but a system bug");
@@ -314,7 +314,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             !expectedResult.shouldCancel
             ) {
             XCTAssertGreaterThan(scene.allDataFrames.count, 0, @"There should be data frames for this scene");
-#warning fix this! should build data and assert
+            // TODO: build data and assert on it
 //            NSData *responseData = scene.responseData;
 //            XCTAssertNotNil(responseData);
 //            XCTAssertEqualObjects(expectedResult.actualReceivedData, responseData);
@@ -776,8 +776,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             enableChangeExpectation = nil;
         });
     }];
-#warning set back to 5 after
-    [self waitForExpectationsWithTimeout:50 handler:^(NSError * _Nullable error) {
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
 }
@@ -846,7 +846,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             expectedOriginalRequestDict[@"allHTTPHeaderFields"] = result.originalRequestAllHTTPHeaderFields;
         }
         [framesArray addObject:expectedOriginalRequestDict.copy];
-#warning need to handle redirects properly
+        // TODO: add more redirect testing.
         // now add redirects if they exist
         if (result.isRedirecting) {
             for (NSInteger i=0; i<result.numberOfRedirects; i++) {
