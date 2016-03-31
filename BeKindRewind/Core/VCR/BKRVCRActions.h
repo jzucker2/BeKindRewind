@@ -220,9 +220,6 @@ typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
  */
 - (BKRConfiguration *)currentConfiguration;
 
-//- (NSInteger)playhead;
-//- (NSInteger)totalRequests;
-
 @optional
 
 /**

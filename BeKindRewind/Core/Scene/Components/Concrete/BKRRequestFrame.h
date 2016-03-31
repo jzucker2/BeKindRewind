@@ -101,8 +101,16 @@
 
 @end
 
+/**
+ *  This subclass represents the NSURLRequest associated with the `originalRequest` 
+ *  property of a NSURLSessionTask instance.
+ */
 @interface BKROriginalRequestFrame : BKRRequestFrame
 @end
 
+/**
+ *  This subclass represents the NSURLRequest associated with the `currentRequest`
+ *  property of a NSURLSessionTask instance.
+ */
 @interface BKRCurrentRequestFrame : BKRRequestFrame
 @end

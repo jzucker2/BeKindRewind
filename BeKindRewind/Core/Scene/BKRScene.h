@@ -76,8 +76,18 @@
  */
 - (NSArray<BKRRequestFrame *> *)allRequestFrames;
 
+/**
+ *  Ordered (by creation date) array of only redirect frames in scene
+ *
+ *  @return ordered array of BKRRedirectFrame objects
+ */
 - (NSArray<BKRRedirectFrame *> *)allRedirectFrames;
 
+/**
+ *  Ordered (by creation date) array of only current request frames in scene
+ *
+ *  @return ordered array of BKRCurrentRequestFrame objects
+ */
 - (NSArray<BKRCurrentRequestFrame *> *)allCurrentRequestFrames;
 
 /**
@@ -95,7 +105,8 @@
 - (BKROriginalRequestFrame *)originalRequest;
 
 /**
- *  Current request for a network request (in case the server modifies the request, as can happen with a NSURLSessionTask).
+ *  Current request for a network request (in case the server modifies the
+ *  request, as can happen with a NSURLSessionTask).
  *
  *  @return frame containing information related to a NSURLRequest
  */
@@ -103,8 +114,17 @@
 
 @end
 
+/**
+ *  This category adds a convenience method to the NSArray class for sorting
+ *  BKRScene instances by its first frame creation date.
+ */
 @interface NSArray (BKRScene)
 
+/**
+ *  Sorts an array of BKRScene instances by the creation date of its first frame.
+ *
+ *  @return sorted array of BKRScene instances.
+ */
 - (NSArray<BKRScene *> *)scenesSortedByClapboardFrameCreationDate;
 
 @end

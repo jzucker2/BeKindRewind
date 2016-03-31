@@ -14,5 +14,4 @@
  *  onto the contained BKRCassette instance
  */
 @interface BKRRecordableVCR : NSObject <BKRVCRActions>
-
 @end
