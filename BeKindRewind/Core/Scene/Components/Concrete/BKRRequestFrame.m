@@ -56,6 +56,10 @@
     return self.requestComponents.path;
 }
 
+- (NSString *)URLAbsoluteString {
+    return self.URL.absoluteString;
+}
+
 - (NSString *)requestScheme {
     return self.requestComponents.scheme;
 }
@@ -109,4 +113,10 @@
     return [NSString stringWithFormat:@"%@, URL: %@, Method: %@, Body: %@, allHTTPHeaderFields: %@", superDescription, self.URL.absoluteString, self.HTTPMethod, self.HTTPBody, self.allHTTPHeaderFields];
 }
 
+@end
+
+@implementation BKROriginalRequestFrame
+@end
+
+@implementation BKRCurrentRequestFrame
 @end

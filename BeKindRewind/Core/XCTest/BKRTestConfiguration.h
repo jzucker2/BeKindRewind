@@ -44,4 +44,24 @@
  */
 @property (nonatomic, strong) XCTestCase *currentTestCase;
 
+/**
+ *  This timeout is used for the expectation during the setUp method of
+ *  the BKRTestCase in which the BKRTestVCR instance created by this
+ *  configuration executes. Default value is 10 seconds.
+ *
+ *  @note This value must be greater than 0. If it is not than the
+ *        default value is set instead.
+ */
+@property (nonatomic, assign) NSTimeInterval setUpExpectationTimeout;
+
+/**
+ *  This timeout is used for the expectation during the tearDown method of
+ *  the BKRTestCase in which the BKRTestVCR instance created by this 
+ *  configuration executes. Default value is 10 seconds.
+ *
+ *  @note This value must be greater than 0. If it is not than the 
+ *        default value is set instead.
+ */
+@property (nonatomic, assign) NSTimeInterval tearDownExpectationTimeout;
+
 @end

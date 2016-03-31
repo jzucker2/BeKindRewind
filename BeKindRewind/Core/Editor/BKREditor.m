@@ -20,7 +20,7 @@
     self = [super init];
     if (self) {
         _enabled = NO;
-        _editingQueue = dispatch_queue_create("com.BKR.CassetteHandler", DISPATCH_QUEUE_CONCURRENT);
+        _editingQueue = dispatch_queue_create("com.BKR.editingQueue", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
@@ -92,6 +92,17 @@
         cassette = self->_currentCassette;
     });
     return cassette;
+}
+
+- (void)readCassette:(BKRCassetteEditingBlock)cassetteEditingBlock {
+    if (!cassetteEditingBlock) {
+        return;
+    }
+    BKRWeakify(self);
+    dispatch_sync(self.editingQueue, ^{
+        BKRStrongify(self);
+        cassetteEditingBlock(self->_enabled, self->_currentCassette);
+    });
 }
 
 - (NSArray<BKRScene *> *)allScenes {

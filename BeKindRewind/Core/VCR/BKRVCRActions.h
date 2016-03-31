@@ -220,9 +220,6 @@ typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
  */
 - (BKRConfiguration *)currentConfiguration;
 
-//- (NSInteger)playhead;
-//- (NSInteger)totalRequests;
-
 @optional
 
 /**
@@ -231,6 +228,5 @@ typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
  *  used in playing back network operations.
  */
 @property (nonatomic, strong, readonly) id<BKRRequestMatching> matcher;
-
 
 @end

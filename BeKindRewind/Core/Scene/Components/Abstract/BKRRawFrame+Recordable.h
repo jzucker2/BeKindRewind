@@ -7,6 +7,7 @@
 //
 
 #import "BKRRawFrame.h"
+#import "BKRConstants.h"
 
 /**
  *  This is category to handle a raw network component from a Foundation network component (NSURLRequest,
@@ -19,8 +20,10 @@
  *  This is a normalized version of a BKRFrame concrete subclass created from the information
  *  contained by the reciever
  *
+ *  @param context helps determine the type of frame subclass to store item as
+ *
  *  @return newly initialized instance of a concrete subclass of BKRFrame
  */
-- (BKRFrame *)editedRecording;
+- (BKRFrame *)editedRecordingWithContext:(BKRRecordingContext)context;
 
 @end

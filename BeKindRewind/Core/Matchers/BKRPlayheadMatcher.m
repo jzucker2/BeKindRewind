@@ -7,8 +7,6 @@
 //
 
 #import "BKRPlayheadMatcher.h"
-#import "BKRScene+Playable.h"
-#import "BKRRequestFrame.h"
 
 @implementation BKRPlayheadMatcher
 
@@ -16,60 +14,51 @@
     return [[self alloc] init];
 }
 
-// should also handle current request for everything, not just comparing to original request
-- (BKRScene *)matchForRequest:(NSURLRequest *)request withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    if ([playhead.originalRequest.URL.absoluteString isEqualToString:request.URL.absoluteString]) {
-        return playhead;
+- (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead {
+    return ([self matchForRequest:request withPlayhead:playhead] != nil);
+}
+
+- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead {
+    BKRResponseStub *responseStub = nil;
+    for (BKRPlayheadItem *item in playhead.incompleteItems) {
+        // if there already is a finalResponseStub provided by this scene, then don't do anything with it
+        if (item.hasFinalResponseStub) {
+            // continue through loop
+            continue;
+        }
+        BKRScene *scene = item.scene;
+        NSDictionary *options = [self requestComparisonOptions];
+        // try to match final request first
+        BOOL matchesRequest = (
+                               ([request BKR_isEquivalentToRequestFrame:scene.originalRequest options:options]) ||
+                               ([request BKR_isEquivalentToRequestFrame:scene.currentRequest options:options])
+                               );
+        if (
+            matchesRequest &&
+            !item.expectsRedirect
+            ) {
+            responseStub = scene.finalResponseStub;
+            // stop looping when we have a match
+            break;
+        } else if (item.expectsRedirect) {
+            // else match redirects if we still expect some
+            BKRRedirectFrame *redirectFrame = [scene redirectFrameForRedirect:item.numberOfRedirectsStubbed];
+            // need to build a proper URL from a redirect, example:
+            // [[NSURL URLWithString:@"/" relativeToURL:request.URL] absoluteURL]
+            if ([request BKR_isEquivalentToRequestFrame:redirectFrame.requestFrame options:options]) {
+                responseStub = [scene responseStubForRedirectFrame:redirectFrame];
+                // stop looping when we have a match
+                break;
+            }
+        }
     }
-    return nil;
+    return responseStub;
 }
 
-- (BOOL)hasMatchForRequest:(NSURLRequest *)request withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    return YES;
-}
-
-- (BOOL)hasMatchForRequestHost:(NSString *)host withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    return [host isEqualToString:playhead.originalRequest.requestHost];
-}
-
-- (BOOL)hasMatchForRequestScheme:(NSString *)scheme withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    return [scheme isEqualToString:playhead.originalRequest.requestScheme];
-}
-
-- (BOOL)hasMatchForRequestPath:(NSString *)path withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    NSString *playheadPath = playhead.originalRequest.requestPath;
-    return [self _requestComponentString:path matchesSceneComponentString:playheadPath];
-}
-
-- (BOOL)hasMatchForRequestFragment:(NSString *)fragment withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    NSString *playheadFragment = playhead.originalRequest.requestFragment;
-    return [self _requestComponentString:fragment matchesSceneComponentString:playheadFragment];
-}
-
-- (BOOL)hasMatchForRequestQueryItems:(NSArray<NSURLQueryItem *> *)queryItems withFirstMatchedIndex:(NSUInteger)firstMatched currentNetworkCalls:(NSUInteger)networkCalls inPlayableScenes:(NSArray<BKRScene *> *)scenes {
-    BKRScene *playhead = scenes[networkCalls];
-    NSSet *requestQueryItemsSet = [NSSet setWithArray:queryItems];
-    NSSet *playheadQueryItemsSet = [NSSet setWithArray:playhead.originalRequest.requestQueryItems];
-    return [requestQueryItemsSet isEqualToSet:playheadQueryItemsSet];
-}
-
-- (BOOL)_requestComponentString:(NSString *)requestComponentString matchesSceneComponentString:(NSString *)sceneComponentString {
-    if (
-        requestComponentString &&
-        sceneComponentString
-        ) {
-        return [requestComponentString isEqualToString:sceneComponentString];
-    } else if ((requestComponentString && !sceneComponentString) ||
-               (!requestComponentString && sceneComponentString)
-               ) {
-        return NO;
-    }
-    return YES;
+- (NSDictionary *)requestComparisonOptions {
+    return @{
+             kBKRShouldIgnoreQueryItemsOrderOptionsKey: @YES,
+             };
 }
 
 @end

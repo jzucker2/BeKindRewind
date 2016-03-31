@@ -8,7 +8,6 @@
 
 #import <BeKindRewind/BKRTestVCR.h>
 #import <BeKindRewind/BKRCassette.h>
-#import <BeKindRewind/BKRAnyMatcher.h>
 #import <BeKindRewind/BKRCassette+Playable.h>
 #import <BeKindRewind/BKRFilePathHelper.h>
 #import <BeKindRewind/BKRTestConfiguration.h>
@@ -39,12 +38,6 @@
         self.vcr = [BKRTestVCR vcrWithTestConfiguration:configuration];
     } else if (self.invocation.selector == @selector(testRecordingNoFileCreatedWhenRecordingDisabledAndEmptyFileSavingIsOff)) {
         configuration.shouldSaveEmptyCassette = NO;
-        self.vcr = [BKRTestVCR vcrWithTestConfiguration:configuration];
-    } else if (
-               (self.invocation.selector == @selector(testRecordingTwoSimultaneousGETRequests)) ||
-               (self.invocation.selector == @selector(testPlayingTwoSimultaneousGETRequests))
-               ) {
-        configuration.matcherClass = [BKRAnyMatcher class];
         self.vcr = [BKRTestVCR vcrWithTestConfiguration:configuration];
     } else {
         self.vcr = [BKRTestVCR defaultVCRForTestCase:self];
@@ -242,6 +235,22 @@
 
 - (void)testRecordingChunkedDataRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:YES];
+    
+    [self recordTestVCR:self.vcr];
+    
+    BKRWeakify(self);
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        BKRStrongify(self);
+        batchSceneAssertions(self.vcr.currentCassette.allScenes);
+        XCTAssertEqual(self.vcr.currentCassette.allScenes.count, 1);
+    }];
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[expectedResult]];
+}
+
+- (void)testRecordingRedirectRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:YES];
     
     [self recordTestVCR:self.vcr];
     

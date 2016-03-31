@@ -11,21 +11,21 @@
 
 @implementation BKRScene (Recordable)
 
-- (instancetype)initFromFrame:(BKRRawFrame *)frame {
+- (instancetype)initFromFrame:(BKRRawFrame *)frame withContext:(BKRRecordingContext)context {
     self = [self init];
     if (self) {
         self.uniqueIdentifier = frame.uniqueIdentifier;
-        [self addFrame:frame];
+        [self addFrame:frame withContext:context];
     }
     return self;
 }
 
-+ (instancetype)sceneFromFrame:(BKRRawFrame *)frame {
-    return [[self alloc] initFromFrame:frame];
++ (instancetype)sceneFromFrame:(BKRRawFrame *)frame withContext:(BKRRecordingContext)context {
+    return [[self alloc] initFromFrame:frame withContext:context];
 }
 
-- (void)addFrame:(BKRRawFrame *)frame {
-    [self addFrameToFramesArray:frame.editedRecording];
+- (void)addFrame:(BKRRawFrame *)frame withContext:(BKRRecordingContext)context {
+    [self addFrameToFramesArray:[frame editedRecordingWithContext:context]];
 }
 
 - (NSDictionary *)plistDictionary {

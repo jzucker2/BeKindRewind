@@ -193,7 +193,7 @@
     [self setEnabled:enabled withCompletionHandler:nil];
 }
 
-- (void)addItem:(id)item forTask:(NSURLSessionTask *)task {
+- (void)addItem:(id)item forTask:(NSURLSessionTask *)task withContext:(BKRRecordingContext)context {
     if (
         !item ||
         !task
@@ -228,7 +228,7 @@
             return;
         }
         self->_handledRecording = YES;
-        [cassette addFrame:rawFrame];
+        [cassette addFrame:rawFrame withContext:context];
         [self->_objectsAdded addObject:networkItem];
     }];
 }
@@ -322,6 +322,5 @@
     });
     return recordingBlock;
 }
-
 
 @end

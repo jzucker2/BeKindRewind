@@ -75,8 +75,9 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
 - (NSDictionary<NSString *, BKRScene *> *)scenesDictionary;
 
 /**
- *  Used to add a BKRScene to the cassette's dictionary in a thread
- *  safe manner.
+ *  Used to add a BKRScene to the cassette's dictionary in a non-thread
+ *  safe manner. This should be called within a dispatch_barrier block
+ *  on a queue
  *  
  *  @note this directly accesses ivar pointers and should only be used
  *        inside a dispatch_barrier_async or dispatch_barrier_sync block

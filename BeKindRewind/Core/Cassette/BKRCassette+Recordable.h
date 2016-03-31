@@ -21,9 +21,10 @@
  *  Add pieces of network requests to this cassette. Cassette will combine
  *  these "frames" into full scenes.
  *
- *  @param frame piece of a network request that needs to be grouped into a BRKScene
+ *  @param frame   piece of a network request that needs to be grouped into a BRKScene
+ *  @param context context associated with this recording for help in adding to scene
  */
-- (void)addFrame:(BKRRawFrame *)frame;
+- (void)addFrame:(BKRRawFrame *)frame withContext:(BKRRecordingContext)context;
 
 /**
  *  This executes on the main queue after adding all frames for a particular scene/network

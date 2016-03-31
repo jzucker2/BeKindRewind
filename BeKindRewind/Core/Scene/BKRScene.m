@@ -11,6 +11,7 @@
 #import "BKRDataFrame.h"
 #import "BKRRequestFrame.h"
 #import "BKRResponseFrame.h"
+#import "BKRRedirectFrame.h"
 #import "BKRRawFrame.h"
 #import "BKRErrorFrame.h"
 #import "BKRConstants.h"
@@ -54,12 +55,16 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.accessingQueue, ^{
         BKRStrongify(self);
+        if (!frame) {
+            return;
+        }
         [self->_frames addObject:frame];
     });
 }
 
 - (NSArray<BKRRequestFrame *> *)allRequestFrames {
-    return (NSArray<BKRRequestFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRRequestFrame class]]];
+    NSPredicate *isKindOfClassPredicate = [NSPredicate predicateWithFormat:@"self isKindOfClass: %@", [BKRRequestFrame class]];
+    return (NSArray<BKRRequestFrame *> *)[self.allFrames filteredArrayUsingPredicate:isKindOfClassPredicate];
 }
 
 - (NSArray<BKRResponseFrame *> *)allResponseFrames {
@@ -74,22 +79,37 @@
     return (NSArray<BKRErrorFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRErrorFrame class]]];
 }
 
-- (BKRRequestFrame *)originalRequest {
-    return self.allRequestFrames.firstObject;
+- (NSArray<BKRCurrentRequestFrame *> *)allCurrentRequestFrames {
+    return (NSArray<BKRCurrentRequestFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRCurrentRequestFrame class]]];
 }
 
-- (BKRRequestFrame *)currentRequest {
-    // return last request if more than 1 request,
-    // else return nil (assume that first request is the originalRequest and the
-    // last request (excluding the first one) is the currentRequest
-    if (self.allRequestFrames.count <= 1) {
-        return nil;
-    }
-    return self.allRequestFrames.lastObject;
+- (NSArray<BKRRedirectFrame *> *)allRedirectFrames {
+    return (NSArray<BKRRedirectFrame *> *)[self.allFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKRRedirectFrame class]]];
+}
+
+- (BKROriginalRequestFrame *)originalRequest {
+    // there should only be a single BKROriginalRequestFrame
+    return (BKROriginalRequestFrame *)[self.allRequestFrames filteredArrayUsingPredicate:[self _predicateForFramesOfClass:[BKROriginalRequestFrame class]]].firstObject;
+}
+
+- (BKRCurrentRequestFrame *)currentRequest {
+    // since current requests are sorted, use the last object in the current requests array
+    // this is equivalent to task.currentRequest at the end of the task's lifecycle
+    // the first currentRequest frame is the first time the server adjust's the originalRequest
+    // or the first redirect request
+    return self.allCurrentRequestFrames.lastObject;
 }
 
 - (NSPredicate *)_predicateForFramesOfClass:(Class)frameClass {
     return [NSPredicate predicateWithFormat:@"class == %@", frameClass];
+}
+
+@end
+
+@implementation NSArray (BKRScene)
+
+- (NSArray<BKRScene *> *)scenesSortedByClapboardFrameCreationDate {
+    return [self sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:BKRKey(BKRScene *, clapboardFrame.creationDate) ascending:YES]]];
 }
 
 @end
