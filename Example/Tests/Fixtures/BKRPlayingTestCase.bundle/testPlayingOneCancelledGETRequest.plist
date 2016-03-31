@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>creationDate</key>
-	<date>2016-03-02T00:06:48Z</date>
+	<date>2016-03-31T00:13:56Z</date>
 	<key>scenes</key>
 	<array>
 		<dict>
@@ -21,13 +21,13 @@
 					<key>allowsCellularAccess</key>
 					<true/>
 					<key>class</key>
-					<string>BKRRequestFrame</string>
+					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456877208.385725</real>
+					<real>1459383236.9509249</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
+					<string>9A1A52FB-CDD3-4574-8243-8B44649E737C</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -50,13 +50,13 @@
 					<key>allowsCellularAccess</key>
 					<true/>
 					<key>class</key>
-					<string>BKRRequestFrame</string>
+					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456877208.3859479</real>
+					<real>1459383236.9511349</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
+					<string>9A1A52FB-CDD3-4574-8243-8B44649E737C</string>
 				</dict>
 				<dict>
 					<key>class</key>
@@ -64,13 +64,15 @@
 					<key>code</key>
 					<integer>-999</integer>
 					<key>creationDate</key>
-					<real>1456877208.924402</real>
+					<real>1459383237.5019901</real>
 					<key>domain</key>
 					<string>NSURLErrorDomain</string>
 					<key>uniqueIdentifier</key>
-					<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
+					<string>9A1A52FB-CDD3-4574-8243-8B44649E737C</string>
 					<key>userInfo</key>
 					<dict>
+						<key>BKRSceneUUIDKey</key>
+						<string>9A1A52FB-CDD3-4574-8243-8B44649E737C</string>
 						<key>NSErrorFailingURLKey</key>
 						<string>https://httpbin.org/delay/10</string>
 						<key>NSErrorFailingURLStringKey</key>
@@ -81,10 +83,10 @@
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>ECF852EA-6708-432E-937D-5F328B44CFA0</string>
+			<string>9A1A52FB-CDD3-4574-8243-8B44649E737C</string>
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.9.5</string>
+	<string>0.9.6</string>
 </dict>
 </plist>

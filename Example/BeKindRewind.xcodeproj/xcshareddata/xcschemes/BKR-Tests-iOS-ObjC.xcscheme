@@ -44,15 +44,6 @@
                <Test
                   Identifier = "BKRMatcherTestCase">
                </Test>
-               <Test
-                  Identifier = "BKRPlayingTestCase">
-               </Test>
-               <Test
-                  Identifier = "BKRTestVCRTestCase">
-               </Test>
-               <Test
-                  Identifier = "BKRVCRTestCase">
-               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

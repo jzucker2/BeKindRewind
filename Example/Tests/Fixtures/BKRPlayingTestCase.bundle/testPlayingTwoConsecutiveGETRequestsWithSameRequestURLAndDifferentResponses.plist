@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>creationDate</key>
-	<date>2016-03-02T00:06:50Z</date>
+	<date>2016-03-31T00:13:59Z</date>
 	<key>scenes</key>
 	<array>
 		<dict>
@@ -21,13 +21,13 @@
 					<key>allowsCellularAccess</key>
 					<true/>
 					<key>class</key>
-					<string>BKRRequestFrame</string>
+					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456877210.718397</real>
+					<real>1459383239.698507</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
+					<string>3466961F-154F-4A93-8D94-0F9FBFF98448</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -50,13 +50,13 @@
 					<key>allowsCellularAccess</key>
 					<true/>
 					<key>class</key>
-					<string>BKRRequestFrame</string>
+					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456877210.718611</real>
+					<real>1459383239.698676</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
+					<string>3466961F-154F-4A93-8D94-0F9FBFF98448</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
@@ -83,25 +83,25 @@
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1456877210.791043</real>
+					<real>1459383239.812091</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
+					<string>3466961F-154F-4A93-8D94-0F9FBFF98448</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1456877210.791074</real>
+					<real>1459383239.812117</real>
 					<key>data</key>
-					<data>WzE0NTY4NzcyMTE2Mzg4MDY2XQ==</data>
+					<data>WzE0NTkzODMyMzk4NTUyODY5XQ==</data>
 					<key>uniqueIdentifier</key>
-					<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
+					<string>3466961F-154F-4A93-8D94-0F9FBFF98448</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>B82DCB83-96E2-4808-89AE-04715D73732B</string>
+			<string>3466961F-154F-4A93-8D94-0F9FBFF98448</string>
 		</dict>
 		<dict>
 			<key>frames</key>
@@ -118,13 +118,13 @@
 					<key>allowsCellularAccess</key>
 					<true/>
 					<key>class</key>
-					<string>BKRRequestFrame</string>
+					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456877210.791674</real>
+					<real>1459383239.812739</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
+					<string>4D251F17-83C3-4F90-B082-53DB5CC81D4F</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -147,13 +147,13 @@
 					<key>allowsCellularAccess</key>
 					<true/>
 					<key>class</key>
-					<string>BKRRequestFrame</string>
+					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1456877210.791799</real>
+					<real>1459383239.812874</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
+					<string>4D251F17-83C3-4F90-B082-53DB5CC81D4F</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
@@ -180,28 +180,28 @@
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1456877210.870519</real>
+					<real>1459383240.007455</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
+					<string>4D251F17-83C3-4F90-B082-53DB5CC81D4F</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1456877210.870611</real>
+					<real>1459383240.007534</real>
 					<key>data</key>
-					<data>WzE0NTY4NzcyMTE3MTc1NDE5XQ==</data>
+					<data>WzE0NTkzODMyNDAwNTAxOTAxXQ==</data>
 					<key>uniqueIdentifier</key>
-					<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
+					<string>4D251F17-83C3-4F90-B082-53DB5CC81D4F</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>AC4E4A92-5F57-46AB-A7B8-61FF23DB61CF</string>
+			<string>4D251F17-83C3-4F90-B082-53DB5CC81D4F</string>
 		</dict>
 	</array>
 	<key>version</key>
-	<string>0.9.5</string>
+	<string>0.9.6</string>
 </dict>
 </plist>
