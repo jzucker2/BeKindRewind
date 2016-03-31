@@ -36,32 +36,24 @@
  *  When this block executes, the test block will have already passed.
  *  @warning undefined if nil is returned.
  *
- *  @param request      request which is to receive a mocked response
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
+ *  @param request  request which is to receive a mocked response
+ *  @param playhead this object tracks everything that occurs during a playing session.
  *
- *  @return a BKRPlayableScene to use as a stub for this request
+ *  @return a BKRResponseStub that mocks the network activity for this request.
  */
-//- (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 - (BKRResponseStub *)matchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead;
 
 /**
  *  This is used by the test block to check whether a stubbed response should be provided for
  *  a request.
  *
- *  @param request      possible request to stub
- *  @param firstMatched index of first matched BKRPlayableScene
- *  @param networkCalls number of network calls stubbed so far
- *  @param scenes       array of BKRPlayableScene objects for use as potential stubs
- *
- *  @note implement optional fine grained methods to simplify matcher
+ *  @param request  possible request to stub
+ *  @param playhead this object tracks everything that occurs during a playing session.
  *
  *  @return whether or not to stub the request. If NO is returned, then the request is not stubbed
- *  and continues live and uninterrupted. If YES is returned, and other optional boolean methods are
- *  implemented, then they will be executed as well.
+ *  and continues live and uninterrupted. If YES is returned then this request will be stubbed with
+ *  the BKRResponseStub returned by `matchForRequest:withPlayhead:`.
  */
-//- (BOOL)hasMatchForRequest:(NSURLRequest *)request withCurrentSceneIndex:(NSUInteger)currentSceneIndex responseCount:(NSUInteger)currentResponseCount inPlayableScenes:(NSArray<BKRScene *> *)scenes;
 - (BOOL)hasMatchForRequest:(NSURLRequest *)request withPlayhead:(BKRPlayhead *)playhead;
 
 @optional

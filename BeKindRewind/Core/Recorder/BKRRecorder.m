@@ -116,8 +116,6 @@
 }
 
 - (void)recordTask:(NSURLSessionTask *)task redirectRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response {
-//    [self.editor addItem:response forTask:task withContext:BKRRecordingContextRedirecting];
-//    [self.editor addItem:request forTask:task withContext:BKRRecordingContextRedirecting];
     // protect from possibly being nil
     NSMutableDictionary *addItemDict = [NSMutableDictionary dictionary];
     if (request) {
@@ -129,7 +127,6 @@
     if (addItemDict.allKeys.count) {
         [self.editor addItem:addItemDict.copy forTask:task withContext:BKRRecordingContextRedirecting];
     }
-//    [self.editor addItem:@[response, request] forTask:task withContext:BKRRecordingContextRedirecting];
 }
 
 - (void)recordTask:(NSURLSessionTask *)task didReceiveData:(NSData *)data {
