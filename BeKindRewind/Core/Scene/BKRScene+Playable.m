@@ -130,14 +130,6 @@
     return [self responseStubForRedirectFrame:redirectFrame];
 }
 
-- (NSString *)originalRequestURLAbsoluteString {
-    return self.originalRequest.URLAbsoluteString;
-}
-
-- (NSString *)requestURLAbsoluteStringForRedirect:(NSUInteger)redirectNumber {
-    return [self requestFrameForRedirect:redirectNumber].URLAbsoluteString;
-}
-
 - (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%p>: request: %@", self, self.originalRequest.URL];
 }

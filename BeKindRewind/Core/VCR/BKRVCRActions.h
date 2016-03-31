@@ -229,5 +229,4 @@ typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
  */
 @property (nonatomic, strong, readonly) id<BKRRequestMatching> matcher;
 
-
 @end
