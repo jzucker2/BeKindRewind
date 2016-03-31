@@ -87,19 +87,16 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 }
 
 - (void)startRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub {
-    NSLog(@"%s request (%@, %@) responseStub (%@)", __PRETTY_FUNCTION__, request, request.allHTTPHeaderFields, responseStub);
     [self _updateStateToState:BKRPlayingSceneStateActive forResponseStub:responseStub withExtraProcessingBlock:nil];
 }
 
 - (void)redirectOriginalRequest:(NSURLRequest *)request withRedirectRequest:(NSURLRequest *)redirectRequest withResponseStub:(BKRResponseStub *)responseStub {
-    NSLog(@"%s request (%@, %@) redirectRequest (%@, %@) responseStub (%@)", __PRETTY_FUNCTION__, request, request.allHTTPHeaderFields, redirectRequest, redirectRequest.allHTTPHeaderFields, responseStub);
     [self _updateFirstPlayheadItemMatchingResponseStub:responseStub withUpdateBlock:^(BKRPlayheadItem *item) {
         item.redirectsCompleted--;
     }];
 }
 
 - (void)completeRequest:(NSURLRequest *)request withResponseStub:(BKRResponseStub *)responseStub error:(NSError *)error {
-    NSLog(@"%s request (%@, %@) responseStub (%@) error (%@)", __PRETTY_FUNCTION__, request, request.allHTTPHeaderFields, responseStub, error);
     [self _updateStateToState:BKRPlayingSceneStateCompleted forResponseStub:responseStub withExtraProcessingBlock:nil];
 }
 

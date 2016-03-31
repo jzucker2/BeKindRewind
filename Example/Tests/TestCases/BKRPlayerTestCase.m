@@ -124,9 +124,6 @@
     [self setPlayer:player withExpectationToEnabled:YES];
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:NO withTaskCompletionAssertions:nil taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
-        NSLog(@"%@", result.URLString);
-        NSLog(@"%@", result.receivedJSON);
-        NSLog(@"%@", task.debugDescription);
         batchSceneAssertions(player.allScenes);
     }];
 }
@@ -149,7 +146,6 @@
     BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:NO];
     BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:NO];
     
-//    __block BKRPlayer *player = [self playerWithMatcher:[BKRP class] withExpectedResults:@[firstResult, secondResult]];
     __block BKRPlayer *player = [self playerWithExpectedResults:@[firstResult, secondResult]];
     XCTAssertEqual(player.allScenes.count, 2);
     [self setPlayer:player withExpectationToEnabled:YES];

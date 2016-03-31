@@ -169,7 +169,6 @@
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
         batchSceneAssertions([BKRRecorder sharedInstance].allScenes);
         XCTAssertEqual([BKRRecorder sharedInstance].allScenes.count, 1);
-        NSLog(@"%@", [BKRRecorder sharedInstance].allScenes);
     }];
 }
 

@@ -1596,7 +1596,6 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                             [self _assertExpectedResult:recording withActualCurrentRequestHeaderFields:frame[@"allHTTPHeaderFields"]];
                         }
                     } else if (requestFramesCount == recording.numberOfExpectedRequestFrames) {
-                        NSLog(@"what");
                         XCTAssertEqualObjects(recording.finalRedirectURLString, frame[@"URL"]);
                         [self _assertExpectedResult:recording withActualCurrentRequestHeaderFields:frame[@"allHTTPHeaderFields"]];
                     } else {
