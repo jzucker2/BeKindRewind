@@ -63,7 +63,15 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  */
 - (void)editCassetteSynchronously:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
-// synchronous and blocking, thread-safe, dispatch_sync
+/**
+ *  This is a thread-safe, synchronous, blocking method for reading the contents of the 
+ *  cassette contained inside the editor instance. This blocks on the queue that it is called on.
+ *  
+ *  @note   This should only be used to read the contained cassette instance and not to write (change)
+ *          anything within the cassette instance.
+ *
+ *  @param cassetteEditingBlock this is called on the receiver's queue
+ */
 - (void)readCassette:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
 /**
