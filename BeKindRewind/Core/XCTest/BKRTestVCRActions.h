@@ -112,7 +112,7 @@
  *  @return Currently used configuration instance copy. Changes to this instance won't affect
  *  receiver's configuration.
  *
- *  @since 0.9
+ *  @since 0.9.6
  */
 - (BKRTestConfiguration *)currentConfiguration;
 

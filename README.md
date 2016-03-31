@@ -196,9 +196,6 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 
 ## Release criteria
 * tests for matcher classes
-* rewrite NSURLRequest comparison method (add better tests)
-* update to use OHHTTPStubs with my additions added
-* fix broken tests (playing and recording for new scene architecture)
 * tests for OSX, tvOS
 * recording empty cassette is YES by default instead of NO
 
