@@ -7,7 +7,6 @@
 //
 
 #import "BKRPlayingEditor.h"
-//#import "BKRPlayingContext.h"
 #import "BKRPlayhead.h"
 #import "BKROHHTTPStubsWrapper.h"
 #import "BKRCassette+Playable.h"
@@ -119,7 +118,6 @@
     [self editCassetteSynchronously:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         responseStub = [matcher matchForRequest:request withPlayhead:self->_playhead.copy];
-#warning update context for response
         [self->_playhead addResponseStub:responseStub forRequest:request];
     }];
     return responseStub;

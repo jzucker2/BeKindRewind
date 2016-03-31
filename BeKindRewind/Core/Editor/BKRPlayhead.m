@@ -151,6 +151,8 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 
 - (void)addResponseStub:(BKRResponseStub *)responseStub forRequest:(NSURLRequest *)request {
     [self _updateFirstPlayheadItemMatchingResponseStub:responseStub withUpdateBlock:^(BKRPlayheadItem *item) {
+        // TODO: consider linking these items together. Storing them in separate collections seems
+        // less than ideal
         [item.responseStubs addObject:responseStub];
         [item.requests addObject:request];
     }];
