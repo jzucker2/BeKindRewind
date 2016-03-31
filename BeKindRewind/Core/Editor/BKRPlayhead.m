@@ -12,8 +12,6 @@
 #import "BKRScene+Playable.h"
 #import "NSArray+BKRAdditions.h"
 
-//typedef returnType (^TypeName)(parameterTypes);
-//TypeName blockName = ^returnType(parameters) {...};
 typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 
 @interface BKRPlayheadItem ()
@@ -26,7 +24,6 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
     self = [super init];
     if (self) {
         _scene = scene;
-//        _redirectsRemaining = scene.allRedirectFrames.count;
         _redirectsCompleted = 0;
         _state = BKRPlayingSceneStateInactive;
         _responseStubs = [NSMutableArray array];
@@ -96,9 +93,6 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 
 - (void)redirectOriginalRequest:(NSURLRequest *)request withRedirectRequest:(NSURLRequest *)redirectRequest withResponseStub:(BKRResponseStub *)responseStub {
     NSLog(@"%s request (%@, %@) redirectRequest (%@, %@) responseStub (%@)", __PRETTY_FUNCTION__, request, request.allHTTPHeaderFields, redirectRequest, redirectRequest.allHTTPHeaderFields, responseStub);
-//    [self _updateStateToState:BKRPlayingSceneStateRedirecting forResponseStub:responseStub withExtraProcessingBlock:^(BKRPlayheadItem *item) {
-//        item.redirectsRemaining--;
-//    }];
     [self _updateFirstPlayheadItemMatchingResponseStub:responseStub withUpdateBlock:^(BKRPlayheadItem *item) {
         item.redirectsCompleted--;
     }];
@@ -127,7 +121,6 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 }
 
 - (NSArray<BKRPlayheadItem *> *)redirectingItems {
-//    return [self.allItems filteredArrayUsingPredicate:[self _predicateForItemWithState:BKRPlayingSceneStateRedirecting]];
     return [self.allItems BKR_select:^BOOL(id obj) {
         BKRPlayheadItem *item = (BKRPlayheadItem *)obj;
         return item.expectsRedirect;
@@ -139,7 +132,6 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 }
 
 - (NSArray<BKRPlayheadItem *> *)incompleteItems {
-    //    NSCompoundPredicate *activeOrRedirectingPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[[self _predicateForItemWithState:BKRPlayingSceneStateActive], [self _predicateForItemWithState:BKRPlayingSceneStateRedirecting]]];
     NSPredicate *incompleteItemsPredicate = [NSPredicate predicateWithFormat:@"self.state != %ld", (long)BKRPlayingSceneStateCompleted];
     return [self.allItems filteredArrayUsingPredicate:incompleteItemsPredicate];
 }
@@ -147,7 +139,6 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 - (NSPredicate *)_predicateForItemWithState:(BKRPlayingSceneState)state {
     [NSString stringWithFormat:@"%ld", (long)state];
     return [NSPredicate predicateWithFormat:@"self.state == %ld", (long)state];
-    //    return [NSPredicate predicateWithFormat:]
 }
 
 - (void)_updateFirstPlayheadItemMatchingResponseStub:(BKRResponseStub *)responseStub withUpdateBlock:(BKRUpdatePlayheadItemBlock)updateItemBlock {

@@ -291,18 +291,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         XCTAssertTrue([originalRequestFrame isMemberOfClass:[BKROriginalRequestFrame class]]);
         [self _assertRequestFrame:originalRequestFrame withRequest:task.originalRequest andIgnoreHeaderFields:YES];
         [assertFrames removeObject:originalRequestFrame];
-//        // might be more than one original request frame, remove until we reach one that has header fields
-//        // also don't want to include frames with empty header field dictionaries
-//        for (BKRRequestFrame *frame in scene.allRequestFrames) {
-//            if (
-//                !frame.allHTTPHeaderFields ||
-//                !frame.allHTTPHeaderFields.allKeys.count
-//                ) {
-//                [assertFrames removeObject:frame];
-//            } else {
-//                break;
-//            }
-//        }
+
         if (expectedResult.hasCurrentRequest) {
             // when we are playing, OHHTTPStubs does not mock adjusting the currentRequest to have different headers like a server would with a live NSURLSessionTask
             BKRCurrentRequestFrame *currentRequestFrame = scene.currentRequest;
@@ -344,14 +333,18 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         // now test extra requests and responses
         if (expectedResult.isRedirecting) {
 
-            // if both of the first 2 frames are BKRCurrentRequestFrame objects, then remove the first one,
-            // it's just being modified and isn't worth testing
-            if (
-                [assertFrames.firstObject isKindOfClass:[BKRCurrentRequestFrame class]] &&
-                [assertFrames[1] isKindOfClass:[BKRCurrentRequestFrame class]]
-                ) {
-                [assertFrames removeObjectAtIndex:0];
+            // right now remove all BKRCurrentRequestFrame objects
+            for (BKRFrame *frame in assertFrames.copy) {
+                if ([frame isKindOfClass:[BKRCurrentRequestFrame class]]) {
+                    [assertFrames removeObject:frame];
+                }
             }
+//            if (
+//                [assertFrames.firstObject isKindOfClass:[BKRCurrentRequestFrame class]] &&
+//                [assertFrames[1] isKindOfClass:[BKRCurrentRequestFrame class]]
+//                ) {
+//                [assertFrames removeObjectAtIndex:0];
+//            }
             // should expect redirect order to be like this for each redirect:
             // 1) BKRCurrentRequestFrame
             // 2) BKRRedirectFrame
@@ -366,7 +359,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 // all frames should be of type redirect
                 BKRRedirectFrame *redirectFrame = (BKRRedirectFrame *)frame;
                 XCTAssertTrue([redirectFrame isKindOfClass:[BKRRedirectFrame class]]);
-                XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], redirectFrame.requestFrame.URL.absoluteString);
+                XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], redirectFrame.responseFrame.URL.absoluteString);
                 if (
                     expectedResult.HTTPMethod ||
                     redirectFrame.requestFrame.HTTPMethod

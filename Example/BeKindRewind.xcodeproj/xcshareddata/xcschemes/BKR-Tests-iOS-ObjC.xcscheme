@@ -45,9 +45,6 @@
                   Identifier = "BKRMatcherTestCase">
                </Test>
                <Test
-                  Identifier = "BKRPlayableVCRTestCase">
-               </Test>
-               <Test
                   Identifier = "BKRPlayingTestCase">
                </Test>
                <Test
