@@ -1,5 +1,5 @@
 PODS:
-  - BeKindRewind (0.9.6):
+  - BeKindRewind (0.10.0):
     - OHHTTPStubs (~> 5.0.0)
   - OHHTTPStubs (5.0.0):
     - OHHTTPStubs/Default (= 5.0.0)
@@ -23,7 +23,7 @@ EXTERNAL SOURCES:
     :path: .
 
 SPEC CHECKSUMS:
-  BeKindRewind: 3f8f9a14df74af6c7362b7e3731accf482218f06
+  BeKindRewind: c75622e05850e63194cd78f05669d3e3f1ec1701
   OHHTTPStubs: a5d2e9eea07869d42ec03338325f398bc520e159
 
 COCOAPODS: 0.39.0

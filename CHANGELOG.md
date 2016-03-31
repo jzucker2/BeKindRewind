@@ -1,6 +1,6 @@
 # BeKindRewind — CHANGELOG
 
-## [0.9.6](https://github.com/jzucker2/BeKindRewind/releases/tag/0.9.6)
+## [0.10.0](https://github.com/jzucker2/BeKindRewind/releases/tag/0.10.0)
 
 * First stable, complete version.
 * Proper handling of redirects.

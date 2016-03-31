@@ -36,7 +36,7 @@
 /**
  *  Convenience initializer for creating a test VCR instance conforming to this protocol
  *
- *  @param configuration contains the configuration options to use for creating the object
+ *  @param configuration contains the configuration options to use for creating the test VCR object
  *
  *  @return newly initialized instance conforming to BKRTestVCRActions
  */
@@ -46,7 +46,8 @@
  *  Convenience initializer for creating an object conforming to this protocol. This method
  *  should use `[BKRTestConfiguration defaultConfigurationWithTestCase:]` to create the instance.
  *
- *  @param configuration contains the configuration options to use for creating the object
+ *  @param testCase currently executing XCTestCase instance. Expected to be used in
+ *                  an XCTestCase subclass. Typically pass in `self`
  *
  *  @return newly initialized instance conforming to BKRTestVCRActions
  */
