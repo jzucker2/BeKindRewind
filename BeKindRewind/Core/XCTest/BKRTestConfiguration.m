@@ -12,6 +12,9 @@
 #import "NSURLSessionTask+BKRAdditions.h"
 #import "NSURLSessionTask+BKRTestAdditions.h"
 
+static NSTimeInterval const kBKRTestConfigurationSetUpTimeoutDefault = 10;
+static NSTimeInterval const kBKRTestConfigurationTearDownTimeoutDefault = 10;
+
 @interface BKRTestConfiguration () <NSCopying>
 @end
 
@@ -22,6 +25,8 @@
     self = [super initWithMatcherClass:matcherClass];
     if (self) {
         _currentTestCase = testCase;
+        _setUpExpectationTimeout = kBKRTestConfigurationSetUpTimeoutDefault;
+        _tearDownExpectationTimeout = kBKRTestConfigurationTearDownTimeoutDefault;
     }
     return self;
 }
@@ -42,6 +47,24 @@
     return [[self alloc] initWithMatcherClass:matcherClass andTestCase:testCase];
 }
 
+- (void)setSetUpExpectationTimeout:(NSTimeInterval)setUpExpectationTimeout {
+    NSParameterAssert(setUpExpectationTimeout > 0);
+    if (setUpExpectationTimeout <= 0) {
+        NSLog(@"The reset expectation must be greater than 0 (instead of %f) or else the wait will not occur.", setUpExpectationTimeout);
+        setUpExpectationTimeout = kBKRTestConfigurationSetUpTimeoutDefault;
+    }
+    _setUpExpectationTimeout = setUpExpectationTimeout;
+}
+
+- (void)setTearDownExpectationTimeout:(NSTimeInterval)tearDownExpectationTimeout {
+    NSParameterAssert(tearDownExpectationTimeout > 0);
+    if (tearDownExpectationTimeout <= 0) {
+        NSLog(@"The reset expectation must be greater than 0 (instead of %f) or else the wait will not occur.", tearDownExpectationTimeout);
+        tearDownExpectationTimeout = kBKRTestConfigurationTearDownTimeoutDefault;
+    }
+    _tearDownExpectationTimeout = tearDownExpectationTimeout;
+}
+
 - (id)copyWithZone:(NSZone *)zone {
     BKRTestConfiguration *configuration = [[[self class] allocWithZone:zone] init];
     configuration.matcherClass = self.matcherClass;
@@ -49,6 +72,8 @@
     configuration.currentTestCase = self.currentTestCase;
     configuration.beginRecordingBlock = self.beginRecordingBlock;
     configuration.endRecordingBlock = self.endRecordingBlock;
+    configuration.setUpExpectationTimeout = self.setUpExpectationTimeout;
+    configuration.tearDownExpectationTimeout = self.tearDownExpectationTimeout;
     return configuration;
 }
 
