@@ -94,7 +94,7 @@
         }];
     }
     [self.currentVCR reset]; // reset for BKRRecorder mostly
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
     self.currentVCR = nil; // clear the VCR so that it can't possibly carry over to the next test
