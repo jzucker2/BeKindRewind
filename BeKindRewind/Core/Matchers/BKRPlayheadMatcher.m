@@ -57,7 +57,7 @@
 
 - (NSDictionary *)requestComparisonOptions {
     return @{
-             kBKRShouldIgnoreQueryItemsOrder: @YES,
+             kBKRShouldIgnoreQueryItemsOrderOptionsKey: @YES,
              };
 }
 

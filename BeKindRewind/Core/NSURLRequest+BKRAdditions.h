@@ -14,7 +14,7 @@
  *  in the requests to compare is ignored. If `NO` then the order is compared as 
  *  well as the items.
  */
-extern NSString * kBKRShouldIgnoreQueryItemsOrder;
+extern NSString * kBKRShouldIgnoreQueryItemsOrderOptionsKey;
 
 /**
  *  This key is used in the options dictionary. It should only have a NSArray
@@ -23,7 +23,7 @@ extern NSString * kBKRShouldIgnoreQueryItemsOrder;
  *  two requests. Each NSString instance should be the name associated with a
  *  NSURLQueryItem from the requests.
  */
-extern NSString * kBKRIgnoreQueryItemNames;
+extern NSString * kBKRIgnoreQueryItemNamesOptionsKey;
 
 /**
  *  This key is used in the options dictionary. It should only have a NSArray
@@ -31,14 +31,14 @@ extern NSString * kBKRIgnoreQueryItemNames;
  *  the NSArray object will be ignored when comparing components within the
  *  the requests. The available components are found within the NSURLComponents class.
  */
-extern NSString * kBKRIgnoreNSURLComponentsProperties;
+extern NSString * kBKRIgnoreNSURLComponentsPropertiesOptionsKey;
 
 /**
  *  This key is used in the options dictionary. It should only have a NSNumber
  *  wrapped BOOL value. If this value is `YES` then the body of the requests is 
  *  compared. If `NO` then body of the requests are not compared.
  */
-extern NSString * kBKRCompareHTTPBody;
+extern NSString * kBKRCompareHTTPBodyOptionsKey;
 
 @class BKRRequestFrame;
 

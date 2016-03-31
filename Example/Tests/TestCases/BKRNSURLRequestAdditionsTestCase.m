@@ -48,11 +48,11 @@
     XCTAssertNotNil(otherRequest);
     XCTAssertFalse([request BKR_isEquivalentToRequest:otherRequest options:nil]);
     NSDictionary *options = @{
-                              kBKRShouldIgnoreQueryItemsOrder: @NO
+                              kBKRShouldIgnoreQueryItemsOrderOptionsKey: @NO
                               };
     XCTAssertFalse([request BKR_isEquivalentToRequest:otherRequest options:options]);
     options = @{
-                kBKRShouldIgnoreQueryItemsOrder: @YES
+                kBKRShouldIgnoreQueryItemsOrderOptionsKey: @YES
                 };
     XCTAssertTrue([request BKR_isEquivalentToRequest:otherRequest options:options]);
 }
@@ -64,7 +64,7 @@
     XCTAssertNotNil(otherRequest);
     XCTAssertFalse([request BKR_isEquivalentToRequest:otherRequest options:nil]);
     NSDictionary *options = @{
-                              kBKRIgnoreQueryItemNames: @[@"foo"]
+                              kBKRIgnoreQueryItemNamesOptionsKey: @[@"foo"]
                               };
     XCTAssertTrue([request BKR_isEquivalentToRequest:otherRequest options:options]);
 }
@@ -76,8 +76,8 @@
     XCTAssertNotNil(otherRequest);
     XCTAssertFalse([request BKR_isEquivalentToRequest:otherRequest options:nil]);
     NSDictionary *options = @{
-                              kBKRShouldIgnoreQueryItemsOrder: @YES,
-                              kBKRIgnoreQueryItemNames: @[@"foo"]
+                              kBKRShouldIgnoreQueryItemsOrderOptionsKey: @YES,
+                              kBKRIgnoreQueryItemNamesOptionsKey: @[@"foo"]
                               };
     XCTAssertTrue([request BKR_isEquivalentToRequest:otherRequest options:options]);
 }
@@ -91,7 +91,7 @@
     NSDictionary *options = @{};
     XCTAssertFalse([request BKR_isEquivalentToRequest:otherRequest options:options]);
     options = @{
-                kBKRIgnoreNSURLComponentsProperties: @[@"path"],
+                kBKRIgnoreNSURLComponentsPropertiesOptionsKey: @[@"path"],
                 };
     XCTAssertTrue([request BKR_isEquivalentToRequest:otherRequest options:options]);
 }
@@ -103,9 +103,9 @@
     XCTAssertNotNil(otherRequest);
     XCTAssertFalse([request BKR_isEquivalentToRequest:otherRequest options:nil]);
     NSDictionary *options = @{
-                              kBKRIgnoreNSURLComponentsProperties: @[@"path"],
-                              kBKRShouldIgnoreQueryItemsOrder: @YES,
-                              kBKRIgnoreQueryItemNames: @[@"foo"]
+                              kBKRIgnoreNSURLComponentsPropertiesOptionsKey: @[@"path"],
+                              kBKRShouldIgnoreQueryItemsOrderOptionsKey: @YES,
+                              kBKRIgnoreQueryItemNamesOptionsKey: @[@"foo"]
                               };
     XCTAssertTrue([request BKR_isEquivalentToRequest:otherRequest options:options]);
 }
