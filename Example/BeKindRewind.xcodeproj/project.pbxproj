@@ -125,9 +125,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2443965EEB1768FEAC0F03A5 /* Pods-BKR-Tests-tvOS-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-tvOS-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-tvOS-ObjC/Pods-BKR-Tests-tvOS-ObjC.release.xcconfig"; sourceTree = "<group>"; };
 		2ABA0ED2BAFDF50ADCC348D3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		2CF67F92036653091FE00952 /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		35C9D94127DEF923BEB20497 /* Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-tvOS-ObjC/Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
 		46FDC6D62117BCC2DBD07745 /* BeKindRewind.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BeKindRewind.podspec; path = ../BeKindRewind.podspec; sourceTree = "<group>"; };
 		4D2A9743CBA46BB14A7BC2BF /* Pods_BKR_Tests_iOS_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_iOS_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51062DB31CAD8CF200656AC5 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
@@ -174,7 +173,6 @@
 		51B9B9DF1C598572006156C2 /* BKRVCRTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRVCRTestCase.m; sourceTree = "<group>"; };
 		51B9BA041C59FFE8006156C2 /* BKRCassetteTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRCassetteTestCase.m; sourceTree = "<group>"; };
 		51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecordingTestCase.m; sourceTree = "<group>"; };
-		5EC1504EB70BFA38F3CA6049 /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		6003F591195388D20070C39A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -183,13 +181,15 @@
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
+		69CB6A3EED8C72F78CC03C5F /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; sourceTree = "<group>"; };
+		8E9A6F8D092267082D61A6BD /* Pods-BKR-Tests-tvOS-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-tvOS-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-tvOS-ObjC/Pods-BKR-Tests-tvOS-ObjC.release.xcconfig"; sourceTree = "<group>"; };
 		975674DF1C72C88300922EC6 /* BKRRecordableVCRTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecordableVCRTestCase.m; sourceTree = "<group>"; };
 		A7CBED227DDA3761CB6716C1 /* Pods_BKR_Tests_tvOS_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_tvOS_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1C68C7F9CE15058CBF4F59A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		B2F2E8991BAD87848E61E67B /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; sourceTree = "<group>"; };
-		C4B6C73ABA6204D935C810C1 /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; sourceTree = "<group>"; };
+		D6717C9B4C4F69C2728F923F /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		EB1F38437D9C3D2ADFFB664A /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
 		EB34CEC2843B69968024933A /* Pods_BKR_Tests_OSX_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_OSX_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FE039F8F17879A1A0954F85D /* Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-tvOS-ObjC/Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		F362C37EC8F2B1745C1855B8 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -372,12 +372,12 @@
 		8DA139DAA742FC7E6914B9AF /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5EC1504EB70BFA38F3CA6049 /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */,
-				C4B6C73ABA6204D935C810C1 /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */,
-				2CF67F92036653091FE00952 /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */,
-				B2F2E8991BAD87848E61E67B /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */,
-				FE039F8F17879A1A0954F85D /* Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig */,
-				2443965EEB1768FEAC0F03A5 /* Pods-BKR-Tests-tvOS-ObjC.release.xcconfig */,
+				D6717C9B4C4F69C2728F923F /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */,
+				69CB6A3EED8C72F78CC03C5F /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */,
+				EB1F38437D9C3D2ADFFB664A /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */,
+				F362C37EC8F2B1745C1855B8 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */,
+				35C9D94127DEF923BEB20497 /* Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig */,
+				8E9A6F8D092267082D61A6BD /* Pods-BKR-Tests-tvOS-ObjC.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -795,7 +795,7 @@
 /* Begin XCBuildConfiguration section */
 		51062E321CAF051400656AC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FE039F8F17879A1A0954F85D /* Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig */;
+			baseConfigurationReference = 35C9D94127DEF923BEB20497 /* Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -815,7 +815,7 @@
 		};
 		51062E331CAF051400656AC5 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2443965EEB1768FEAC0F03A5 /* Pods-BKR-Tests-tvOS-ObjC.release.xcconfig */;
+			baseConfigurationReference = 8E9A6F8D092267082D61A6BD /* Pods-BKR-Tests-tvOS-ObjC.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -836,10 +836,10 @@
 		};
 		51B9B93F1C50D448006156C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5EC1504EB70BFA38F3CA6049 /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */;
+			baseConfigurationReference = D6717C9B4C4F69C2728F923F /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -856,10 +856,10 @@
 		};
 		51B9B9401C50D448006156C2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C4B6C73ABA6204D935C810C1 /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */;
+			baseConfigurationReference = 69CB6A3EED8C72F78CC03C5F /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -950,7 +950,7 @@
 		};
 		6003F5C3195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2CF67F92036653091FE00952 /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */;
+			baseConfigurationReference = EB1F38437D9C3D2ADFFB664A /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -969,7 +969,7 @@
 		};
 		6003F5C4195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B2F2E8991BAD87848E61E67B /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */;
+			baseConfigurationReference = F362C37EC8F2B1745C1855B8 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

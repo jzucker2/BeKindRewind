@@ -23,7 +23,7 @@ EXTERNAL SOURCES:
     :path: .
 
 SPEC CHECKSUMS:
-  BeKindRewind: b0f2941d96efbbfcbec3e85081044db7dcba0bea
+  BeKindRewind: 3089146633efb7e91875a1a1c42c1482edbd1e2b
   OHHTTPStubs: a5d2e9eea07869d42ec03338325f398bc520e159
 
 COCOAPODS: 0.39.0

@@ -225,7 +225,7 @@ typedef void (^BKRVCRActionCompletionBlock)(BOOL result);
  *  This "inserts" the current cassette, allowing the receiver to play back or record network
  *  activity.
  *
- *  @note: the file to insert must be a Property List with a file extension of ".plist".
+ *  @note the file to insert must be a Property List with a file extension of ".plist".
  *
  *  @param cassetteLoadingBlock this is expected to execute in the receiver's queue
  *  @param completionBlock      this is expecte to execute in the receiver's queue

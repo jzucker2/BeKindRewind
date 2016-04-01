@@ -98,7 +98,8 @@
 
 /**
  *  This is used to represent the root directory to use for saving recordings
- *  @note experimental and untested, this can't be tested in unit tests through traditional means
+ *  @note experimental and untested, this can't be tested in unit tests through traditional means.
+ *        This is disabled in 1.0.0 and will be fixed after Cocoapods updates due to many bugs in 0.39
  *
  *  @return full path of directory to write recordings to located within current Xcode project
  *
