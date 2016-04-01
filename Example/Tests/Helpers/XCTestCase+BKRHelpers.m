@@ -240,6 +240,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     return [BKRVCR vcrWithConfiguration:configuration];
 }
 
+- (BKRVCR *)vcrWithDefaultConfiguration {
+    return [BKRVCR vcrWithConfiguration:[BKRConfiguration defaultConfiguration]];
+}
+
 - (BKRVCR *)vcrWithMatcher:(Class<BKRRequestMatching>)matcherClass andCassetteSavingOption:(BOOL)cassetteSavingOption {
     BKRConfiguration *configuration = [self defaultConfiguration];
     configuration.shouldSaveEmptyCassette = cassetteSavingOption;
@@ -517,7 +521,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)assertDefaultTestConfiguration:(BKRTestConfiguration *)configuration {
     XCTAssertNotNil(configuration);
     XCTAssertEqualObjects(configuration.currentTestCase, self);
-    XCTAssertEqual(configuration.shouldSaveEmptyCassette, NO);
+    XCTAssertEqual(configuration.shouldSaveEmptyCassette, YES);
     XCTAssertEqual(configuration.matcherClass, [BKRPlayheadMatcher class]);
     XCTAssertNotNil(configuration.beginRecordingBlock);
     XCTAssertNotNil(configuration.endRecordingBlock);
@@ -1747,7 +1751,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 
 - (void)resetTestVCR:(id<BKRTestVCRActions>)vcr {
     [vcr reset];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
     XCTAssertEqual(vcr.state, BKRVCRStateStopped);

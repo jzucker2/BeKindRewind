@@ -72,6 +72,12 @@
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[]];
 }
 
+- (void)testRecordingFileCreatedWithNoNetworkActivityAndDefaultConfiguration {
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
+    XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[]];
+}
+
 - (void)testRecordingOffThenOn {
     BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[result] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {

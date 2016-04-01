@@ -44,6 +44,9 @@
                <Test
                   Identifier = "BKRMatcherTestCase">
                </Test>
+               <Test
+                  Identifier = "BKRPlayheadMatcherTestCase">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

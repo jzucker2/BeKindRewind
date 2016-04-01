@@ -25,7 +25,7 @@
 					<key>class</key>
 					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1459383239.0301609</real>
+					<real>1459383239.030161</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
@@ -47,7 +47,7 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1459383239.0301909</real>
+					<real>1459383239.030191</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
@@ -132,7 +132,7 @@
 							<key>Content-Type</key>
 							<string>text/html; charset=utf-8</string>
 							<key>Date</key>
-							<string>Thu, 31 Mar 2016 00:13:59 GMT</string>
+							<string>Thu, 18 Feb 2016 18:18:46 GMT</string>
 							<key>Location</key>
 							<string>/relative-redirect/2</string>
 							<key>Server</key>
@@ -175,7 +175,7 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1459383239.4106591</real>
+					<real>1459383239.410659</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
@@ -185,7 +185,7 @@
 					<key>class</key>
 					<string>BKRRedirectFrame</string>
 					<key>creationDate</key>
-					<real>1459383239.5035939</real>
+					<real>1459383239.503594</real>
 					<key>request</key>
 					<dict>
 						<key>HTTPMethod</key>
@@ -210,7 +210,7 @@
 						<key>class</key>
 						<string>BKRRequestFrame</string>
 						<key>creationDate</key>
-						<real>1459383239.5035939</real>
+						<real>1459383239.503594</real>
 						<key>timeoutInterval</key>
 						<real>60</real>
 						<key>uniqueIdentifier</key>
@@ -231,7 +231,7 @@
 							<key>Content-Type</key>
 							<string>text/html; charset=utf-8</string>
 							<key>Date</key>
-							<string>Thu, 31 Mar 2016 00:13:59 GMT</string>
+							<string>Thu, 18 Feb 2016 18:18:46 GMT</string>
 							<key>Location</key>
 							<string>/relative-redirect/1</string>
 							<key>Server</key>
@@ -242,7 +242,7 @@
 						<key>class</key>
 						<string>BKRResponseFrame</string>
 						<key>creationDate</key>
-						<real>1459383239.5035939</real>
+						<real>1459383239.503594</real>
 						<key>statusCode</key>
 						<integer>302</integer>
 						<key>uniqueIdentifier</key>
@@ -284,7 +284,7 @@
 					<key>class</key>
 					<string>BKRRedirectFrame</string>
 					<key>creationDate</key>
-					<real>1459383239.5939889</real>
+					<real>1459383239.593989</real>
 					<key>request</key>
 					<dict>
 						<key>HTTPMethod</key>
@@ -309,7 +309,7 @@
 						<key>class</key>
 						<string>BKRRequestFrame</string>
 						<key>creationDate</key>
-						<real>1459383239.5939889</real>
+						<real>1459383239.593989</real>
 						<key>timeoutInterval</key>
 						<real>60</real>
 						<key>uniqueIdentifier</key>
@@ -330,7 +330,7 @@
 							<key>Content-Type</key>
 							<string>text/html; charset=utf-8</string>
 							<key>Date</key>
-							<string>Thu, 31 Mar 2016 00:13:59 GMT</string>
+							<string>Thu, 18 Feb 2016 18:18:46 GMT</string>
 							<key>Location</key>
 							<string>/get</string>
 							<key>Server</key>
@@ -341,7 +341,7 @@
 						<key>class</key>
 						<string>BKRResponseFrame</string>
 						<key>creationDate</key>
-						<real>1459383239.5939889</real>
+						<real>1459383239.593989</real>
 						<key>statusCode</key>
 						<integer>302</integer>
 						<key>uniqueIdentifier</key>
@@ -393,7 +393,7 @@
 						<key>Content-Type</key>
 						<string>application/json</string>
 						<key>Date</key>
-						<string>Thu, 31 Mar 2016 00:13:59 GMT</string>
+						<string>Thu, 18 Feb 2016 18:18:46 GMT</string>
 						<key>Server</key>
 						<string>nginx</string>
 						<key>access-control-allow-credentials</key>
@@ -402,7 +402,7 @@
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1459383239.6940589</real>
+					<real>1459383239.694059</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
@@ -412,22 +412,9 @@
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1459383239.6940939</real>
+					<real>1459383239.694094</real>
 					<key>data</key>
-					<data>
-					ewogICJhcmdzIjoge30sIAogICJoZWFkZXJz
-					IjogewogICAgIkFjY2VwdCI6ICIqLyoiLCAK
-					ICAgICJBY2NlcHQtRW5jb2RpbmciOiAiZ3pp
-					cCwgZGVmbGF0ZSIsIAogICAgIkFjY2VwdC1M
-					YW5ndWFnZSI6ICJlbi11cyIsIAogICAgIkhv
-					c3QiOiAiaHR0cGJpbi5vcmciLCAKICAgICJV
-					c2VyLUFnZW50IjogInhjdGVzdCAodW5rbm93
-					biB2ZXJzaW9uKSBDRk5ldHdvcmsvNzU4LjIu
-					OCBEYXJ3aW4vMTUuNC4wIgogIH0sIAogICJv
-					cmlnaW4iOiAiMTk4LjAuMjA5LjIzOCIsIAog
-					ICJ1cmwiOiAiaHR0cHM6Ly9odHRwYmluLm9y
-					Zy9nZXQiCn0K
-					</data>
+					<data>ewogICJhcmdzIjoge30sIAogICJoZWFkZXJzIjogewogICAgIkFjY2VwdCI6ICIqLyoiLCAKICAgICJBY2NlcHQtRW5jb2RpbmciOiAiZ3ppcCwgZGVmbGF0ZSIsIAogICAgIkFjY2VwdC1MYW5ndWFnZSI6ICJlbi11cyIsIAogICAgIkhvc3QiOiAiaHR0cGJpbi5vcmciLCAKICAgICJVc2VyLUFnZW50IjogInhjdGVzdCAodW5rbm93biB2ZXJzaW9uKSBDRk5ldHdvcmsvNzU4LjIuOCBEYXJ3aW4vMTUuNC4wIgogIH0sIAogICJvcmlnaW4iOiAiMTk4LjAuMjA5LjIzOCIsIAogICJ1cmwiOiAiaHR0cHM6Ly9odHRwYmluLm9yZy9nZXQiCn0K</data>
 					<key>uniqueIdentifier</key>
 					<string>24DFB5C7-F480-476C-9258-E2AC98073FAA</string>
 				</dict>

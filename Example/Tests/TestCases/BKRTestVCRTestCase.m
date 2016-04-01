@@ -84,6 +84,12 @@
     [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[]];
 }
 
+- (void)testRecordingFileCreatedWithNoNetworkActivityAndDefaultConfiguration {
+    XCTAssertTrue([self ejectCassetteWithFilePath:self.testRecordingFilePath fromVCR:self.vcr]);
+    XCTAssertTrue([BKRFilePathHelper filePathExists:self.testRecordingFilePath]);
+    [self assertCassettePath:self.testRecordingFilePath matchesExpectedResults:@[]];
+}
+
 - (void)testRecordingOffThenOn {
     BKRTestExpectedResult *result = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:YES];
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[result] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
@@ -355,6 +361,16 @@
 
 - (void)testPlayingChunkedDataRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:NO];
+    
+    [self playTestVCR:self.vcr];
+    
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
+    } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+    }];
+}
+
+- (void)testPlayingRedirectRequest {
+    BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:NO];
     
     [self playTestVCR:self.vcr];
     

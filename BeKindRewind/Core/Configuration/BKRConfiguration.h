@@ -45,14 +45,15 @@
 + (instancetype)configurationWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
 
 /**
- *  This is NO by default. When this is NO, an `eject:` command will not write an empty
- *  cassette to disk. When this is YES, an empty file is written to disk if no network
+ *  This is `YES` by default. When this is `NO`, an `eject:` command will not write an empty
+ *  cassette to disk. When this is `YES`, an empty file is written to disk if no network
  *  requests are recorded.
  */
 @property (nonatomic, assign) BOOL shouldSaveEmptyCassette;
 
 /**
- *  Class conforming to BKRRequestMatching used in playing back network requests
+ *  Class conforming to BKRRequestMatching used to match requests to stubs when
+ *  playing back network requests
  */
 @property (nonatomic, assign) Class<BKRRequestMatching> matcherClass;
 
