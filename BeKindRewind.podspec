@@ -31,8 +31,16 @@ Pod::Spec.new do |s|
   s.source_files = 'BeKindRewind/Core/**/*'
   s.prepare_command = 'ruby plist_resource_creator.rb'
 
-  s.resource_bundles = {
-    'BeKindRewind' => ['BeKindRewind/Assets/*.plist']
+  s.ios.resource_bundles = {
+    'BeKindRewind-iOS' => ['BeKindRewind/Assets/*.plist']
+  }
+
+  s.tvos.resource_bundles = {
+    'BeKindRewind-tvOS' => ['BeKindRewind/Assets/*.plist']
+  }
+
+  s.osx.resource_bundles = {
+    'BeKindRewind-OSX' => ['BeKindRewind/Assets/*.plist']
   }
 
 end
