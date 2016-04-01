@@ -12,6 +12,8 @@
 /**
  *  This is object conforms to BKRVCRActions protocol and can only record network sessions
  *  onto the contained BKRCassette instance
+ *
+ *  @since 1.0.0
  */
 @interface BKRRecordableVCR : NSObject <BKRVCRActions>
 @end

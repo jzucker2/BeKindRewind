@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param request network request to stub
  *
  *  @return whether or not to stub the network request
+ *
+ *  @since 1.0.0
  */
 typedef BOOL (^BKRStubsTestBlock)(NSURLRequest* _Nonnull request);
 
@@ -29,6 +31,8 @@ typedef BOOL (^BKRStubsTestBlock)(NSURLRequest* _Nonnull request);
  *  @param request network request to stub
  *
  *  @return BKRPlayableScene to use as a stub
+ *
+ *  @since 1.0.0
  */
 typedef BKRResponseStub* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnull request);
 
@@ -37,6 +41,8 @@ typedef BKRResponseStub* __nonnull (^BKRStubsResponseBlock)(NSURLRequest* _Nonnu
  *
  *  @param request      this is the request being mocked
  *  @param responseStub stub associated with the request
+ *
+ *  @since 1.0.0
  */
 typedef void (^BKRStubActivationBlock)(NSURLRequest *request, BKRResponseStub *responseStub);
 
@@ -46,6 +52,8 @@ typedef void (^BKRStubActivationBlock)(NSURLRequest *request, BKRResponseStub *r
  *  @param request         this is the original request being mocked
  *  @param redirectRequest this is the request that will begin the redirect
  *  @param responseStub    stub associated with the request
+ *
+ *  @since 1.0.0
  */
 typedef void (^BKRStubRedirectBlock)(NSURLRequest *request, NSURLRequest *redirectRequest, BKRResponseStub *responseStub);
 
@@ -55,16 +63,22 @@ typedef void (^BKRStubRedirectBlock)(NSURLRequest *request, NSURLRequest *redire
  *  @param request      this is the request being mocked.
  *  @param responseStub stub associated with the request.
  *  @param error        this is the error (if any) generated during the network action.
+ *
+ *  @since 1.0.0
  */
 typedef void (^BKRStubCompletionBlock)(NSURLRequest *request, BKRResponseStub *responseStub, NSError *error);
 
 /**
  *  Wrapper object for abstracting the OHHTTPStubs framework
+ *
+ *  @since 1.0.0
  */
 @interface BKROHHTTPStubsWrapper : NSObject
 
 /**
  *  Remove all network stubs
+ *
+ *  @since 1.0.0
  */
 + (void)removeAllStubs;
 
@@ -72,6 +86,8 @@ typedef void (^BKRStubCompletionBlock)(NSURLRequest *request, BKRResponseStub *r
  *  If stubs are set, they can be turned on or off
  *
  *  @param enabled whether to turn stubs on or off
+ *
+ *  @since 1.0.0
  */
 + (void)setEnabled:(BOOL)enabled;
 
@@ -79,6 +95,8 @@ typedef void (^BKRStubCompletionBlock)(NSURLRequest *request, BKRResponseStub *r
  *  Check if stubs are currently enabled
  *
  *  @return whether stubs are enabled or not
+ *
+ *  @since 1.0.0
  */
 + (BOOL)hasStubs;
 
@@ -87,6 +105,8 @@ typedef void (^BKRStubCompletionBlock)(NSURLRequest *request, BKRResponseStub *r
  *
  *  @param testBlock     determines whether or not to mock a particular network request
  *  @param responseBlock if a network request is to be mocked, then this determines the data used in the stub
+ *
+ *  @since 1.0.0
  */
 + (void)stubRequestPassingTest:(nonnull BKRStubsTestBlock)testBlock withStubResponse:(nonnull BKRStubsResponseBlock)responseBlock;
 
@@ -94,6 +114,8 @@ typedef void (^BKRStubCompletionBlock)(NSURLRequest *request, BKRResponseStub *r
  *  This method sets a single block to be called whenever a stub begins to be used.
  *
  *  @param stubActivationBlock this returns enough information to associate a stub with a scene.
+ *
+ *  @since 1.0.0
  */
 + (void)onStubActivation:(nullable BKRStubActivationBlock)stubActivationBlock;
 
@@ -101,6 +123,8 @@ typedef void (^BKRStubCompletionBlock)(NSURLRequest *request, BKRResponseStub *r
  *  This method sets a single block to be called whenever a stub is returned as a redirect.
  *
  *  @param stubActivationBlock this returns enough information to associate a stub with a scene.
+ *
+ *  @since 1.0.0
  */
 + (void)onStubRedirectResponse:(nullable BKRStubRedirectBlock)stubRedirectBlock;
 
@@ -108,6 +132,8 @@ typedef void (^BKRStubCompletionBlock)(NSURLRequest *request, BKRResponseStub *r
  *  This method sets a single block to be called whenever a stub finishes mocking a network action.
  *
  *  @param stubActivationBlock this returns enough information to associate a stub with a scene.
+ *
+ *  @since 1.0.0
  */
 + (void)onStubCompletion:(nullable BKRStubCompletionBlock)stubCompletionBlock;
 

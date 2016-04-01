@@ -10,6 +10,8 @@
 
 /**
  *  Protocol is used to turn BeKindRewind objects into plist dictionaries for storage
+ *
+ *  @since 1.0.0
  */
 @protocol BKRPlistSerializer <NSObject>
 
@@ -17,6 +19,8 @@
  *  This object is guaranteed to contain only plist encodable objects
  *
  *  @return dictionary containing only plist encodable objects
+ *
+ *  @since 1.0.0
  */
 - (NSDictionary *)plistDictionary;
 
@@ -24,6 +28,8 @@
 
 /**
  *  Protocol is used to turn plist dictionary objects into BeKindRewind objects
+ *
+ *  @since 1.0.0
  */
 @protocol BKRPlistDeserializer <NSObject>
 
@@ -34,6 +40,8 @@
  *  @param dictionary contains only objects that be plist encoded
  *
  *  @return returns a BeKindRewind object
+ *
+ *  @since 1.0.0
  */
 - (instancetype)initFromPlistDictionary:(NSDictionary *)dictionary;
 
@@ -42,6 +50,8 @@
 /**
  *  The BKRPlistSerializing protocol adopts both the BKRPlistSerializer protocol and
  *  the BKRPlistDeserializer protocol
+ *
+ *  @since 1.0.0
  */
 @protocol BKRPlistSerializing <BKRPlistSerializer, BKRPlistDeserializer>
 

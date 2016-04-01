@@ -12,6 +12,8 @@
 
 /**
  *  This is a configuration object for creating objects conforming to the BKRVCRActions protocol
+ *
+ *  @since 1.0.0
  */
 @interface BKRConfiguration : NSObject <BKRVCRRecording>
 
@@ -22,6 +24,8 @@
  *                      and must conform to BKRRequestMatching
  *
  *  @return newly initialized instance of BKRConfiguration
+ *
+ *  @since 1.0.0
  */
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
 
@@ -30,6 +34,8 @@
  *  class is BKRPlayheadMatcher
  *
  *  @return newly initialized instance of BKRConfiguration
+ *
+ *  @since 1.0.0
  */
 + (instancetype)defaultConfiguration;
 
@@ -41,6 +47,8 @@
  *                      and must conform to BKRRequestMatching
  *
  *  @return newly initialized instance of BKRConfiguration
+ *
+ *  @since 1.0.0
  */
 + (instancetype)configurationWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
 
@@ -48,12 +56,16 @@
  *  This is `YES` by default. When this is `NO`, an `eject:` command will not write an empty
  *  cassette to disk. When this is `YES`, an empty file is written to disk if no network
  *  requests are recorded.
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, assign) BOOL shouldSaveEmptyCassette;
 
 /**
  *  Class conforming to BKRRequestMatching used to match requests to stubs when
  *  playing back network requests
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, assign) Class<BKRRequestMatching> matcherClass;
 

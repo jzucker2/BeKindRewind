@@ -12,6 +12,8 @@
  *  This is category is used for turning Foundation objects associated with
  *  a network request into a normalized, concrete BKRFrame subclass for proper handling
  *  by the BKRPlayer instance
+ *
+ *  @since 1.0.0
  */
 @interface BKRRawFrame (Playable) <BKRPlistDeserializer>
 
@@ -20,6 +22,8 @@
  *  contained by the reciever
  *
  *  @return newly initialized instance of a concrete subclass of BKRFrame
+ *
+ *  @since 1.0.0
  */
 - (BKRFrame *)editedPlaying;
 

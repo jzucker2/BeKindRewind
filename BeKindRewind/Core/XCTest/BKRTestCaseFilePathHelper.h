@@ -13,6 +13,8 @@
 /**
  *  This is a subclass of BKRFilePathHelper tailored to help fetch and store network mocking
  *  information associated with a XCTestCase
+ *
+ *  @since 1.0.0
  */
 @interface BKRTestCaseFilePathHelper : BKRFilePathHelper
 
@@ -22,7 +24,7 @@
  *  `testCase.class` (the test suite).
  *
  *  @note if the NSBundle containing the fixture data is in the project but cannot be found 
- *        by this method, ensure it is still included in the testing target. See ____ for more details
+ *        by this method, ensure it is still included in the testing target. See README for more details
  *  @note if there is not plist matching the expected location or the plist at the expected location
  *        does not have a NSDictionary as its root object, then an NSInternalInconsistencyException is thrown
  *
@@ -30,6 +32,8 @@
  *                  requests for the test run session.
  *
  *  @return dictionary that can be passed directly into a BKRPlayableCassette constructor
+ *
+ *  @since 1.0.0
  */
 + (NSDictionary *)dictionaryForTestCase:(XCTestCase *)testCase;
 
@@ -39,7 +43,7 @@
  *  plists containing recordings for test case runs.
  *
  *  @note if the NSBundle instance is created, it must be added (dragged into the Xcode project). 
- *        See _____ for more details
+ *        See README for more details
  *
  *  @param testCase usually the currently executing test (during a test run this would be `self`). Exception
  *                  is thrown if this is nil
@@ -47,6 +51,8 @@
  *                  This is typically the result of documentsDirectory or fixtureWriteDirectoryInProject
  *
  *  @return valid NSBundle (created if one cannot be found) for saving network activity during a testing session
+ *
+ *  @since 1.0.0
  */
 + (NSBundle *)writingBundleForTestCase:(XCTestCase *)testCase inDirectory:(NSString *)filePath; // possibly modify tests for this
 
@@ -57,6 +63,8 @@
  *  @param writingBundle NSBundle instance to search within
  *
  *  @return full path to write .plist in the file system
+ *
+ *  @since 1.0.0
  */
 + (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inBundle:(NSBundle *)writingBundle; //write tests for this
 
@@ -67,6 +75,8 @@
  *  @param filePath file path that contains the NSBundle named after the test suite
  *
  *  @return full path to write .plist in the file system
+ *
+ *  @since 1.0.0
  */
 + (NSString *)writingFinalPathForTestCase:(XCTestCase *)testCase inTestSuiteBundleInDirectory:(NSString *)filePath; // write tests for this
 
@@ -79,7 +89,7 @@
  *  full path location that starts at the directory specified by directoryPath.
  *
  *  @note if the NSBundle instance is created, it must be added (dragged into the Xcode project).
- *        See _____ for more details.
+ *        See README for more details.
  *
  *  @param dictionary    dictionary of encodable plist objects
  *  @param testCase      usually the currently executing test (during a test run this would be `self`). Exception
@@ -88,6 +98,8 @@
  *                  This is typically the result of documentsDirectory or fixtureWriteDirectoryInProject
  *
  *  @return YES if write succeeds and NO if write fails
+ *
+ *  @since 1.0.0
  */
 + (BOOL)writeDictionary:(NSDictionary *)dictionary forTestCase:(XCTestCase *)testCase toDirectory:(NSString *)directoryPath;
 
