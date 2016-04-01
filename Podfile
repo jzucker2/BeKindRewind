@@ -12,3 +12,8 @@ target 'BKR-Tests-OSX-ObjC', :exclusive => true do
     platform :osx, '10.9'
     pod "BeKindRewind", :path => "."
 end
+
+target 'BKR-Tests-tvOS-ObjC', :exclusive => true do
+    platform :tvos, '9.0'
+    pod "BeKindRewind", :path => "."
+end
