@@ -39,6 +39,7 @@ before_install:
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 script:
   - set -o pipefail
+  - export COCOAPODS_DISABLE_DETERMINISTIC_UUIDS=YES # remove this when Cocoapods upgrades to 1.0.0
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
   - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
 after_success:
