@@ -87,7 +87,7 @@ matrix:
     # iOS 9.3
     - env: FASTLANE_ENV=ios93_iPhone6Plus
     # OSX
-    # - env: FASTLANE_ENV=osx
+    - env: FASTLANE_ENV=osx
     # tvOS 9.0
     # - env: FASTLANE_ENV=tvos90_AppleTV1080p
     # tvOS 9.1

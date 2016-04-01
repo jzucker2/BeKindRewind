@@ -37,8 +37,49 @@
                BlueprintName = "BKR-Tests-OSX-ObjC"
                ReferencedContainer = "container:BeKindRewind.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "BKRBaseTestCase">
+               </Test>
+               <Test
+                  Identifier = "BKRMatcherTestCase">
+               </Test>
+               <Test
+                  Identifier = "BKRPlayheadMatcherTestCase">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6003F5AD195388D20070C39A"
+               BuildableName = "BKR-Tests-iOS-ObjC.xctest"
+               BlueprintName = "BKR-Tests-iOS-ObjC"
+               ReferencedContainer = "container:BeKindRewind.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "BKRBaseTestCase">
+               </Test>
+               <Test
+                  Identifier = "BKRMatcherTestCase">
+               </Test>
+               <Test
+                  Identifier = "BKRPlayheadMatcherTestCase">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "51B9B9391C50D448006156C2"
+            BuildableName = "BKR-Tests-OSX-ObjC.xctest"
+            BlueprintName = "BKR-Tests-OSX-ObjC"
+            ReferencedContainer = "container:BeKindRewind.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -70,15 +111,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "51B9B9391C50D448006156C2"
-            BuildableName = "BKR-Tests-OSX-ObjC.xctest"
-            BlueprintName = "BKR-Tests-OSX-ObjC"
-            ReferencedContainer = "container:BeKindRewind.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
