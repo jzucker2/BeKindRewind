@@ -81,6 +81,9 @@
 		51062E5F1CAF055D00656AC5 /* SimpleFile.txt in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9CD1C57ECAB006156C2 /* SimpleFile.txt */; };
 		51062E601CAF055D00656AC5 /* SimplePlistDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D11C57EEC9006156C2 /* SimplePlistDictionary.plist */; };
 		51062E611CAF055D00656AC5 /* SimplePlistArray.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D31C57EED8006156C2 /* SimplePlistArray.plist */; };
+		51062EA01CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */; };
+		51062EA11CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */; };
+		51062EA21CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */; };
 		515C56321C7E8B8800691220 /* BKRDefaultTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */; };
 		515C56381C7EDE1100691220 /* BKRRecorderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56371C7EDE1100691220 /* BKRRecorderTestCase.m */; };
 		515C563A1C7EDE1B00691220 /* BKRPlayerTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */; };
@@ -133,6 +136,8 @@
 		51062DF51CAEE98000656AC5 /* testPlayingRedirectRequest.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingRedirectRequest.plist; sourceTree = "<group>"; };
 		51062E2D1CAF051400656AC5 /* BKR-Tests-tvOS-ObjC.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BKR-Tests-tvOS-ObjC.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51062E311CAF051400656AC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51062E9E1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRFilePathHelpers.h"; sourceTree = "<group>"; };
+		51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRFilePathHelpers.m"; sourceTree = "<group>"; };
 		515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BKRDefaultTestCase.bundle; sourceTree = "<group>"; };
 		515C56371C7EDE1100691220 /* BKRRecorderTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecorderTestCase.m; sourceTree = "<group>"; };
 		515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRPlayerTestCase.m; sourceTree = "<group>"; };
@@ -292,6 +297,8 @@
 			children = (
 				515E35FF1C73B40B00058D74 /* XCTestCase+BKRHelpers.h */,
 				515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */,
+				51062E9E1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.h */,
+				51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */,
 				515C56651C7FF82400691220 /* BKRMatcherTestCase.h */,
 				515C56661C7FF82400691220 /* BKRMatcherTestCase.m */,
 				51B9B9741C55F8C9006156C2 /* BKRBaseTestCase.h */,
@@ -718,6 +725,7 @@
 				51062E441CAF053300656AC5 /* XCTestCase+BKRHelpers.m in Sources */,
 				51062E3D1CAF052F00656AC5 /* BKRDefaultTestCase.m in Sources */,
 				51062E431CAF052F00656AC5 /* BeKindRewindExampleTestCase.m in Sources */,
+				51062EA21CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */,
 				51062E401CAF052F00656AC5 /* BKRPlayerTestCase.m in Sources */,
 				51062E411CAF052F00656AC5 /* BKRTestVCRTestCase.m in Sources */,
 				51062E3F1CAF052F00656AC5 /* BKRNSURLRequestAdditionsTestCase.m in Sources */,
@@ -743,6 +751,7 @@
 				51062E141CAEEC8600656AC5 /* XCTestCase+BKRHelpers.m in Sources */,
 				51062E0D1CAEEC7F00656AC5 /* BKRDefaultTestCase.m in Sources */,
 				51062E131CAEEC7F00656AC5 /* BeKindRewindExampleTestCase.m in Sources */,
+				51062EA11CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */,
 				51062E101CAEEC7F00656AC5 /* BKRPlayerTestCase.m in Sources */,
 				51062E111CAEEC7F00656AC5 /* BKRTestVCRTestCase.m in Sources */,
 				51062E0F1CAEEC7F00656AC5 /* BKRNSURLRequestAdditionsTestCase.m in Sources */,
@@ -768,6 +777,7 @@
 				51AFECDE1C98872800AF6670 /* BKRNSURLRequestAdditionsTestCase.m in Sources */,
 				515C563A1C7EDE1B00691220 /* BKRPlayerTestCase.m in Sources */,
 				515C56621C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m in Sources */,
+				51062EA01CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */,
 				515E36011C73B40B00058D74 /* XCTestCase+BKRHelpers.m in Sources */,
 				51A668C31C83D1C200476A5F /* BeKindRewindExampleTestCase.m in Sources */,
 				51B9B95B1C52FA35006156C2 /* BKRPlayingTestCase.m in Sources */,
