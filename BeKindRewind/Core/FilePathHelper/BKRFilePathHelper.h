@@ -11,6 +11,8 @@
 /**
  *  Collection of class methods for dealing with file system loading and saving. There is no
  *  object created, these class helpers do not need to persist information between calls.
+ *
+ *  @since 1.0.0
  */
 @interface BKRFilePathHelper : NSObject
 
@@ -22,6 +24,8 @@
  *                       Pass in like this `self.class`
  *
  *  @return full path for file contained in bundle also containing class or nil if file is not found
+ *
+ *  @since 1.0.0
  */
 + (NSString *)findPathForFile:(NSString *)fileName inBundleForClass:(Class)classInBundle;
 
@@ -32,6 +36,8 @@
  *  @param bundle   bundle to search for fileName in
  *
  *  @return full path for file contained in bundle or nil if no file is found
+ *
+ *  @since 1.0.0
  */
 + (NSString *)findPathForFile:(NSString *)fileName inBundle:(NSBundle *)bundle;
 
@@ -42,6 +48,8 @@
  *  @param classInBundle bundle to search in that also contains class. Pass in like this `self.class`
  *
  *  @return bundle object
+ *
+ *  @since 1.0.0
  */
 + (NSBundle *)findBundle:(NSString *)bundleName containingClass:(Class)classInBundle;
 
@@ -54,6 +62,8 @@
  *  @param classInBundle bundle to search in that also contains class. Pass in like this `self.class`
  *
  *  @return full path of file or nil if file or bundle does not exist
+ *
+ *  @since 1.0.0
  */
 + (NSString *)findPathForFile:(NSString *)fileName inBundle:(NSString *)bundleName inBundleForClass:(Class)classInBundle;
 
@@ -64,6 +74,8 @@
  *                  the filePath string does not end in ".plist" or if nil.
  *
  *  @return dictionary of Foundation objects that can create a BKRPlayableCassette instance
+ *
+ *  @since 1.0.0
  */
 + (NSDictionary *)dictionaryForPlistFilePath:(NSString *)filePath;
 
@@ -79,14 +91,19 @@
  *
  *  @return returns dictionary of objects for creating BKRPlayableCassette instance. Throws exception 
  *  if there is no plist matching these values or if the root object of the plist is not a dictionary
+ *
+ *  @since 1.0.0
  */
 + (NSDictionary *)dictionaryForPlistFile:(NSString *)fileName inBundle:(NSString *)bundleName inBundleForClass:(Class)classInBundle;
 
 /**
  *  This is used to represent the root directory to use for saving recordings
- *  @note experimental and untested, this can't be tested in unit tests through traditional means
+ *  @note experimental and untested, this can't be tested in unit tests through traditional means.
+ *        This is disabled in 1.0.0 and will be fixed after Cocoapods updates due to many bugs in 0.39
  *
  *  @return full path of directory to write recordings to located within current Xcode project
+ *
+ *  @since 1.0.0
  */
 + (NSString *)fixtureWriteDirectoryInProject;
 
@@ -101,6 +118,8 @@
  *                    not end in ".plist" extension or is nil
  *
  *  @return YES if success and NO if failure
+ *
+ *  @since 1.0.0
  */
 + (BOOL)writeDictionary:(NSDictionary *)dictionary toFile:(NSString *)filePath;
 
@@ -108,6 +127,8 @@
  *  Documents directory of device currently executing target (either on OSX device or iOS device, etc).
  *
  *  @return full path of documents directory
+ *
+ *  @since 1.0.0
  */
 + (NSString *)documentsDirectory;
 
@@ -121,6 +142,8 @@
  *                    directories if needed
  *
  *  @return bundle newly created or already existing if it matches criteria
+ *
+ *  @since 1.0.0
  */
 + (NSBundle *)writingBundleNamed:(NSString *)bundleName inDirectory:(NSString *)filePath;
 
@@ -131,6 +154,8 @@
  *  @throws NSInternalInconsistency exception if filePath is nil
  *
  *  @return YES if filePath exists, NO if it does not
+ *
+ *  @since 1.0.0
  */
 + (BOOL)filePathExists:(NSString *)filePath;
 

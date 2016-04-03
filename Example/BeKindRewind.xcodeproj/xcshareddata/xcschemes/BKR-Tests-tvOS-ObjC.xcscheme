@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0720"
+   LastUpgradeVersion = "0730"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51B9B9391C50D448006156C2"
-               BuildableName = "BKR-Tests-OSX-ObjC.xctest"
-               BlueprintName = "BKR-Tests-OSX-ObjC"
+               BlueprintIdentifier = "51062E2C1CAF051400656AC5"
+               BuildableName = "BKR-Tests-tvOS-ObjC.xctest"
+               BlueprintName = "BKR-Tests-tvOS-ObjC"
                ReferencedContainer = "container:BeKindRewind.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51B9B9391C50D448006156C2"
-               BuildableName = "BKR-Tests-OSX-ObjC.xctest"
-               BlueprintName = "BKR-Tests-OSX-ObjC"
+               BlueprintIdentifier = "51062E2C1CAF051400656AC5"
+               BuildableName = "BKR-Tests-tvOS-ObjC.xctest"
+               BlueprintName = "BKR-Tests-tvOS-ObjC"
                ReferencedContainer = "container:BeKindRewind.xcodeproj">
             </BuildableReference>
             <SkippedTests>
@@ -53,9 +53,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "51B9B9391C50D448006156C2"
-            BuildableName = "BKR-Tests-OSX-ObjC.xctest"
-            BlueprintName = "BKR-Tests-OSX-ObjC"
+            BlueprintIdentifier = "51062E2C1CAF051400656AC5"
+            BuildableName = "BKR-Tests-tvOS-ObjC.xctest"
+            BlueprintName = "BKR-Tests-tvOS-ObjC"
             ReferencedContainer = "container:BeKindRewind.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -75,9 +75,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "51B9B9391C50D448006156C2"
-            BuildableName = "BKR-Tests-OSX-ObjC.xctest"
-            BlueprintName = "BKR-Tests-OSX-ObjC"
+            BlueprintIdentifier = "51062E2C1CAF051400656AC5"
+            BuildableName = "BKR-Tests-tvOS-ObjC.xctest"
+            BlueprintName = "BKR-Tests-tvOS-ObjC"
             ReferencedContainer = "container:BeKindRewind.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

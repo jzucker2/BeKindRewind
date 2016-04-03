@@ -12,8 +12,8 @@
 #import "NSURLSessionTask+BKRAdditions.h"
 #import "NSURLSessionTask+BKRTestAdditions.h"
 
-static NSTimeInterval const kBKRTestConfigurationSetUpTimeoutDefault = 10;
-static NSTimeInterval const kBKRTestConfigurationTearDownTimeoutDefault = 10;
+static NSTimeInterval const kBKRTestConfigurationSetUpTimeoutDefault = 15;
+static NSTimeInterval const kBKRTestConfigurationTearDownTimeoutDefault = 15;
 
 @interface BKRTestConfiguration () <NSCopying>
 @end

@@ -14,6 +14,8 @@
 /**
  *  This category handles the data associated with a network
  *  request and is intended to be used for stubbing.
+ *
+ *  @since 1.0.0
  */
 @interface BKRScene (Playable) <BKRPlistDeserializer>
 
@@ -21,6 +23,8 @@
  *  This is the number of redirects associated with this scene.
  *
  *  @return number of times this should redirect.
+ *
+ *  @since 1.0.0
  */
 - (NSUInteger)numberOfRedirects;
 
@@ -29,6 +33,8 @@
  *
  *  @return If `YES` then the scene contains redirect responses. If `NO` 
  *          then it contains no redirect responses.
+ *
+ *  @since 1.0.0
  */
 - (BOOL)hasRedirects;
 
@@ -36,6 +42,8 @@
  *  Represents the last response for a scene (which includes any final error or data).
  *
  *  @return response stub to mock a request
+ *
+ *  @since 1.0.0
  */
 - (BKRResponseStub *)finalResponseStub;
 
@@ -46,6 +54,8 @@
  *  @param redirectFrame this should be contained by the receiver
  *
  *  @return stub to mock a redirect for a request
+ *
+ *  @since 1.0.0
  */
 - (BKRResponseStub *)responseStubForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
 
@@ -57,6 +67,8 @@
  *  @return returns the an instance of BKRRequestFrame associated with the 
  *          BKRRedirectFrame representing this redirectNumber. This will be nil
  *          if there is no redirect for redirectNumber
+ *
+ *  @since 1.0.0
  */
 - (BKRRequestFrame *)requestFrameForRedirect:(NSUInteger)redirectNumber;
 
@@ -67,6 +79,8 @@
  *
  *  @return returns the an instance of BKRRedirectFrame associated with this redirectNumber.
  *          This will be nil if there is no redirect for redirectNumber
+ *
+ *  @since 1.0.0
  */
 - (BKRRedirectFrame *)redirectFrameForRedirect:(NSUInteger)redirectNumber;
 
@@ -78,6 +92,8 @@
  *
  *  @return returns the a response stub associated with this redirectNumber.
  *          This will be nil if there is no redirect for redirectNumber
+ *
+ *  @since 1.0.0
  */
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
 

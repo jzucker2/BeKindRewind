@@ -29,10 +29,4 @@ Pod::Spec.new do |s|
   s.dependency 'OHHTTPStubs', '~> 5.0.0'
   s.framework = 'XCTest'
   s.source_files = 'BeKindRewind/Core/**/*'
-  s.prepare_command = 'ruby plist_resource_creator.rb'
-
-  s.resource_bundles = {
-    'BeKindRewind' => ['BeKindRewind/Assets/*.plist']
-  }
-
 end

@@ -11,6 +11,8 @@
 
 /**
  *  This subclass is for turning cassettes into stubs in a thread-safe manner
+ *
+ *  @since 1.0.0
  */
 @interface BKRPlayingEditor : BKREditor
 
@@ -20,6 +22,8 @@
  *  @param matcher this must conform to BKRRequestMatching
  *
  *  @return newly-initialized instance of BKRPlayingEditor
+ *
+ *  @since 1.0.0
  */
 - (instancetype)initWithMatcher:(id<BKRRequestMatching>)matcher;
 
@@ -29,11 +33,15 @@
  *  @param matcher this must conform to BKRRequestMatching
  *
  *  @return newly-initialized instance of BKRPlayingEditor
+ *
+ *  @since 1.0.0
  */
 + (instancetype)editorWithMatcher:(id<BKRRequestMatching>)matcher;
 
 /**
  *  This is the matcher passed in during initialization. It is read-only
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
 

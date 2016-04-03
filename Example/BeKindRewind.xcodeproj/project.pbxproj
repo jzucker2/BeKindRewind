@@ -7,7 +7,83 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B170BC8C043554447D4F1D0 /* Pods_BKR_Tests_tvOS_ObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7CBED227DDA3761CB6716C1 /* Pods_BKR_Tests_tvOS_ObjC.framework */; };
 		51062DF61CAEE98000656AC5 /* testPlayingRedirectRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51062DF51CAEE98000656AC5 /* testPlayingRedirectRequest.plist */; };
+		51062E051CAEEC7F00656AC5 /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
+		51062E061CAEEC7F00656AC5 /* BKRPlayingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B95A1C52FA35006156C2 /* BKRPlayingTestCase.m */; };
+		51062E071CAEEC7F00656AC5 /* BKRPlayableVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */; };
+		51062E081CAEEC7F00656AC5 /* BKRRecordableVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 975674DF1C72C88300922EC6 /* BKRRecordableVCRTestCase.m */; };
+		51062E091CAEEC7F00656AC5 /* BKRCassetteTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9BA041C59FFE8006156C2 /* BKRCassetteTestCase.m */; };
+		51062E0A1CAEEC7F00656AC5 /* BKRFilePathHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9C61C57E802006156C2 /* BKRFilePathHelperTestCase.m */; };
+		51062E0B1CAEEC7F00656AC5 /* BKRPlayheadMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56611C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m */; };
+		51062E0C1CAEEC7F00656AC5 /* BKRTestCaseFilePathHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9D51C57F5D3006156C2 /* BKRTestCaseFilePathHelperTestCase.m */; };
+		51062E0D1CAEEC7F00656AC5 /* BKRDefaultTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9DB1C58211A006156C2 /* BKRDefaultTestCase.m */; };
+		51062E0E1CAEEC7F00656AC5 /* BKRRecorderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56371C7EDE1100691220 /* BKRRecorderTestCase.m */; };
+		51062E0F1CAEEC7F00656AC5 /* BKRNSURLRequestAdditionsTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFECDD1C98872800AF6670 /* BKRNSURLRequestAdditionsTestCase.m */; };
+		51062E101CAEEC7F00656AC5 /* BKRPlayerTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */; };
+		51062E111CAEEC7F00656AC5 /* BKRTestVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6B6FA1C7AE3A20063902F /* BKRTestVCRTestCase.m */; };
+		51062E121CAEEC7F00656AC5 /* BKRVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9DF1C598572006156C2 /* BKRVCRTestCase.m */; };
+		51062E131CAEEC7F00656AC5 /* BeKindRewindExampleTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A668C21C83D1C200476A5F /* BeKindRewindExampleTestCase.m */; };
+		51062E141CAEEC8600656AC5 /* XCTestCase+BKRHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */; };
+		51062E151CAEEC8A00656AC5 /* BKRMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56661C7FF82400691220 /* BKRMatcherTestCase.m */; };
+		51062E161CAEEC8F00656AC5 /* BKRBaseTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9751C55F8C9006156C2 /* BKRBaseTestCase.m */; };
+		51062E171CAEEC9200656AC5 /* BKRPlayingTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C563B1C7EE50800691220 /* BKRPlayingTestCase.bundle */; };
+		51062E181CAEEC9500656AC5 /* BKRDefaultTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */; };
+		51062E191CAEEC9900656AC5 /* testPlayingMultipleGETRequests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CC1C6D7717006B5A07 /* testPlayingMultipleGETRequests.plist */; };
+		51062E1A1CAEECAD00656AC5 /* testPlayingRedirectRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51062DF51CAEE98000656AC5 /* testPlayingRedirectRequest.plist */; };
+		51062E1B1CAEECAD00656AC5 /* testPlayingOneCancelledGETRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CD1C6D7717006B5A07 /* testPlayingOneCancelledGETRequest.plist */; };
+		51062E1C1CAEECAD00656AC5 /* testPlayingChunkedDataRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A668C51C865FE800476A5F /* testPlayingChunkedDataRequest.plist */; };
+		51062E1D1CAEECAD00656AC5 /* testPlayingOneGETRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CE1C6D7717006B5A07 /* testPlayingOneGETRequest.plist */; };
+		51062E1E1CAEECAD00656AC5 /* testPlayingOnePOSTRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CF1C6D7717006B5A07 /* testPlayingOnePOSTRequest.plist */; };
+		51062E1F1CAEECAD00656AC5 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436D01C6D7717006B5A07 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist */; };
+		51062E201CAEECAD00656AC5 /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F81C788CFD0063902F /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist */; };
+		51062E211CAEECAD00656AC5 /* testPlayingTwoSimultaneousGETRequests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 515C56681C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist */; };
+		51062E221CAEECB300656AC5 /* testPlayingOffThenOn.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F41C788BEC0063902F /* testPlayingOffThenOn.plist */; };
+		51062E231CAEECB300656AC5 /* testPlayingOnThenOff.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F51C788BEC0063902F /* testPlayingOnThenOff.plist */; };
+		51062E241CAEECB600656AC5 /* SimpleBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D91C57F918006156C2 /* SimpleBundle.bundle */; };
+		51062E251CAEECB800656AC5 /* BKRTestCaseFilePathHelperTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D71C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle */; };
+		51062E261CAEECBB00656AC5 /* SimpleFile.txt in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9CD1C57ECAB006156C2 /* SimpleFile.txt */; };
+		51062E271CAEECBE00656AC5 /* SimplePlistDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D11C57EEC9006156C2 /* SimplePlistDictionary.plist */; };
+		51062E281CAEECC000656AC5 /* SimplePlistArray.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D31C57EED8006156C2 /* SimplePlistArray.plist */; };
+		51062E351CAF052F00656AC5 /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
+		51062E361CAF052F00656AC5 /* BKRPlayingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B95A1C52FA35006156C2 /* BKRPlayingTestCase.m */; };
+		51062E371CAF052F00656AC5 /* BKRPlayableVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */; };
+		51062E381CAF052F00656AC5 /* BKRRecordableVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 975674DF1C72C88300922EC6 /* BKRRecordableVCRTestCase.m */; };
+		51062E391CAF052F00656AC5 /* BKRCassetteTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9BA041C59FFE8006156C2 /* BKRCassetteTestCase.m */; };
+		51062E3A1CAF052F00656AC5 /* BKRFilePathHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9C61C57E802006156C2 /* BKRFilePathHelperTestCase.m */; };
+		51062E3B1CAF052F00656AC5 /* BKRPlayheadMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56611C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m */; };
+		51062E3C1CAF052F00656AC5 /* BKRTestCaseFilePathHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9D51C57F5D3006156C2 /* BKRTestCaseFilePathHelperTestCase.m */; };
+		51062E3D1CAF052F00656AC5 /* BKRDefaultTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9DB1C58211A006156C2 /* BKRDefaultTestCase.m */; };
+		51062E3E1CAF052F00656AC5 /* BKRRecorderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56371C7EDE1100691220 /* BKRRecorderTestCase.m */; };
+		51062E3F1CAF052F00656AC5 /* BKRNSURLRequestAdditionsTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFECDD1C98872800AF6670 /* BKRNSURLRequestAdditionsTestCase.m */; };
+		51062E401CAF052F00656AC5 /* BKRPlayerTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */; };
+		51062E411CAF052F00656AC5 /* BKRTestVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6B6FA1C7AE3A20063902F /* BKRTestVCRTestCase.m */; };
+		51062E421CAF052F00656AC5 /* BKRVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9DF1C598572006156C2 /* BKRVCRTestCase.m */; };
+		51062E431CAF052F00656AC5 /* BeKindRewindExampleTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A668C21C83D1C200476A5F /* BeKindRewindExampleTestCase.m */; };
+		51062E441CAF053300656AC5 /* XCTestCase+BKRHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */; };
+		51062E451CAF053800656AC5 /* BKRMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56661C7FF82400691220 /* BKRMatcherTestCase.m */; };
+		51062E461CAF053B00656AC5 /* BKRBaseTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9751C55F8C9006156C2 /* BKRBaseTestCase.m */; };
+		51062E471CAF053F00656AC5 /* BKRPlayingTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C563B1C7EE50800691220 /* BKRPlayingTestCase.bundle */; };
+		51062E481CAF054100656AC5 /* BKRDefaultTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */; };
+		51062E521CAF054600656AC5 /* testPlayingMultipleGETRequests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CC1C6D7717006B5A07 /* testPlayingMultipleGETRequests.plist */; };
+		51062E531CAF054600656AC5 /* testPlayingRedirectRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51062DF51CAEE98000656AC5 /* testPlayingRedirectRequest.plist */; };
+		51062E541CAF054600656AC5 /* testPlayingOneCancelledGETRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CD1C6D7717006B5A07 /* testPlayingOneCancelledGETRequest.plist */; };
+		51062E551CAF054600656AC5 /* testPlayingChunkedDataRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A668C51C865FE800476A5F /* testPlayingChunkedDataRequest.plist */; };
+		51062E561CAF054600656AC5 /* testPlayingOneGETRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CE1C6D7717006B5A07 /* testPlayingOneGETRequest.plist */; };
+		51062E571CAF054600656AC5 /* testPlayingOnePOSTRequest.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436CF1C6D7717006B5A07 /* testPlayingOnePOSTRequest.plist */; };
+		51062E581CAF054600656AC5 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518436D01C6D7717006B5A07 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist */; };
+		51062E591CAF054600656AC5 /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F81C788CFD0063902F /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist */; };
+		51062E5A1CAF054600656AC5 /* testPlayingTwoSimultaneousGETRequests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 515C56681C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist */; };
+		51062E5B1CAF054E00656AC5 /* testPlayingOffThenOn.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F41C788BEC0063902F /* testPlayingOffThenOn.plist */; };
+		51062E5C1CAF055200656AC5 /* testPlayingOnThenOff.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F51C788BEC0063902F /* testPlayingOnThenOff.plist */; };
+		51062E5D1CAF055400656AC5 /* SimpleBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D91C57F918006156C2 /* SimpleBundle.bundle */; };
+		51062E5E1CAF055700656AC5 /* BKRTestCaseFilePathHelperTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D71C57F674006156C2 /* BKRTestCaseFilePathHelperTestCase.bundle */; };
+		51062E5F1CAF055D00656AC5 /* SimpleFile.txt in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9CD1C57ECAB006156C2 /* SimpleFile.txt */; };
+		51062E601CAF055D00656AC5 /* SimplePlistDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D11C57EEC9006156C2 /* SimplePlistDictionary.plist */; };
+		51062E611CAF055D00656AC5 /* SimplePlistArray.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51B9B9D31C57EED8006156C2 /* SimplePlistArray.plist */; };
+		51062EA01CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */; };
+		51062EA11CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */; };
+		51062EA21CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */; };
 		515C56321C7E8B8800691220 /* BKRDefaultTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */; };
 		515C56381C7EDE1100691220 /* BKRRecorderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56371C7EDE1100691220 /* BKRRecorderTestCase.m */; };
 		515C563A1C7EDE1B00691220 /* BKRPlayerTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */; };
@@ -29,7 +105,6 @@
 		51A6B6F91C788CFD0063902F /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51A6B6F81C788CFD0063902F /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist */; };
 		51A6B6FB1C7AE3A20063902F /* BKRTestVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6B6FA1C7AE3A20063902F /* BKRTestVCRTestCase.m */; };
 		51AFECDE1C98872800AF6670 /* BKRNSURLRequestAdditionsTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFECDD1C98872800AF6670 /* BKRNSURLRequestAdditionsTestCase.m */; };
-		51B9B9421C50D70C006156C2 /* BKRRecordingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CEB9D21C4EBF000030A02D /* BKRRecordingTestCase.m */; };
 		51B9B95B1C52FA35006156C2 /* BKRPlayingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B95A1C52FA35006156C2 /* BKRPlayingTestCase.m */; };
 		51B9B9761C55F8C9006156C2 /* BKRBaseTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9751C55F8C9006156C2 /* BKRBaseTestCase.m */; };
 		51B9B9C71C57E802006156C2 /* BKRFilePathHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9C61C57E802006156C2 /* BKRFilePathHelperTestCase.m */; };
@@ -54,10 +129,15 @@
 
 /* Begin PBXFileReference section */
 		2ABA0ED2BAFDF50ADCC348D3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		35C9D94127DEF923BEB20497 /* Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-tvOS-ObjC/Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
 		46FDC6D62117BCC2DBD07745 /* BeKindRewind.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BeKindRewind.podspec; path = ../BeKindRewind.podspec; sourceTree = "<group>"; };
 		4D2A9743CBA46BB14A7BC2BF /* Pods_BKR_Tests_iOS_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_iOS_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51062DB31CAD8CF200656AC5 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
 		51062DF51CAEE98000656AC5 /* testPlayingRedirectRequest.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingRedirectRequest.plist; sourceTree = "<group>"; };
+		51062E2D1CAF051400656AC5 /* BKR-Tests-tvOS-ObjC.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BKR-Tests-tvOS-ObjC.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		51062E311CAF051400656AC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51062E9E1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRFilePathHelpers.h"; sourceTree = "<group>"; };
+		51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRFilePathHelpers.m"; sourceTree = "<group>"; };
 		515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BKRDefaultTestCase.bundle; sourceTree = "<group>"; };
 		515C56371C7EDE1100691220 /* BKRRecorderTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecorderTestCase.m; sourceTree = "<group>"; };
 		515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRPlayerTestCase.m; sourceTree = "<group>"; };
@@ -106,16 +186,26 @@
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
+		69CB6A3EED8C72F78CC03C5F /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; sourceTree = "<group>"; };
+		8E9A6F8D092267082D61A6BD /* Pods-BKR-Tests-tvOS-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-tvOS-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-tvOS-ObjC/Pods-BKR-Tests-tvOS-ObjC.release.xcconfig"; sourceTree = "<group>"; };
 		975674DF1C72C88300922EC6 /* BKRRecordableVCRTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRRecordableVCRTestCase.m; sourceTree = "<group>"; };
-		9E59074945C065BA79F2E126 /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
-		A24DD58E301A0EF31541A841 /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.release.xcconfig"; sourceTree = "<group>"; };
+		A7CBED227DDA3761CB6716C1 /* Pods_BKR_Tests_tvOS_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_tvOS_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1C68C7F9CE15058CBF4F59A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		D6B2232B287AF1A483EE6486 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; sourceTree = "<group>"; };
+		D6717C9B4C4F69C2728F923F /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		EB1F38437D9C3D2ADFFB664A /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
 		EB34CEC2843B69968024933A /* Pods_BKR_Tests_OSX_ObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BKR_Tests_OSX_ObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FD80DB1E05BDFC0E519806C2 /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-OSX-ObjC/Pods-BKR-Tests-OSX-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		F362C37EC8F2B1745C1855B8 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; path = "../Pods/Target Support Files/Pods-BKR-Tests-iOS-ObjC/Pods-BKR-Tests-iOS-ObjC.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		51062E2A1CAF051400656AC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B170BC8C043554447D4F1D0 /* Pods_BKR_Tests_tvOS_ObjC.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51B9B9371C50D448006156C2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -138,6 +228,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		51062E2E1CAF051400656AC5 /* BKR-Tests-tvOS-ObjC */ = {
+			isa = PBXGroup;
+			children = (
+				51062E311CAF051400656AC5 /* Info.plist */,
+			);
+			path = "BKR-Tests-tvOS-ObjC";
+			sourceTree = "<group>";
+		};
 		51B9B93B1C50D448006156C2 /* BKR-Tests-OSX-ObjC */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +297,8 @@
 			children = (
 				515E35FF1C73B40B00058D74 /* XCTestCase+BKRHelpers.h */,
 				515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */,
+				51062E9E1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.h */,
+				51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */,
 				515C56651C7FF82400691220 /* BKRMatcherTestCase.h */,
 				515C56661C7FF82400691220 /* BKRMatcherTestCase.m */,
 				51B9B9741C55F8C9006156C2 /* BKRBaseTestCase.h */,
@@ -213,6 +313,7 @@
 				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
 				6003F5B5195388D20070C39A /* Tests */,
 				51B9B93B1C50D448006156C2 /* BKR-Tests-OSX-ObjC */,
+				51062E2E1CAF051400656AC5 /* BKR-Tests-tvOS-ObjC */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
 				8DA139DAA742FC7E6914B9AF /* Pods */,
@@ -224,6 +325,7 @@
 			children = (
 				6003F5AE195388D20070C39A /* BKR-Tests-iOS-ObjC.xctest */,
 				51B9B93A1C50D448006156C2 /* BKR-Tests-OSX-ObjC.xctest */,
+				51062E2D1CAF051400656AC5 /* BKR-Tests-tvOS-ObjC.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -237,6 +339,7 @@
 				6003F5AF195388D20070C39A /* XCTest.framework */,
 				4D2A9743CBA46BB14A7BC2BF /* Pods_BKR_Tests_iOS_ObjC.framework */,
 				EB34CEC2843B69968024933A /* Pods_BKR_Tests_OSX_ObjC.framework */,
+				A7CBED227DDA3761CB6716C1 /* Pods_BKR_Tests_tvOS_ObjC.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -276,10 +379,12 @@
 		8DA139DAA742FC7E6914B9AF /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				9E59074945C065BA79F2E126 /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */,
-				D6B2232B287AF1A483EE6486 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */,
-				FD80DB1E05BDFC0E519806C2 /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */,
-				A24DD58E301A0EF31541A841 /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */,
+				D6717C9B4C4F69C2728F923F /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */,
+				69CB6A3EED8C72F78CC03C5F /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */,
+				EB1F38437D9C3D2ADFFB664A /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */,
+				F362C37EC8F2B1745C1855B8 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */,
+				35C9D94127DEF923BEB20497 /* Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig */,
+				8E9A6F8D092267082D61A6BD /* Pods-BKR-Tests-tvOS-ObjC.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -287,6 +392,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		51062E2C1CAF051400656AC5 /* BKR-Tests-tvOS-ObjC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 51062E341CAF051400656AC5 /* Build configuration list for PBXNativeTarget "BKR-Tests-tvOS-ObjC" */;
+			buildPhases = (
+				7D4B1895D902786E500F9C4B /* Check Pods Manifest.lock */,
+				51062E291CAF051400656AC5 /* Sources */,
+				51062E2A1CAF051400656AC5 /* Frameworks */,
+				51062E2B1CAF051400656AC5 /* Resources */,
+				4D48378B3B4EFEAAFDAFD154 /* Embed Pods Frameworks */,
+				04B2838C3AFB7204134ABB8B /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BKR-Tests-tvOS-ObjC";
+			productName = "BKR-Tests-tvOS-ObjC";
+			productReference = 51062E2D1CAF051400656AC5 /* BKR-Tests-tvOS-ObjC.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		51B9B9391C50D448006156C2 /* BKR-Tests-OSX-ObjC */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 51B9B9411C50D448006156C2 /* Build configuration list for PBXNativeTarget "BKR-Tests-OSX-ObjC" */;
@@ -337,6 +462,9 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Jordan Zucker";
 				TargetAttributes = {
+					51062E2C1CAF051400656AC5 = {
+						CreatedOnToolsVersion = 7.3;
+					};
 					51B9B9391C50D448006156C2 = {
 						CreatedOnToolsVersion = 7.2;
 					};
@@ -360,15 +488,59 @@
 			targets = (
 				6003F5AD195388D20070C39A /* BKR-Tests-iOS-ObjC */,
 				51B9B9391C50D448006156C2 /* BKR-Tests-OSX-ObjC */,
+				51062E2C1CAF051400656AC5 /* BKR-Tests-tvOS-ObjC */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		51062E2B1CAF051400656AC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51062E471CAF053F00656AC5 /* BKRPlayingTestCase.bundle in Resources */,
+				51062E481CAF054100656AC5 /* BKRDefaultTestCase.bundle in Resources */,
+				51062E601CAF055D00656AC5 /* SimplePlistDictionary.plist in Resources */,
+				51062E611CAF055D00656AC5 /* SimplePlistArray.plist in Resources */,
+				51062E531CAF054600656AC5 /* testPlayingRedirectRequest.plist in Resources */,
+				51062E561CAF054600656AC5 /* testPlayingOneGETRequest.plist in Resources */,
+				51062E5E1CAF055700656AC5 /* BKRTestCaseFilePathHelperTestCase.bundle in Resources */,
+				51062E521CAF054600656AC5 /* testPlayingMultipleGETRequests.plist in Resources */,
+				51062E5F1CAF055D00656AC5 /* SimpleFile.txt in Resources */,
+				51062E551CAF054600656AC5 /* testPlayingChunkedDataRequest.plist in Resources */,
+				51062E581CAF054600656AC5 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist in Resources */,
+				51062E5B1CAF054E00656AC5 /* testPlayingOffThenOn.plist in Resources */,
+				51062E571CAF054600656AC5 /* testPlayingOnePOSTRequest.plist in Resources */,
+				51062E5A1CAF054600656AC5 /* testPlayingTwoSimultaneousGETRequests.plist in Resources */,
+				51062E541CAF054600656AC5 /* testPlayingOneCancelledGETRequest.plist in Resources */,
+				51062E5C1CAF055200656AC5 /* testPlayingOnThenOff.plist in Resources */,
+				51062E591CAF054600656AC5 /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist in Resources */,
+				51062E5D1CAF055400656AC5 /* SimpleBundle.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51B9B9381C50D448006156C2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51062E171CAEEC9200656AC5 /* BKRPlayingTestCase.bundle in Resources */,
+				51062E181CAEEC9500656AC5 /* BKRDefaultTestCase.bundle in Resources */,
+				51062E271CAEECBE00656AC5 /* SimplePlistDictionary.plist in Resources */,
+				51062E281CAEECC000656AC5 /* SimplePlistArray.plist in Resources */,
+				51062E1A1CAEECAD00656AC5 /* testPlayingRedirectRequest.plist in Resources */,
+				51062E1D1CAEECAD00656AC5 /* testPlayingOneGETRequest.plist in Resources */,
+				51062E251CAEECB800656AC5 /* BKRTestCaseFilePathHelperTestCase.bundle in Resources */,
+				51062E191CAEEC9900656AC5 /* testPlayingMultipleGETRequests.plist in Resources */,
+				51062E261CAEECBB00656AC5 /* SimpleFile.txt in Resources */,
+				51062E1C1CAEECAD00656AC5 /* testPlayingChunkedDataRequest.plist in Resources */,
+				51062E1F1CAEECAD00656AC5 /* testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses.plist in Resources */,
+				51062E221CAEECB300656AC5 /* testPlayingOffThenOn.plist in Resources */,
+				51062E1E1CAEECAD00656AC5 /* testPlayingOnePOSTRequest.plist in Resources */,
+				51062E211CAEECAD00656AC5 /* testPlayingTwoSimultaneousGETRequests.plist in Resources */,
+				51062E1B1CAEECAD00656AC5 /* testPlayingOneCancelledGETRequest.plist in Resources */,
+				51062E231CAEECB300656AC5 /* testPlayingOnThenOff.plist in Resources */,
+				51062E201CAEECAD00656AC5 /* testPlayingNoMockingWhenVCRIsNotSentPlay.plist in Resources */,
+				51062E241CAEECB600656AC5 /* SimpleBundle.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,6 +573,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		04B2838C3AFB7204134ABB8B /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-BKR-Tests-tvOS-ObjC/Pods-BKR-Tests-tvOS-ObjC-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		1542F7361C8470327B11F598 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -417,6 +604,36 @@
 			showEnvVarsInLog = 0;
 		};
 		31335A312D267E6CE0D04599 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		4D48378B3B4EFEAAFDAFD154 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-BKR-Tests-tvOS-ObjC/Pods-BKR-Tests-tvOS-ObjC-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7D4B1895D902786E500F9C4B /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -494,11 +711,55 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		51062E291CAF051400656AC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51062E451CAF053800656AC5 /* BKRMatcherTestCase.m in Sources */,
+				51062E371CAF052F00656AC5 /* BKRPlayableVCRTestCase.m in Sources */,
+				51062E3E1CAF052F00656AC5 /* BKRRecorderTestCase.m in Sources */,
+				51062E3B1CAF052F00656AC5 /* BKRPlayheadMatcherTestCase.m in Sources */,
+				51062E421CAF052F00656AC5 /* BKRVCRTestCase.m in Sources */,
+				51062E3C1CAF052F00656AC5 /* BKRTestCaseFilePathHelperTestCase.m in Sources */,
+				51062E391CAF052F00656AC5 /* BKRCassetteTestCase.m in Sources */,
+				51062E441CAF053300656AC5 /* XCTestCase+BKRHelpers.m in Sources */,
+				51062E3D1CAF052F00656AC5 /* BKRDefaultTestCase.m in Sources */,
+				51062E431CAF052F00656AC5 /* BeKindRewindExampleTestCase.m in Sources */,
+				51062EA21CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */,
+				51062E401CAF052F00656AC5 /* BKRPlayerTestCase.m in Sources */,
+				51062E411CAF052F00656AC5 /* BKRTestVCRTestCase.m in Sources */,
+				51062E3F1CAF052F00656AC5 /* BKRNSURLRequestAdditionsTestCase.m in Sources */,
+				51062E3A1CAF052F00656AC5 /* BKRFilePathHelperTestCase.m in Sources */,
+				51062E461CAF053B00656AC5 /* BKRBaseTestCase.m in Sources */,
+				51062E361CAF052F00656AC5 /* BKRPlayingTestCase.m in Sources */,
+				51062E381CAF052F00656AC5 /* BKRRecordableVCRTestCase.m in Sources */,
+				51062E351CAF052F00656AC5 /* BKRRecordingTestCase.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51B9B9361C50D448006156C2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51B9B9421C50D70C006156C2 /* BKRRecordingTestCase.m in Sources */,
+				51062E151CAEEC8A00656AC5 /* BKRMatcherTestCase.m in Sources */,
+				51062E071CAEEC7F00656AC5 /* BKRPlayableVCRTestCase.m in Sources */,
+				51062E0E1CAEEC7F00656AC5 /* BKRRecorderTestCase.m in Sources */,
+				51062E0B1CAEEC7F00656AC5 /* BKRPlayheadMatcherTestCase.m in Sources */,
+				51062E121CAEEC7F00656AC5 /* BKRVCRTestCase.m in Sources */,
+				51062E0C1CAEEC7F00656AC5 /* BKRTestCaseFilePathHelperTestCase.m in Sources */,
+				51062E091CAEEC7F00656AC5 /* BKRCassetteTestCase.m in Sources */,
+				51062E141CAEEC8600656AC5 /* XCTestCase+BKRHelpers.m in Sources */,
+				51062E0D1CAEEC7F00656AC5 /* BKRDefaultTestCase.m in Sources */,
+				51062E131CAEEC7F00656AC5 /* BeKindRewindExampleTestCase.m in Sources */,
+				51062EA11CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */,
+				51062E101CAEEC7F00656AC5 /* BKRPlayerTestCase.m in Sources */,
+				51062E111CAEEC7F00656AC5 /* BKRTestVCRTestCase.m in Sources */,
+				51062E0F1CAEEC7F00656AC5 /* BKRNSURLRequestAdditionsTestCase.m in Sources */,
+				51062E0A1CAEEC7F00656AC5 /* BKRFilePathHelperTestCase.m in Sources */,
+				51062E161CAEEC8F00656AC5 /* BKRBaseTestCase.m in Sources */,
+				51062E061CAEEC7F00656AC5 /* BKRPlayingTestCase.m in Sources */,
+				51062E081CAEEC7F00656AC5 /* BKRRecordableVCRTestCase.m in Sources */,
+				51062E051CAEEC7F00656AC5 /* BKRRecordingTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -516,6 +777,7 @@
 				51AFECDE1C98872800AF6670 /* BKRNSURLRequestAdditionsTestCase.m in Sources */,
 				515C563A1C7EDE1B00691220 /* BKRPlayerTestCase.m in Sources */,
 				515C56621C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m in Sources */,
+				51062EA01CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */,
 				515E36011C73B40B00058D74 /* XCTestCase+BKRHelpers.m in Sources */,
 				51A668C31C83D1C200476A5F /* BeKindRewindExampleTestCase.m in Sources */,
 				51B9B95B1C52FA35006156C2 /* BKRPlayingTestCase.m in Sources */,
@@ -541,12 +803,53 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		51062E321CAF051400656AC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 35C9D94127DEF923BEB20497 /* Pods-BKR-Tests-tvOS-ObjC.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "BKR-Tests-tvOS-ObjC/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "stanera.BKR-Tests-tvOS-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
+		51062E331CAF051400656AC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8E9A6F8D092267082D61A6BD /* Pods-BKR-Tests-tvOS-ObjC.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "BKR-Tests-tvOS-ObjC/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "stanera.BKR-Tests-tvOS-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
 		51B9B93F1C50D448006156C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FD80DB1E05BDFC0E519806C2 /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */;
+			baseConfigurationReference = D6717C9B4C4F69C2728F923F /* Pods-BKR-Tests-OSX-ObjC.debug.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -563,10 +866,10 @@
 		};
 		51B9B9401C50D448006156C2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A24DD58E301A0EF31541A841 /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */;
+			baseConfigurationReference = 69CB6A3EED8C72F78CC03C5F /* Pods-BKR-Tests-OSX-ObjC.release.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -657,7 +960,7 @@
 		};
 		6003F5C3195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9E59074945C065BA79F2E126 /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */;
+			baseConfigurationReference = EB1F38437D9C3D2ADFFB664A /* Pods-BKR-Tests-iOS-ObjC.debug.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -676,7 +979,7 @@
 		};
 		6003F5C4195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D6B2232B287AF1A483EE6486 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */;
+			baseConfigurationReference = F362C37EC8F2B1745C1855B8 /* Pods-BKR-Tests-iOS-ObjC.release.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -692,6 +995,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		51062E341CAF051400656AC5 /* Build configuration list for PBXNativeTarget "BKR-Tests-tvOS-ObjC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				51062E321CAF051400656AC5 /* Debug */,
+				51062E331CAF051400656AC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		51B9B9411C50D448006156C2 /* Build configuration list for PBXNativeTarget "BKR-Tests-OSX-ObjC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
