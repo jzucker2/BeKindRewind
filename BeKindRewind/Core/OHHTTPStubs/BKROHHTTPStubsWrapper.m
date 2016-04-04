@@ -21,8 +21,9 @@
     OHHTTPStubsResponse *mockingResponse = nil;
     if (responseStub.isError) {
         mockingResponse = [OHHTTPStubsResponse responseWithError:responseStub.error];
+    } else {
+        mockingResponse = [[OHHTTPStubsResponse alloc] initWithInputStream:responseStub.inputStream dataSize:responseStub.dataSize statusCode:responseStub.statusCode headers:responseStub.headers];
     }
-    mockingResponse = [[OHHTTPStubsResponse alloc] initWithInputStream:responseStub.inputStream dataSize:responseStub.dataSize statusCode:responseStub.statusCode headers:responseStub.headers];
     if (
         responseStub.requestTime ||
         responseStub.responseTime
