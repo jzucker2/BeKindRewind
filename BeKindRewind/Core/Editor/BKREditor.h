@@ -17,12 +17,16 @@
  *
  *  @param updatedEnabled current enabled state of editor
  *  @param cassette       current cassette when block is being processed.
+ *
+ *  @since 1.0.0
  */
 typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *cassette);
 
 /**
  *  This object is responsible for translating BeKindRewind network information between cassettes
  *  and network objects
+ *
+ *  @since 1.0.0
  */
 @interface BKREditor : NSObject
 
@@ -30,11 +34,15 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *  Convenience initializer
  *
  *  @return instance of BKREditor
+ *
+ *  @since 1.0.0
  */
 + (instancetype)editor;
 
 /**
  *  Determines whether editor should be executing
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
@@ -44,6 +52,8 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *
  *  @param enabled      this determines whether the editor is enabled or disabled.
  *  @param editingBlock this is called on the receiver's queue
+ *
+ *  @since 1.0.0
  */
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock;
 
@@ -52,6 +62,8 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *  the editor instance
  *
  *  @param cassetteEditingBlock this is called on the receiver's queue
+ *
+ *  @since 1.0.0
  */
 - (void)editCassette:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
@@ -60,6 +72,8 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *  the editor instance. This blocks on the queue that it is called in
  *
  *  @param cassetteEditingBlock this is called on the receiver's queue
+ *
+ *  @since 1.0.0
  */
 - (void)editCassetteSynchronously:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
@@ -71,16 +85,22 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *          anything within the cassette instance.
  *
  *  @param cassetteEditingBlock this is called on the receiver's queue
+ *
+ *  @since 1.0.0
  */
 - (void)readCassette:(BKRCassetteEditingBlock)cassetteEditingBlock;
 
 /**
  *  Separate queue for processing editing actions
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic) dispatch_queue_t editingQueue;
 
 /**
  *  Cassette to perform editing actions on, editing will not occur if cassette is nil
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, strong) BKRCassette *currentCassette;
 
@@ -88,6 +108,8 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *  All scenes from cassette in order of creation
  *
  *  @return array of ordered scenes
+ *
+ *  @since 1.0.0
  */
 - (NSArray<BKRScene *> *)allScenes;
 
@@ -99,6 +121,8 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *
  *  @param completionBlock run on the receiver's queue after the reset 
  *                         actions are performed
+ *
+ *  @since 1.0.0
  */
 - (void)resetWithCompletionBlock:(void(^)(void))completionBlock;
 

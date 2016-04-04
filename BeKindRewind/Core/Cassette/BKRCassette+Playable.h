@@ -11,6 +11,8 @@
 
 /**
  *  This category is for playable-related functionality for a BKRCassette instance
+ *
+ *  @since 1.0.0
  */
 @interface BKRCassette (Playable) <BKRPlistDeserializer>
 
@@ -20,6 +22,8 @@
  *  @param dictionary contains Foundation objects with information to create a BKRCassette
  *
  *  @return newly initialized instance of BKRCassette
+ *
+ *  @since 1.0.0
  */
 + (instancetype)cassetteFromDictionary:(NSDictionary *)dictionary;
 

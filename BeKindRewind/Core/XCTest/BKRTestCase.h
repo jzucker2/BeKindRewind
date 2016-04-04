@@ -14,6 +14,8 @@
  *  to the BKRTesting protocol and does all of the necessary configuration for easy usage of
  *  BeKindRewind. Use this implementation as a guide if you need to implement BeKindRewind into
  *  your own XCTestCase subclass.
+ *
+ *  @since 1.0.0
  */
 @interface BKRTestCase : XCTestCase <BKRTesting>
 @end

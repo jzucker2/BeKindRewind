@@ -6,8 +6,9 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <BeKindRewind/BKRFilePathHelper.h>
 #import <XCTest/XCTest.h>
+#import <BeKindRewind/BKRFilePathHelper.h>
+#import "XCTestCase+BKRFilePathHelpers.h"
 
 @interface BKRFilePathHelperTestCase : XCTestCase
 
@@ -26,17 +27,19 @@
 }
 
 - (void)testFindSimpleFile {
-    NSString *expectedFilePath = [BKRFilePathHelper findPathForFile:@"SimpleFile.txt" inBundleForClass:self.class];
+    NSString *expectedFileName = @"SimpleFile.txt";
+    NSString *expectedFilePath = [BKRFilePathHelper findPathForFile:expectedFileName inBundleForClass:self.class];
     XCTAssertNotNil(expectedFilePath);
     // start of file path is dependent on machine, that will change depending on where it is run.
     // but end will always be the same
-    XCTAssertTrue([expectedFilePath hasSuffix:@".xctest/SimpleFile.txt"]);
+    XCTAssertTrue([expectedFilePath hasSuffix:[self expectedSuffixForFileNameInProject:expectedFileName]]);
 }
 
 - (void)testFindExistingBundleInProject {
-    NSBundle *bundle = [BKRFilePathHelper findBundle:@"SimpleBundle" containingClass:self.class];
+    NSString *bundleName = @"SimpleBundle";
+    NSBundle *bundle = [BKRFilePathHelper findBundle:bundleName containingClass:self.class];
     XCTAssertNotNil(bundle);
-    XCTAssertTrue([bundle.bundlePath hasSuffix:@".xctest/SimpleBundle.bundle"]);
+    XCTAssertTrue([bundle.bundlePath hasSuffix:[self expectedSuffixForBundleInProject:bundleName]]);
 }
 
 - (void)testReturnsNilForNonexistentBundleInProject {
@@ -45,9 +48,11 @@
 }
 
 - (void)testFindSimpleFileFromExistingBundleInProject {
-    NSString *filePath = [BKRFilePathHelper findPathForFile:@"SimpleFileInBundle.txt" inBundle:@"SimpleBundle" inBundleForClass:self.class];
+    NSString *fileName = @"SimpleFileInBundle.txt";
+    NSString *bundleName = @"SimpleBundle";
+    NSString *filePath = [BKRFilePathHelper findPathForFile:fileName inBundle:bundleName inBundleForClass:self.class];
     XCTAssertNotNil(filePath);
-    XCTAssertTrue([filePath hasSuffix:@".xctest/SimpleBundle.bundle/SimpleFileInBundle.txt"]);
+    XCTAssertTrue([filePath hasSuffix:[self expectedSuffixForFileName:fileName inBundle:bundleName]]);
 }
 
 - (void)testReturnNilForNonexistentFileInExistingBundleInProject {
@@ -110,23 +115,25 @@
 - (void)testFindDocumentsDirectory {
     NSString *filePath = [BKRFilePathHelper documentsDirectory];
     XCTAssertNotNil(filePath);
-    XCTAssertTrue([filePath hasSuffix:@"/data/Documents"]);
+    XCTAssertTrue([filePath hasSuffix:self.documentsDirectorySuffix]);
 }
 
 - (void)testCreateBundleInDocumentsDirectory {
     NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
     XCTAssertNotNil(documentsDirectory);
-    NSBundle *createdBundle = [BKRFilePathHelper writingBundleNamed:@"TestBundle" inDirectory:documentsDirectory];
+    NSString *bundleName = @"TestBundle";
+    NSBundle *createdBundle = [BKRFilePathHelper writingBundleNamed:bundleName inDirectory:documentsDirectory];
     XCTAssertNotNil(createdBundle);
-    XCTAssertTrue([createdBundle.bundlePath hasSuffix:@"/data/Documents/TestBundle.bundle"]);
+    XCTAssertTrue([createdBundle.bundlePath hasSuffix:[self expectedSuffixForBundleInDocumentsDirectory:bundleName]]);
 }
 
 - (void)testReturnsExistingBundleForWritingIfAlreadyExists {
     NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
     XCTAssertNotNil(documentsDirectory);
-    NSBundle *createdBundle = [BKRFilePathHelper writingBundleNamed:@"BundleWithItem" inDirectory:documentsDirectory];
-    XCTAssertNotNil(createdBundle);
-    XCTAssertTrue([createdBundle.bundlePath hasSuffix:@"/data/Documents/BundleWithItem.bundle"]);
+    NSString *bundleName = @"BundleWithItem";
+    NSBundle *createdBundle = [BKRFilePathHelper writingBundleNamed:bundleName inDirectory:documentsDirectory];
+    XCTAssertNotNil(createdBundle);    
+    XCTAssertTrue([createdBundle.bundlePath hasSuffix:[self expectedSuffixForBundleInDocumentsDirectory:bundleName]]);
     
     NSString *createdFileName = @"createdfile.txt";
     NSString *createdFilePath = [createdBundle.bundlePath stringByAppendingPathComponent:createdFileName];
@@ -135,7 +142,7 @@
     BOOL fileCreated = [[NSFileManager defaultManager] createFileAtPath:createdFilePath contents:createdFileContents attributes:nil];
     XCTAssertTrue(fileCreated);
     
-    NSBundle *sameBundle = [BKRFilePathHelper writingBundleNamed:@"BundleWithItem" inDirectory:documentsDirectory];
+    NSBundle *sameBundle = [BKRFilePathHelper writingBundleNamed:bundleName inDirectory:documentsDirectory];
     XCTAssertNotNil(sameBundle);
     NSString *otherCreatedFilePath = [sameBundle.bundlePath stringByAppendingPathComponent:createdFileName];
     XCTAssertNotNil(otherCreatedFilePath);
@@ -153,7 +160,7 @@
                                      };
     NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
     XCTAssertNotNil(documentsDirectory);
-    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    XCTAssertTrue([documentsDirectory hasSuffix:[self documentsDirectorySuffix]]);
     
     NSString *fullPath = [documentsDirectory stringByAppendingPathComponent:@"CreatedDictionary.plist"];
     XCTAssertNotNil(fullPath);
@@ -175,7 +182,7 @@
                                          };
     NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
     XCTAssertNotNil(documentsDirectory);
-    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    XCTAssertTrue([documentsDirectory hasSuffix:self.documentsDirectorySuffix]);
     
     NSString *fullPath = [documentsDirectory stringByAppendingPathComponent:@"OverwritingDictionary.plist"];
     XCTAssertNotNil(fullPath);
@@ -208,7 +215,7 @@
 - (void)testFilePathExistsReturnsYESForActualFilePath {
     NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
     XCTAssertNotNil(documentsDirectory);
-    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    XCTAssertTrue([documentsDirectory hasSuffix:[self documentsDirectorySuffix]]);
     XCTAssertTrue([BKRFilePathHelper filePathExists:documentsDirectory]);
 }
 

@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  This has additions used for interacting with NSURL instances within BeKindRewind.
+ *
+ *  @since 1.0.0
  */
 @interface NSURL (BKRAdditions)
 
@@ -19,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  Returns a URL containing everything up until the path component.
  *
  *  @return a base URL only containing everything up until the path component.
+ *
+ *  @since 1.0.0
  */
 - (nullable instancetype)BKR_baseURL;
 
@@ -28,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param absoluteURL URL to create the base URL from
  *
  *  @return a base URL only containing everything up until the path component.
+ *
+ *  @since 1.0.0
  */
 + (nullable instancetype)BKR_baseURLFromAbsoluteURL:(nullable NSURL *)absoluteURL;
 

@@ -9,6 +9,8 @@
 #import "BKRConfiguration.h"
 #import "BKRPlayheadMatcher.h"
 
+static BOOL const kBKRShouldSaveEmptyCassetteDefault = YES;
+
 @interface BKRConfiguration () <NSCopying>
 @end
 
@@ -19,7 +21,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _shouldSaveEmptyCassette = NO;
+        _shouldSaveEmptyCassette = kBKRShouldSaveEmptyCassetteDefault;
     }
     return self;
 }

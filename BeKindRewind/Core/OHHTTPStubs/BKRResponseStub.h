@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  This is used by BeKindRewind to mock a server response. This instance 
  *  contains everything necessary to stub the response using the OHHTTPStubs 
  *  framework.
+ *
+ *  @since 1.0.0
  */
 @interface BKRResponseStub : NSObject
 
@@ -28,6 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param headers    this is the headers returned for the request that is being mocked.
  *
  *  @return newly initialized instance of BKRResponseStub
+ *
+ *  @since 1.0.0
  */
 + (instancetype)responseWithData:(nullable NSData *)data statusCode:(int)statusCode headers:(nullable NSDictionary *)headers;
 
@@ -38,6 +42,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param error this is everything associated with the failed or error-ed network request.
  *
  *  @return newly initialized instance of BKRResponseStub
+ *
+ *  @since 1.0.0
  */
 + (instancetype)responseWithError:(NSError *)error;
 
@@ -49,26 +55,36 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param response this is an object native to the OHHTTPStubs framework.
  *
  *  @return newly initialized instance of BKRResponseStub
+ *
+ *  @since 1.0.0
  */
 + (instancetype)responseWithStubsResponse:(OHHTTPStubsResponse *)response;
 
 /**
  *  This is provided to OHHTTPStubs that is delivered for the mocked network action.
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly, nullable) NSInputStream *inputStream;
 
 /**
  *  This is the size of the data to mock the network action.
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, assign, readonly) unsigned long long dataSize;
 
 /**
  *  This is the status code used for the network response.
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, assign, readonly) int statusCode;
 
 /**
  *  This is a dictionary of headers associated with the network action.
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly, nullable) NSDictionary *headers;
 
@@ -76,6 +92,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  This property determines whether the response is an error or a 
  *  network action. If this is not nil then all other properties are 
  *  ignored and only this is used to mock the network action.
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly, nullable) NSError *error;
 
@@ -83,6 +101,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  This extracts the scene identifier from information contained within the stub.
  *
  *  @return string that can be used to identify the BKRScene that is being mocked by the receiver.
+ *
+ *  @since 1.0.0
  */
 - (NSString *)sceneIdentifier;
 
@@ -92,6 +112,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return If `YES` then the receiver represents an errored 
  *          network action. If `NO` then the receiver represents a 
  *          network action that has responses and possibly data.
+ *
+ *  @since 1.0.0
  */
 - (BOOL)isError;
 
@@ -101,6 +123,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return If `YES` then the receiver represents an redirect to a
  *          network action. If `NO` then the receiver represents a
  *          network action that has either responses or an error.
+ *
+ *  @since 1.0.0
  */
 - (BOOL)isRedirect;
 

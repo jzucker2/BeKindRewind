@@ -5,7 +5,7 @@
 //  Created by Jordan Zucker on 1/18/16.
 //
 //
-#if TARGET_OS_IOS
+#if TARGET_OS_IPHONE
     #import <UIKit/UIKit.h>
 #endif
 

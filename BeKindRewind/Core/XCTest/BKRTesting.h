@@ -15,22 +15,25 @@
  *  This protocol provides the structure necessary for proper BeKindRewind network recording
  *  and stubbing during a XCTest run. Use this protocol as a guide if you need to implement
  *  your own XCTestCase subclass that utilizes BeKindRewind
+ *
+ *  @since 1.0.0
  */
 @protocol BKRTesting <NSObject>
 
 /**
  *  This method determines whether the test case will record or stub all network requests.
- *  If this method returns a YES then it __(save to the location specified by ___ method).
- *  If this method returns a NO then it will expect to have a BKRPlayableCassette provided
- *  for stubbing methods.
- *
- *  @note this needs to be fleshed out when test subclass is finished
+ *  If this method returns a YES then it records network events (saved to the location specified by
+ *  `recordingCassetteFilePathWithBaseDirectoryFilePath:` method). If this method 
+ *  returns a NO then it will expect to have a BKRPlayableCassette provided
+ *  for stubbing methods. Default value is `YES` so that tests will record during development.
  *
  *  @return YES means network requests are recorded and NO means that network requests are 
  *  stubbed. NO is returned by default unless overridden. This should be NO for continuous 
  *  integration so that requests are stubbed during automated testing
+ *
+ *  @since 1.0.0
  */
-- (BOOL)isRecording; // default is YES so that it runs during dev for new classes
+- (BOOL)isRecording;
 
 /**
  *  This is the matcher class used to stub responses to requests during playback. This is
@@ -38,6 +41,8 @@
  *  use for stubbing responses. The default matcher class is BKRPlayheadMatcher
  *
  *  @return class conforming to BKRRequestMatching protocol
+ *
+ *  @since 1.0.0
  */
 - (BKRTestConfiguration *)testConfiguration;
 
@@ -48,11 +53,15 @@
  *  @param configuration this passes in the BKRTestConfiguration that is returned by testConfiguration
  *
  *  @return an object conforming to BKRTestVCRActions
+ *
+ *  @since 1.0.0
  */
 - (id<BKRTestVCRActions>)testVCRWithConfiguration:(BKRTestConfiguration *)configuration;
 
 /**
  *  This is the object created by testVCRWithConfiguration:
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly) id<BKRTestVCRActions>currentVCR;
 
@@ -60,6 +69,8 @@
  *  This is the base directory to search for the NSBundle instances containing fixtures
  *
  *  @return full path to start the search for fixture NSBundle instances
+ *
+ *  @since 1.0.0
  */
 - (NSString *)baseFixturesDirectoryFilePath;
 
@@ -72,6 +83,8 @@
  *                               the result of `[self baseFixturesDirectoryFilePath]`
  *
  *  @return the full path of where to save recordings to on disk at the end of the run
+ *
+ *  @since 1.0.0
  */
 - (NSString *)recordingCassetteFilePathWithBaseDirectoryFilePath:(NSString *)baseDirectoryFilePath;
 
@@ -80,6 +93,8 @@
  *  This is only expected to be called if `[self isRecording]` returns YES
  *
  *  @return fully created instance of BKRCassette containing any recordings to be used for playing
+ *
+ *  @since 1.0.0
  */
 - (BKRCassette *)playingCassette;
 
@@ -89,6 +104,8 @@
  *  blank instance of BKRCassette like `[BKRCassette cassette]`
  *
  *  @return fully created instance of BKRCassette to store network events on
+ *
+ *  @since 1.0.0
  */
 - (BKRCassette *)recordingCassette;
 
