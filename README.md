@@ -205,7 +205,7 @@ Jordan Zucker, jordan.zucker@gmail.com
 
 ## License
 
-BeKindRewind is available under the MIT license. See the LICENSE file for more info.
+BeKindRewind is available under the MIT license. See the [LICENSE](https://github.com/jzucker2/BeKindRewind/blob/master/LICENSE) file for more info.
 
 ## Future features
 * Swift tests (at least basic)
