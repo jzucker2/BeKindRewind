@@ -50,6 +50,10 @@ const double BKRDownloadSpeedWifi   =- 12000 / 8; // kbps -> KB/s
 
 - (instancetype)initWithStubsResponse:(OHHTTPStubsResponse *)response {
     self = [self initWithInputStream:response.inputStream dataSize:response.dataSize statusCode:response.statusCode headers:response.httpHeaders error:response.error];
+    if (self) {
+        _requestTime = response.requestTime;
+        _responseTime = response.responseTime;
+    }
     return self;
 }
 

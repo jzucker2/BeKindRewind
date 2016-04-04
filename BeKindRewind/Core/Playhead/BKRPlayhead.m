@@ -14,6 +14,9 @@
 
 typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 
+const NSString *kBKRReturnedResponseStubKey = @"BKRReturnedResponseStubKey";
+const NSString *kBKRReturnedRequestKey = @"BKRReturnedRequestKey";
+
 @interface BKRPlayheadItem ()
 @property (nonatomic, strong, readwrite) BKRScene *scene;
 @end
@@ -26,8 +29,7 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
         _scene = scene;
         _redirectsCompleted = 0;
         _state = BKRPlayingSceneStateInactive;
-        _responseStubs = [NSMutableArray array];
-        _requests = [NSMutableArray array];
+        _returnedResponses = [NSMutableArray array];
     }
     return self;
 }
@@ -46,8 +48,9 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 
 - (NSUInteger)numberOfRedirectsStubbed {
     __block NSUInteger redirectsStubbed = 0;
-    [self.responseStubs.copy enumerateObjectsUsingBlock:^(BKRResponseStub * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.isRedirect) {
+    [self.returnedResponses.copy enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BKRResponseStub *stub = obj[kBKRReturnedResponseStubKey];
+        if (stub.isRedirect) {
             redirectsStubbed++;
         }
     }];
@@ -55,8 +58,9 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 }
 
 - (BOOL)hasFinalResponseStub {
-    return [self.responseStubs.copy BKR_any:^BOOL(id obj) {
-        BKRResponseStub *responseStub = (BKRResponseStub *)obj;
+    return [self.returnedResponses.copy BKR_any:^BOOL(id obj) {
+        NSDictionary *returnedResponseDictionary = (NSDictionary *)obj;
+        BKRResponseStub *responseStub = returnedResponseDictionary[kBKRReturnedResponseStubKey];
         // if the BKRPlayheadItem contains a non redirect response, it has a finalResponseStub
         return (!responseStub.isRedirect);
     }];
@@ -151,10 +155,14 @@ typedef void (^BKRUpdatePlayheadItemBlock)(BKRPlayheadItem *item);
 
 - (void)addResponseStub:(BKRResponseStub *)responseStub forRequest:(NSURLRequest *)request {
     [self _updateFirstPlayheadItemMatchingResponseStub:responseStub withUpdateBlock:^(BKRPlayheadItem *item) {
-        // TODO: consider linking these items together. Storing them in separate collections seems
-        // less than ideal
-        [item.responseStubs addObject:responseStub];
-        [item.requests addObject:request];
+        NSMutableDictionary *returnedStubDictionary = [NSMutableDictionary dictionary];
+        if (responseStub) {
+            returnedStubDictionary[kBKRReturnedResponseStubKey] = responseStub;
+        }
+        if (request) {
+            returnedStubDictionary[kBKRReturnedRequestKey] = request;
+        }
+        [item.returnedResponses addObject:returnedStubDictionary.copy];
     }];
 }
 
