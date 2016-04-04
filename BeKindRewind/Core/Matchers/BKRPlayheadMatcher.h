@@ -16,6 +16,8 @@
  *  
  *  @note this class can easily be subclassed to adjust the rules
  *  used for matching
+ *
+ *  @since 1.0.0
  */
 @interface BKRPlayheadMatcher : NSObject <BKRRequestMatching>
 @end

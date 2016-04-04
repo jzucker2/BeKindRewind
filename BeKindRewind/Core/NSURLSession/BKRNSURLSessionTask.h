@@ -11,11 +11,15 @@
 /**
  *  This represents a NSURLSessionTask used for making
  *  network requests
+ *
+ *  @since 1.0.0
  */
 @interface BKRNSURLSessionTask : NSObject
 
 /**
  *  This overrides all NSURLSessionTask objects for recording
+ *
+ *  @since 1.0.0
  */
 + (void)swizzleNSURLSessionTask;
 

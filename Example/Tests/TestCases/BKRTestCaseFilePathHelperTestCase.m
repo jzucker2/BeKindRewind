@@ -6,8 +6,9 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <BeKindRewind/BKRTestCaseFilePathHelper.h>
 #import <XCTest/XCTest.h>
+#import <BeKindRewind/BKRTestCaseFilePathHelper.h>
+#import "XCTestCase+BKRFilePathHelpers.h"
 
 @interface BKRTestCaseFilePathHelperTestCase : XCTestCase
 
@@ -40,23 +41,15 @@
     XCTAssertNotNil(documentsDirectory);
     NSBundle *createBundle = [BKRTestCaseFilePathHelper writingBundleForTestCase:self inDirectory:documentsDirectory];
     XCTAssertNotNil(createBundle);
-    NSString *expectedBundleName = [NSStringFromClass(self.class) stringByAppendingPathExtension:@"bundle"];
-    XCTAssertNotNil(expectedBundleName);
-    NSString *expectedSuffix = [@"/data/Documents" stringByAppendingPathComponent:expectedBundleName];
-    XCTAssertNotNil(expectedSuffix);
-    XCTAssertTrue([createBundle.bundlePath hasSuffix:expectedSuffix]);
+    XCTAssertTrue([createBundle.bundlePath hasSuffix:[self expectedSuffixForBundleNamedAfterTestCaseInDocumentsDirectory:self]]);
 }
 
 - (void)testReturnsExistingBundleForWritingIfAlreadyExists {
-    NSString *expectedBundleName = [NSStringFromClass(self.class) stringByAppendingPathExtension:@"bundle"];
-    XCTAssertNotNil(expectedBundleName);
-    
     NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
     XCTAssertNotNil(documentsDirectory);
     NSBundle *createdBundle = [BKRFilePathHelper writingBundleNamed:NSStringFromClass(self.class) inDirectory:documentsDirectory];
     XCTAssertNotNil(createdBundle);
-    NSString *expectedSuffix = [@"/data/Documents" stringByAppendingPathComponent:expectedBundleName];
-    XCTAssertTrue([createdBundle.bundlePath hasSuffix:expectedSuffix]);
+    XCTAssertTrue([createdBundle.bundlePath hasSuffix:[self expectedSuffixForBundleNamedAfterTestCaseInDocumentsDirectory:self]]);
     
     NSString *createdFileName = @"createdfile.txt";
     NSString *createdFilePath = [createdBundle.bundlePath stringByAppendingPathComponent:createdFileName];
@@ -87,7 +80,7 @@
     
     NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
     XCTAssertNotNil(documentsDirectory);
-    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    XCTAssertTrue([documentsDirectory hasSuffix:self.documentsDirectorySuffix]);
     
     BOOL plistCreated = [BKRTestCaseFilePathHelper writeDictionary:testDictionary forTestCase:self toDirectory:documentsDirectory];
     XCTAssertTrue(plistCreated);
@@ -116,7 +109,7 @@
     
     NSString *documentsDirectory = [BKRFilePathHelper documentsDirectory];
     XCTAssertNotNil(documentsDirectory);
-    XCTAssertTrue([documentsDirectory hasSuffix:@"/data/Documents"]);
+    XCTAssertTrue([documentsDirectory hasSuffix:self.documentsDirectorySuffix]);
     
     BOOL plistCreated = [BKRTestCaseFilePathHelper writeDictionary:originalDictionary forTestCase:self toDirectory:documentsDirectory];
     XCTAssertTrue(plistCreated);

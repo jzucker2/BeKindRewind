@@ -1,5 +1,13 @@
 # BeKindRewind — CHANGELOG
 
+## [1.0.0](https://github.com/jzucker2/BeKindRewind/releases/tag/1.0.0)
+
+* Official full release.
+* Added `@since` tags to all inline documentation.
+* Added support for testing on other platforms (OSX, tvOS) and running in CI.
+* Recording an empty cassette (recording session has no network activity) is `YES` by default instead of `NO`.
+* Cleaned up README for release, including a note on possible recording exceptions and solutions.
+
 ## [0.10.0](https://github.com/jzucker2/BeKindRewind/releases/tag/0.10.0)
 
 * First stable, complete version.

@@ -11,6 +11,8 @@
 
 /**
  *  These are extra methods used by the BeKindRewind framework
+ *
+ *  @since 1.0.0
  */
 @interface NSObject (BKRVCRAdditions)
 
@@ -22,6 +24,8 @@
  *  @param finalResult           the success of the operation to pass into the block
  *                               as a parameter
  *  @param cassetteHandlingBlock the block to execute on the main queue
+ *
+ *  @since 1.0.0
  */
 - (void)BKR_executeCassetteHandlingBlockWithFinalResult:(BOOL)finalResult onMainQueue:(BKRCassetteHandlingBlock)cassetteHandlingBlock;
 

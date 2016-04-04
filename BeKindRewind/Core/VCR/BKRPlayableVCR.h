@@ -8,11 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "BKRVCRActions.h"
-#import "BKRRequestMatching.h"
 
 /**
  *  This is object conforms to BKRVCRActions protocol and can only play back network sessions
  *  from its contained BKRCassette instance
+ *
+ *  @since 1.0.0
  */
 @interface BKRPlayableVCR : NSObject <BKRVCRActions>
 @end

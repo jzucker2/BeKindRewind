@@ -14,6 +14,8 @@
 
 /**
  *  Concrete subclass of BKRFrame representing a redirect associated with a network operation
+ *
+ *  @since 1.0.0
  */
 @interface BKRRedirectFrame : BKRFrame <BKRPlistSerializing>
 
@@ -22,6 +24,8 @@
  *  any useful or necessary information associated with the request.
  *
  *  @param request received from redirect server response.
+ *
+ *  @since 1.0.0
  */
 - (void)addRequest:(NSURLRequest *)request;
 
@@ -30,16 +34,22 @@
  *  any useful or necessary information associated with the response.
  *
  *  @param response received from server as part of the redirect
+ *
+ *  @since 1.0.0
  */
 - (void)addResponse:(NSURLResponse *)response;
 
 /**
  *  The request frame associated with this redirect.
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly) BKRRequestFrame *requestFrame;
 
 /**
  *  The response frame associated with this redirect.
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly) BKRResponseFrame *responseFrame;
 

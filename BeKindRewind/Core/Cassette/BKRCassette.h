@@ -15,6 +15,8 @@
  *
  *  @param NSDictionary<NSString *, BKRScene *> *currentScenesDictionary  has values 
  *  for all current BKRScene instances contained in the cassette with the scene's unique identifier used as the key.
+ *
+ *  @since 1.0.0
  */
 typedef void (^BKRCassetteSceneDictionaryAccessBlock)(NSDictionary<NSString *, BKRScene *> *currentScenesDictionary);
 
@@ -24,6 +26,8 @@ typedef void (^BKRCassetteSceneDictionaryAccessBlock)(NSDictionary<NSString *, B
  *  @param version              current version of the BKRCassette instance
  *  @param cassetteCreationDate the creationDate of the BKRCassette instance
  *  @param currentAllScenes     all the BKRScene objects from the BKRCassette instance
+ *
+ *  @since 1.0.0
  */
 typedef void (^BKRCassetteAllScenesProcessingBlock)(NSString *version, NSDate *cassetteCreationDate, NSArray<BKRScene *> *currentAllScenes);
 
@@ -33,16 +37,22 @@ typedef void (^BKRCassetteAllScenesProcessingBlock)(NSString *version, NSDate *c
  *
  *  @param sceneDictionaryForIteration this is a dictionary of Foundation objects that needs
  *                                     to be converted and added to a BKRCassette instance
+ *
+ *  @since 1.0.0
  */
 typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryForIteration);
 
 /**
  *  Contains the BKRScene objects associated with a networking session
+ *
+ *  @since 1.0.0
  */
 @interface BKRCassette : NSObject
 
 /**
  *  Version of cassette. This is associated with the framework version.
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic, copy) NSString *version;
 
@@ -50,11 +60,15 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
  *  Convenience constructor.
  *
  *  @return a blank instance of the class.
+ *
+ *  @since 1.0.0
  */
 + (instancetype)cassette;
 
 /**
  *  Date when this recording session is first created
+ *
+ *  @since 1.0.0
  */
 @property (nonatomic) NSDate *creationDate;
 
@@ -62,6 +76,8 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
  *  All BKRScene objects stored in this cassette
  *
  *  @return array of BKRScene objects sorted in order of creation
+ *
+ *  @since 1.0.0
  */
 - (NSArray<BKRScene *> *)allScenes;
 
@@ -71,6 +87,8 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
  *  NSURLSessionTask) and the scene as a value
  *
  *  @return dictionary of BKRScene objects hashed by unique identifier
+ *
+ *  @since 1.0.0
  */
 - (NSDictionary<NSString *, BKRScene *> *)scenesDictionary;
 
@@ -83,7 +101,9 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
  *        inside a dispatch_barrier_async or dispatch_barrier_sync block
  *
  *  @param scene represents the recorded or stubbed data associated with
- *  a network request
+ *               a network request
+ *
+ *  @since 1.0.0
  */
 - (void)addSceneToScenesDictionary:(BKRScene *)scene;
 
@@ -96,6 +116,8 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
  *  @param rawSceneDictionaries dictionary contains only Foundation objects
  *  @param batchAddingBlock     block containing information only composed of Foundation objects
  *                              to init a single instance of a BKRScene object
+ *
+ *  @since 1.0.0
  */
 - (void)addBatchOfScenes:(NSArray<NSDictionary *> *)rawSceneDictionaries toCassetteWithBlock:(BKRCassetteBatchSceneAddingBlock)batchAddingBlock;
 
@@ -103,6 +125,8 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
  *  Used to add frames to an instance of a BKRScene in the receiver
  *
  *  @param sceneDictionaryAccessBlock thread-safe block to edit a scene in the receiver
+ *
+ *  @since 1.0.0
  */
 - (void)editScenesDictionary:(BKRCassetteSceneDictionaryAccessBlock)sceneDictionaryAccessBlock;
 
@@ -114,6 +138,8 @@ typedef void (^BKRCassetteBatchSceneAddingBlock)(NSDictionary *sceneDictionaryFo
  *  @param allScenesProcessingBlock this is called in the receiver's custom queue and contains all
  *                                  the information associated with the receiver at the moment the
  *                                  method is called
+ *
+ *  @since 1.0.0
  */
 - (void)processScenes:(BKRCassetteAllScenesProcessingBlock)allScenesProcessingBlock; // synchronous not async
 

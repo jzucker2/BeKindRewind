@@ -18,6 +18,8 @@
  *  @param block A single-argument, BOOL-returning code block.
  *
  *  @return Returns an array of the objects found.
+ *
+ *  @since 1.0.0
  */
 - (NSArray *)BKR_select:(BOOL (^)(id obj))block;
 
@@ -38,6 +40,8 @@
  *  @param block A single-argument, BOOL-returning code block.
  *
  *  @return YES for the first time the block returns YES for an object, NO otherwise.
+ *
+ *  @since 1.0.0
  */
 - (BOOL)BKR_any:(BOOL (^)(id obj))block;
 

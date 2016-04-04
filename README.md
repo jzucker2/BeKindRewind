@@ -178,6 +178,19 @@ BeKindRewind will only record network events if the NSURLSessionTask is sent a `
 
 It is recommended you use the BKRTestVCR subclass for recording. It automatically handles issues around asynchronous execution and XCTestCase.
 
+By default, BeKindRewind expects a Property List fixture to exist for every test case when it is playing back (mocking) network activity. If no fixture exists, then an exception is thrown. This can be overridden in the BKRTestConfiguration (or it's super class BKRConfiguration) object.
+
+If you see an exception during testing similar to `*** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'API violation - creating expectations while already in waiting mode.'` then you probably need to adjust your `BKRTestConfiguration` object. The default constructor for `BKRTestConfiguration` (`defaultConfigurationWithTestCase:`) calls a block when a network action begins and ends to create an `XCTestExpectation` around a network action so that the recording is not clipped. If you have a series of network actions that are triggered during a test, some of which occur after the `waitForExpectationsWithTimeout: handler:` is called, then you should set these blocks to nil for the duration of that test case. This should be overridden in your `BKRTestCase` subclass (or wherever is appropriate if you are implementing a `BKRVCR` yourself. An example of overriding this in `BKRTestCase` is below:
+
+```objective-c
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *defaultConfiguration = [super testConfiguration];
+    defaultConfiguration.beginRecordingBlock = nil;
+    defaultConfiguration.endRecordingBlock = nil;
+    return defaultConfiguration;
+}
+```
+
 ## Basic Testing Strategy
 
 Try to avoid writing a test that is dependent upon state. Instead, ensure that when `isRecording == YES` that the test can be fully recorded for playback, including setUp and tearDown. This eases development and ensures that the test isn't written on a condition that wouldn't be recreated when another developer tries to update your test with a new recording.
@@ -194,13 +207,9 @@ Jordan Zucker, jordan.zucker@gmail.com
 
 BeKindRewind is available under the MIT license. See the LICENSE file for more info.
 
-## Release criteria
-* tests for matcher classes
-* tests for OSX, tvOS
-* recording empty cassette is YES by default instead of NO
-
 ## Future features
-* swift tests (at least basic)/Swift Package Manager
+* Swift tests (at least basic)
+* Swift Package Manager
 * Small tutorial to show how to drag in recordings to the project
 * explain fixture write directory hack for easy recording
 * Separate into subspecs
@@ -212,3 +221,4 @@ BeKindRewind is available under the MIT license. See the LICENSE file for more i
 * timing taken into consideration
 * blog post
 * JSON serializing in addition to plist serializing
+* tests for matcher classes

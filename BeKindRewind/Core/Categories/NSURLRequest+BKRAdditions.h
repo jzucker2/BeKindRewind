@@ -13,6 +13,8 @@
  *  wrapped BOOL value. If this value is `YES` then the order of query items 
  *  in the requests to compare is ignored. If `NO` then the order is compared as 
  *  well as the items.
+ *
+ *  @since 1.0.0
  */
 extern NSString * kBKRShouldIgnoreQueryItemsOrderOptionsKey;
 
@@ -22,6 +24,8 @@ extern NSString * kBKRShouldIgnoreQueryItemsOrderOptionsKey;
  *  the NSArray object will be ignored when comparing query items between the 
  *  two requests. Each NSString instance should be the name associated with a
  *  NSURLQueryItem from the requests.
+ *
+ *  @since 1.0.0
  */
 extern NSString * kBKRIgnoreQueryItemNamesOptionsKey;
 
@@ -30,6 +34,8 @@ extern NSString * kBKRIgnoreQueryItemNamesOptionsKey;
  *  containing NSString instances. Every NSString instance contained within
  *  the NSArray object will be ignored when comparing components within the
  *  the requests. The available components are found within the NSURLComponents class.
+ *
+ *  @since 1.0.0
  */
 extern NSString * kBKRIgnoreNSURLComponentsPropertiesOptionsKey;
 
@@ -37,6 +43,8 @@ extern NSString * kBKRIgnoreNSURLComponentsPropertiesOptionsKey;
  *  This key is used in the options dictionary. It should only have a NSNumber
  *  wrapped BOOL value. If this value is `YES` then the body of the requests is 
  *  compared. If `NO` then body of the requests are not compared.
+ *
+ *  @since 1.0.0
  */
 extern NSString * kBKRCompareHTTPBodyOptionsKey;
 
@@ -46,6 +54,8 @@ extern NSString * kBKRCompareHTTPBodyOptionsKey;
  *  This category contains helper methods for comparing NSURLRequest instances.
  *  It is intended to be used by a matcher conforming to the BKRRequestMatching
  *  protocol.
+ *
+ *  @since 1.0.0
  */
 @interface NSURLRequest (BKRAdditions)
 
@@ -58,6 +68,8 @@ extern NSString * kBKRCompareHTTPBodyOptionsKey;
  *                      See available keys above.
  *
  *  @return whether or not the two instances of NSURLRequest are equal, after considering the options.
+ *
+ *  @since 1.0.0
  */
 - (BOOL)BKR_isEquivalentToRequest:(NSURLRequest *)otherRequest options:(NSDictionary *)options;
 
@@ -71,6 +83,8 @@ extern NSString * kBKRCompareHTTPBodyOptionsKey;
  *                      See available keys above.
  *
  *  @return whether or not the two objects are equal, after considering the options.
+ *
+ *  @since 1.0.0
  */
 - (BOOL)BKR_isEquivalentToRequestFrame:(BKRRequestFrame *)requestFrame options:(NSDictionary *)options;
 
@@ -83,6 +97,8 @@ extern NSString * kBKRCompareHTTPBodyOptionsKey;
  *                      See available keys above.
  *
  *  @return whether or not the two objects are equal, after considering the options.
+ *
+ *  @since 1.0.0
  */
 - (BOOL)BKR_isEquivalentToRequestURLString:(NSString *)otherRequestURLString options:(NSDictionary *)options;
 
