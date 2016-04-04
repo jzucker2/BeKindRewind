@@ -11,6 +11,17 @@
 #import "BKRScene.h"
 #import "BKRConstants.h"
 
+#pragma mark - Defines & Constants
+const double BKRDownloadSpeed1KBPS  =-     8 / 8; // kbps -> KB/s
+const double BKRDownloadSpeedSLOW   =-    12 / 8; // kbps -> KB/s
+const double BKRDownloadSpeedGPRS   =-    56 / 8; // kbps -> KB/s
+const double BKRDownloadSpeedEDGE   =-   128 / 8; // kbps -> KB/s
+const double BKRDownloadSpeed3G     =-  3200 / 8; // kbps -> KB/s
+const double BKRDownloadSpeed3GPlus =-  7200 / 8; // kbps -> KB/s
+const double BKRDownloadSpeedWifi   =- 12000 / 8; // kbps -> KB/s
+
+#pragma mark - Implementation
+
 @interface BKRResponseStub ()
 @property (nonatomic, assign, readwrite) int statusCode;
 @property (nonatomic, strong, readwrite, nullable) NSDictionary *headers;
@@ -86,6 +97,11 @@
     NSDictionary *headers = self.headers;
     sceneUUID = headers[kBKRSceneUUIDKey];
     return sceneUUID;
+}
+
+- (void)setRequestTime:(NSTimeInterval)requestTime {
+    NSAssert(requestTime >= 0, @"Invalid Request Time (%f) for BeKindRewind. Request time must be greater than or equal to zero", requestTime);
+    _requestTime = requestTime;
 }
 
 @end

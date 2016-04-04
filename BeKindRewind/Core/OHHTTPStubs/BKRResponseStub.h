@@ -8,7 +8,23 @@
 
 #import <Foundation/Foundation.h>
 
+#pragma mark - Defines & Constants
+// Non-standard download speeds
+extern const double
+BKRDownloadSpeed1KBPS,					// 1.0 KB per second
+BKRDownloadSpeedSLOW;					// 1.5 KB per second
+
+// Standard download speeds.
+extern const double
+BKRDownloadSpeedGPRS,
+BKRDownloadSpeedEDGE,
+BKRDownloadSpeed3G,
+BKRDownloadSpeed3GPlus,
+BKRDownloadSpeedWifi;
+
 NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark - Interface
 
 @class OHHTTPStubsResponse;
 
@@ -96,6 +112,26 @@ NS_ASSUME_NONNULL_BEGIN
  *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly, nullable) NSError *error;
+
+/**
+ *  The duration to wait before faking receiving the response headers.
+ *
+ *  Defaults to 0.0.
+ *
+ *  @note must be set to a value greater than or equal to 0
+ *
+ *  @since 2.0.0
+ */
+@property(nonatomic, assign) NSTimeInterval requestTime;
+
+/**
+ *  The duration to use to send the fake response body.
+ *
+ *  @note if responseTime<0, it is interpreted as a download speed in KBps ( -200 => 200KB/s )
+ *
+ *  @since 2.0.0
+ */
+@property(nonatomic, assign) NSTimeInterval responseTime;
 
 /**
  *  This extracts the scene identifier from information contained within the stub.
