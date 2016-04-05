@@ -25,8 +25,8 @@
         mockingResponse = [[OHHTTPStubsResponse alloc] initWithInputStream:responseStub.inputStream dataSize:responseStub.dataSize statusCode:responseStub.statusCode headers:responseStub.headers];
     }
     if (
-        responseStub.requestTime ||
-        responseStub.responseTime
+        (responseStub.requestTime != 0) ||
+        (responseStub.responseTime != 0)
         ) {
         mockingResponse.requestTime = responseStub.requestTime;
         mockingResponse.responseTime = responseStub.responseTime;

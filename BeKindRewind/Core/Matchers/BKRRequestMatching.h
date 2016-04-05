@@ -66,6 +66,9 @@
 
 @optional
 
+- (NSTimeInterval)requestTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub;
+- (NSTimeInterval)responseTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub;
+
 /**
  *  If the matcher class stores information between recordings, then this can be 
  *  implemented to reset matcher state. This can be expected to be called 

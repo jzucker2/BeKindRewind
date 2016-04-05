@@ -55,6 +55,16 @@
     return responseStub;
 }
 
+#pragma mark - Optional
+
+- (NSTimeInterval)requestTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub {
+    return 0;
+}
+
+- (NSTimeInterval)responseTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub {
+    return 0;
+}
+
 - (NSDictionary *)requestComparisonOptions {
     return @{
              kBKRShouldIgnoreQueryItemsOrderOptionsKey: @YES,
