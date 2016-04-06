@@ -122,7 +122,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @since 2.0.0
  */
-@property(nonatomic, assign) NSTimeInterval requestTime;
+@property (nonatomic, assign) NSTimeInterval requestTime;
 
 /**
  *  The duration to use to send the fake response body.
@@ -131,7 +131,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @since 2.0.0
  */
-@property(nonatomic, assign) NSTimeInterval responseTime;
+@property (nonatomic, assign) NSTimeInterval responseTime;
+
+@property (nonatomic, assign, readonly) NSTimeInterval recordedRequestTime;
+@property (nonatomic, assign, readonly) NSTimeInterval recordedResponseTime;
 
 /**
  *  This extracts the scene identifier from information contained within the stub.

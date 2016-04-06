@@ -26,6 +26,7 @@
     NSParameterAssert(matcherClass);
     self = [super init];
     if (self) {
+        NSParameterAssert([matcherClass conformsToProtocol:@protocol(BKRRequestMatching)]);
         _matcher = [matcherClass matcher];
         _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
     }
