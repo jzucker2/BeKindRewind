@@ -122,6 +122,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @since 2.0.0
  */
+#warning move to private header
 @property (nonatomic, assign) NSTimeInterval requestTime;
 
 /**
@@ -131,6 +132,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @since 2.0.0
  */
+#warning move to private header
 @property (nonatomic, assign) NSTimeInterval responseTime;
 
 @property (nonatomic, assign, readonly) NSTimeInterval recordedRequestTime;

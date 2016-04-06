@@ -85,12 +85,26 @@
 }
 
 - (BKRResponseStub *)finalResponseStub {
+    BKRResponseStub *responseStub = nil;
     NSError *responseError = [self _responseError];
     if (!responseError) {
         BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
-        return [BKRResponseStub responseWithData:[self _responseData] statusCode:(int)[self _responseStatusCode] headers:[self _responseHeadersForFrame:responseFrame]];
+        responseStub = [BKRResponseStub responseWithData:[self _responseData] statusCode:(int)[self _responseStatusCode] headers:[self _responseHeadersForFrame:responseFrame]];
+    } else {
+        responseStub = [BKRResponseStub responseWithError:responseError];
     }
-    return [BKRResponseStub responseWithError:responseError];
+    return [self _responseStub:responseStub withRecordedRequestTime:self.recordedRequestTimeForFinalResponseStub withRecordedResponseTime:self.recordedResponseTimeForFinalResponseStub];
+}
+
+- (BKRResponseStub *)_responseStub:(BKRResponseStub *)responseStub withRecordedRequestTime:(NSTimeInterval)requestTime withRecordedResponseTime:(NSTimeInterval)responseTime {
+//    NSParameterAssert(responseStub); // is this overkill? this might cause an exception if no match is found
+    if (requestTime != 0) {
+        responseStub.requestTime = requestTime;
+    }
+    if (responseTime != 0) {
+        responseStub.responseTime = responseTime;
+    }
+    return responseStub;
 }
 
 - (NSUInteger)numberOfRedirects {
@@ -114,15 +128,17 @@
 
 - (BKRResponseStub *)responseStubForRedirectFrame:(BKRRedirectFrame *)redirectFrame {
     if (!redirectFrame) {
+        // TODO: clean up this error userInfo
         NSError *error = [NSError errorWithDomain:@"BeKindRewind" code:-999 userInfo:@{
-                                                                                       NSLocalizedDescriptionKey: @"No expected to redirect this many times",
+                                                                                       NSLocalizedDescriptionKey: @"Not expected to redirect this many times",
                                                                                        NSLocalizedFailureReasonErrorKey: @"Too many redirects encountered!",
                                                                                        kBKRSceneUUIDKey: self.uniqueIdentifier
                                                                                        }];
         return [BKRResponseStub responseWithError:error];
     }
     NSDictionary *headers = [self _responseHeadersForFrame:redirectFrame.responseFrame];
-    return [BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
+    BKRResponseStub *responseStub = [BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
+    return [self _responseStub:responseStub withRecordedRequestTime:[self recordedRequestTimeForRedirectFrame:redirectFrame] withRecordedResponseTime:[self recordedResponseTimeForRedirectFrame:redirectFrame]];
 }
 
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber {
@@ -132,6 +148,22 @@
 
 - (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%p>: request: %@", self, self.originalRequest.URL];
+}
+
+- (NSTimeInterval)recordedRequestTimeForFinalResponseStub {
+    return 0;
+}
+
+- (NSTimeInterval)recordedResponseTimeForFinalResponseStub {
+    return 0;
+}
+
+- (NSTimeInterval)recordedRequestTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame {
+    return 0;
+}
+
+- (NSTimeInterval)recordedResponseTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame {
+    return 0;
 }
 
 @end
