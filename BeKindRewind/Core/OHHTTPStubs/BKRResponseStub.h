@@ -51,6 +51,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (instancetype)responseWithData:(nullable NSData *)data statusCode:(int)statusCode headers:(nullable NSDictionary *)headers;
 
++ (instancetype)responseWithStatusCode:(int)statusCode headers:(nullable NSDictionary *)headers;
+
 /**
  *  This is a convenience initializer that is used by OHHTTPStubs to mock a network
  *  response that ends in an error.

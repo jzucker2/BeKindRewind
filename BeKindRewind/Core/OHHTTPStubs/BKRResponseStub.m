@@ -65,6 +65,10 @@ const double BKRDownloadSpeedWifi   =- 12000 / 8; // kbps -> KB/s
     return [[self alloc] initWithData:data statusCode:statusCode headers:headers error:nil];
 }
 
++ (instancetype)responseWithStatusCode:(int)statusCode headers:(NSDictionary *)headers {
+    return [self responseWithData:nil statusCode:statusCode headers:headers];
+}
+
 + (instancetype)responseWithError:(NSError *)error {
     return [[self alloc] initWithData:nil statusCode:0 headers:nil error:error];
 }

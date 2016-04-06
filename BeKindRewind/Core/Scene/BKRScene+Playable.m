@@ -137,7 +137,7 @@
         return [BKRResponseStub responseWithError:error];
     }
     NSDictionary *headers = [self _responseHeadersForFrame:redirectFrame.responseFrame];
-    BKRResponseStub *responseStub = [BKRResponseStub responseWithData:nil statusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
+    BKRResponseStub *responseStub = [BKRResponseStub responseWithStatusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
     return [self _responseStub:responseStub withRecordedRequestTime:[self recordedRequestTimeForRedirectFrame:redirectFrame] withRecordedResponseTime:[self recordedResponseTimeForRedirectFrame:redirectFrame]];
 }
 
