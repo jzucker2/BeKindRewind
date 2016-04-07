@@ -97,6 +97,9 @@
  */
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
 
+- (NSTimeInterval)creationTimestamp;
+- (NSTimeInterval)timeSinceCreationForFrame:(BKRFrame *)frame;
+
 - (NSTimeInterval)recordedRequestTimeForFinalResponseStub;
 - (NSTimeInterval)recordedResponseTimeForFinalResponseStub;
 - (NSTimeInterval)recordedRequestTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame;

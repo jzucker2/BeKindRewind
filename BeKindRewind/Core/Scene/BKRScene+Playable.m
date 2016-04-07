@@ -56,8 +56,12 @@
     return responseData.copy;
 }
 
+- (BKRResponseFrame *)_finalResponseFrame {
+    return self.allResponseFrames.lastObject;
+}
+
 - (NSInteger)_responseStatusCode {
-    BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
+    BKRResponseFrame *responseFrame = [self _finalResponseFrame];
     return responseFrame.statusCode;
 }
 
@@ -80,18 +84,29 @@
 }
 
 - (NSError *)_responseError {
-    BKRErrorFrame *responseFrame = self.allErrorFrames.firstObject;
+    BKRErrorFrame *responseFrame = [self _errorFrame];
     return responseFrame.error;
+}
+
+- (BKRErrorFrame *)_errorFrame {
+    return self.allErrorFrames.firstObject;
+}
+
+- (NSUInteger)_indexOfResponseError {
+    BKRErrorFrame *errorFrame = [self _errorFrame];
+    return [self.allFrames indexOfObject:errorFrame];
 }
 
 - (BKRResponseStub *)finalResponseStub {
     BKRResponseStub *responseStub = nil;
     NSError *responseError = [self _responseError];
     if (!responseError) {
-        BKRResponseFrame *responseFrame = self.allResponseFrames.firstObject;
+        BKRResponseFrame *responseFrame = [self _finalResponseFrame];
         responseStub = [BKRResponseStub responseWithData:[self _responseData] statusCode:(int)[self _responseStatusCode] headers:[self _responseHeadersForFrame:responseFrame]];
+        responseStub.frameIndex = [self.allFrames indexOfObject:responseFrame];
     } else {
         responseStub = [BKRResponseStub responseWithError:responseError];
+        responseStub.frameIndex = [self _indexOfResponseError];
     }
     return [self _responseStub:responseStub withRecordedRequestTime:self.recordedRequestTimeForFinalResponseStub withRecordedResponseTime:self.recordedResponseTimeForFinalResponseStub];
 }
@@ -138,12 +153,30 @@
     }
     NSDictionary *headers = [self _responseHeadersForFrame:redirectFrame.responseFrame];
     BKRResponseStub *responseStub = [BKRResponseStub responseWithStatusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
+    responseStub.frameIndex = [self.allFrames indexOfObject:redirectFrame];
     return [self _responseStub:responseStub withRecordedRequestTime:[self recordedRequestTimeForRedirectFrame:redirectFrame] withRecordedResponseTime:[self recordedResponseTimeForRedirectFrame:redirectFrame]];
+}
+
+- (NSTimeInterval)timeIntervalForFrameIndex:(NSUInteger)frameIndex {
+    NSTimeInterval clapboardTimeInterval = self.creationTimestamp;
+    BKRFrame *frame = self.allFrames[frameIndex];
+    return [self timeSinceCreationForFrame:frame];
+}
+
+- (NSTimeInterval)timeSinceCreationForFrame:(BKRFrame *)frame {
+    NSTimeInterval clapboardTimeInterval = self.creationTimestamp;
+    // TODO: investigate this. Maybe return 0 if this is invalid
+    NSTimeInterval elapsedTime = [frame.creationDate doubleValue] - clapboardTimeInterval;
+    return ((elapsedTime > 0) ? elapsedTime : 0);
 }
 
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber {
     BKRRedirectFrame *redirectFrame = [self redirectFrameForRedirect:redirectNumber];
     return [self responseStubForRedirectFrame:redirectFrame];
+}
+
+- (NSTimeInterval)creationTimestamp {
+    return (NSTimeInterval)[self.clapboardFrame.creationDate doubleValue];
 }
 
 - (NSString *)debugDescription {

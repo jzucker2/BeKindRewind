@@ -44,6 +44,7 @@ const double BKRDownloadSpeedWifi   =- 12000 / 8; // kbps -> KB/s
         _statusCode = statusCode;
         _headers = headers;
         _error = error;
+        _frameIndex = NSNotFound;
     }
     return self;
 }
@@ -108,8 +109,13 @@ const double BKRDownloadSpeedWifi   =- 12000 / 8; // kbps -> KB/s
 }
 
 - (void)setRequestTime:(NSTimeInterval)requestTime {
-    NSAssert(requestTime >= 0, @"Invalid Request Time (%f) for BeKindRewind. Request time must be greater than or equal to zero", requestTime);
+    NSParameterAssert(requestTime >= 0);
     _requestTime = requestTime;
+}
+
+- (void)setFrameIndex:(NSInteger)frameIndex {
+    NSParameterAssert(frameIndex >= 0);
+    _frameIndex = frameIndex;
 }
 
 @end
