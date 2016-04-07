@@ -119,11 +119,11 @@
         BKRStrongify(self);
         responseStub = [matcher matchForRequest:request withPlayhead:self->_playhead.copy];
         [self->_playhead addResponseStub:responseStub forRequest:request];
-        if ([matcher respondsToSelector:@selector(requestTimeForRequest:withStub:)]) {
-            responseStub.requestTime = [matcher requestTimeForRequest:request withStub:responseStub];
+        if ([matcher respondsToSelector:@selector(requestTimeForRequest:withStub:withPlayhead:)]) {
+            responseStub.requestTime = [matcher requestTimeForRequest:request withStub:responseStub withPlayhead:self.playhead.copy];
         }
-        if ([matcher respondsToSelector:@selector(responseTimeForRequest:withStub:)]) {
-            responseStub.responseTime = [matcher responseTimeForRequest:request withStub:responseStub];
+        if ([matcher respondsToSelector:@selector(responseTimeForRequest:withStub:withPlayhead:)]) {
+            responseStub.responseTime = [matcher responseTimeForRequest:request withStub:responseStub withPlayhead:self.playhead.copy];
         }
     }];
     return responseStub;

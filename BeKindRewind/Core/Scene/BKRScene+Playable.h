@@ -99,6 +99,7 @@
 
 - (NSTimeInterval)creationTimestamp;
 - (NSTimeInterval)timeSinceCreationForFrame:(BKRFrame *)frame;
+- (NSTimeInterval)timeSinceCreationForFrameIndex:(NSUInteger)frameIndex;
 
 - (NSTimeInterval)recordedRequestTimeForFinalResponseStub;
 - (NSTimeInterval)recordedResponseTimeForFinalResponseStub;

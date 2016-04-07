@@ -157,8 +157,7 @@
     return [self _responseStub:responseStub withRecordedRequestTime:[self recordedRequestTimeForRedirectFrame:redirectFrame] withRecordedResponseTime:[self recordedResponseTimeForRedirectFrame:redirectFrame]];
 }
 
-- (NSTimeInterval)timeIntervalForFrameIndex:(NSUInteger)frameIndex {
-    NSTimeInterval clapboardTimeInterval = self.creationTimestamp;
+- (NSTimeInterval)timeSinceCreationForFrameIndex:(NSUInteger)frameIndex {
     BKRFrame *frame = self.allFrames[frameIndex];
     return [self timeSinceCreationForFrame:frame];
 }

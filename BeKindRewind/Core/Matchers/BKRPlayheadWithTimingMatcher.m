@@ -12,11 +12,11 @@
 
 #pragma mark - Optional
 
-- (NSTimeInterval)requestTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub {
+- (NSTimeInterval)requestTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub withPlayhead:(BKRPlayhead *)playhead {
     return responseStub.recordedRequestTime;
 }
 
-- (NSTimeInterval)responseTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub {
+- (NSTimeInterval)responseTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub withPlayhead:(BKRPlayhead *)playhead {
     return responseStub.recordedResponseTime;
 }
 

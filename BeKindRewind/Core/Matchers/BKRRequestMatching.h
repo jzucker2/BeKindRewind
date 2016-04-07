@@ -66,8 +66,8 @@
 
 @optional
 
-- (NSTimeInterval)requestTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub;
-- (NSTimeInterval)responseTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub;
+- (NSTimeInterval)requestTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub withPlayhead:(BKRPlayhead *)playhead;
+- (NSTimeInterval)responseTimeForRequest:(NSURLRequest *)request withStub:(BKRResponseStub *)responseStub withPlayhead:(BKRPlayhead *)playhead;
 
 /**
  *  If the matcher class stores information between recordings, then this can be 
