@@ -128,6 +128,10 @@
     return (self.numberOfRedirects > 0);
 }
 
+- (BOOL)isError {
+    return (self.allErrorFrames.count > 0);
+}
+
 - (BKRRequestFrame *)requestFrameForRedirect:(NSUInteger)redirectNumber {
     return [self redirectFrameForRedirect:redirectNumber].requestFrame;
 }
@@ -195,12 +199,21 @@
 }
 
 - (NSTimeInterval)recordedRequestTimeForFinalResponseStub {
-    BKRResponseFrame *finalResponseFrame = [self _finalResponseFrame];
+    // TODO: clean this up
+    BKRFrame *finalResponseFrame = [self _finalResponseFrame];
+    if (!finalResponseFrame) {
+        // most likely an error frame then
+        finalResponseFrame = [self _errorFrame];
+    }
     return [self _requestTimeForFrame:finalResponseFrame];
 }
 
 - (NSTimeInterval)recordedResponseTimeForFinalResponseStub {
     BKRResponseFrame *finalResponseFrame = [self _finalResponseFrame];
+    if (!finalResponseFrame) {
+        // nothing to compare against, it's an error or data is missing
+        return 0.0;
+    }
     NSTimeInterval finalResponseTimestamp = [self timeSinceCreationForFrame:finalResponseFrame];
     BKRDataFrame *lastDataFrame = self.allDataFrames.lastObject;
     NSTimeInterval lastDataFrameTimestamp = [self timeSinceCreationForFrame:lastDataFrame];

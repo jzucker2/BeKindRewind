@@ -38,6 +38,8 @@
  */
 - (BOOL)hasRedirects;
 
+- (BOOL)isError;
+
 /**
  *  Represents the last response for a scene (which includes any final error or data).
  *
