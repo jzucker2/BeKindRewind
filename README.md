@@ -218,7 +218,7 @@ BeKindRewind is available under the MIT license. See the [LICENSE](https://githu
 * Tests for different types of NSURLSession (shared, ephemeral, standard, background, etc). Make different test case classes for each type of session
 * afnetworking tests
 * test for other types of network requests (streaming)
-* timing taken into consideration
 * blog post
 * JSON serializing in addition to plist serializing
 * tests for matcher classes
+* investigate possible reset bug

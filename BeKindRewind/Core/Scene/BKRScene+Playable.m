@@ -103,10 +103,8 @@
     if (!responseError) {
         BKRResponseFrame *responseFrame = [self _finalResponseFrame];
         responseStub = [BKRResponseStub responseWithData:[self _responseData] statusCode:(int)[self _responseStatusCode] headers:[self _responseHeadersForFrame:responseFrame]];
-        responseStub.frameIndex = [self.allFrames indexOfObject:responseFrame];
     } else {
         responseStub = [BKRResponseStub responseWithError:responseError];
-        responseStub.frameIndex = [self _indexOfResponseError];
     }
     return [self _responseStub:responseStub withRecordedRequestTime:self.recordedRequestTimeForFinalResponseStub withRecordedResponseTime:self.recordedResponseTimeForFinalResponseStub];
 }
@@ -153,7 +151,6 @@
     }
     NSDictionary *headers = [self _responseHeadersForFrame:redirectFrame.responseFrame];
     BKRResponseStub *responseStub = [BKRResponseStub responseWithStatusCode:(int)redirectFrame.responseFrame.statusCode headers:headers];
-    responseStub.frameIndex = [self.allFrames indexOfObject:redirectFrame];
     return [self _responseStub:responseStub withRecordedRequestTime:[self recordedRequestTimeForRedirectFrame:redirectFrame] withRecordedResponseTime:[self recordedResponseTimeForRedirectFrame:redirectFrame]];
 }
 
@@ -182,19 +179,40 @@
     return [NSString stringWithFormat:@"<%p>: request: %@", self, self.originalRequest.URL];
 }
 
+// finds the BKRCurrentRequestFrame directly preceding the frame passed in, or nil if none exists
+- (BKRCurrentRequestFrame *)_preceedingCurrentRequestFrameForFrame:(BKRFrame *)frame {
+    NSUInteger frameIndex = [self.allFrames indexOfObject:frame];
+    // TODO: add checks for this
+    BKRCurrentRequestFrame *preceedingFrame = (BKRCurrentRequestFrame *)self.allFrames[(frameIndex-1)];
+    return (([preceedingFrame isKindOfClass:[BKRCurrentRequestFrame class]]) ? preceedingFrame : nil);
+}
+
+- (NSTimeInterval)_requestTimeForFrame:(BKRFrame *)frame {
+    NSTimeInterval finalResponseTimestamp = [self timeSinceCreationForFrame:frame];
+    BKRCurrentRequestFrame *preceedingCurrentRequestFrame = [self _preceedingCurrentRequestFrameForFrame:frame];
+    NSTimeInterval startingTimeStamp = [self timeSinceCreationForFrame:preceedingCurrentRequestFrame];
+    return finalResponseTimestamp - startingTimeStamp;
+}
+
 - (NSTimeInterval)recordedRequestTimeForFinalResponseStub {
-    return 0;
+    BKRResponseFrame *finalResponseFrame = [self _finalResponseFrame];
+    return [self _requestTimeForFrame:finalResponseFrame];
 }
 
 - (NSTimeInterval)recordedResponseTimeForFinalResponseStub {
-    return 0;
+    BKRResponseFrame *finalResponseFrame = [self _finalResponseFrame];
+    NSTimeInterval finalResponseTimestamp = [self timeSinceCreationForFrame:finalResponseFrame];
+    BKRDataFrame *lastDataFrame = self.allDataFrames.lastObject;
+    NSTimeInterval lastDataFrameTimestamp = [self timeSinceCreationForFrame:lastDataFrame];
+    return lastDataFrameTimestamp - finalResponseTimestamp;
 }
 
 - (NSTimeInterval)recordedRequestTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame {
-    return 0;
+    return [self _requestTimeForFrame:redirectFrame];
 }
 
 - (NSTimeInterval)recordedResponseTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame {
+    // this should always be 0?
     return 0;
 }
 

@@ -137,8 +137,8 @@ NS_ASSUME_NONNULL_BEGIN
 #warning move to private header
 @property (nonatomic, assign) NSTimeInterval responseTime;
 
-@property (nonatomic, assign, readonly) NSTimeInterval recordedRequestTime;
-@property (nonatomic, assign, readonly) NSTimeInterval recordedResponseTime;
+@property (nonatomic, assign, readonly) NSTimeInterval recordedRequestTime; // time until NSURLResponseFrame
+@property (nonatomic, assign, readonly) NSTimeInterval recordedResponseTime; // time until last piece of data (last BKRDataFrame)
 @property (nonatomic, assign) NSInteger frameIndex; // this is NSNotFound by default
 
 /**
