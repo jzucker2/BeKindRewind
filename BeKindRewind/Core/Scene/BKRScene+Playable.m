@@ -205,6 +205,10 @@
         // most likely an error frame then
         finalResponseFrame = [self _errorFrame];
     }
+    if (!finalResponseFrame) {
+        // there is no response for this recording, return 0
+        return 0.0;
+    }
     return [self _requestTimeForFrame:finalResponseFrame];
 }
 
