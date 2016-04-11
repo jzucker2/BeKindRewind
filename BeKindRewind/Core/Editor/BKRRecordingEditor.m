@@ -153,6 +153,8 @@
         [self->_objectsAdded removeAllObjects];
         self->_handledRecording = NO;
         self->_recordingStartTime = nil;
+        self->_beginRecordingBlock = nil;
+        self->_endRecordingBlock = nil;
         if (completionBlock) {
             completionBlock();
         }

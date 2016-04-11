@@ -136,7 +136,7 @@
         if ([self->_matcher respondsToSelector:@selector(reset)]) {
             [self->_matcher reset];
         }
-        self->_playhead = nil;
+        self->_playhead = nil; // can i just nil this?
         if (completionBlock) {
             completionBlock();
         }

@@ -62,7 +62,6 @@
 }
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
-    self.currentCassette = nil;
     [self.editor resetWithCompletionBlock:^{
         if (completionBlock) {
             completionBlock();

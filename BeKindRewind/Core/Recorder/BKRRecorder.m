@@ -75,10 +75,6 @@
 }
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
-    // TODO: make this run on in one block on queue
-    self.currentCassette = nil;
-    self.beginRecordingBlock = nil;
-    self.endRecordingBlock = nil;
     [self.editor resetWithCompletionBlock:^{
         if (completionBlock) {
             completionBlock();
