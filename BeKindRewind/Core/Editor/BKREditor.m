@@ -49,6 +49,9 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.editingQueue, ^{
         BKRStrongify(self);
+        if (!self) {
+            return;
+        }
         cassetteEditingBlock(self->_enabled, self->_currentCassette);
     });
 }
