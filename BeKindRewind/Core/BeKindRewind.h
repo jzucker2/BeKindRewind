@@ -32,6 +32,7 @@
 
 // Request Matchers
 #import "BKRPlayheadMatcher.h"
+#import "BKRPlayheadWithTimingMatcher.h"
 
 //  This is used by the framework to uniquefy
 //  network tasks. Helpful to for developers.
