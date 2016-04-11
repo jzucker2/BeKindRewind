@@ -136,6 +136,7 @@
         if ([self->_matcher respondsToSelector:@selector(reset)]) {
             [self->_matcher reset];
         }
+#warning need to fix the playhead nil-ing during reset
         self->_playhead = nil; // can i just nil this?
         if (completionBlock) {
             completionBlock();
