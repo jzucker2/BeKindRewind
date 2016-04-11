@@ -34,9 +34,11 @@
     dispatch_barrier_async(self.editingQueue, ^{
         BKRStrongify(self);
         self->_enabled = enabled;
+        NSLog(@"BKREditor end of setEnabled block, before calling completion");
         if (editingBlock) {
             editingBlock(enabled, self->_currentCassette);
         }
+        NSLog(@"BKREditor end of setEnabled block, after calling completion");
     });
 }
 

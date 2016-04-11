@@ -97,9 +97,11 @@
             self->_playhead = nil;
             NSLog(@"BKRPlayingEditor inside setEnabled after niling playhead");
             [self _removeAllStubs];
+            NSLog(@"BKRPlayingEditor inside setEnabled after remove all stubs");
             if (editingBlock) {
                 NSLog(@"BKRPlayingEditor inside setEnabled now call block");
                 editingBlock(updatedEnabled, cassette);
+                NSLog(@"BKRPlayingEditor inside setEnabled after calling block");
             }
         }
 
@@ -154,6 +156,7 @@
 }
 
 - (void)_removeAllStubs {
+    NSLog(@"%@: %s", self, __PRETTY_FUNCTION__);
     [BKROHHTTPStubsWrapper removeAllStubs];
 }
 
