@@ -156,8 +156,9 @@
 }
 
 - (void)_removeAllStubs {
-    NSLog(@"%@: %s", self, __PRETTY_FUNCTION__);
+    NSLog(@"%@: before %s", self, __PRETTY_FUNCTION__);
     [BKROHHTTPStubsWrapper removeAllStubs];
+    NSLog(@"%@: after %s", self, __PRETTY_FUNCTION__);
 }
 
 - (void)_addStubsForMatcher:(id<BKRRequestMatching>)matcher withCompletionHandler:(BKRCassetteEditingBlock)completionBlock {
