@@ -86,15 +86,19 @@
 
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock {
     BKRWeakify(self);
+    NSLog(@"BKRPlayingEditor: before setEnabled:WithCompletionHandler:");
     [super setEnabled:enabled withCompletionHandler:^void(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
+        NSLog(@"BKRPlayingEditor: inside setEnabled block");
         if (updatedEnabled) {
             self->_playhead = [BKRPlayhead playheadWithScenes:cassette.allScenes];
             [self _addStubsForMatcher:self->_matcher withCompletionHandler:editingBlock];
         } else {
             self->_playhead = nil;
+            NSLog(@"BKRPlayingEditor inside setEnabled after niling playhead");
             [self _removeAllStubs];
             if (editingBlock) {
+                NSLog(@"BKRPlayingEditor inside setEnabled now call block");
                 editingBlock(updatedEnabled, cassette);
             }
         }
@@ -131,16 +135,21 @@
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     BKRWeakify(self);
+    NSLog(@"BKRPlayingEditor: start resetting");
     [super resetWithCompletionBlock:^void (void){
         BKRStrongify(self);
+        NSLog(@"BKRPlayingEditor inside reset start");
         if ([self->_matcher respondsToSelector:@selector(reset)]) {
             [self->_matcher reset];
         }
 #warning need to fix the playhead nil-ing during reset
+        NSLog(@"BKRPlayingEditor inside reset now try to nil playhead");
         self->_playhead = nil; // can i just nil this?
+        NSLog(@"BKRPlayingEditor inside reset after nil playhead now run completion");
         if (completionBlock) {
             completionBlock();
         }
+        NSLog(@"BKRPlayingEditor inside reset after running completion");
     }];
 }
 
