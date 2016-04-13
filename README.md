@@ -191,6 +191,14 @@ If you see an exception during testing similar to `*** Terminating app due to un
 }
 ```
 
+If you see test failures due to an asynchronous wait timeout for an XCTestExpectation named `reset` then that is most likely due to the test case trying to stub requests while removing stubs. The failure will look something like this:
+```
+[21:32:10]: ▸ ✗ testCopyConfigurationWithSubscribedChannelsAndCallbackQueue, ((error) == nil) failed: "Error Domain=com.apple.XCTestErrorDomain Code=0 "The operation couldn’t be completed. (com.apple.XCTestErrorDomain error 0.)""
+[21:32:10]: ▸ ✗ testCopyConfigurationWithSubscribedChannelsAndCallbackQueue, Asynchronous wait failed: Exceeded timeout of 60 seconds, with unfulfilled expectations: "reset".
+```
+
+In order to fix this, make sure to properly tear down and stop any long running or background processes that are asynchronous, especially those related to networking, so that this race condition isn't introduced into your testing.
+
 ## Basic Testing Strategy
 
 Try to avoid writing a test that is dependent upon state. Instead, ensure that when `isRecording == YES` that the test can be fully recorded for playback, including setUp and tearDown. This eases development and ensures that the test isn't written on a condition that wouldn't be recreated when another developer tries to update your test with a new recording.

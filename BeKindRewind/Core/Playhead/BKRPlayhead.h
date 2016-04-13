@@ -34,7 +34,20 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
     BKRPlayingSceneStateCompleted
 };
 
+/**
+ *  This key is used to access the BKRResponseStub instance
+ *  returned for a scene
+ *
+ *  @since 2.0.0
+ */
 extern const NSString *kBKRReturnedResponseStubKey;
+
+/**
+ *  This key is used to access the NSURLRequest that was
+ *  matched by BeKindRewind
+ *
+ *  @since 2.0.0
+ */
 extern const NSString *kBKRReturnedRequestKey;
 
 @class BKRScene;

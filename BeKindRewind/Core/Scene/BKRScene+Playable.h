@@ -38,6 +38,14 @@
  */
 - (BOOL)hasRedirects;
 
+/**
+ *  Convenience method for checking whether a scene ends in a NSError
+ *
+ *  @return If `YES` then the scene ends in an error (returns a NSError as
+ *          as a response to a network request).
+ *
+ *  @since 2.0.0
+ */
 - (BOOL)isError;
 
 /**
@@ -99,6 +107,7 @@
  */
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
 
+#warning add docs
 - (NSTimeInterval)creationTimestamp;
 - (NSTimeInterval)timeSinceCreationForFrame:(BKRFrame *)frame;
 - (NSTimeInterval)timeSinceCreationForFrameIndex:(NSUInteger)frameIndex;
