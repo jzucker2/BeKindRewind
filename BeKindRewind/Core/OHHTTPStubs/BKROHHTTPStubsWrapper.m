@@ -14,9 +14,7 @@
 @implementation BKROHHTTPStubsWrapper
 
 + (void)removeAllStubs {
-    NSLog(@"%@: before %s", self, __PRETTY_FUNCTION__);
     [OHHTTPStubs removeAllStubs];
-    NSLog(@"%@: after %s", self, __PRETTY_FUNCTION__);
 }
 
 + (OHHTTPStubsResponse *)_responseForStub:(BKRResponseStub *)responseStub {

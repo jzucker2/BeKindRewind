@@ -80,9 +80,7 @@
 - (void)reset {
     __block XCTestExpectation *resetExpectation = [self.currentTestCase expectationWithDescription:@"reset"];
     [self resetWithCompletionBlock:^(BOOL result) {
-        NSLog(@"self (%@) after reset, queue fulfill on main queue", self.debugDescription);
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"self (%@) on main queue, fulfill reset expectation", self.debugDescription);
             [resetExpectation fulfill];
             resetExpectation = nil;
         });

@@ -258,27 +258,21 @@ typedef void (^BKRVCRCassetteProcessingBlock)(BKRCassette *cassette);
     dispatch_barrier_async(self.accessQueue, ^{
         BKRStrongify(self);
         __block NSInteger completionBlockCount = 0;
-        NSLog(@"self (%@) try to reset recordable vcr", self.debugDescription);
         [self->_recordableVCR resetWithCompletionBlock:^(BOOL result) {
             completionBlockCount++;
-            NSLog(@"redordable: increment completionBlockCount (%d)", completionBlockCount);
             if (
                 completionBlock &&
                 (completionBlockCount == 2)
                 ) {
-                NSLog(@"recordable: execute completionBlock");
                 completionBlock(YES);
             }
         }];
-        NSLog(@"self (%@) try to reset playable vcr", self.debugDescription);
         [self->_playableVCR resetWithCompletionBlock:^(BOOL result) {
-            NSLog(@"playble: increment completionBlockCount (%d)", completionBlockCount);
             completionBlockCount++;
             if (
                 completionBlock &&
                 (completionBlockCount == 2)
                 ) {
-                NSLog(@"playable: execute completionBlock");
                 completionBlock(YES);
             }
         }];
