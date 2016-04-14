@@ -29,4 +29,7 @@ Pod::Spec.new do |s|
   s.dependency 'OHHTTPStubs', '~> 5.0.0'
   s.framework = 'XCTest'
   s.source_files = 'BeKindRewind/Core/**/*'
+  s.private_header_files = [
+    'BeKindRewind/Core/OHHTTPStubs/BKRResponseStub+Private.h'
+    ]
 end

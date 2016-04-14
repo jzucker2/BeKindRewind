@@ -26,6 +26,9 @@
 #import "BKRResponseFrame.h"
 #import "BKRRedirectFrame.h"
 
+// Response Stubs (OHHTTPStubs)
+#import "BKRResponseStub.h"
+
 // Request Matching Protocol
 #import "BKRRequestMatching.h"
 #import "NSURLRequest+BKRAdditions.h"
@@ -51,12 +54,12 @@
 // VCR protocol
 #import "BKRVCRActions.h"
 
-// VCR
-#import "BKRVCR.h"
-
 // VCR Subclasses
 #import "BKRPlayableVCR.h"
 #import "BKRRecordableVCR.h"
+
+// Full VCR
+#import "BKRVCR.h"
 
 // XCTestCase
 #import "NSURLSessionTask+BKRTestAdditions.h"

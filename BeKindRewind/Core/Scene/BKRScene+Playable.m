@@ -13,7 +13,7 @@
 #import "BKRDataFrame.h"
 #import "BKRRequestFrame.h"
 #import "BKRRedirectFrame.h"
-#import "BKRResponseStub.h"
+#import "BKRResponseStub+Private.h"
 #import "BKRConstants.h"
 #import "NSURL+BKRAdditions.h"
 
@@ -112,10 +112,10 @@
 - (BKRResponseStub *)_responseStub:(BKRResponseStub *)responseStub withRecordedRequestTime:(NSTimeInterval)requestTime withRecordedResponseTime:(NSTimeInterval)responseTime {
 //    NSParameterAssert(responseStub); // is this overkill? this might cause an exception if no match is found
     if (requestTime != 0) {
-        responseStub.requestTime = requestTime;
+        responseStub.recordedRequestTime = requestTime;
     }
     if (responseTime != 0) {
-        responseStub.responseTime = responseTime;
+        responseStub.recordedResponseTime = responseTime;
     }
     return responseStub;
 }

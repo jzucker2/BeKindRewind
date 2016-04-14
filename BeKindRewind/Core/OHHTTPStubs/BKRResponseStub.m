@@ -7,7 +7,7 @@
 //
 
 #import <OHHTTPStubs/OHHTTPStubsResponse.h>
-#import "BKRResponseStub.h"
+#import "BKRResponseStub+Private.h"
 #import "BKRScene.h"
 #import "BKRConstants.h"
 
@@ -21,6 +21,9 @@ const double BKRDownloadSpeed3GPlus =-  7200 / 8; // kbps -> KB/s
 const double BKRDownloadSpeedWifi   =- 12000 / 8; // kbps -> KB/s
 
 #pragma mark - Implementation
+
+const double kBKRDefaultRequestTime = 0.0;
+const double kBKRDefaultResponseTime = 0.0;
 
 @interface BKRResponseStub ()
 @property (nonatomic, assign, readwrite) int statusCode;
@@ -45,6 +48,8 @@ const double BKRDownloadSpeedWifi   =- 12000 / 8; // kbps -> KB/s
         _headers = headers;
         _error = error;
         _frameIndex = NSNotFound;
+        _requestTime = kBKRDefaultRequestTime;
+        _responseTime = kBKRDefaultResponseTime;
     }
     return self;
 }

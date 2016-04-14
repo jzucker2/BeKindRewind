@@ -118,25 +118,28 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  The duration to wait before faking receiving the response headers.
- *
- *  Defaults to 0.0.
+ *  This is the actual value applied to a mocked network action during
+ *  playing. It represents the time elapsed between a network request 
+ *  beginning and the NSURLResponse being received. Defaults to 0.0.
  *
  *  @note must be set to a value greater than or equal to 0
  *
  *  @since 2.0.0
  */
-#warning move to private header
 @property (nonatomic, assign) NSTimeInterval requestTime;
 
 /**
- *  The duration to use to send the fake response body.
+ *  The duration to use to send the fake response body. This is the
+ *  actual value applied to a mocked network action during playing.
+ *  It represents the time that elapses (or the speed with which) all
+ *  the data for a network action is returned for a request. Defaults to 0.0.
  *
  *  @note if responseTime<0, it is interpreted as a download speed in KBps ( -200 => 200KB/s )
  *
  *  @since 2.0.0
  */
-#warning move to private header
 @property (nonatomic, assign) NSTimeInterval responseTime;
+
 #warning docs
 @property (nonatomic, assign, readonly) NSTimeInterval recordedRequestTime; // time until NSURLResponseFrame
 @property (nonatomic, assign, readonly) NSTimeInterval recordedResponseTime; // time until last piece of data (last BKRDataFrame)
