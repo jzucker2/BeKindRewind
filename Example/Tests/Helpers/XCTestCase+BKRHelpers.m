@@ -299,6 +299,7 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
 }
 
 - (BKRTestSceneAssertionHandler)_assertionHandlerForExpectedResult:(BKRTestExpectedResult *)expectedResult andTask:(NSURLSessionTask *)task {
+#warning add timing assertions here!
     BKRTestSceneAssertionHandler sceneAssertions = ^void (BKRScene *scene) {
         NSMutableArray<BKRFrame *> *assertFrames = scene.allFrames.mutableCopy;
         XCTAssertNotNil(assertFrames);
