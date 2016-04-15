@@ -36,10 +36,11 @@ static NSTimeInterval const kBKRTestConfigurationTearDownTimeoutDefault = 15;
 #warning this shouldn't get called for playing (we are not recording!)
     configuration.beginRecordingBlock = ^void (NSURLSessionTask *task) {
         NSString *recordingExpectationString = [NSString stringWithFormat:@"Task: %@", task.BKR_globallyUniqueIdentifier];
-        NSLog(@"beginRecordingBlock: testCase (%@) task (%@)", testCase, task);
         task.BKR_recordingExpectation = [testCase expectationWithDescription:recordingExpectationString];
+        NSLog(@"beginRecordingBlock");
     };
     configuration.endRecordingBlock = ^void (NSURLSessionTask *task) {
+        NSLog(@"endRecordingBlock");
         [task.BKR_recordingExpectation fulfill];
     };
     return configuration;
