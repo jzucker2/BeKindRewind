@@ -1,8 +1,8 @@
 //
-//  BKRPlayingWithTimingTestCase.m
+//  BKRPlayingWithRecordedTimingTestCase.m
 //  BeKindRewind
 //
-//  Created by Jordan Zucker on 4/14/16.
+//  Created by Jordan Zucker on 4/15/16.
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
@@ -13,11 +13,11 @@
 
 static double const kBKRTestTimingTolerance = 0.8;
 
-@interface BKRPlayingWithTimingTestCase : BKRTestCase
+@interface BKRPlayingWithRecordedTimingTestCase : BKRTestCase
 
 @end
 
-@implementation BKRPlayingWithTimingTestCase
+@implementation BKRPlayingWithRecordedTimingTestCase
 
 - (BOOL)isRecording {
     return NO;
