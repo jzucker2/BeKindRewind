@@ -35,6 +35,7 @@
 - (instancetype)initWithInvocation:(NSInvocation *)invocation {
     self = [super initWithInvocation:invocation];
     if (self) {
+        NSLog(@"self (%@) %s invocation (%@)", self, __PRETTY_FUNCTION__, invocation);
         _currentVCR = [self testVCRWithConfiguration:[self testConfiguration]];
     }
     return self;

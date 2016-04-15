@@ -57,6 +57,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _redirectURLString = nil;
         _redirectURL = nil;
         _redirectHTTPMethod = nil;
+        _shouldAssertOnTiming = NO;
     }
     return self;
 }
@@ -195,6 +196,16 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }
 }
 
+- (NSTimeInterval)actualElapsedTime {
+    if (
+        !self.startDate ||
+        !self.completionDate
+        ) {
+        return -1;
+    }
+    return [self.completionDate timeIntervalSinceDate:self.startDate];
+}
+
 - (NSString *)redirectLocationWithPath:(NSString *)path {
     return [self.redirectURL.path stringByAppendingPathComponent:path];
 }
@@ -254,6 +265,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
     
     NSURLSessionTask *executingTask = [self _preparedTaskForExpectedResult:expectedResult andTaskCompletionAssertions:networkCompletionAssertions];
+    expectedResult.startDate = [NSDate date];
     [executingTask resume];
     if (expectedResult.shouldCancel) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -419,6 +431,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         expectedResult.actualReceivedData = data;
         expectedResult.actualReceivedResponse = response;
         expectedResult.actualReceivedError = error;
+        expectedResult.completionDate = [NSDate date];
         if (expectedResult.shouldCancel) {
             XCTAssertNotNil(error);
             XCTAssertEqual(expectedResult.errorCode, error.code);
@@ -605,6 +618,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         NSUInteger executedTasksCount = executedTasks.count;
         executedTasks[i] = task;
         XCTAssertEqual(executedTasks.count, ++executedTasksCount);
+        expectedResult.startDate = [NSDate date];
         [task resume];
     }
     // ensure all tasks are running (expects tasks that take a not insignificant amount of time)

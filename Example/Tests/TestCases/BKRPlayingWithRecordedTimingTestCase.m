@@ -8,6 +8,7 @@
 
 #import <BeKindRewind/BKRTestConfiguration.h>
 #import <BeKindRewind/BKRTestCase.h>
+#import <BeKindRewind/BKRCassette.h>
 #import <BeKindRewind/BKRPlayheadWithTimingMatcher.h>
 #import "XCTestCase+BKRHelpers.h"
 
@@ -43,68 +44,87 @@ static double const kBKRTestTimingTolerance = 0.8;
 
 - (void)testPlayingOneGETRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
+    expectedResult.shouldAssertOnTiming = YES;
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([[self.currentVCR currentCassette] allScenes]);
     }];
 }
 
 - (void)testPlayingOneCancelledGETRequest {
     BKRTestExpectedResult *cancelledRequest = [self HTTPBinCancelledRequestWithRecording:NO];
+    cancelledRequest.shouldAssertOnTiming = YES;
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[cancelledRequest] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([[self.currentVCR currentCassette] allScenes]);
     }];
 }
 
 - (void)testPlayingOnePOSTRequest {
     BKRTestExpectedResult *postResult = [self HTTPBinPostRequestWithRecording:NO];
+    postResult.shouldAssertOnTiming = YES;
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[postResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([[self.currentVCR currentCassette] allScenes]);
     }];
 }
 
 - (void)testPlayingMultipleGETRequests {
     BKRTestExpectedResult *firstResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
+    firstResult.shouldAssertOnTiming = YES;
     BKRTestExpectedResult *secondResult = [self HTTPBinGetRequestWithQueryString:@"test=test2" withRecording:NO];
+    secondResult.shouldAssertOnTiming = YES;
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([[self.currentVCR currentCassette] allScenes]);
     }];
 }
 
 - (void)testPlayingTwoConsecutiveGETRequestsWithSameRequestURLAndDifferentResponses {
     BKRTestExpectedResult *firstResult = [self PNGetTimeTokenWithRecording:NO];
+    firstResult.shouldAssertOnTiming = YES;
     BKRTestExpectedResult *secondResult = [self PNGetTimeTokenWithRecording:NO];
+    secondResult.shouldAssertOnTiming = YES;
     
     [self BKRTest_executePNTimeTokenNetworkCallsForExpectedResults:@[firstResult, secondResult] withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([[self.currentVCR currentCassette] allScenes]);
     }];
 }
 
 - (void)testPlayingTwoSimultaneousGETRequests {
     BKRTestExpectedResult *firstResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:2 withRecording:NO];
+    firstResult.shouldAssertOnTiming = YES;
     BKRTestExpectedResult *secondResult = [self HTTPBinSimultaneousDelayedRequestWithDelay:3 withRecording:NO];
+    secondResult.shouldAssertOnTiming = YES;
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[firstResult, secondResult] simultaneously:YES withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([[self.currentVCR currentCassette] allScenes]);
     }];
 }
 
 - (void)testPlayingChunkedDataRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinDripDataWithRecording:NO];
+    expectedResult.shouldAssertOnTiming = YES;
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([[self.currentVCR currentCassette] allScenes]);
     }];
 }
 
 - (void)testPlayingRedirectRequest {
     BKRTestExpectedResult *expectedResult = [self HTTPBinRedirectWithRecording:NO];
+    expectedResult.shouldAssertOnTiming = YES;
     
     [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[expectedResult] simultaneously:NO withTaskCompletionAssertions:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSData *data, NSURLResponse *response, NSError *error) {
     } taskTimeoutHandler:^(BKRTestExpectedResult *result, NSURLSessionTask *task, NSError *error, BKRTestBatchSceneAssertionHandler batchSceneAssertions) {
+        batchSceneAssertions([[self.currentVCR currentCassette] allScenes]);
     }];
 }
 
