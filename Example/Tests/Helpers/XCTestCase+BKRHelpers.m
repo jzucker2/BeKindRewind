@@ -29,6 +29,7 @@
 #import "XCTestCase+BKRHelpers.h"
 
 static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2016 18:18:46 GMT";
+static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPStubs ( https://github.com/AliSoftware/OHHTTPStubs/blob/master/OHHTTPStubs/UnitTests/Test%20Suites/TimingTests.m#L89 )
 
 @implementation BKRTestExpectedResult
 

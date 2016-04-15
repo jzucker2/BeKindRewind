@@ -12,8 +12,6 @@
 #import <BeKindRewind/BKRPlayheadWithTimingMatcher.h>
 #import "XCTestCase+BKRHelpers.h"
 
-static double const kBKRTestTimingTolerance = 0.8;
-
 @interface BKRPlayingWithRecordedTimingTestCase : BKRTestCase
 
 @end
