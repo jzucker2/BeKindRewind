@@ -299,7 +299,6 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
 }
 
 - (BKRTestSceneAssertionHandler)_assertionHandlerForExpectedResult:(BKRTestExpectedResult *)expectedResult andTask:(NSURLSessionTask *)task {
-#warning add timing assertions here!
     BKRTestSceneAssertionHandler sceneAssertions = ^void (BKRScene *scene) {
         NSMutableArray<BKRFrame *> *assertFrames = scene.allFrames.mutableCopy;
         XCTAssertNotNil(assertFrames);
@@ -318,6 +317,7 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
             [self _assertRequestFrame:scene.currentRequest withRequest:task.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
             [assertFrames removeObject:scene.currentRequest];
         }
+        NSTimeInterval expectedElapsedTime = scene.recordedRequestTimeForFinalResponseStub + scene.recordedResponseTimeForFinalResponseStub;
         if (expectedResult.actualReceivedResponse) {
             BKRResponseFrame *responseToTest = scene.allResponseFrames.firstObject;
             if (expectedResult.isRedirecting) {
@@ -376,6 +376,8 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
                 XCTAssertNotNil(frame);
                 // all frames should be of type redirect
                 BKRRedirectFrame *redirectFrame = (BKRRedirectFrame *)frame;
+                expectedElapsedTime += [scene recordedRequestTimeForRedirectFrame:redirectFrame];
+                expectedElapsedTime += [scene recordedResponseTimeForRedirectFrame:redirectFrame];
                 XCTAssertTrue([redirectFrame isKindOfClass:[BKRRedirectFrame class]]);
                 XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], redirectFrame.responseFrame.URL.absoluteString);
                 if (
@@ -411,6 +413,10 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
         } else {
             // sometimes cancelled or POST have extra or inconsistent and request frames
             [assertFrames removeObjectsInArray:scene.allRequestFrames];
+        }
+        if (expectedResult.shouldAssertOnTiming) {
+            NSTimeInterval actualElapsedTime = expectedResult.actualElapsedTime;
+            XCTAssertEqualWithAccuracy(actualElapsedTime, expectedElapsedTime, kBKRTestTimingTolerance);
         }
         XCTAssertEqual(assertFrames.count, 0, @"Shouldn't be any frames left to assert");
         [self assertFramesOrderForScene:scene];
