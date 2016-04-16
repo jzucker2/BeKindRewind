@@ -47,7 +47,6 @@ const double kBKRDefaultResponseTime = 0.0;
         _statusCode = statusCode;
         _headers = headers;
         _error = error;
-        _frameIndex = NSNotFound;
         _requestTime = kBKRDefaultRequestTime;
         _responseTime = kBKRDefaultResponseTime;
     }
@@ -116,11 +115,6 @@ const double kBKRDefaultResponseTime = 0.0;
 - (void)setRequestTime:(NSTimeInterval)requestTime {
     NSParameterAssert(requestTime >= 0);
     _requestTime = requestTime;
-}
-
-- (void)setFrameIndex:(NSInteger)frameIndex {
-    NSParameterAssert(frameIndex >= 0);
-    _frameIndex = frameIndex;
 }
 
 @end

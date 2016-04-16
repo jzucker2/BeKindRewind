@@ -92,11 +92,6 @@
     return self.allErrorFrames.firstObject;
 }
 
-- (NSUInteger)_indexOfResponseError {
-    BKRErrorFrame *errorFrame = [self _errorFrame];
-    return [self.allFrames indexOfObject:errorFrame];
-}
-
 - (BKRResponseStub *)finalResponseStub {
     BKRResponseStub *responseStub = nil;
     NSError *responseError = [self _responseError];
@@ -158,12 +153,8 @@
     return [self _responseStub:responseStub withRecordedRequestTime:[self recordedRequestTimeForRedirectFrame:redirectFrame] withRecordedResponseTime:[self recordedResponseTimeForRedirectFrame:redirectFrame]];
 }
 
-- (NSTimeInterval)timeSinceCreationForFrameIndex:(NSUInteger)frameIndex {
-    BKRFrame *frame = self.allFrames[frameIndex];
-    return [self timeSinceCreationForFrame:frame];
-}
-
 - (NSTimeInterval)timeSinceCreationForFrame:(BKRFrame *)frame {
+    NSParameterAssert(frame);
     NSTimeInterval clapboardTimeInterval = self.creationTimestamp;
     NSTimeInterval elapsedTime = [frame.creationDate doubleValue] - clapboardTimeInterval;
     return ((elapsedTime > 0) ? elapsedTime : 0);

@@ -178,9 +178,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign, readonly) NSTimeInterval recordedResponseTime;
 
-#warning docs
-@property (nonatomic, assign) NSInteger frameIndex; // this is NSNotFound by default
-
 /**
  *  This extracts the scene identifier from information contained within the stub.
  *

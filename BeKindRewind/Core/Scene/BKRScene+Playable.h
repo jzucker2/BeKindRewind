@@ -107,13 +107,39 @@
  */
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
 
-#warning add docs
+/**
+ *  This is the unix timestamp (timeSince1970) of the first
+ *  frame in the scene
+ *
+ *  @return time elapsed as an NSTimeInterval value
+ *
+ *  @since 2.0.0
+ */
 - (NSTimeInterval)creationTimestamp;
+
+/**
+ *  This is the unix timestamp (timeSince1970) of frame if
+ *  it exists in the scene
+ *
+ *  @param frame instance of BKRFrame to calculate timestamp for. This
+ *  @throws NSInternalInconsistency exception if filePath is nil
+ *
+ *  @return time elapsed as an NSTimeInterval value or 0.0 if frame is not within this scene
+ *
+ *  @since 2.0.0
+ */
 - (NSTimeInterval)timeSinceCreationForFrame:(BKRFrame *)frame;
-- (NSTimeInterval)timeSinceCreationForFrameIndex:(NSUInteger)frameIndex;
+
 
 - (NSTimeInterval)recordedRequestTimeForFinalResponseStub;
+
+
 - (NSTimeInterval)recordedResponseTimeForFinalResponseStub;
+
+
 - (NSTimeInterval)recordedRequestTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
+
+
 - (NSTimeInterval)recordedResponseTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
+
 @end
