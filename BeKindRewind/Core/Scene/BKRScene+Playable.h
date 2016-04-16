@@ -130,16 +130,60 @@
  */
 - (NSTimeInterval)timeSinceCreationForFrame:(BKRFrame *)frame;
 
-
+/**
+ *  The duration to wait before faking receiving the response headers
+ *  for the final response (data or an error). This is the actual 
+ *  value applied to a mocked network action during playing. It 
+ *  represents the time elapsed between a network request
+ *  beginning and the final NSURLResponse being received.
+ *
+ *  @return this returns the duration or 0.0 if there is no response
+ *          frame (e.g. the recording is truncated)
+ *
+ *  @since 2.0.0
+ */
 - (NSTimeInterval)recordedRequestTimeForFinalResponseStub;
 
-
+/**
+ *  The duration to use to send the fake response body for the final response 
+ *  (data or an error). This is the actual value applied to a mocked network
+ *  action during playing. It represents the time that elapsed for all the data
+ *  for a network action that is returned for a request.
+ *
+ *  @return this returns the duration (as a NSTimeInterval value) or 0.0 
+ *          if there is no data frame (e.g. the recording is truncated)
+ *
+ *  @since 2.0.0
+ */
 - (NSTimeInterval)recordedResponseTimeForFinalResponseStub;
 
-
+/**
+ *  The duration to wait before faking receiving the response headers
+ *  for a redirect response matching the redirectFrame parameter. This
+ *  is the actual value applied to a mocked network action during playing. 
+ *  It represents the time elapsed between a network request
+ *  beginning and a redirect response matching redirectFrame being received
+ *
+ *  @param redirectFrame frame to calculate redirect time elapsed for
+ *  @throws NSInternalInconsistency exception if filePath is nil
+ *
+ *  @return this returns the duration as NSTimeInterval value or 0.0 if 
+ *          there is no redirectFrame (e.g. the recording is truncated)
+ *
+ *  @since 2.0.0
+ */
 - (NSTimeInterval)recordedRequestTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
 
-
+/**
+ *  This is the duration to wait to return all the data associated with a redirect.
+ *  Since redirects only contain a request and a response, this is always 0.0 seconds
+ *
+ *  @param redirectFrame frame to calculate duration for
+ *
+ *  @return this always returns an NSTimeInterval of 0.0
+ *
+ *  @since 2.0.0
+ */
 - (NSTimeInterval)recordedResponseTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
 
 @end

@@ -217,6 +217,7 @@
 }
 
 - (NSTimeInterval)recordedRequestTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame {
+    NSParameterAssert(redirectFrame);
     return [self _requestTimeForFrame:redirectFrame];
 }
 
