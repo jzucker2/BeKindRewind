@@ -174,6 +174,7 @@
 }
 
 // finds the BKRCurrentRequestFrame directly preceding the frame passed in, or nil if none exists
+#warning redo, need to step backwards through allFrames until i hit a current request or run out of frames
 - (BKRCurrentRequestFrame *)_preceedingCurrentRequestFrameForFrame:(BKRFrame *)frame {
     NSUInteger frameIndex = [self.allFrames indexOfObject:frame];
     if (frameIndex == NSNotFound) {
