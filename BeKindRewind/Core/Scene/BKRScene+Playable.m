@@ -165,7 +165,6 @@
 
 - (NSTimeInterval)timeSinceCreationForFrame:(BKRFrame *)frame {
     NSTimeInterval clapboardTimeInterval = self.creationTimestamp;
-    // TODO: investigate this. Maybe return 0 if this is invalid
     NSTimeInterval elapsedTime = [frame.creationDate doubleValue] - clapboardTimeInterval;
     return ((elapsedTime > 0) ? elapsedTime : 0);
 }
@@ -186,7 +185,9 @@
 // finds the BKRCurrentRequestFrame directly preceding the frame passed in, or nil if none exists
 - (BKRCurrentRequestFrame *)_preceedingCurrentRequestFrameForFrame:(BKRFrame *)frame {
     NSUInteger frameIndex = [self.allFrames indexOfObject:frame];
-    // TODO: add checks for this
+    if (frameIndex == NSNotFound) {
+        return nil;
+    }
     BKRCurrentRequestFrame *preceedingFrame = (BKRCurrentRequestFrame *)self.allFrames[(frameIndex-1)];
     return (([preceedingFrame isKindOfClass:[BKRCurrentRequestFrame class]]) ? preceedingFrame : nil);
 }
