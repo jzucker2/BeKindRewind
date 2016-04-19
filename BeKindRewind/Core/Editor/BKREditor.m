@@ -47,6 +47,9 @@
     BKRWeakify(self);
     dispatch_barrier_async(self.editingQueue, ^{
         BKRStrongify(self);
+        if (!self) {
+            return;
+        }
         cassetteEditingBlock(self->_enabled, self->_currentCassette);
     });
 }
@@ -110,7 +113,10 @@
 }
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
+    BKRWeakify(self);
     [self setEnabled:NO withCompletionHandler:^(BOOL updatedEnabled, BKRCassette *cassette) {
+        BKRStrongify(self);
+        self->_currentCassette = nil;
         if (completionBlock) {
             completionBlock();
         }

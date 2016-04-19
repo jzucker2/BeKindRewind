@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "BeKindRewind"
-  s.version          = "1.0.0"
+  s.version          = "2.0.0"
   s.summary          = "A simple way to record and replay network requests for testing and debugging."
   s.description      = <<-DESC
                         Provides an XCTestCase subclass for easily
@@ -29,4 +29,7 @@ Pod::Spec.new do |s|
   s.dependency 'OHHTTPStubs', '~> 5.0.0'
   s.framework = 'XCTest'
   s.source_files = 'BeKindRewind/Core/**/*'
+  s.private_header_files = [
+    'BeKindRewind/Core/OHHTTPStubs/BKRResponseStub+Private.h'
+    ]
 end

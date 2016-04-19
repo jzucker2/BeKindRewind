@@ -75,9 +75,6 @@
 }
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
-    self.currentCassette = nil;
-    self.beginRecordingBlock = nil;
-    self.endRecordingBlock = nil;
     [self.editor resetWithCompletionBlock:^{
         if (completionBlock) {
             completionBlock();

@@ -7,9 +7,23 @@
 //
 
 #import <OHHTTPStubs/OHHTTPStubsResponse.h>
-#import "BKRResponseStub.h"
+#import "BKRResponseStub+Private.h"
 #import "BKRScene.h"
 #import "BKRConstants.h"
+
+#pragma mark - Defines & Constants
+const double BKRDownloadSpeed1KBPS  =-     8 / 8; // kbps -> KB/s
+const double BKRDownloadSpeedSLOW   =-    12 / 8; // kbps -> KB/s
+const double BKRDownloadSpeedGPRS   =-    56 / 8; // kbps -> KB/s
+const double BKRDownloadSpeedEDGE   =-   128 / 8; // kbps -> KB/s
+const double BKRDownloadSpeed3G     =-  3200 / 8; // kbps -> KB/s
+const double BKRDownloadSpeed3GPlus =-  7200 / 8; // kbps -> KB/s
+const double BKRDownloadSpeedWifi   =- 12000 / 8; // kbps -> KB/s
+
+#pragma mark - Implementation
+
+const double kBKRDefaultRequestTime = 0.0;
+const double kBKRDefaultResponseTime = 0.0;
 
 @interface BKRResponseStub ()
 @property (nonatomic, assign, readwrite) int statusCode;
@@ -33,12 +47,18 @@
         _statusCode = statusCode;
         _headers = headers;
         _error = error;
+        _requestTime = kBKRDefaultRequestTime;
+        _responseTime = kBKRDefaultResponseTime;
     }
     return self;
 }
 
 - (instancetype)initWithStubsResponse:(OHHTTPStubsResponse *)response {
     self = [self initWithInputStream:response.inputStream dataSize:response.dataSize statusCode:response.statusCode headers:response.httpHeaders error:response.error];
+    if (self) {
+        _requestTime = response.requestTime;
+        _responseTime = response.responseTime;
+    }
     return self;
 }
 
@@ -48,6 +68,10 @@
 
 + (instancetype)responseWithData:(NSData *)data statusCode:(int)statusCode headers:(NSDictionary *)headers {
     return [[self alloc] initWithData:data statusCode:statusCode headers:headers error:nil];
+}
+
++ (instancetype)responseWithStatusCode:(int)statusCode headers:(NSDictionary *)headers {
+    return [self responseWithData:nil statusCode:statusCode headers:headers];
 }
 
 + (instancetype)responseWithError:(NSError *)error {
@@ -86,6 +110,11 @@
     NSDictionary *headers = self.headers;
     sceneUUID = headers[kBKRSceneUUIDKey];
     return sceneUUID;
+}
+
+- (void)setRequestTime:(NSTimeInterval)requestTime {
+    NSParameterAssert(requestTime >= 0);
+    _requestTime = requestTime;
 }
 
 @end

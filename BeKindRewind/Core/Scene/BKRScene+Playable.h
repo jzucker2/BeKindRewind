@@ -39,6 +39,16 @@
 - (BOOL)hasRedirects;
 
 /**
+ *  Convenience method for checking whether a scene ends in a NSError
+ *
+ *  @return If `YES` then the scene ends in an error (returns a NSError as
+ *          as a response to a network request).
+ *
+ *  @since 2.0.0
+ */
+- (BOOL)isError;
+
+/**
  *  Represents the last response for a scene (which includes any final error or data).
  *
  *  @return response stub to mock a request
@@ -96,5 +106,123 @@
  *  @since 1.0.0
  */
 - (BKRResponseStub *)responseStubForRedirect:(NSUInteger)redirectNumber;
+
+/**
+ *  This is the unix timestamp (timeSince1970) of the first
+ *  frame in the scene
+ *
+ *  @return time elapsed as an NSTimeInterval value
+ *
+ *  @since 2.0.0
+ */
+- (NSTimeInterval)creationTimestamp;
+
+/**
+ *  This is the unix timestamp (timeSince1970) of frame if
+ *  it exists in the scene
+ *
+ *  @param frame instance of BKRFrame to calculate timestamp for. This
+ *  @throws NSInternalInconsistency exception if filePath is nil
+ *
+ *  @return time elapsed as an NSTimeInterval value or 0.0 if frame is not within this scene
+ *
+ *  @since 2.0.0
+ */
+- (NSTimeInterval)timeSinceCreationForFrame:(BKRFrame *)frame;
+
+/**
+ *  The duration to wait before faking receiving the response headers
+ *  for the final response (data or an error). This is the actual 
+ *  value applied to a mocked network action during playing. It 
+ *  represents the time elapsed between a network request
+ *  beginning and the final NSURLResponse being received.
+ *
+ *  @return this returns the duration or 0.0 if there is no response
+ *          frame (e.g. the recording is truncated)
+ *
+ *  @since 2.0.0
+ */
+- (NSTimeInterval)recordedRequestTimeForFinalResponseStub;
+
+/**
+ *  The duration to use to send the fake response body for the final response 
+ *  (data or an error). This is the actual value applied to a mocked network
+ *  action during playing. It represents the time that elapsed for all the data
+ *  for a network action that is returned for a request.
+ *
+ *  @return this returns the duration (as a NSTimeInterval value) or 0.0 
+ *          if there is no data frame (e.g. the recording is truncated)
+ *
+ *  @since 2.0.0
+ */
+- (NSTimeInterval)recordedResponseTimeForFinalResponseStub;
+
+/**
+ *  The duration to wait before faking receiving the response headers
+ *  for a redirect response matching the redirectFrame parameter. This
+ *  is the actual value applied to a mocked network action during playing. 
+ *  It represents the time elapsed between a network request
+ *  beginning and a redirect response matching redirectFrame being received
+ *
+ *  @param redirectFrame frame to calculate redirect time elapsed for
+ *  @throws NSInternalInconsistency exception if filePath is nil
+ *
+ *  @return this returns the duration as NSTimeInterval value or 0.0 if 
+ *          there is no redirectFrame (e.g. the recording is truncated)
+ *
+ *  @since 2.0.0
+ */
+- (NSTimeInterval)recordedRequestTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
+
+/**
+ *  This is the duration to wait to return all the data associated with a redirect.
+ *  Since redirects only contain a request and a response, this is always 0.0 seconds
+ *
+ *  @param redirectFrame frame to calculate duration for
+ *
+ *  @return this always returns an NSTimeInterval of 0.0
+ *
+ *  @since 2.0.0
+ */
+- (NSTimeInterval)recordedResponseTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
+
+/**
+ *  This finds the matching BKRCurrentRequestFrame instance for a BKRResponseFrame in this
+ *  scene. This can be used to calculate a request time duration for the scene.
+ *
+ *  @param responseFrame this is the response to match against a current request. It must not be nil.
+ *  @throws NSInternalInconsistencyException if responseFrame is nil
+ *
+ *  @return the matching BKRCurrentRequestFrame or nil if none matches
+ *
+ *  @since 2.0.0
+ */
+- (BKRCurrentRequestFrame *)currentRequestFrameForResponseFrame:(BKRResponseFrame *)responseFrame;
+
+/**
+ *  This finds the matching BKRCurrentRequestFrame instance for a BKRRedirectFrame in this
+ *  scene. This can be used to calculate a request time duration for a redirect in this scene.
+ *
+ *  @param redirectFrame this is the redirect to match against a current request. It must not be nil.
+ *  @throws NSInternalInconsistencyException if responseFrame is nil
+ *
+ *  @return the matching BKRCurrentRequestFrame or nil if none matches
+ *
+ *  @since 2.0.0
+ */
+- (BKRCurrentRequestFrame *)currentRequestFrameForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
+
+/**
+ *  This finds the matching BKRCurrentRequestFrame instance for a BKRErrorFrame in this
+ *  scene. This can be used to calculate a request time duration for returning an error in this scene.
+ *
+ *  @param errorFrame this is the error to match against a current request. It must not be nil.
+ *  @throws NSInternalInconsistencyException if responseFrame is nil
+ *
+ *  @return the matching BKRCurrentRequestFrame or nil if none matches
+ *
+ *  @since 2.0.0
+ */
+- (BKRCurrentRequestFrame *)currentRequestFrameForErrorFrame:(BKRErrorFrame *)errorFrame;
 
 @end

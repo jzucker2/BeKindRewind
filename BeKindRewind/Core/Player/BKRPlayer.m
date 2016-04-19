@@ -27,6 +27,7 @@
     self = [super init];
     if (self) {
         _matcher = [matcherClass matcher];
+        NSAssert(_matcher, @"There must be a matcher for the player to function properly");
         _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
     }
     return self;
@@ -61,7 +62,6 @@
 }
 
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
-    self.currentCassette = nil;
     [self.editor resetWithCompletionBlock:^{
         if (completionBlock) {
             completionBlock();

@@ -63,4 +63,18 @@
     return self;
 }
 
+- (NSURL *)failingURL {
+    if (self.userInfo) {
+        return self.userInfo[NSURLErrorFailingURLErrorKey];
+    }
+    return nil;
+}
+
+- (NSString *)failingURLString {
+    if (self.userInfo) {
+        return self.userInfo[NSURLErrorFailingURLStringErrorKey];
+    }
+    return nil;
+}
+
 @end
