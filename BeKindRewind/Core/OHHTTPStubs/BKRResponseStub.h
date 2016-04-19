@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#warning docs
+// These are provided constants for download speeds to be
+// used in stubbing
 #pragma mark - Defines & Constants
 // Non-standard download speeds
 extern const double
