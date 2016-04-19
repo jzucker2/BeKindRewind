@@ -186,4 +186,8 @@
  */
 - (NSTimeInterval)recordedResponseTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
 
+- (BKRCurrentRequestFrame *)currentRequestFrameForResponseFrame:(BKRResponseFrame *)responseFrame;
+- (BKRCurrentRequestFrame *)currentRequestFrameForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
+- (BKRCurrentRequestFrame *)currentRequestFrameForErrorFrame:(BKRErrorFrame *)errorFrame;
+
 @end

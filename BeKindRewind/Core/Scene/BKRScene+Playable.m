@@ -184,11 +184,63 @@
     return (([preceedingFrame isKindOfClass:[BKRCurrentRequestFrame class]]) ? preceedingFrame : nil);
 }
 
+// throws NSInternalInternalInconsistencyException if frame is not of class BKRRedirectFrame or BKRResponseFrame or BKRErrorFrame
 - (NSTimeInterval)_requestTimeForFrame:(BKRFrame *)frame {
+    BKRCurrentRequestFrame *precedingCurrentRequestFrame = nil;
+    if ([frame isKindOfClass:[BKRRedirectFrame class]]) {
+        precedingCurrentRequestFrame = [self currentRequestFrameForRedirectFrame:(BKRRedirectFrame *)frame];
+    } else if ([frame isKindOfClass:[BKRResponseFrame class]]) {
+        precedingCurrentRequestFrame = [self currentRequestFrameForResponseFrame:(BKRResponseFrame *)frame];
+    } else if ([frame isKindOfClass:[BKRErrorFrame class]]) {
+        precedingCurrentRequestFrame = [self currentRequestFrameForErrorFrame:(BKRErrorFrame *)frame];
+    } else {
+        NSAssert(NO, @"Request time can only be calculated for objects of class BKRRedirectFrame, BKRErrorFrame, or BKRResponseFrame, %@ is not of either class", frame);
+        return 0;
+    }
+    
     NSTimeInterval finalResponseTimestamp = [self timeSinceCreationForFrame:frame];
-    BKRCurrentRequestFrame *preceedingCurrentRequestFrame = [self _preceedingCurrentRequestFrameForFrame:frame];
-    NSTimeInterval startingTimeStamp = [self timeSinceCreationForFrame:preceedingCurrentRequestFrame];
+    NSTimeInterval startingTimeStamp = [self timeSinceCreationForFrame:precedingCurrentRequestFrame];
     return finalResponseTimestamp - startingTimeStamp;
+}
+
+- (BKRCurrentRequestFrame *)currentRequestFrameForErrorFrame:(BKRErrorFrame *)errorFrame {
+    NSParameterAssert(errorFrame);
+    __block BKRCurrentRequestFrame *matchedCurrentRequestFrame = nil;
+    [self.allCurrentRequestFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRCurrentRequestFrame * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (
+            [obj.URLAbsoluteString isEqualToString:errorFrame.failingURLString] &&
+            ([obj.creationDate compare:errorFrame.creationDate] == NSOrderedAscending)
+            ) {
+            matchedCurrentRequestFrame = obj;
+            *stop = YES;
+        }
+    }];
+    
+    return matchedCurrentRequestFrame;
+}
+
+- (BKRCurrentRequestFrame *)currentRequestFrameForResponseFrame:(BKRResponseFrame *)responseFrame {
+    NSParameterAssert(responseFrame);
+    __block BKRCurrentRequestFrame *matchedCurrentRequestFrame = nil;
+    [self.allCurrentRequestFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(BKRCurrentRequestFrame * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (
+            [obj.URLAbsoluteString isEqualToString:responseFrame.URL.absoluteString] &&
+            ([obj.creationDate compare:responseFrame.creationDate] == NSOrderedAscending)
+            ) {
+            matchedCurrentRequestFrame = obj;
+            *stop = YES;
+        }
+    }];
+    
+    return matchedCurrentRequestFrame;
+}
+
+- (BKRCurrentRequestFrame *)currentRequestFrameForRedirectFrame:(BKRRedirectFrame *)redirectFrame {
+    NSParameterAssert(redirectFrame);
+    if (!redirectFrame.responseFrame) {
+        return nil;
+    }
+    return [self currentRequestFrameForResponseFrame:redirectFrame.responseFrame];
 }
 
 - (NSTimeInterval)recordedRequestTimeForFinalResponseStub {

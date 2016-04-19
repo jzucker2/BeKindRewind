@@ -54,5 +54,8 @@
  *  @since 1.0.0
  */
 @property (nonatomic, readonly) NSDictionary *userInfo;
+#warning docs
+@property (nonatomic, readonly) NSURL *failingURL;
+@property (nonatomic, readonly) NSString *failingURLString;
 
 @end

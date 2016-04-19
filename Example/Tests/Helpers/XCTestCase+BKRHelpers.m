@@ -276,7 +276,7 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
         });
     }
 
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:15 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         if (expectedResult.shouldCancel) {
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning, @"If task is still running, then it failed to cancel as expected, this is most likely not a BeKindRewind bug but a system bug");
@@ -875,11 +875,23 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
         // TODO: add more redirect testing.
         // now add redirects if they exist
         if (result.isRedirecting) {
+#warning add current requests for each redirect
             for (NSInteger i=0; i<result.numberOfRedirects; i++) {
+                // for everything
+                NSInteger redirectNumber = result.numberOfRedirects-i;
+                
+                // first create BKRCurrentRequestFrame
+                NSMutableDictionary *expectedRedirectCurrentRequestDict = expectedOriginalRequestDict.mutableCopy;
+                NSNumber *currentRequestCreationDate = @([[NSDate date] timeIntervalSince1970]);
+                expectedRedirectCurrentRequestDict[@"class"] = @"BKRCurrentRequestFrame";
+                expectedRedirectCurrentRequestDict[@"creationDate"] = currentRequestCreationDate;
+                expectedRedirectCurrentRequestDict[@"URL"] = [result redirectURLFullStringWithRedirection:redirectNumber];
+                [framesArray addObject:expectedRedirectCurrentRequestDict.copy];
+                
+                // then create BKRRedirectFrame
                 NSNumber *creationDate = @([[NSDate date] timeIntervalSince1970]);
                 NSMutableDictionary *expectedRedirectRequestDict = expectedOriginalRequestDict.mutableCopy;
                 expectedRedirectRequestDict[@"class"] = @"BKRRequestFrame";
-                NSInteger redirectNumber = result.numberOfRedirects-i;
                 NSString *redirectURLString = [result redirectURLFullStringWithRedirection:redirectNumber];
                 expectedRedirectRequestDict[@"URL"] = redirectURLString;
 //                expectedRedirectRequestDict[@"HTTPMethod"] = @"GET";
@@ -1152,9 +1164,10 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
     expectedResult.isRecording = isRecording;
     expectedResult.URLString = @"https://httpbin.org/delay/10";
     expectedResult.shouldCancel = YES;
-    expectedResult.hasCurrentRequest = NO;
+    expectedResult.hasCurrentRequest = YES;
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.errorCode = -999;
-    expectedResult.expectedNumberOfPlayingFrames = 2;
+    expectedResult.expectedNumberOfPlayingFrames = 3;
     expectedResult.expectedNumberOfRecordingFrames = 3;
     expectedResult.expectedSceneNumber = 0;
     expectedResult.errorDomain = NSURLErrorDomain;
@@ -1273,7 +1286,7 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"306"];
     expectedResult.numberOfExpectedRequestFrames = 5;
     expectedResult.expectedNumberOfRecordingFrames = 10;
-    expectedResult.expectedNumberOfPlayingFrames = 7;
+    expectedResult.expectedNumberOfPlayingFrames = 10;
     expectedResult.redirectResponseStatusCode = 302;
     expectedResult.numberOfRedirects = 3;
     expectedResult.redirectRequestHTTPHeaderFields = expectedResult.currentRequestAllHTTPHeaderFields;
