@@ -1,5 +1,12 @@
 # BeKindRewind — CHANGELOG
 
+## [2.0.0](https://github.com/jzucker2/BeKindRewind/releases/tag/2.0.0)
+
+* Added ability to control timing of requests and responses during stubbing.
+* Can set request download speed instead of a time (using a negative value).
+* Added new matcher for request and response timing called BKRPlayheadWithTimingMatcher
+* Fixed bug by moving VCR initialization from `XCTestCase` constructor to `setUp` to fix incorrect assumption of `XCTestCase` execution.
+
 ## [1.0.0](https://github.com/jzucker2/BeKindRewind/releases/tag/1.0.0)
 
 * Official full release.
