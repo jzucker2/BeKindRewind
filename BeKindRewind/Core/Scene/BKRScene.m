@@ -95,7 +95,7 @@
 - (BKRCurrentRequestFrame *)currentRequest {
     // since current requests are sorted, use the last object in the current requests array
     // this is equivalent to task.currentRequest at the end of the task's lifecycle
-    // the first currentRequest frame is the first time the server adjust's the originalRequest
+    // the first currentRequest frame is the first time the server adjusts the originalRequest
     // or the first redirect request
     return self.allCurrentRequestFrames.lastObject;
 }

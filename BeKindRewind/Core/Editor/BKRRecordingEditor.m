@@ -153,6 +153,8 @@
         [self->_objectsAdded removeAllObjects];
         self->_handledRecording = NO;
         self->_recordingStartTime = nil;
+        self->_beginRecordingBlock = nil;
+        self->_endRecordingBlock = nil;
         if (completionBlock) {
             completionBlock();
         }
@@ -255,16 +257,19 @@
 }
 
 - (void)executeBeginRecordingBlockWithTask:(NSURLSessionTask *)task {
-    // need this to be synchronous on the main queue
-    BKRBeginRecordingTaskBlock currentBeginRecordingBlock = self.beginRecordingBlock;
-    if (currentBeginRecordingBlock) {
-        if ([NSThread isMainThread]) {
-            currentBeginRecordingBlock(task);
-        } else {
-            // if recorder was called from a background queue, then make sure this is called on the main queue
-            dispatch_async(dispatch_get_main_queue(), ^{
+    // only run beginRecordingBlock if editor is enabled
+    if (self.isEnabled) {
+        // need this to be synchronous on the main queue
+        BKRBeginRecordingTaskBlock currentBeginRecordingBlock = self.beginRecordingBlock;
+        if (currentBeginRecordingBlock) {
+            if ([NSThread isMainThread]) {
                 currentBeginRecordingBlock(task);
-            });
+            } else {
+                // if recorder was called from a background queue, then make sure this is called on the main queue
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    currentBeginRecordingBlock(task);
+                });
+            }
         }
     }
 }
@@ -273,14 +278,17 @@
     BKRWeakify(self);
     [self editCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
-        BKREndRecordingTaskBlock currentEndRecordingTaskBlock = self->_endRecordingBlock;
-        if (
-            !cassette ||
-            !currentEndRecordingTaskBlock
-            ) {
-            return;
+        // only run endRecordingBlock when editor is enabled
+        if (updatedEnabled) {
+            BKREndRecordingTaskBlock currentEndRecordingTaskBlock = self->_endRecordingBlock;
+            if (
+                !cassette ||
+                !currentEndRecordingTaskBlock
+                ) {
+                return;
+            }
+            [cassette executeEndTaskRecordingBlock:currentEndRecordingTaskBlock withTask:task];
         }
-        [cassette executeEndTaskRecordingBlock:currentEndRecordingTaskBlock withTask:task];
     }];
 }
 

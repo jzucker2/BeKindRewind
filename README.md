@@ -191,6 +191,14 @@ If you see an exception during testing similar to `*** Terminating app due to un
 }
 ```
 
+If you see test failures due to an asynchronous wait timeout for an XCTestExpectation named `reset` then that is most likely due to the test case trying to stub requests while removing stubs. The failure will look something like this:
+```
+[21:32:10]: ▸ ✗ testCopyConfigurationWithSubscribedChannelsAndCallbackQueue, ((error) == nil) failed: "Error Domain=com.apple.XCTestErrorDomain Code=0 "The operation couldn’t be completed. (com.apple.XCTestErrorDomain error 0.)""
+[21:32:10]: ▸ ✗ testCopyConfigurationWithSubscribedChannelsAndCallbackQueue, Asynchronous wait failed: Exceeded timeout of 60 seconds, with unfulfilled expectations: "reset".
+```
+
+In order to fix this, make sure to properly tear down and stop any long running or background processes that are asynchronous, especially those related to networking, so that this race condition isn't introduced into your testing.
+
 ## Basic Testing Strategy
 
 Try to avoid writing a test that is dependent upon state. Instead, ensure that when `isRecording == YES` that the test can be fully recorded for playback, including setUp and tearDown. This eases development and ensures that the test isn't written on a condition that wouldn't be recreated when another developer tries to update your test with a new recording.
@@ -205,20 +213,19 @@ Jordan Zucker, jordan.zucker@gmail.com
 
 ## License
 
-BeKindRewind is available under the MIT license. See the LICENSE file for more info.
+BeKindRewind is available under the MIT license. See the [LICENSE](https://github.com/jzucker2/BeKindRewind/blob/master/LICENSE) file for more info.
 
 ## Future features
 * Swift tests (at least basic)
 * Swift Package Manager
 * Small tutorial to show how to drag in recordings to the project
-* explain fixture write directory hack for easy recording
+* explain fixture write directory hack for easy recording (and fix and add tests)
 * Separate into subspecs
 * add code coverage
 * test different types of errors (timeout, invalid url) for playing/recording
 * Tests for different types of NSURLSession (shared, ephemeral, standard, background, etc). Make different test case classes for each type of session
 * afnetworking tests
 * test for other types of network requests (streaming)
-* timing taken into consideration
 * blog post
 * JSON serializing in addition to plist serializing
 * tests for matcher classes

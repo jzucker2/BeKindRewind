@@ -8,7 +8,25 @@
 
 #import <Foundation/Foundation.h>
 
+// These are provided constants for download speeds to be
+// used in stubbing
+#pragma mark - Defines & Constants
+// Non-standard download speeds
+extern const double
+BKRDownloadSpeed1KBPS,					// 1.0 KB per second
+BKRDownloadSpeedSLOW;					// 1.5 KB per second
+
+// Standard download speeds.
+extern const double
+BKRDownloadSpeedGPRS,
+BKRDownloadSpeedEDGE,
+BKRDownloadSpeed3G,
+BKRDownloadSpeed3GPlus,
+BKRDownloadSpeedWifi;
+
 NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark - Interface
 
 @class OHHTTPStubsResponse;
 
@@ -27,13 +45,26 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param data       this is the information returned for the request that is being mocked.
  *  @param statusCode this is the HTTP code returned for the request that is being mocked.
- *  @param headers    this is the headers returned for the request that is being mocked.
+ *  @param headers    this is the HTTP headers returned for the request that is being mocked.
  *
  *  @return newly initialized instance of BKRResponseStub
  *
  *  @since 1.0.0
  */
 + (instancetype)responseWithData:(nullable NSData *)data statusCode:(int)statusCode headers:(nullable NSDictionary *)headers;
+
+/**
+ *  This is a convenience initializer used by OHHTTPStubs to mock a network response that
+ *  does not end in an error and has no data. This is mostly used for redirect mocking.
+ *
+ *  @param statusCode this is the HTTP code returned for the request that is being mocked.
+ *  @param headers    this is the HTTP headers returned for the request that is being mocked.
+ *
+ *  @return newly initialized instance of BKRResponseStub
+ *
+ *  @since 2.0.0
+ */
++ (instancetype)responseWithStatusCode:(int)statusCode headers:(nullable NSDictionary *)headers;
 
 /**
  *  This is a convenience initializer that is used by OHHTTPStubs to mock a network
@@ -96,6 +127,57 @@ NS_ASSUME_NONNULL_BEGIN
  *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly, nullable) NSError *error;
+
+/**
+ *  The duration to wait before faking receiving the response headers.
+ *  This is the actual value applied to a mocked network action during
+ *  playing. It represents the time elapsed between a network request 
+ *  beginning and the NSURLResponse being received. Defaults to 0.0.
+ *
+ *  @note must be set to a value greater than or equal to 0
+ *
+ *  @since 2.0.0
+ */
+@property (nonatomic, assign) NSTimeInterval requestTime;
+
+/**
+ *  The duration to use to send the fake response body. This is the
+ *  actual value applied to a mocked network action during playing.
+ *  It represents the time that elapses (or the speed with which) all
+ *  the data for a network action is returned for a request. Defaults to 0.0.
+ *
+ *  @note if responseTime<0, it is interpreted as a download speed in KBps ( -200 => 200KB/s )
+ *
+ *  @since 2.0.0
+ */
+@property (nonatomic, assign) NSTimeInterval responseTime;
+
+/**
+ *  This value is derived from recordings made by BeKindRewind and can be used
+ *  while playing mocked network actions. It is the time elapsed between the
+ *  beginning of a network request and the NSURLResponse being received. If
+ *  any of this data is missing (e.g. a recording being truncated) then
+ *  this value will be 0.0
+ *
+ *  @since 2.0.0
+ */
+@property (nonatomic, assign, readonly) NSTimeInterval recordedRequestTime;
+
+/**
+ *  This value is derived from recordings made by BeKindRewind and can be used
+ *  while playing mocked network actions. It is the total time elapsed for
+ *  returning all the data associated with a network request, after the NSURLResponse
+ *  is returned. If the response time cannot be calculated (e.g. a recording being
+ *  truncated) then this value will be 0.0.
+ *
+ *  @note While the responseTime for a BKRResponseStub can be negative to represent
+ *        speed, the recordedResponseTime will always be >= 0.
+ *
+ *  @note This will be 0.0 for a redirect because no data is returned during a redirect
+ *
+ *  @since 2.0.0
+ */
+@property (nonatomic, assign, readonly) NSTimeInterval recordedResponseTime;
 
 /**
  *  This extracts the scene identifier from information contained within the stub.

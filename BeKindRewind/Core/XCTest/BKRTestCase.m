@@ -32,14 +32,6 @@
     return [BKRTestVCR vcrWithTestConfiguration:configuration];
 }
 
-- (instancetype)initWithInvocation:(NSInvocation *)invocation {
-    self = [super initWithInvocation:invocation];
-    if (self) {
-        _currentVCR = [self testVCRWithConfiguration:[self testConfiguration]];
-    }
-    return self;
-}
-
 - (NSString *)baseFixturesDirectoryFilePath {
     return [BKRTestCaseFilePathHelper documentsDirectory];
 }
@@ -61,6 +53,7 @@
 
 - (void)setUp {
     [super setUp];
+    self.currentVCR = [self testVCRWithConfiguration:[self testConfiguration]];
     BKRVCRState assertionState = BKRVCRStateStopped;
     XCTAssertEqual(self.currentVCR.state, assertionState, @"currentVCR should begin in stopped state");
     BKRWeakify(self);

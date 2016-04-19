@@ -53,6 +53,10 @@
 @property (nonatomic, strong) NSURLResponse *actualReceivedResponse;
 @property (nonatomic, strong) NSError *actualReceivedError;
 @property (nonatomic, copy) NSString *redirectHTTPMethod; // setting this automatically sets isRedirecting to YES
+@property (nonatomic, strong) NSDate *startDate;
+@property (nonatomic, strong) NSDate *completionDate;
+@property (nonatomic, assign, readonly) NSTimeInterval actualElapsedTime; // calculated from startDate and completionDate (-1 if either of those is nil)
+@property (nonatomic, assign) BOOL shouldAssertOnTiming; // determines whether the timing of the actual result will be compared to the recorded scene timing, NO by default
 + (instancetype)result;
 - (NSString *)redirectLocationWithPath:(NSString *)path;
 - (NSString *)redirectLocationWithForRedirection:(NSInteger)redirectionNumber;

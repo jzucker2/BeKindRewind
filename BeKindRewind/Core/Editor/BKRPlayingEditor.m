@@ -92,7 +92,6 @@
             self->_playhead = [BKRPlayhead playheadWithScenes:cassette.allScenes];
             [self _addStubsForMatcher:self->_matcher withCompletionHandler:editingBlock];
         } else {
-            self->_playhead = nil;
             [self _removeAllStubs];
             if (editingBlock) {
                 editingBlock(updatedEnabled, cassette);
@@ -119,6 +118,12 @@
         BKRStrongify(self);
         responseStub = [matcher matchForRequest:request withPlayhead:self->_playhead.copy];
         [self->_playhead addResponseStub:responseStub forRequest:request];
+        if ([matcher respondsToSelector:@selector(requestTimeForRequest:withStub:withPlayhead:)]) {
+            responseStub.requestTime = [matcher requestTimeForRequest:request withStub:responseStub withPlayhead:self.playhead.copy];
+        }
+        if ([matcher respondsToSelector:@selector(responseTimeForRequest:withStub:withPlayhead:)]) {
+            responseStub.responseTime = [matcher responseTimeForRequest:request withStub:responseStub withPlayhead:self.playhead.copy];
+        }
     }];
     return responseStub;
 }
@@ -130,7 +135,9 @@
         if ([self->_matcher respondsToSelector:@selector(reset)]) {
             [self->_matcher reset];
         }
-        self->_playhead = nil;
+        // TODO: investigate this
+        // consider only nil-ing playhead during reset
+        self->_playhead = nil; // can i just nil this?
         if (completionBlock) {
             completionBlock();
         }

@@ -29,6 +29,7 @@
 #import "XCTestCase+BKRHelpers.h"
 
 static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2016 18:18:46 GMT";
+static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPStubs ( https://github.com/AliSoftware/OHHTTPStubs/blob/master/OHHTTPStubs/UnitTests/Test%20Suites/TimingTests.m#L89 )
 
 @implementation BKRTestExpectedResult
 
@@ -57,6 +58,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         _redirectURLString = nil;
         _redirectURL = nil;
         _redirectHTTPMethod = nil;
+        _shouldAssertOnTiming = NO;
     }
     return self;
 }
@@ -195,6 +197,16 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     }
 }
 
+- (NSTimeInterval)actualElapsedTime {
+    if (
+        !self.startDate ||
+        !self.completionDate
+        ) {
+        return -1;
+    }
+    return [self.completionDate timeIntervalSinceDate:self.startDate];
+}
+
 - (NSString *)redirectLocationWithPath:(NSString *)path {
     return [self.redirectURL.path stringByAppendingPathComponent:path];
 }
@@ -254,6 +266,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
 - (void)BKRTest_executeNetworkCallWithExpectedResult:(BKRTestExpectedResult *)expectedResult withTaskCompletionAssertions:(BKRTestNetworkCompletionHandler)networkCompletionAssertions taskTimeoutHandler:(BKRTestNetworkTimeoutCompletionHandler)timeoutAssertions {
     
     NSURLSessionTask *executingTask = [self _preparedTaskForExpectedResult:expectedResult andTaskCompletionAssertions:networkCompletionAssertions];
+    expectedResult.startDate = [NSDate date];
     [executingTask resume];
     if (expectedResult.shouldCancel) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -263,7 +276,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         });
     }
 
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:15 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
         if (expectedResult.shouldCancel) {
             XCTAssertNotEqual(executingTask.state, NSURLSessionTaskStateRunning, @"If task is still running, then it failed to cancel as expected, this is most likely not a BeKindRewind bug but a system bug");
@@ -304,6 +317,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             [self _assertRequestFrame:scene.currentRequest withRequest:task.currentRequest andIgnoreHeaderFields:!expectedResult.isRecording];
             [assertFrames removeObject:scene.currentRequest];
         }
+        NSTimeInterval expectedElapsedTime = scene.recordedRequestTimeForFinalResponseStub + scene.recordedResponseTimeForFinalResponseStub;
         if (expectedResult.actualReceivedResponse) {
             BKRResponseFrame *responseToTest = scene.allResponseFrames.firstObject;
             if (expectedResult.isRedirecting) {
@@ -362,6 +376,8 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
                 XCTAssertNotNil(frame);
                 // all frames should be of type redirect
                 BKRRedirectFrame *redirectFrame = (BKRRedirectFrame *)frame;
+                expectedElapsedTime += [scene recordedRequestTimeForRedirectFrame:redirectFrame];
+                expectedElapsedTime += [scene recordedResponseTimeForRedirectFrame:redirectFrame];
                 XCTAssertTrue([redirectFrame isKindOfClass:[BKRRedirectFrame class]]);
                 XCTAssertEqualObjects([expectedResult redirectURLFullStringWithRedirection:redirectCount], redirectFrame.responseFrame.URL.absoluteString);
                 if (
@@ -398,6 +414,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
             // sometimes cancelled or POST have extra or inconsistent and request frames
             [assertFrames removeObjectsInArray:scene.allRequestFrames];
         }
+        if (expectedResult.shouldAssertOnTiming) {
+            NSTimeInterval actualElapsedTime = expectedResult.actualElapsedTime;
+            XCTAssertEqualWithAccuracy(actualElapsedTime, expectedElapsedTime, kBKRTestTimingTolerance);
+        }
         XCTAssertEqual(assertFrames.count, 0, @"Shouldn't be any frames left to assert");
         [self assertFramesOrderForScene:scene];
     };
@@ -419,6 +439,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         expectedResult.actualReceivedData = data;
         expectedResult.actualReceivedResponse = response;
         expectedResult.actualReceivedError = error;
+        expectedResult.completionDate = [NSDate date];
         if (expectedResult.shouldCancel) {
             XCTAssertNotNil(error);
             XCTAssertEqual(expectedResult.errorCode, error.code);
@@ -605,6 +626,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         NSUInteger executedTasksCount = executedTasks.count;
         executedTasks[i] = task;
         XCTAssertEqual(executedTasks.count, ++executedTasksCount);
+        expectedResult.startDate = [NSDate date];
         [task resume];
     }
     // ensure all tasks are running (expects tasks that take a not insignificant amount of time)
@@ -854,10 +876,21 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
         // now add redirects if they exist
         if (result.isRedirecting) {
             for (NSInteger i=0; i<result.numberOfRedirects; i++) {
+                // for everything
+                NSInteger redirectNumber = result.numberOfRedirects-i;
+                
+                // first create BKRCurrentRequestFrame
+                NSMutableDictionary *expectedRedirectCurrentRequestDict = expectedOriginalRequestDict.mutableCopy;
+                NSNumber *currentRequestCreationDate = @([[NSDate date] timeIntervalSince1970]);
+                expectedRedirectCurrentRequestDict[@"class"] = @"BKRCurrentRequestFrame";
+                expectedRedirectCurrentRequestDict[@"creationDate"] = currentRequestCreationDate;
+                expectedRedirectCurrentRequestDict[@"URL"] = [result redirectURLFullStringWithRedirection:redirectNumber];
+                [framesArray addObject:expectedRedirectCurrentRequestDict.copy];
+                
+                // then create BKRRedirectFrame
                 NSNumber *creationDate = @([[NSDate date] timeIntervalSince1970]);
                 NSMutableDictionary *expectedRedirectRequestDict = expectedOriginalRequestDict.mutableCopy;
                 expectedRedirectRequestDict[@"class"] = @"BKRRequestFrame";
-                NSInteger redirectNumber = result.numberOfRedirects-i;
                 NSString *redirectURLString = [result redirectURLFullStringWithRedirection:redirectNumber];
                 expectedRedirectRequestDict[@"URL"] = redirectURLString;
 //                expectedRedirectRequestDict[@"HTTPMethod"] = @"GET";
@@ -1130,9 +1163,10 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.isRecording = isRecording;
     expectedResult.URLString = @"https://httpbin.org/delay/10";
     expectedResult.shouldCancel = YES;
-    expectedResult.hasCurrentRequest = NO;
+    expectedResult.hasCurrentRequest = YES;
+    expectedResult.currentRequestAllHTTPHeaderFields = [self _expectedGETCurrentRequestAllHTTPHeaderFields];
     expectedResult.errorCode = -999;
-    expectedResult.expectedNumberOfPlayingFrames = 2;
+    expectedResult.expectedNumberOfPlayingFrames = 3;
     expectedResult.expectedNumberOfRecordingFrames = 3;
     expectedResult.expectedSceneNumber = 0;
     expectedResult.errorDomain = NSURLErrorDomain;
@@ -1251,7 +1285,7 @@ static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2
     expectedResult.responseAllHeaderFields = [self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"306"];
     expectedResult.numberOfExpectedRequestFrames = 5;
     expectedResult.expectedNumberOfRecordingFrames = 10;
-    expectedResult.expectedNumberOfPlayingFrames = 7;
+    expectedResult.expectedNumberOfPlayingFrames = 10;
     expectedResult.redirectResponseStatusCode = 302;
     expectedResult.numberOfRedirects = 3;
     expectedResult.redirectRequestHTTPHeaderFields = expectedResult.currentRequestAllHTTPHeaderFields;

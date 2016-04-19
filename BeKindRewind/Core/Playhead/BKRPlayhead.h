@@ -34,6 +34,22 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
     BKRPlayingSceneStateCompleted
 };
 
+/**
+ *  This key is used to access the BKRResponseStub instance
+ *  returned for a scene
+ *
+ *  @since 2.0.0
+ */
+extern const NSString *kBKRReturnedResponseStubKey;
+
+/**
+ *  This key is used to access the NSURLRequest that was
+ *  matched by BeKindRewind
+ *
+ *  @since 2.0.0
+ */
+extern const NSString *kBKRReturnedRequestKey;
+
 @class BKRScene;
 @class BKRResponseStub;
 
@@ -84,18 +100,11 @@ typedef NS_ENUM(NSInteger, BKRPlayingSceneState) {
 @property (nonatomic, assign) NSUInteger redirectsCompleted;
 
 /**
- *  This array contains the response stubs returned that are associated with scene
+ *  This is the request and response stub returned for each item.
  *
- *  @since 1.0.0
+ *  @since 2.0.0
  */
-@property (nonatomic, strong, readonly) NSMutableArray<BKRResponseStub *> *responseStubs;
-
-/**
- *  This array contains the requests that scene has mocked
- *
- *  @since 1.0.0
- */
-@property (nonatomic, strong, readonly) NSMutableArray<NSURLRequest *> *requests;
+@property (nonatomic, strong, readonly) NSMutableArray<NSDictionary *> *returnedResponses;
 
 /**
  *  Convenience method that checks if the receiver has returned a final response stub.

@@ -18,10 +18,20 @@
 }
 
 + (OHHTTPStubsResponse *)_responseForStub:(BKRResponseStub *)responseStub {
+    OHHTTPStubsResponse *mockingResponse = nil;
     if (responseStub.isError) {
-        return [OHHTTPStubsResponse responseWithError:responseStub.error];
+        mockingResponse = [OHHTTPStubsResponse responseWithError:responseStub.error];
+    } else {
+        mockingResponse = [[OHHTTPStubsResponse alloc] initWithInputStream:responseStub.inputStream dataSize:responseStub.dataSize statusCode:responseStub.statusCode headers:responseStub.headers];
     }
-    return [[OHHTTPStubsResponse alloc] initWithInputStream:responseStub.inputStream dataSize:responseStub.dataSize statusCode:responseStub.statusCode headers:responseStub.headers];
+    if (
+        (responseStub.requestTime != 0) ||
+        (responseStub.responseTime != 0)
+        ) {
+        mockingResponse.requestTime = responseStub.requestTime;
+        mockingResponse.responseTime = responseStub.responseTime;
+    }
+    return mockingResponse;
 }
 
 + (BOOL)hasStubs {
@@ -41,24 +51,34 @@
 }
 
 + (void)onStubActivation:(BKRStubActivationBlock)stubActivationBlock {
-    [OHHTTPStubs onStubActivation:^(NSURLRequest * _Nonnull request, id<OHHTTPStubsDescriptor>  _Nonnull stub, OHHTTPStubsResponse * _Nonnull responseStub) {
-//        if (stubActivationBlock) {
-//            return stubActivationBlock(request, [BKRResponseStub responseWithStubsResponse:responseStub]);
-//        }
-        return stubActivationBlock(request, [BKRResponseStub responseWithStubsResponse:responseStub]);
-    }];
+    if (stubActivationBlock) {
+        [OHHTTPStubs onStubActivation:^(NSURLRequest * _Nonnull request, id<OHHTTPStubsDescriptor>  _Nonnull stub, OHHTTPStubsResponse * _Nonnull responseStub) {
+            return stubActivationBlock(request, [BKRResponseStub responseWithStubsResponse:responseStub]);
+        }];
+    } else {
+        [OHHTTPStubs onStubActivation:nil];
+    }
 }
 
 + (void)onStubRedirectResponse:(BKRStubRedirectBlock)stubRedirectBlock {
-    [OHHTTPStubs onStubRedirectResponse:^(NSURLRequest * _Nonnull request, NSURLRequest * _Nonnull redirectRequest, id<OHHTTPStubsDescriptor>  _Nonnull stub, OHHTTPStubsResponse * _Nonnull responseStub) {
-        return stubRedirectBlock(request, redirectRequest, [BKRResponseStub responseWithStubsResponse:responseStub]);
-    }];
+    if (stubRedirectBlock) {
+        [OHHTTPStubs onStubRedirectResponse:^(NSURLRequest * _Nonnull request, NSURLRequest * _Nonnull redirectRequest, id<OHHTTPStubsDescriptor>  _Nonnull stub, OHHTTPStubsResponse * _Nonnull responseStub) {
+            return stubRedirectBlock(request, redirectRequest, [BKRResponseStub responseWithStubsResponse:responseStub]);
+        }];
+    } else {
+        [OHHTTPStubs onStubRedirectResponse:nil];
+    }
 }
 
 + (void)onStubCompletion:(BKRStubCompletionBlock)stubCompletionBlock {
-    [OHHTTPStubs afterStubFinish:^(NSURLRequest * _Nonnull request, id<OHHTTPStubsDescriptor>  _Nonnull stub, OHHTTPStubsResponse * _Nonnull responseStub, NSError * _Nonnull error) {
-        return stubCompletionBlock(request, [BKRResponseStub responseWithStubsResponse:responseStub], error);
-    }];
+    if (stubCompletionBlock) {
+        [OHHTTPStubs afterStubFinish:^(NSURLRequest * _Nonnull request, id<OHHTTPStubsDescriptor>  _Nonnull stub, OHHTTPStubsResponse * _Nonnull responseStub, NSError * _Nonnull error) {
+            return stubCompletionBlock(request, [BKRResponseStub responseWithStubsResponse:responseStub], error);
+        }];
+    } else {
+        [OHHTTPStubs afterStubFinish:nil];
+    }
+    
 }
 
 @end

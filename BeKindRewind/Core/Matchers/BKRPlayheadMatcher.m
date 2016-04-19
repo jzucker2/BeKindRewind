@@ -55,6 +55,8 @@
     return responseStub;
 }
 
+#pragma mark - Optional
+
 - (NSDictionary *)requestComparisonOptions {
     return @{
              kBKRShouldIgnoreQueryItemsOrderOptionsKey: @YES,

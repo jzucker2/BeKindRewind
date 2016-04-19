@@ -26,12 +26,16 @@
 #import "BKRResponseFrame.h"
 #import "BKRRedirectFrame.h"
 
+// Response Stubs (OHHTTPStubs)
+#import "BKRResponseStub.h"
+
 // Request Matching Protocol
 #import "BKRRequestMatching.h"
 #import "NSURLRequest+BKRAdditions.h"
 
 // Request Matchers
 #import "BKRPlayheadMatcher.h"
+#import "BKRPlayheadWithTimingMatcher.h"
 
 //  This is used by the framework to uniquefy
 //  network tasks. Helpful to for developers.
@@ -50,12 +54,12 @@
 // VCR protocol
 #import "BKRVCRActions.h"
 
-// VCR
-#import "BKRVCR.h"
-
 // VCR Subclasses
 #import "BKRPlayableVCR.h"
 #import "BKRRecordableVCR.h"
+
+// Full VCR
+#import "BKRVCR.h"
 
 // XCTestCase
 #import "NSURLSessionTask+BKRTestAdditions.h"
