@@ -186,8 +186,43 @@
  */
 - (NSTimeInterval)recordedResponseTimeForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
 
+/**
+ *  This finds the matching BKRCurrentRequestFrame instance for a BKRResponseFrame in this
+ *  scene. This can be used to calculate a request time duration for the scene.
+ *
+ *  @param responseFrame this is the response to match against a current request. It must not be nil.
+ *  @throws NSInternalInconsistencyException if responseFrame is nil
+ *
+ *  @return the matching BKRCurrentRequestFrame or nil if none matches
+ *
+ *  @since 2.0.0
+ */
 - (BKRCurrentRequestFrame *)currentRequestFrameForResponseFrame:(BKRResponseFrame *)responseFrame;
+
+/**
+ *  This finds the matching BKRCurrentRequestFrame instance for a BKRRedirectFrame in this
+ *  scene. This can be used to calculate a request time duration for a redirect in this scene.
+ *
+ *  @param redirectFrame this is the redirect to match against a current request. It must not be nil.
+ *  @throws NSInternalInconsistencyException if responseFrame is nil
+ *
+ *  @return the matching BKRCurrentRequestFrame or nil if none matches
+ *
+ *  @since 2.0.0
+ */
 - (BKRCurrentRequestFrame *)currentRequestFrameForRedirectFrame:(BKRRedirectFrame *)redirectFrame;
+
+/**
+ *  This finds the matching BKRCurrentRequestFrame instance for a BKRErrorFrame in this
+ *  scene. This can be used to calculate a request time duration for returning an error in this scene.
+ *
+ *  @param errorFrame this is the error to match against a current request. It must not be nil.
+ *  @throws NSInternalInconsistencyException if responseFrame is nil
+ *
+ *  @return the matching BKRCurrentRequestFrame or nil if none matches
+ *
+ *  @since 2.0.0
+ */
 - (BKRCurrentRequestFrame *)currentRequestFrameForErrorFrame:(BKRErrorFrame *)errorFrame;
 
 @end

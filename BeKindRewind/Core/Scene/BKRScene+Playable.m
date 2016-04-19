@@ -173,17 +173,6 @@
     return [NSString stringWithFormat:@"<%p>: request: %@", self, self.originalRequest.URL];
 }
 
-// finds the BKRCurrentRequestFrame directly preceding the frame passed in, or nil if none exists
-#warning redo, need to step backwards through allFrames until i hit a current request or run out of frames
-- (BKRCurrentRequestFrame *)_preceedingCurrentRequestFrameForFrame:(BKRFrame *)frame {
-    NSUInteger frameIndex = [self.allFrames indexOfObject:frame];
-    if (frameIndex == NSNotFound) {
-        return nil;
-    }
-    BKRCurrentRequestFrame *preceedingFrame = (BKRCurrentRequestFrame *)self.allFrames[(frameIndex-1)];
-    return (([preceedingFrame isKindOfClass:[BKRCurrentRequestFrame class]]) ? preceedingFrame : nil);
-}
-
 // throws NSInternalInternalInconsistencyException if frame is not of class BKRRedirectFrame or BKRResponseFrame or BKRErrorFrame
 - (NSTimeInterval)_requestTimeForFrame:(BKRFrame *)frame {
     BKRCurrentRequestFrame *precedingCurrentRequestFrame = nil;

@@ -54,8 +54,21 @@
  *  @since 1.0.0
  */
 @property (nonatomic, readonly) NSDictionary *userInfo;
-#warning docs
+
+/**
+ *  This returns the value of NSURLErrorFailingURLErrorKey as a NSURL object in 
+ *  userInfo if it exists.
+ *
+ *  @since 2.0.0
+ */
 @property (nonatomic, readonly) NSURL *failingURL;
+
+/**
+ *  This returns the value of NSURLErrorFailingURLStringErrorKey as a NSString
+ *  object in userInfo if it exists
+ *
+ *  @since 2.0.0
+ */
 @property (nonatomic, readonly) NSString *failingURLString;
 
 @end

@@ -875,7 +875,6 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
         // TODO: add more redirect testing.
         // now add redirects if they exist
         if (result.isRedirecting) {
-#warning add current requests for each redirect
             for (NSInteger i=0; i<result.numberOfRedirects; i++) {
                 // for everything
                 NSInteger redirectNumber = result.numberOfRedirects-i;
