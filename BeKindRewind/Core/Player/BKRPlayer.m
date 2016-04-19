@@ -26,8 +26,8 @@
     NSParameterAssert(matcherClass);
     self = [super init];
     if (self) {
-        NSParameterAssert([matcherClass conformsToProtocol:@protocol(BKRRequestMatching)]);
         _matcher = [matcherClass matcher];
+        NSAssert(_matcher, @"There must be a matcher for the player to function properly");
         _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
     }
     return self;
