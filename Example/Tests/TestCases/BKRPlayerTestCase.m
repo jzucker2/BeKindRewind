@@ -6,6 +6,7 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
+#import <BeKindRewind/BKRConfiguration.h>
 #import <BeKindRewind/BKRPlayer.h>
 #import "XCTestCase+BKRHelpers.h"
 #import "BKRBaseTestCase.h"
@@ -24,6 +25,28 @@
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
+}
+
+- (void)testPlayerExecutesFailedRequestMatchingBlock {
+    // This is the recording created for the cassette
+    BKRTestExpectedResult *cassetteGETResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
+    
+    // create the player with a cassette with cassetteGETResult stored on it
+    BKRConfiguration *configuration = [BKRConfiguration defaultConfiguration];
+    // expectation variable is here so we can fulfill it in the configuration block, wait to create expectation
+    __block XCTestExpectation *matchFailedExpectation = nil;
+    configuration.requestMatchingFailedBlock = ^void (NSURLRequest *request) {
+        [matchFailedExpectation fulfill];
+    };
+    BKRPlayer *player = [self playerWithConfiguration:configuration withExpectedResults:@[cassetteGETResult]];
+    [self setPlayer:player withExpectationToEnabled:YES];
+    
+    // this expected result is "expected to be recorded" because it is live and does not match the result on the cassette
+    BKRTestExpectedResult *unmatchedGETResult = [self HTTPBinGetRequestWithQueryString:@"test=test2" withRecording:YES];
+    // create expectation now, before it used with the network request expectation
+    matchFailedExpectation = [self expectationWithDescription:@"match failed expectation"];
+    // now execute a network request for a different GET not matching the one on the cassette
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[unmatchedGETResult] simultaneously:NO withTaskCompletionAssertions:nil taskTimeoutHandler:nil];
 }
 
 - (void)testSwitchPlayingOffThenOn {

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class BKRConfiguration;
 @class BKRCassette;
 @class BKRScene;
 
@@ -37,7 +38,37 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *
  *  @since 1.0.0
  */
-+ (instancetype)editor;
++ (instancetype)editor DEPRECATED_ATTRIBUTE;
+
+/**
+ *  This is the designated initializer for the BKREditor class.
+ *
+ *  @param configuration this is an instance of BKRConfiguration that is
+ *                       typically passed in to the vcr conforming to the
+ *                       BKRVCRActions protocol. Changes to this instance
+ *                       after initialization will not affect the instance 
+ *                       created by this method.
+ *
+ *  @return a newly initialized instance of BKREditor
+ *
+ *  @since 2.1.0
+ */
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration;
+
+/**
+ *  This is a convenience initializer for the BKREditor class.
+ *
+ *  @param configuration this is an instance of BKRConfiguration that is
+ *                       typically passed in to the vcr conforming to the
+ *                       BKRVCRActions protocol. Changes to this instance
+ *                       after initialization will not affect the instance
+ *                       created by this method.
+ *
+ *  @return a newly initialized instance of BKREditor
+ *
+ *  @since 2.1.0
+ */
++ (instancetype)editorWithConfiguration:(BKRConfiguration *)configuration;
 
 /**
  *  Determines whether editor should be executing

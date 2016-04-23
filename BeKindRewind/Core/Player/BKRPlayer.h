@@ -9,6 +9,7 @@
 #import "BKRRequestMatching.h"
 #import "BKRConstants.h"
 
+@class BKRConfiguration;
 @class BKRCassette;
 @class BKRScene;
 
@@ -21,7 +22,7 @@
 @interface BKRPlayer : NSObject
 
 /**
- *  Designated initializer for BKRPlayer
+ *  Deprecated initializer for BKRPlayer
  *
  *  @param matcherClass class of object used to set the stubbing rules
  *
@@ -29,10 +30,24 @@
  *
  *  @since 1.0.0
  */
-- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
+- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass DEPRECATED_ATTRIBUTE;
 
 /**
- *  Convenience initializer for BKRPlayer
+ *  Designated initializer for BKRPlayer
+ *
+ *  @param configuration instance of BKRConfiguration to use for initialization. A
+ *                       copy of this is made and after initialization, changes to
+ *                       this instance will not affect the instance created by this 
+ *                       method.
+ *
+ *  @return a newly initialized instance of BKRPlayer
+ *
+ *  @since 2.1.0
+ */
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration;
+
+/**
+ *  Deprecated convenience initializer for BKRPlayer
  *
  *  @param matcherClass class of object used to set stubbing rules
  *
@@ -40,7 +55,21 @@
  *
  *  @since 1.0.0
  */
-+ (instancetype)playerWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
++ (instancetype)playerWithMatcherClass:(Class<BKRRequestMatching>)matcherClass DEPRECATED_ATTRIBUTE;
+
+/**
+ *  Convenience initializer for BKRPlayer
+ *
+ *  @param configuration instance of BKRConfiguration to use for initialization. A
+ *                       copy of this is made and after initialization, changes to
+ *                       this instance will not affect the instance created by this
+ *                       method.
+ *
+ *  @return a newly initialized instance of BKRPlayer
+ *
+ *  @since 2.1.0
+ */
++ (instancetype)playerWithConfiguration:(BKRConfiguration *)configuration;
 
 /**
  *  Whether or not network activity should be recorded
@@ -74,6 +103,13 @@
  *  @since 1.0.0
  */
 @property (nonatomic, strong, readonly) id<BKRRequestMatching>matcher;
+
+/**
+ *  This block is executed after a NSURLRequest fails to be matched
+ *
+ *  @since 2.1.0
+ */
+@property (nonatomic, copy, readonly) BKRRequestMatchingFailedBlock requestMatchingFailedBlock;
 
 /**
  *  Reset the player's enabled state along with before 

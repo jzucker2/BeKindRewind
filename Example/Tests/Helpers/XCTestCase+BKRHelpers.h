@@ -100,7 +100,8 @@ typedef void (^BKRTestBatchNetworkTimeoutCompletionHandler)(BKRTestExpectedResul
 
 - (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 - (BKRPlayer *)playerWithExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
-- (BKRPlayer *)playerWithMatcher:(Class<BKRRequestMatching>)matcherClass withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
+- (BKRPlayer *)playerWithConfiguration:(BKRConfiguration *)configuration withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
+//- (BKRPlayer *)playerWithMatcher:(Class<BKRRequestMatching>)matcherClass withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults;
 
 - (void)setRecorderToEnabledWithExpectation:(BOOL)enabled;
 - (void)setPlayer:(BKRPlayer *)player withExpectationToEnabled:(BOOL)enabled;

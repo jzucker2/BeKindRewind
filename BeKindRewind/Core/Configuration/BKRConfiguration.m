@@ -49,6 +49,7 @@ static BOOL const kBKRShouldSaveEmptyCassetteDefault = YES;
     configuration.shouldSaveEmptyCassette = self.shouldSaveEmptyCassette;
     configuration.beginRecordingBlock = self.beginRecordingBlock;
     configuration.endRecordingBlock = self.endRecordingBlock;
+    configuration.requestMatchingFailedBlock = self.requestMatchingFailedBlock;
     return configuration;
 }
 
