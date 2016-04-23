@@ -16,7 +16,7 @@
 @synthesize enabled = _enabled;
 @synthesize currentCassette = _currentCassette;
 
-- (instancetype)init {
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration {
     self = [super init];
     if (self) {
         _enabled = NO;
@@ -25,8 +25,12 @@
     return self;
 }
 
++ (instancetype)editorWithConfiguration:(BKRConfiguration *)configuration {
+    return [[self alloc] initWithConfiguration:configuration];
+}
+
 + (instancetype)editor {
-    return [[self alloc] init];
+    return [self editorWithConfiguration:nil];
 }
 
 - (void)setEnabled:(BOOL)enabled withCompletionHandler:(BKRCassetteEditingBlock)editingBlock {

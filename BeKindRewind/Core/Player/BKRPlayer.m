@@ -6,6 +6,7 @@
 //
 //
 
+#import "BKRConfiguration.h"
 #import "BKRPlayer.h"
 #import "BKRCassette+Playable.h"
 #import "BKRPlayingEditor.h"
@@ -13,7 +14,6 @@
 
 @interface BKRPlayer ()
 @property (nonatomic, strong) BKRPlayingEditor *editor;
-@property (nonatomic, strong, readwrite) id<BKRRequestMatching>matcher;
 @end
 
 @implementation BKRPlayer
@@ -22,19 +22,44 @@
     return self.editor.allScenes;
 }
 
+//- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
+//    NSParameterAssert(matcherClass);
+//    self = [super init];
+//    if (self) {
+//        _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
+//        NSAssert(_matcher, @"There must be a matcher for the player to function properly");
+//        _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
+//    }
+//    return self;
+//}
+
+//+ (instancetype)playerWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
+//    return [[self alloc] initWithMatcherClass:matcherClass];
+//}
+
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
-    NSParameterAssert(matcherClass);
-    self = [super init];
-    if (self) {
-        _matcher = [matcherClass matcher];
-        NSAssert(_matcher, @"There must be a matcher for the player to function properly");
-        _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
-    }
-    return self;
+    BKRConfiguration *configuration = [BKRConfiguration configurationWithMatcherClass:matcherClass];
+    return [self initWithConfiguration:configuration];
 }
 
 + (instancetype)playerWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
     return [[self alloc] initWithMatcherClass:matcherClass];
+}
+
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration {
+    self = [super init];
+    if (self) {
+        _editor = [BKRPlayingEditor editorWithConfiguration:configuration];
+    }
+    return self;
+}
+
++ (instancetype)playerWithConfiguration:(BKRConfiguration *)configuration {
+    return [[self alloc] initWithConfiguration:configuration];
+}
+
+- (id<BKRRequestMatching>)matcher {
+    return self.editor.matcher;
 }
 
 - (void)setCurrentCassette:(BKRCassette *)currentCassette {

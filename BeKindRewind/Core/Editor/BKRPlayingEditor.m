@@ -6,6 +6,7 @@
 //
 //
 
+#import "BKRConfiguration.h"
 #import "BKRPlayingEditor.h"
 #import "BKRPlayhead.h"
 #import "BKROHHTTPStubsWrapper.h"
@@ -23,9 +24,17 @@
 @synthesize matcher = _matcher;
 
 - (instancetype)initWithMatcher:(id<BKRRequestMatching>)matcher {
-    self = [super init];
+    BKRConfiguration *configuration = [BKRConfiguration configurationWithMatcherClass:[matcher class]];
+    return [self initWithConfiguration:configuration];
+}
+
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration {
+    self = [super initWithConfiguration:configuration];
     if (self) {
-        _matcher = matcher;
+        _matcher = [configuration.matcherClass matcher];
+        if (configuration.requestMatchingFailedBlock) {
+            _requestMatchingFailedBlock = configuration.requestMatchingFailedBlock;
+        }
         BKRWeakify(self);
         [BKROHHTTPStubsWrapper onStubActivation:^(NSURLRequest *request, BKRResponseStub *responseStub) {
             BKRStrongify(self);
@@ -107,6 +116,12 @@
     [self readCassette:^(BOOL updatedEnabled, BKRCassette *cassette) {
         BKRStrongify(self);
         finalTestResult = [matcher hasMatchForRequest:request withPlayhead:self->_playhead.copy];
+        if (
+            !finalTestResult &&
+            self.requestMatchingFailedBlock
+            ) {
+            self.requestMatchingFailedBlock(request);
+        }
     }];
     return finalTestResult;
 }

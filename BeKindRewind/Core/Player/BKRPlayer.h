@@ -9,6 +9,7 @@
 #import "BKRRequestMatching.h"
 #import "BKRConstants.h"
 
+@class BKRConfiguration;
 @class BKRCassette;
 @class BKRScene;
 
@@ -29,7 +30,9 @@
  *
  *  @since 1.0.0
  */
-- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
+- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass DEPRECATED_ATTRIBUTE;
+
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration;
 
 /**
  *  Convenience initializer for BKRPlayer
@@ -40,7 +43,8 @@
  *
  *  @since 1.0.0
  */
-+ (instancetype)playerWithMatcherClass:(Class<BKRRequestMatching>)matcherClass;
++ (instancetype)playerWithMatcherClass:(Class<BKRRequestMatching>)matcherClass DEPRECATED_ATTRIBUTE;
++ (instancetype)playerWithConfiguration:(BKRConfiguration *)configuration;
 
 /**
  *  Whether or not network activity should be recorded

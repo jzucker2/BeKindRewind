@@ -24,7 +24,7 @@
     self = [super init];
     if (self) {
         [BKRNSURLSessionSwizzling swizzleForRecording];
-        _editor = [BKRRecordingEditor editor];
+        _editor = [BKRRecordingEditor editorWithConfiguration:nil];
     }
     return self;
 }
