@@ -66,12 +66,14 @@ static NSTimeInterval const kBKRTestConfigurationTearDownTimeoutDefault = 15;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
+    // TODO: Inherit from super instead of re-doing copy implementation, add a test!
     BKRTestConfiguration *configuration = [[[self class] allocWithZone:zone] init];
     configuration.matcherClass = self.matcherClass;
     configuration.shouldSaveEmptyCassette = self.shouldSaveEmptyCassette;
     configuration.currentTestCase = self.currentTestCase;
     configuration.beginRecordingBlock = self.beginRecordingBlock;
     configuration.endRecordingBlock = self.endRecordingBlock;
+    configuration.requestMatchingFailedBlock = self.requestMatchingFailedBlock;
     configuration.setUpExpectationTimeout = self.setUpExpectationTimeout;
     configuration.tearDownExpectationTimeout = self.tearDownExpectationTimeout;
     return configuration;
