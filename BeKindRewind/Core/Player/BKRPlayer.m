@@ -22,21 +22,6 @@
     return self.editor.allScenes;
 }
 
-//- (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
-//    NSParameterAssert(matcherClass);
-//    self = [super init];
-//    if (self) {
-//        _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
-//        NSAssert(_matcher, @"There must be a matcher for the player to function properly");
-//        _editor = [BKRPlayingEditor editorWithMatcher:_matcher];
-//    }
-//    return self;
-//}
-
-//+ (instancetype)playerWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
-//    return [[self alloc] initWithMatcherClass:matcherClass];
-//}
-
 - (instancetype)initWithMatcherClass:(Class<BKRRequestMatching>)matcherClass {
     BKRConfiguration *configuration = [BKRConfiguration configurationWithMatcherClass:matcherClass];
     return [self initWithConfiguration:configuration];
