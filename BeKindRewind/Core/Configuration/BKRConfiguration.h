@@ -69,6 +69,11 @@
  */
 @property (nonatomic, assign) Class<BKRRequestMatching> matcherClass;
 
+/**
+ *  This block is executed after a NSURLRequest fails to be matched
+ *
+ *  @since 2.1.0
+ */
 @property (nonatomic, copy) BKRRequestMatchingFailedBlock requestMatchingFailedBlock;
 
 @end

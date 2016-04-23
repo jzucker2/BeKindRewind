@@ -86,6 +86,10 @@
     return self.editor.isEnabled;
 }
 
+- (BKRRequestMatchingFailedBlock)requestMatchingFailedBlock {
+    return self.editor.requestMatchingFailedBlock;
+}
+
 - (void)resetWithCompletionBlock:(void (^)(void))completionBlock {
     [self.editor resetWithCompletionBlock:^{
         if (completionBlock) {

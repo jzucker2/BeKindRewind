@@ -45,7 +45,9 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *
  *  @param configuration this is an instance of BKRConfiguration that is
  *                       typically passed in to the vcr conforming to the
- *                       BKRVCRActions protocol
+ *                       BKRVCRActions protocol. Changes to this instance
+ *                       after initialization will not affect the instance 
+ *                       created by this method.
  *
  *  @return a newly initialized instance of BKREditor
  *
@@ -58,7 +60,9 @@ typedef void (^BKRCassetteEditingBlock)(BOOL updatedEnabled, BKRCassette *casset
  *
  *  @param configuration this is an instance of BKRConfiguration that is
  *                       typically passed in to the vcr conforming to the
- *                       BKRVCRActions protocol
+ *                       BKRVCRActions protocol. Changes to this instance
+ *                       after initialization will not affect the instance
+ *                       created by this method.
  *
  *  @return a newly initialized instance of BKREditor
  *

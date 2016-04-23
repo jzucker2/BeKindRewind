@@ -172,6 +172,36 @@ These are set automatically. Feel free to override with appropriate values but i
 
 ```
 
+## Handling Failed Request Matches
+
+You may find during the course of your testing that you want information when a request is not matched. In this case, you can add a block to the `BKRTestConfiguration` object that will be executed when a request fails to be matched during playing. This is useful for debugging and can be even be used to fail a test if you require strictness in matching.
+
+Here is an example of how to configure your subclass of `BKRTestCase` to log failed requests:
+
+```objective-c
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *configuration = [super testConfiguration];
+    configuration.requestMatchingFailedBlock = ^void (NSURLRequest *request) {
+        NSLog(@"Failed to match request: %@", request);
+    };
+    return configuration;
+}
+
+```
+
+Here is an example of how to make a stricter `XCTestCase` by failing the test case if a match fails to be found:
+
+```objective-c
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *configuration = [super testConfiguration];
+    configuration.requestMatchingFailedBlock = ^void (NSURLRequest *request) {
+        XCTFail(@"Failed to match request: %@", request);
+    };
+    return configuration;
+}
+
+```
+
 ## Notes
 
 BeKindRewind will only record network events if the NSURLSessionTask is sent a `resume` message. When NSURLSessionTask objects are created, they are in a NSURLSessionTaskStateSuspended and will not start recording until the `resume` is sent. Once the `resume` is sent, it will record everything until the end of the test (protected by your XCTestExpectation

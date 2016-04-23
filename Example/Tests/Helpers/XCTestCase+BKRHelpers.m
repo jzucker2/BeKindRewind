@@ -834,7 +834,8 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
         XCTAssertEqual(result.expectedNumberOfPlayingFrames, scene.allFrames.count);
         
     }
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:matcherClass];
+    BKRConfiguration *configuration = [BKRConfiguration configurationWithMatcherClass:matcherClass];
+    BKRPlayer *player = [BKRPlayer playerWithConfiguration:configuration];
     player.currentCassette = cassette;
     return player;
 }
