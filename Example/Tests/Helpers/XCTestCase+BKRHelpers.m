@@ -820,10 +820,10 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
 }
 
 - (BKRPlayer *)playerWithExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
-    return [self playerWithMatcher:[BKRPlayheadMatcher class] withExpectedResults:expectedResults];
+    return [self playerWithConfiguration:[BKRConfiguration configurationWithMatcherClass:[BKRPlayheadMatcher class]] withExpectedResults:expectedResults];
 }
 
-- (BKRPlayer *)playerWithMatcher:(Class<BKRRequestMatching>)matcherClass withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
+- (BKRPlayer *)playerWithConfiguration:(BKRConfiguration *)configuration withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
     BKRCassette *cassette = [self cassetteFromExpectedResults:expectedResults];
     NSArray<BKRScene *> *scenes = cassette.allScenes.copy;
     XCTAssertEqual(scenes.count, expectedResults.count, @"testCassette should have one valid scene right now");
@@ -834,10 +834,27 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
         XCTAssertEqual(result.expectedNumberOfPlayingFrames, scene.allFrames.count);
         
     }
-    BKRPlayer *player = [BKRPlayer playerWithMatcherClass:matcherClass];
+    BKRPlayer *player = [BKRPlayer playerWithConfiguration:configuration];
     player.currentCassette = cassette;
     return player;
 }
+
+//- (BKRPlayer *)playerWithMatcher:(Class<BKRRequestMatching>)matcherClass withExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
+//    BKRCassette *cassette = [self cassetteFromExpectedResults:expectedResults];
+//    NSArray<BKRScene *> *scenes = cassette.allScenes.copy;
+//    XCTAssertEqual(scenes.count, expectedResults.count, @"testCassette should have one valid scene right now");
+//    // assert on scene creation in cassette
+//    for (NSInteger i=0; i<expectedResults.count; i++) {
+//        BKRTestExpectedResult *result = [expectedResults objectAtIndex:i];
+//        BKRScene *scene = [scenes objectAtIndex:i];
+//        XCTAssertEqual(result.expectedNumberOfPlayingFrames, scene.allFrames.count);
+//        
+//    }
+//    BKRConfiguration *configuration = [BKRConfiguration configurationWithMatcherClass:matcherClass];
+//    BKRPlayer *player = [BKRPlayer playerWithConfiguration:configuration];
+//    player.currentCassette = cassette;
+//    return player;
+//}
 
 - (BKRCassette *)cassetteFromExpectedResults:(NSArray<BKRTestExpectedResult *> *)expectedResults {
     NSDate *expectedCassetteDictCreationDate = [NSDate date];

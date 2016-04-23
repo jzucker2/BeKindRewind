@@ -28,7 +28,7 @@
     self = [super init];
     if (self) {
         _configuration = configuration.copy;
-        _player = [BKRPlayer playerWithMatcherClass:_configuration.matcherClass];
+        _player = [BKRPlayer playerWithConfiguration:_configuration];
         _accessQueue = dispatch_queue_create("com.BKR.BKRPlayableVCR", DISPATCH_QUEUE_CONCURRENT);
         _state = BKRVCRStateStopped;
     }

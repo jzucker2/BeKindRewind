@@ -106,7 +106,7 @@ Then on subsequent runs, the tests will use the recorded files to respond to mat
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://httpbin.org/get?test=test"]];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
 
-    // don't forget to create a test expectation, this has the __block annotation because to avoid a retain cycle
+    // don't forget to create a test expectation, this has the __block annotation to avoid a retain cycle
     // XCTestExpectation is necessary for asynchronous network activity, BeKindRewind will take care of everything else
     __block XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
     NSURLSessionDataTask *basicGetTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -168,6 +168,36 @@ These are set automatically. Feel free to override with appropriate values but i
 
 - (BKRCassette *)recordingCassette {
     return [BKRCassette cassette];
+}
+
+```
+
+## Handling Failed Request Matches
+
+You may find during the course of your testing that you want information when a request is not matched. In this case, you can add a block to the `BKRTestConfiguration` object that will be executed when a request fails to be matched during playing. This is useful for debugging and can be even be used to fail a test if you require strictness in matching.
+
+Here is an example of how to configure your subclass of `BKRTestCase` to log failed requests:
+
+```objective-c
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *configuration = [super testConfiguration];
+    configuration.requestMatchingFailedBlock = ^void (NSURLRequest *request) {
+        NSLog(@"Failed to match request: %@", request);
+    };
+    return configuration;
+}
+
+```
+
+Here is an example of how to make a stricter `XCTestCase` by failing the test case if a match fails to be found:
+
+```objective-c
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *configuration = [super testConfiguration];
+    configuration.requestMatchingFailedBlock = ^void (NSURLRequest *request) {
+        XCTFail(@"Failed to match request: %@", request);
+    };
+    return configuration;
 }
 
 ```

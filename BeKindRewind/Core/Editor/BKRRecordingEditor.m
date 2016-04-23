@@ -133,8 +133,8 @@
 @synthesize beginRecordingBlock = _beginRecordingBlock;
 @synthesize endRecordingBlock = _endRecordingBlock;
 
-- (instancetype)init {
-    self = [super init];
+- (instancetype)initWithConfiguration:(BKRConfiguration *)configuration {
+    self = [super initWithConfiguration:configuration];
     if (self) {
         _handledRecording = NO;
         _recordingStartTime = nil;

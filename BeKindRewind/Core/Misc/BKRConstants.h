@@ -103,5 +103,13 @@ typedef void (^BKRBeginRecordingTaskBlock)(NSURLSessionTask *task);
  */
 typedef void (^BKREndRecordingTaskBlock)(NSURLSessionTask *task);
 
+/**
+ *  Block for execution when a NSURLRequest fails to match during playing
+ *
+ *  @param request This is the NSULRequest that failed to find a match
+ *
+ *  @since 2.1.0
+ */
+typedef void (^BKRRequestMatchingFailedBlock)(NSURLRequest *request);
 
 #endif /* BKRConstants_h */

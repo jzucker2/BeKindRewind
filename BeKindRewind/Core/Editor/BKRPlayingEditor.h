@@ -6,6 +6,7 @@
 //
 //
 
+#import "BKRConstants.h"
 #import "BKREditor.h"
 #import "BKRRequestMatching.h"
 
@@ -25,7 +26,7 @@
  *
  *  @since 1.0.0
  */
-- (instancetype)initWithMatcher:(id<BKRRequestMatching>)matcher;
+- (instancetype)initWithMatcher:(id<BKRRequestMatching>)matcher DEPRECATED_ATTRIBUTE;
 
 /**
  *  Convenience initializer with a class for determining how to build playing sessions.
@@ -36,7 +37,14 @@
  *
  *  @since 1.0.0
  */
-+ (instancetype)editorWithMatcher:(id<BKRRequestMatching>)matcher;
++ (instancetype)editorWithMatcher:(id<BKRRequestMatching>)matcher DEPRECATED_ATTRIBUTE;
+
+/**
+ *  This block is executed after a NSURLRequest fails to be matched
+ *
+ *  @since 2.1.0
+ */
+@property (nonatomic, copy, readonly) BKRRequestMatchingFailedBlock requestMatchingFailedBlock;
 
 /**
  *  This is the matcher passed in during initialization. It is read-only
