@@ -23,7 +23,7 @@
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://httpbin.org/get?test=test"]];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
     
-    // don't forget to create a test expectation, this has the __block annotation because to avoid a retain cycle
+    // Don't forget to create a test expectation, this has the __block annotation to avoid a retain cycle
     // XCTestExpectation is necessary for asynchronous network activity, BeKindRewind will take care of everything else
     __block XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
     NSURLSessionDataTask *basicGetTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
