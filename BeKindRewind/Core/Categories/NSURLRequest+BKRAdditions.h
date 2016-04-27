@@ -12,7 +12,9 @@
  *  This key is used in the options dictionary. It should only have a NSNumber 
  *  wrapped BOOL value. If this value is `YES` then the order of query items 
  *  in the requests to compare is ignored. If `NO` then the order is compared as 
- *  well as the items.
+ *  well as the items. This is ignored if @"queryItems" is included in the NSArray
+ *  assigned to kBKRIgnoreNSURLComponentsPropertiesOptionsKey or to
+ *  kBKRIgnoreNSURLComponentsPropertiesOptionsKey
  *
  *  @since 1.0.0
  */
@@ -23,7 +25,10 @@ extern NSString * kBKRShouldIgnoreQueryItemsOrderOptionsKey;
  *  containing NSString instances. Every NSString instance contained within 
  *  the NSArray object will be ignored when comparing query items between the 
  *  two requests. Each NSString instance should be the name associated with a
- *  NSURLQueryItem from the requests.
+ *  NSURLQueryItem from the requests. This is ignored if @"queryItems" is 
+ *  included in the NSArray assigned to 
+ *  kBKRIgnoreNSURLComponentsPropertiesOptionsKey or to
+ *  kBKRIgnoreNSURLComponentsPropertiesOptionsKey
  *
  *  @since 1.0.0
  */
@@ -47,6 +52,20 @@ extern NSString * kBKRIgnoreNSURLComponentsPropertiesOptionsKey;
  *  @since 1.0.0
  */
 extern NSString * kBKRCompareHTTPBodyOptionsKey;
+
+/**
+ *  This key is used to override the matching behavior for a specified 
+ *  NSURLComponent property. It should only have an NSArray containing 
+ *  NSString instances as its value. The available components are found 
+ *  within the NSURLComponents class. If the same key is present in the
+ *  kBKRIgnoreNSURLComponentsPropertiesOptionsKey array then that intersecting key 
+ *  will be ignored. Any values present in the array stored with this key
+ *  should be processed in the BKRRequestMatching protocol by the optional
+ *  method `hasMatchForURLComponent: withRequestComponentValue: possibleMatchComponentValue:`
+ *
+ *  @since 2.2.0
+ */
+extern NSString * kBKROverrideNSURLComponentsPropertiesOptionsKey;
 
 @class BKRRequestFrame;
 

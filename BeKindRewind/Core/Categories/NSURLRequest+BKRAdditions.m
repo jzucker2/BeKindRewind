@@ -7,6 +7,7 @@
 //
 
 #import "NSURLRequest+BKRAdditions.h"
+#import "NSURLComponents+BKRAdditions.h"
 #import "BKRRequestFrame.h"
 #import "BKRConstants.h"
 
@@ -14,6 +15,7 @@ NSString *kBKRShouldIgnoreQueryItemsOrderOptionsKey = @"BKRShouldIgnoreQueryItem
 NSString *kBKRIgnoreQueryItemNamesOptionsKey = @"BKRIgnoreQueryItemNamesOptionsKey";
 NSString *kBKRIgnoreNSURLComponentsPropertiesOptionsKey = @"BKRIgnoreNSURLComponentsPropertiesOptionsKey";
 NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
+NSString *kBKROverrideNSURLComponentsPropertiesOptionsKey = @"BKROverrideNSURLComponentsPropertiesOptionsKey";
 
 @implementation NSURLRequest (BKRAdditions)
 
@@ -26,36 +28,28 @@ NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
         return NO;
     }
 
-    NSArray<NSString *> *componentProperties = [self _URLComponentProperties];
     NSURLComponents *requestComponents = [NSURLComponents componentsWithString:self.URL.absoluteString];
     NSURLComponents *otherRequestComponents = [NSURLComponents componentsWithString:otherRequestURLString];
     
+    BOOL shouldCompareQueryItems = [NSURLComponents BKR_shouldCompareURLComponentsQueryItems:options];
+    
     BOOL ignoreQueryItemsOrder = NO;
-    NSArray<NSString *> *ignoreNSURLComponentsProperties = nil;
     NSArray<NSString *> *ignoreQueryItemNames = nil;
-    if (options) {
-        if (options[kBKRIgnoreNSURLComponentsPropertiesOptionsKey]) {
-            NSAssert([options[kBKRIgnoreNSURLComponentsPropertiesOptionsKey] isKindOfClass:[NSArray class]], @"Value for kBKRIgnoreNSURLComponentsProperties is expected to be an NSArray of NSString property names");
-            ignoreNSURLComponentsProperties = options[kBKRIgnoreNSURLComponentsPropertiesOptionsKey];
-        }
-        if (
-            options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] &&
-            (![ignoreNSURLComponentsProperties containsObject:@"queryItems"])
-            ) {
+    if (
+        options &&
+        shouldCompareQueryItems
+        ) {
+        if (options[kBKRShouldIgnoreQueryItemsOrderOptionsKey]) {
             NSAssert([options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] isKindOfClass:[NSNumber class]], @"Value for kBKRShouldIgnoreQueryItemsOrder is expected to be a BOOL wrapped in an NSNumber");
             ignoreQueryItemsOrder = [options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] boolValue];
         }
-        if (
-            options[kBKRIgnoreQueryItemNamesOptionsKey] &&
-            (![ignoreNSURLComponentsProperties containsObject:@"queryItems"])
-            ) {
+        if (options[kBKRIgnoreQueryItemNamesOptionsKey]) {
             NSAssert([options[kBKRIgnoreQueryItemNamesOptionsKey] isKindOfClass:[NSArray class]], @"Value for kBKRIgnoreQueryItemNames is expected to be an NSArray of NSString query item names");
             ignoreQueryItemNames = options[kBKRIgnoreQueryItemNamesOptionsKey];
         }
     }
     
-    NSMutableArray *comparingComponents = componentProperties.mutableCopy;
-    [comparingComponents removeObjectsInArray:ignoreNSURLComponentsProperties]; // remove ignoring components
+    NSArray<NSString *> *comparingComponents = [NSURLComponents BKR_comparingURLComponentsProperties:options];
     for (NSString *componentKey in comparingComponents.copy) {
         if ([componentKey isEqualToString:@"queryItems"]) {
             // handle query items separately
@@ -136,15 +130,6 @@ NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
         }
     }
     return [self BKR_isEquivalentToRequestURLString:requestFrame.URLAbsoluteString options:options];
-}
-
-- (NSArray *)_URLComponentProperties {
-    static NSArray<NSString *> *componentProperties = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        componentProperties = @[@"scheme", @"user", @"password", @"host", @"port", @"path", @"queryItems", @"fragment"];
-    });
-    return componentProperties;
 }
 
 @end
