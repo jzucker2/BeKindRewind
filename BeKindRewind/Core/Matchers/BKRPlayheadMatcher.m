@@ -35,6 +35,7 @@
                                ([request BKR_isEquivalentToRequestFrame:scene.currentRequest options:options])
                                );
         if ([self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
+            
 ////            NSArray *<NSString *> *componentProperties = [NSURLComponents BKR_]
 //            NSMutableArray *comparingComponents = componentProperties.mutableCopy;
 //            [comparingComponents removeObjectsInArray:ignoreNSURLComponentsProperties]; // remove ignoring components
