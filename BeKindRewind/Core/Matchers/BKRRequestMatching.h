@@ -143,6 +143,6 @@
  *
  *  @since 2.2.0
  */
-- (BOOL)hasMatchForURLComponent:(NSString *)URLComponent withRequestComponentValue:(NSString *)requestComponentValue possibleMatchComponentValue:(NSString *)possibleMatchComponentValue;
+- (BOOL)hasMatchForURLComponent:(NSString *)URLComponent withRequestComponentValue:(id)requestComponentValue possibleMatchComponentValue:(id)possibleMatchComponentValue;
 
 @end

@@ -14,7 +14,9 @@
  *  in the requests to compare is ignored. If `NO` then the order is compared as 
  *  well as the items. This is ignored if @"queryItems" is included in the NSArray
  *  assigned to kBKRIgnoreNSURLComponentsPropertiesOptionsKey or to
- *  kBKRIgnoreNSURLComponentsPropertiesOptionsKey
+ *  kBKRIgnoreNSURLComponentsPropertiesOptionsKey. By default, query items order will
+ *  be ignored unless this is overridden with a @NO (though a @YES can be provided
+ *  to ensure desired behavior).
  *
  *  @since 1.0.0
  */
@@ -67,7 +69,10 @@ extern NSString * kBKRCompareHTTPBodyOptionsKey;
  */
 extern NSString * kBKROverrideNSURLComponentsPropertiesOptionsKey;
 
+typedef BOOL (^BKRURLComponentComparisonBlock)(NSString *componentName, id requestComponentValue, id otherRequestComponentValue);
+
 @class BKRRequestFrame;
+@class BKRResponseFrame;
 
 /**
  *  This category contains helper methods for comparing NSURLRequest instances.
@@ -120,5 +125,9 @@ extern NSString * kBKROverrideNSURLComponentsPropertiesOptionsKey;
  *  @since 1.0.0
  */
 - (BOOL)BKR_isEquivalentToRequestURLString:(NSString *)otherRequestURLString options:(NSDictionary *)options;
+
+- (BOOL)BKR_isEquivalentToResponseFrame:(BKRResponseFrame *)responseFrame options:(NSDictionary *)options;
+
+- (BOOL)BKR_isEquivalentForURLComponents:(NSArray<NSString *> *)URLComponents toOtherRequestURLString:(NSString *)otherRequestURLString withComparisonBlock:(BKRURLComponentComparisonBlock)componentComparisonBlock;
 
 @end

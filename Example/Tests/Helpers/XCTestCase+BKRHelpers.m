@@ -1138,7 +1138,7 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
 }
 
 - (NSDictionary *)_HTTPBinRedirectResponseAllHeaderFieldsWithLocation:(NSString *)location {
-    NSMutableDictionary *mutableOriginalDictionary = [[self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"0"] mutableCopy];
+    NSMutableDictionary *mutableOriginalDictionary = [[self _HTTPBinResponseAllHeaderFieldsWithContentLength:@"211"] mutableCopy];
     mutableOriginalDictionary[@"Content-Type"] = @"text/html; charset=utf-8";
     mutableOriginalDictionary[@"Location"] = location;
     return mutableOriginalDictionary.copy;

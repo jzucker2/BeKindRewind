@@ -34,14 +34,24 @@
                                ([request BKR_isEquivalentToRequestFrame:scene.originalRequest options:options]) ||
                                ([request BKR_isEquivalentToRequestFrame:scene.currentRequest options:options])
                                );
-        if ([self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
-            
-////            NSArray *<NSString *> *componentProperties = [NSURLComponents BKR_]
-//            NSMutableArray *comparingComponents = componentProperties.mutableCopy;
-//            [comparingComponents removeObjectsInArray:ignoreNSURLComponentsProperties]; // remove ignoring components
-//            for (NSString *componentKey in ) {
-//                <#statements#>
-//            }
+        // try to return early if we already have a mismatch
+        if (!matchesRequest) {
+            continue;
+        }
+        BOOL shouldOverrideMatching = [NSURLComponents BKR_shouldOverrideComparingURLComponentsProperties:options];
+        
+        if (shouldOverrideMatching) {
+            if (![self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
+                NSLog(@"You must implement `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
+            } else {
+                NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
+                BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentName, id requestComponentValue, id otherRequestComponentValue) {
+                    return [self hasMatchForURLComponent:componentName withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+                }];
+                if (!hasOverrideMatch) {
+                    continue;
+                }
+            }
         }
         if (
             matchesRequest &&
@@ -55,7 +65,20 @@
             BKRRedirectFrame *redirectFrame = [scene redirectFrameForRedirect:item.numberOfRedirectsStubbed];
             // need to build a proper URL from a redirect, example:
             // [[NSURL URLWithString:@"/" relativeToURL:request.URL] absoluteURL]
-            if ([request BKR_isEquivalentToRequestFrame:redirectFrame.requestFrame options:options]) {
+            if ([request BKR_isEquivalentToResponseFrame:redirectFrame.responseFrame options:options]) {
+                if (shouldOverrideMatching) {
+                    if (![self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
+                        NSLog(@"You must implement `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
+                    } else {
+                        NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
+                        BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:redirectFrame.requestFrame.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentName, id requestComponentValue, id otherRequestComponentValue) {
+                            return [self hasMatchForURLComponent:componentName withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+                        }];
+                        if (!hasOverrideMatch) {
+                            continue;
+                        }
+                    }
+                }
                 responseStub = [scene responseStubForRedirectFrame:redirectFrame];
                 // stop looping when we have a match
                 break;
