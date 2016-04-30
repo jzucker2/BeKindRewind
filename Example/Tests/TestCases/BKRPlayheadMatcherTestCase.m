@@ -6,41 +6,94 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <BeKindRewind/BKRCassette.h>
-#import <BeKindRewind/BKRScene+Playable.h>
-#import <BeKindRewind/BKRPlayheadMatcher.h>
-#import "BKRMatcherTestCase.h"
+#import <BeKindRewind/BeKindRewind.h>
 #import "XCTestCase+BKRHelpers.h"
 
-@interface BKRPlayheadMatcherTestCase : BKRMatcherTestCase
-@property (nonatomic, strong) BKRPlayheadMatcher *matcher;
-@property (nonatomic, strong) NSArray<BKRScene *> *scenes;
+@interface BKRPlayheadWithOverridesMatcher : BKRPlayheadMatcher
+@end
+
+@implementation BKRPlayheadWithOverridesMatcher
+
+- (BOOL)hasMatchForURLComponent:(NSString *)URLComponent withRequestComponentValue:(id)requestComponentValue possibleMatchComponentValue:(id)possibleMatchComponentValue {
+    if ([URLComponent isEqualToString:@"scheme"]) {
+        if ([requestComponentValue isEqualToString:@"bkr"]) {
+            return YES;
+        }
+    } else if ([URLComponent isEqualToString:@"path"]) {
+        if (
+            [requestComponentValue isEqualToString:@"bar"] &&
+            [possibleMatchComponentValue isEqualToString:@"foo"]
+            ) {
+            return YES;
+        }
+    }
+    return YES;
+}
+
+@end
+
+@interface BKRPlayheadWithPathOverrideMatcher : BKRPlayheadWithOverridesMatcher
+@end
+
+@implementation BKRPlayheadWithPathOverrideMatcher
+
+- (NSDictionary *)requestComparisonOptions {
+    NSMutableDictionary *superOptions = [super requestComparisonOptions].mutableCopy;
+    superOptions[kBKROverrideNSURLComponentsPropertiesOptionsKey] = @[@"path"];
+    return superOptions.copy;
+}
+
+@end
+
+@interface BKRPlayheadWithSchemeOverrideMatcher : BKRPlayheadWithOverridesMatcher
+@end
+
+@implementation BKRPlayheadWithSchemeOverrideMatcher
+
+- (NSDictionary *)requestComparisonOptions {
+    NSMutableDictionary *superOptions = [super requestComparisonOptions].mutableCopy;
+    superOptions[kBKROverrideNSURLComponentsPropertiesOptionsKey] = @[@"scheme"];
+    return superOptions.copy;
+}
+
+@end
+
+@interface BKRPlayheadWithPathAndSchemeOverrideMatcher : BKRPlayheadWithOverridesMatcher
+@end
+
+@implementation BKRPlayheadWithPathAndSchemeOverrideMatcher
+
+- (NSDictionary *)requestComparisonOptions {
+    NSMutableDictionary *superOptions = [super requestComparisonOptions].mutableCopy;
+    superOptions[kBKROverrideNSURLComponentsPropertiesOptionsKey] = @[@"path", @"scheme"];
+    return superOptions.copy;
+}
+
+@end
+
+@interface BKRPlayheadMatcherTestCase : BKRTestCase
 @end
 
 @implementation BKRPlayheadMatcherTestCase
 
-- (void)setUp {
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-    self.matcher = [BKRPlayheadMatcher matcher];
-    XCTAssertNotNil(self.matcher);
+- (BOOL)isRecording {
+    return NO;
 }
 
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *superConfiguration = [super testConfiguration];
+    if (self.invocation.selector == @selector(testOverrideMatcher)) {
+        superConfiguration.matcherClass = [BKRPlayheadWithSchemeOverrideMatcher class];
+    }
+    return superConfiguration;
 }
 
-//- (void)testExample {
-//    // This is an example of a functional test case.
-//    // Use XCTAssert and related functions to verify your tests produce the correct results.
-//}
-//
-//- (void)testPerformanceExample {
-//    // This is an example of a performance test case.
-//    [self measureBlock:^{
-//        // Put the code you want to measure the time of here.
-//    }];
-//}
+- (void)testOverrideMatcher {
+    BKRTestExpectedResult *getResult = [self HTTPBinGetRequestWithQueryString:@"test=test" withRecording:NO];
+    getResult.URLString = @"bkr://httpbin.org/get?test=test";
+    [self BKRTest_executeHTTPBinNetworkCallsForExpectedResults:@[getResult] simultaneously:NO withTaskCompletionAssertions:nil taskTimeoutHandler:nil];
+}
+
+//TODO: add more tests
 
 @end

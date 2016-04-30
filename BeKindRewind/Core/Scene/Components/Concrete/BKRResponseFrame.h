@@ -24,6 +24,8 @@
  */
 @property (nonatomic, copy, readonly) NSURL *URL;
 
+@property (nonatomic, copy, readonly) NSString *URLAbsoluteString;
+
 /**
  *  The MIME type of the response object
  *
