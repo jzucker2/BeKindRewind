@@ -34,10 +34,10 @@
                                ([request BKR_isEquivalentToRequestFrame:scene.originalRequest options:options]) ||
                                ([request BKR_isEquivalentToRequestFrame:scene.currentRequest options:options])
                                );
-        // try to return early if we already have a mismatch
-        if (!matchesRequest) {
-            continue;
-        }
+//        // try to return early if we already have a mismatch
+//        if (!matchesRequest) {
+//            continue;
+//        }
         BOOL shouldOverrideMatching = [NSURLComponents BKR_shouldOverrideComparingURLComponentsProperties:options];
         
         if (shouldOverrideMatching) {
@@ -63,26 +63,28 @@
         } else if (item.expectsRedirect) {
             // else match redirects if we still expect some
             BKRRedirectFrame *redirectFrame = [scene redirectFrameForRedirect:item.numberOfRedirectsStubbed];
-            // need to build a proper URL from a redirect, example:
-            // [[NSURL URLWithString:@"/" relativeToURL:request.URL] absoluteURL]
-            if ([request BKR_isEquivalentToResponseFrame:redirectFrame.responseFrame options:options]) {
-                if (shouldOverrideMatching) {
-                    if (![self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
-                        NSLog(@"You must implement `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
-                    } else {
-                        NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
-                        BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:redirectFrame.requestFrame.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentName, id requestComponentValue, id otherRequestComponentValue) {
-                            return [self hasMatchForURLComponent:componentName withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
-                        }];
-                        if (!hasOverrideMatch) {
-                            continue;
-                        }
+            BOOL hasRedirectMatch = [request BKR_isEquivalentToResponseFrame:redirectFrame.responseFrame options:options];
+            if (!hasRedirectMatch) {
+                continue;
+            }
+            BOOL shouldOverrideMatching = [NSURLComponents BKR_shouldOverrideComparingURLComponentsProperties:options];
+            
+            if (shouldOverrideMatching) {
+                if (![self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
+                    NSLog(@"You must implement `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
+                } else {
+                    NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
+                    BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentName, id requestComponentValue, id otherRequestComponentValue) {
+                        return [self hasMatchForURLComponent:componentName withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+                    }];
+                    if (!hasOverrideMatch) {
+                        continue;
                     }
                 }
-                responseStub = [scene responseStubForRedirectFrame:redirectFrame];
-                // stop looping when we have a match
-                break;
             }
+            responseStub = [scene responseStubForRedirectFrame:redirectFrame];
+            // stop looping when we have a match
+            break;
         }
     }
     return responseStub;
