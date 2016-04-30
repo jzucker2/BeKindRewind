@@ -73,8 +73,11 @@ extern NSString * kBKROverrideNSURLComponentsPropertiesOptionsKey;
  *  This block is used to safely access the values of a NSURLComponents object for comparison.
  *
  *  @param componentKey               key for a property in NSURLComponents
- *  @param requestComponentValue      value of the property for componentName
- *  @param otherRequestComponentValue value of the property for componentName for a comparing request
+ *  @param requestComponentValue      value of the property for componentName. This can be either
+ *                                    a NSString instance or an NSArray<NSURLQueryItem*> instance.
+ *  @param otherRequestComponentValue value of the property for componentName for a comparing request.
+ *                                    This can be either a NSString instance or an 
+ *                                    NSArray<NSURLQueryItem*> instance.
  *
  *  @return If `YES` then there is a match between requestComponentValue and otherRequestComponentValue
  *          for the key corresponding to componentName. If `NO` then there is no match.
