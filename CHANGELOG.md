@@ -1,5 +1,17 @@
 # BeKindRewind — CHANGELOG
 
+## [2.2.0](https://github.com/jzucker2/BeKindRewind/releases/tag/2.2.0)
+
+* Added ability to override matching for components of a request URL
+
+## [2.1.1](https://github.com/jzucker2/BeKindRewind/releases/tag/2.1.1)
+
+* Fixed bug where request failed matching block fails to copy for `BKRTestConfiguration`
+
+## [2.1.0](https://github.com/jzucker2/BeKindRewind/releases/tag/2.1.0)
+
+* Added feature to execute a block when a request fails to match during playing.
+
 ## [2.0.0](https://github.com/jzucker2/BeKindRewind/releases/tag/2.0.0)
 
 * Added ability to control timing of requests and responses during stubbing.

@@ -10,6 +10,13 @@
 
 @interface NSURLComponents (BKRAdditions)
 
+/**
+ *  This returns an NSArray of all the properties for NSURLComponents
+ *
+ *  @return NSArray of NSString values
+ *
+ *  @since 2.2.0
+ */
 + (NSArray<NSString *> *)BKR_URLComponentsProperties;
 
 
