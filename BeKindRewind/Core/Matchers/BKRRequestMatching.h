@@ -129,4 +129,20 @@
  */
 - (NSDictionary *)requestComparisonOptions;
 
+/**
+ *  This can be used to add special matching behavior to a particular component of a URL.
+ *
+ *  @see kBKROverrideNSURLComponentsPropertiesOptionsKey
+ *
+ *  @param URLComponent                name of component property to compare
+ *  @param requestComponentValue       value of component from request to compare to
+ *  @param possibleMatchComponentValue value of possible request to compare to requestComponentValue
+ *
+ *  @return If `YES` then that means there is a match for requestComponentValue and 
+ *          possibleMatchComponentValue and if `NO` then there is no match.
+ *
+ *  @since 2.2.0
+ */
+- (BOOL)hasMatchForURLComponent:(NSString *)URLComponent withRequestComponentValue:(id)requestComponentValue possibleMatchComponentValue:(id)possibleMatchComponentValue;
+
 @end

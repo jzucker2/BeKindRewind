@@ -35,6 +35,10 @@
     self.MIMEType = response.MIMEType;
 }
 
+- (NSString *)URLAbsoluteString {
+    return self.URL.absoluteString;
+}
+
 - (NSDictionary *)plistDictionary {
     NSDictionary *superDict = [super plistDictionary];
     NSMutableDictionary *plistDict = [NSMutableDictionary dictionaryWithDictionary:superDict];

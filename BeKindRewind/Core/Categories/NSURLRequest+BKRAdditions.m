@@ -7,13 +7,16 @@
 //
 
 #import "NSURLRequest+BKRAdditions.h"
+#import "NSURLComponents+BKRAdditions.h"
 #import "BKRRequestFrame.h"
+#import "BKRResponseFrame.h"
 #import "BKRConstants.h"
 
 NSString *kBKRShouldIgnoreQueryItemsOrderOptionsKey = @"BKRShouldIgnoreQueryItemsOrderOptionsKey";
 NSString *kBKRIgnoreQueryItemNamesOptionsKey = @"BKRIgnoreQueryItemNamesOptionsKey";
 NSString *kBKRIgnoreNSURLComponentsPropertiesOptionsKey = @"BKRIgnoreNSURLComponentsPropertiesOptionsKey";
 NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
+NSString *kBKROverrideNSURLComponentsPropertiesOptionsKey = @"BKROverrideNSURLComponentsPropertiesOptionsKey";
 
 @implementation NSURLRequest (BKRAdditions)
 
@@ -21,48 +24,43 @@ NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
     return [self BKR_isEquivalentToRequestURLString:otherRequest.URL.absoluteString options:options];
 }
 
+- (BOOL)BKR_isEquivalentToResponseFrame:(BKRResponseFrame *)responseFrame options:(NSDictionary *)options {
+    return [self BKR_isEquivalentToRequestURLString:responseFrame.URLAbsoluteString options:options];
+}
+
 - (BOOL)BKR_isEquivalentToRequestURLString:(NSString *)otherRequestURLString options:(NSDictionary *)options {
+    // This the comparing object doesn't have a valid request URL String than let's return NO immediately
     if (!otherRequestURLString) {
         return NO;
     }
-
-    NSArray<NSString *> *componentProperties = [self _URLComponentProperties];
-    NSURLComponents *requestComponents = [NSURLComponents componentsWithString:self.URL.absoluteString];
-    NSURLComponents *otherRequestComponents = [NSURLComponents componentsWithString:otherRequestURLString];
     
-    BOOL ignoreQueryItemsOrder = NO;
-    NSArray<NSString *> *ignoreNSURLComponentsProperties = nil;
-    NSArray<NSString *> *ignoreQueryItemNames = nil;
-    if (options) {
-        if (options[kBKRIgnoreNSURLComponentsPropertiesOptionsKey]) {
-            NSAssert([options[kBKRIgnoreNSURLComponentsPropertiesOptionsKey] isKindOfClass:[NSArray class]], @"Value for kBKRIgnoreNSURLComponentsProperties is expected to be an NSArray of NSString property names");
-            ignoreNSURLComponentsProperties = options[kBKRIgnoreNSURLComponentsPropertiesOptionsKey];
-        }
-        if (
-            options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] &&
-            (![ignoreNSURLComponentsProperties containsObject:@"queryItems"])
-            ) {
-            NSAssert([options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] isKindOfClass:[NSNumber class]], @"Value for kBKRShouldIgnoreQueryItemsOrder is expected to be a BOOL wrapped in an NSNumber");
-            ignoreQueryItemsOrder = [options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] boolValue];
-        }
-        if (
-            options[kBKRIgnoreQueryItemNamesOptionsKey] &&
-            (![ignoreNSURLComponentsProperties containsObject:@"queryItems"])
-            ) {
-            NSAssert([options[kBKRIgnoreQueryItemNamesOptionsKey] isKindOfClass:[NSArray class]], @"Value for kBKRIgnoreQueryItemNames is expected to be an NSArray of NSString query item names");
-            ignoreQueryItemNames = options[kBKRIgnoreQueryItemNamesOptionsKey];
-        }
+    // Next let's check the options dictionary to see if there's even anything to compare
+    if (![NSURLComponents BKR_shouldCompareURLComponentsProperties:options]) {
+        return YES;
     }
     
-    NSMutableArray *comparingComponents = componentProperties.mutableCopy;
-    [comparingComponents removeObjectsInArray:ignoreNSURLComponentsProperties]; // remove ignoring components
-    for (NSString *componentKey in comparingComponents.copy) {
-        if ([componentKey isEqualToString:@"queryItems"]) {
-            // handle query items separately
+    // We are only dealing with default comparisons here
+    NSArray<NSString *> *comparingComponents = [NSURLComponents BKR_defaultComparingURLComponentsProperties:options];
+    BOOL hasMatch = [self BKR_isEquivalentForURLComponents:comparingComponents toOtherRequestURLString:otherRequestURLString withComparisonBlock:^BOOL(NSString *componentName, id requestComponentValue, id otherRequestComponentValue) {
+        // handle query items separately
+        if ([componentName isEqualToString:@"queryItems"]) {
+            BOOL shouldIgnoreQueryItemsOrder = YES;
+            NSArray<NSString *> *ignoreQueryItemNames = @[];
+            if (options) {
+                if (options[kBKRShouldIgnoreQueryItemsOrderOptionsKey]) {
+                    NSAssert([options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] isKindOfClass:[NSNumber class]], @"Value for kBKRShouldIgnoreQueryItemsOrder is expected to be a BOOL wrapped in an NSNumber");
+                    shouldIgnoreQueryItemsOrder = [options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] boolValue];
+                }
+                if (options[kBKRIgnoreQueryItemNamesOptionsKey]) {
+                    NSAssert([options[kBKRIgnoreQueryItemNamesOptionsKey] isKindOfClass:[NSArray class]], @"Value for kBKRIgnoreQueryItemNames is expected to be an NSArray of NSString query item names");
+                    ignoreQueryItemNames = options[kBKRIgnoreQueryItemNamesOptionsKey];
+                }
+            }
+            
             NSArray<NSURLQueryItem *> *finalRequestQueryItems = nil;
             NSArray<NSURLQueryItem *> *finalOtherRequestQueryItems = nil;
-            NSMutableArray<NSURLQueryItem *> *temporaryRequestQueryItems = requestComponents.queryItems.mutableCopy;
-            NSMutableArray<NSURLQueryItem *> *temporaryOtherRequestQueryItems = otherRequestComponents.queryItems.mutableCopy;
+            NSMutableArray<NSURLQueryItem *> *temporaryRequestQueryItems = [requestComponentValue mutableCopy];
+            NSMutableArray<NSURLQueryItem *> *temporaryOtherRequestQueryItems = [otherRequestComponentValue mutableCopy];
             if (ignoreQueryItemNames.count) {
                 NSPredicate *removeIgnoringQueryItemNamesPredicate = [NSPredicate predicateWithFormat:@"NOT (name IN %@)", ignoreQueryItemNames];
                 finalRequestQueryItems = [temporaryRequestQueryItems filteredArrayUsingPredicate:removeIgnoringQueryItemNamesPredicate];
@@ -73,8 +71,8 @@ NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
                 finalOtherRequestQueryItems = temporaryOtherRequestQueryItems.copy;
             }
             if (!finalOtherRequestQueryItems && !finalOtherRequestQueryItems) {
-                // neither object has query items, continue comparing other components
-                continue;
+                // neither object has query items, return YES to continue comparing other components
+                return YES;
             }
             if (
                 (!finalRequestQueryItems && finalOtherRequestQueryItems) ||
@@ -83,7 +81,7 @@ NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
                 // if there are no query items for one of the two objects we are comparing, then they cannot be equal
                 return NO;
             }
-            if (ignoreQueryItemsOrder) {
+            if (shouldIgnoreQueryItemsOrder) {
                 NSCountedSet *requestQueryItems = [NSCountedSet setWithArray:finalRequestQueryItems];
                 NSCountedSet *otherRequestQueryItems = [NSCountedSet setWithArray:finalOtherRequestQueryItems];
                 if (![requestQueryItems isEqualToSet:otherRequestQueryItems]) {
@@ -95,31 +93,28 @@ NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
                 }
             }
         } else {
-            if (![self _requestComponentString:[requestComponents valueForKey:componentKey] matchesOtherRequestComponentString:[otherRequestComponents valueForKey:componentKey]]) {
+            if (![NSURLComponents BKR_componentString:requestComponentValue matchesOtherComponentString:otherRequestComponentValue]) {
                 return NO;
             }
         }
-    }
+        return YES;
+    }];
     
-    return YES;
+    return hasMatch;
 }
 
-- (BOOL)_requestComponentString:(NSString *)requestComponentString matchesOtherRequestComponentString:(NSString *)otherRequestComponentString {
-    // if they both exist
-    if (
-        requestComponentString &&
-        otherRequestComponentString
-        ) {
-        // return whether the strings exist if there are 2 things to compare
-        return [requestComponentString isEqualToString:otherRequestComponentString];
-    } else if (
-               (requestComponentString && !otherRequestComponentString) ||
-               (!requestComponentString && otherRequestComponentString)
-               ) {
-        // if one exists but not the other, then return NO, they can't possibly match
-        return NO;
+- (BOOL)BKR_isEquivalentForURLComponents:(NSArray<NSString *> *)URLComponents toOtherRequestURLString:(NSString *)otherRequestURLString withComparisonBlock:(BKRURLComponentComparisonBlock)componentComparisonBlock {
+    NSParameterAssert(URLComponents);
+    NSParameterAssert(componentComparisonBlock);
+    NSURLComponents *requestURLComponents = [NSURLComponents componentsWithString:self.URL.absoluteString];
+    NSURLComponents *otherRequestURLComponents = [NSURLComponents componentsWithString:otherRequestURLString];
+    for (NSString *componentKey in URLComponents) {
+        NSString *requestComponentStringValue = [requestURLComponents valueForKey:componentKey];
+        NSString *otherRequestComponentStringValue = [otherRequestURLComponents valueForKey:componentKey];
+        if (!componentComparisonBlock(componentKey, requestComponentStringValue, otherRequestComponentStringValue)) {
+            return NO;
+        }
     }
-    // if both don't exist, then return YES
     return YES;
 }
 
@@ -136,15 +131,6 @@ NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
         }
     }
     return [self BKR_isEquivalentToRequestURLString:requestFrame.URLAbsoluteString options:options];
-}
-
-- (NSArray *)_URLComponentProperties {
-    static NSArray<NSString *> *componentProperties = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        componentProperties = @[@"scheme", @"user", @"password", @"host", @"port", @"path", @"queryItems", @"fragment"];
-    });
-    return componentProperties;
 }
 
 @end

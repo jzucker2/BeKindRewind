@@ -46,7 +46,7 @@
     NSURLRequest *otherRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://google.com/path?baz=qux&foo=bar"]];
     XCTAssertNotNil(request);
     XCTAssertNotNil(otherRequest);
-    XCTAssertFalse([request BKR_isEquivalentToRequest:otherRequest options:nil]);
+    XCTAssertTrue([request BKR_isEquivalentToRequest:otherRequest options:nil]);
     NSDictionary *options = @{
                               kBKRShouldIgnoreQueryItemsOrderOptionsKey: @NO
                               };

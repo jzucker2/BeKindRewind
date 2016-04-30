@@ -247,6 +247,7 @@ BeKindRewind is available under the MIT license. See the [LICENSE](https://githu
 
 ## Future features
 * Swift tests (at least basic)
+* Full generics audit
 * Swift Package Manager
 * Small tutorial to show how to drag in recordings to the project
 * explain fixture write directory hack for easy recording (and fix and add tests)
@@ -258,4 +259,3 @@ BeKindRewind is available under the MIT license. See the [LICENSE](https://githu
 * test for other types of network requests (streaming)
 * blog post
 * JSON serializing in addition to plist serializing
-* tests for matcher classes
