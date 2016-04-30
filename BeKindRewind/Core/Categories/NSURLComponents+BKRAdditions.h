@@ -19,13 +19,53 @@
  */
 + (NSArray<NSString *> *)BKR_URLComponentsProperties;
 
-
+/**
+ *  This returns an array of the NSURLComponents that will be compared using 
+ *  the default methods of BeKindRewind (string matching).
+ *
+ *  @param options This is an NSDictionary of the options for comparing objects.
+ *
+ *  @return NSArray of NSString instances that are valid NSURLComponent property keys
+ *
+ *  @since 2.2.0
+ */
 + (NSArray<NSString *> *)BKR_defaultComparingURLComponentsProperties:(NSDictionary *)options;
 
+/**
+ *  This returns an array of the NSURLComponents that are going to be overridden, taking into
+ *  account any properties that are being ignored.
+ *
+ *  @param options This is an NSDictionary of the options for comparing objects.
+ *
+ *  @return NSArray of NSString instances that are valid NSURLComponent property keys
+ *
+ *  @since 2.2.0
+ */
 + (NSArray<NSString *> *)BKR_overridingComparingURLComponentsProperties:(NSDictionary *)options;
 
+/**
+ *  This determines whether there are any properties of NSURLComponents to compare, including overrides.
+ *
+ *  @param options This is the options dictionary that determines what values are applied to matching
+ *
+ *  @return If `YES` then there are properties to compare. If `NO`
+ *          then there are no properties to compare.
+ *
+ *  @since 2.2.0
+ */
 + (BOOL)BKR_shouldCompareURLComponentsProperties:(NSDictionary *)options;
 
+/**
+ *  This determines whether there are any properties of NSURLComponents that will
+ *  be overridden
+ *
+ *  @param options This is the options dictionary that determines what values are applied to matching
+ *
+ *  @return If `YES` then there are properties to override in comparison. If `NO`
+ *          then there are no properties to override in comparison.
+ *
+ *  @since 2.2.0
+ */
 + (BOOL)BKR_shouldOverrideComparingURLComponentsProperties:(NSDictionary *)options;
 
 /**
@@ -74,10 +114,17 @@
  */
 + (NSArray<NSString *> *)BKR_rawIgnoringURLComponentsProperties:(NSDictionary *)options;
 
-//+ (BOOL)BKR_shouldIgnoreURLComponentsQueryItems:(NSDictionary *)options;
-//+ (BOOL)BKR_shouldCompareURLComponentsQueryItems:(NSDictionary *)options;
-//+ (BOOL)BKR_shouldOverrideURLComponentsComparisons:(NSDictionary *)options;
-
+/**
+ *  This compares two NSURLComponent values for two requests
+ *
+ *  @param componentString      this is an NSString of a part of a URL
+ *  @param otherComponentString this is an NSString of a part of a different URL
+ *
+ *  @return Returns `YES` if the two components match or are both nil and `NO` if they do not
+ *          match or only one is nil
+ *
+ *  @since 2.2.0
+ */
 + (BOOL)BKR_componentString:(NSString *)componentString matchesOtherComponentString:(NSString *)otherComponentString;
 
 @end

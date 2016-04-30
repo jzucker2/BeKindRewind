@@ -45,8 +45,8 @@
                 NSLog(@"You must implement `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
             } else {
                 NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
-                BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentName, id requestComponentValue, id otherRequestComponentValue) {
-                    return [self hasMatchForURLComponent:componentName withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+                BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentKey, id requestComponentValue, id otherRequestComponentValue) {
+                    return [self hasMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
                 }];
                 if (!hasOverrideMatch) {
                     continue;
@@ -74,8 +74,8 @@
                     NSLog(@"You must implement `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
                 } else {
                     NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
-                    BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentName, id requestComponentValue, id otherRequestComponentValue) {
-                        return [self hasMatchForURLComponent:componentName withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+                    BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentKey, id requestComponentValue, id otherRequestComponentValue) {
+                        return [self hasMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
                     }];
                     if (!hasOverrideMatch) {
                         continue;

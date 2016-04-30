@@ -69,7 +69,19 @@ extern NSString * kBKRCompareHTTPBodyOptionsKey;
  */
 extern NSString * kBKROverrideNSURLComponentsPropertiesOptionsKey;
 
-typedef BOOL (^BKRURLComponentComparisonBlock)(NSString *componentName, id requestComponentValue, id otherRequestComponentValue);
+/**
+ *  This block is used to safely access the values of a NSURLComponents object for comparison.
+ *
+ *  @param componentKey               key for a property in NSURLComponents
+ *  @param requestComponentValue      value of the property for componentName
+ *  @param otherRequestComponentValue value of the property for componentName for a comparing request
+ *
+ *  @return If `YES` then there is a match between requestComponentValue and otherRequestComponentValue
+ *          for the key corresponding to componentName. If `NO` then there is no match.
+ *
+ *  @since 2.2.0
+ */
+typedef BOOL (^BKRURLComponentComparisonBlock)(NSString *componentKey, id requestComponentValue, id otherRequestComponentValue);
 
 @class BKRRequestFrame;
 @class BKRResponseFrame;
@@ -117,8 +129,8 @@ typedef BOOL (^BKRURLComponentComparisonBlock)(NSString *componentName, id reque
  *
  *  @param otherRequestURLString string that represents a URL
  *  @param options               Include options such as ignore query item order or
- *                      ignore specific query items. Or ignore a specific NSURLComponents property.
- *                      See available keys above.
+ *                               ignore specific query items. Or ignore a specific NSURLComponents property.
+ *                               See available keys above.
  *
  *  @return whether or not the two objects are equal, after considering the options.
  *
@@ -126,8 +138,34 @@ typedef BOOL (^BKRURLComponentComparisonBlock)(NSString *componentName, id reque
  */
 - (BOOL)BKR_isEquivalentToRequestURLString:(NSString *)otherRequestURLString options:(NSDictionary *)options;
 
+/**
+ *  Compare receiver to a BKRResponseFrame instance representing a URL
+ *
+ *  @param responseFrame This is an instance of BKRResponseFrame that should be compared to the receiver
+ *  @param options       Include options such as ignore query item order or
+ *                       ignore specific query items. Or ignore a specific NSURLComponents property.
+ *                       See available keys above.
+ *
+ *  @return whether or not the two objects are equal, after considering the options.
+ *
+ *  @since 2.2.0
+ */
 - (BOOL)BKR_isEquivalentToResponseFrame:(BKRResponseFrame *)responseFrame options:(NSDictionary *)options;
 
+/**
+ *  This executes a comparison block for an array of NSURLComponents keys that are used to compare 
+ *  otherRequestURLString to the receiver.
+ *
+ *  @param URLComponents            NSArray of NSURLComponents keys to execute componentComparisonBlock against
+ *  @param otherRequestURLString    Another URL request string to compare to receiver
+ *  @param componentComparisonBlock This is an instance of BKRURLComponentComparisonBlock that will be executed 
+ *                                  against every key in URLComponents
+ *
+ *  @return If `YES` then otherRequestURLString is equivalent to the receiver, and if `NO` then they are not 
+ *          equivalent.
+ *
+ *  @since 2.2.0
+ */
 - (BOOL)BKR_isEquivalentForURLComponents:(NSArray<NSString *> *)URLComponents toOtherRequestURLString:(NSString *)otherRequestURLString withComparisonBlock:(BKRURLComponentComparisonBlock)componentComparisonBlock;
 
 @end
