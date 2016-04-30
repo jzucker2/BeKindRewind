@@ -80,45 +80,6 @@
     return (overridingComponents.count ? YES : NO);
 }
 
-//+ (BOOL)BKR_shouldIgnoreURLComponentsQueryItems:(NSDictionary *)options {
-//    NSArray<NSString *> *ignoringNSURLComponents = [self BKR_rawIgnoringURLComponentsProperties:options];
-//    return [ignoringNSURLComponents containsObject:@"queryItems"];
-//}
-
-//+ (NSArray<NSString *> *)BKR_comparingURLComponentsProperties:(NSDictionary *)options {
-//    NSMutableArray<NSString *> *comparingComponents = [self BKR_URLComponentsProperties].mutableCopy;
-//    
-//    NSArray<NSString *> *ignoringNSURLComponents = [self BKR_rawIgnoringURLComponentsProperties:options];
-//    NSArray<NSString *> *overridingNSURLComponents = [self BKR_rawOverridingComparingURLComponentsProperties:options];
-//    
-//    [comparingComponents removeObjectsInArray:ignoringNSURLComponents];
-//    [comparingComponents removeObjectsInArray:overridingNSURLComponents];
-//    
-//    return comparingComponents.copy;
-//}
-//
-//+ (BOOL)BKR_shouldCompareURLComponentsQueryItems:(NSDictionary *)options {
-//    BOOL shouldIgnoreQueryComponents = [self BKR_shouldIgnoreURLComponentsQueryItems:options];
-//    if (shouldIgnoreQueryComponents) {
-//        return NO;
-//    }
-//    // if we aren't ignoring it, make sure we aren't overriding it
-//    NSArray<NSString *> *overridingNSURLComponents = [self BKR_rawOverridingComparingURLComponentsProperties:options];
-//    return ![overridingNSURLComponents containsObject:@"queryItems"]; // if we are overriding, then we shouldn't compare it
-//}
-//
-//+ (BOOL)BKR_shouldOverrideURLComponentsComparisons:(NSDictionary *)options {
-//    NSMutableArray<NSString *> *comparingComponents = [self BKR_URLComponentsProperties].mutableCopy;
-//    
-//    NSArray<NSString *> *ignoringNSURLComponents = [self BKR_rawIgnoringURLComponentsProperties:options];
-//    NSArray<NSString *> *overridingNSURLComponents = [self BKR_rawOverridingComparingURLComponentsProperties:options];
-//    
-//    [comparingComponents removeObjectsInArray:ignoringNSURLComponents];
-//    [comparingComponents removeObjectsInArray:overridingNSURLComponents];
-//    
-//    return NO;
-//}
-
 + (BOOL)BKR_componentString:(NSString *)componentString matchesOtherComponentString:(NSString *)otherComponentString {
     // if they both exist
     if (
