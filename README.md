@@ -259,4 +259,3 @@ BeKindRewind is available under the MIT license. See the [LICENSE](https://githu
 * test for other types of network requests (streaming)
 * blog post
 * JSON serializing in addition to plist serializing
-* tests for matcher classes

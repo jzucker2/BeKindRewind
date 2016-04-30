@@ -25,7 +25,6 @@
 		51062E121CAEEC7F00656AC5 /* BKRVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9DF1C598572006156C2 /* BKRVCRTestCase.m */; };
 		51062E131CAEEC7F00656AC5 /* BeKindRewindExampleTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A668C21C83D1C200476A5F /* BeKindRewindExampleTestCase.m */; };
 		51062E141CAEEC8600656AC5 /* XCTestCase+BKRHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */; };
-		51062E151CAEEC8A00656AC5 /* BKRMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56661C7FF82400691220 /* BKRMatcherTestCase.m */; };
 		51062E161CAEEC8F00656AC5 /* BKRBaseTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9751C55F8C9006156C2 /* BKRBaseTestCase.m */; };
 		51062E171CAEEC9200656AC5 /* BKRPlayingTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C563B1C7EE50800691220 /* BKRPlayingTestCase.bundle */; };
 		51062E181CAEEC9500656AC5 /* BKRDefaultTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */; };
@@ -61,7 +60,6 @@
 		51062E421CAF052F00656AC5 /* BKRVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9DF1C598572006156C2 /* BKRVCRTestCase.m */; };
 		51062E431CAF052F00656AC5 /* BeKindRewindExampleTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A668C21C83D1C200476A5F /* BeKindRewindExampleTestCase.m */; };
 		51062E441CAF053300656AC5 /* XCTestCase+BKRHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */; };
-		51062E451CAF053800656AC5 /* BKRMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56661C7FF82400691220 /* BKRMatcherTestCase.m */; };
 		51062E461CAF053B00656AC5 /* BKRBaseTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B9B9751C55F8C9006156C2 /* BKRBaseTestCase.m */; };
 		51062E471CAF053F00656AC5 /* BKRPlayingTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C563B1C7EE50800691220 /* BKRPlayingTestCase.bundle */; };
 		51062E481CAF054100656AC5 /* BKRDefaultTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */; };
@@ -89,7 +87,6 @@
 		515C563A1C7EDE1B00691220 /* BKRPlayerTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */; };
 		515C563C1C7EE50800691220 /* BKRPlayingTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C563B1C7EE50800691220 /* BKRPlayingTestCase.bundle */; };
 		515C56621C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56611C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m */; };
-		515C56671C7FF82400691220 /* BKRMatcherTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56661C7FF82400691220 /* BKRMatcherTestCase.m */; };
 		515C56691C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 515C56681C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist */; };
 		515E36011C73B40B00058D74 /* XCTestCase+BKRHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */; };
 		518436C11C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 518436C01C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m */; };
@@ -152,8 +149,6 @@
 		515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRPlayerTestCase.m; sourceTree = "<group>"; };
 		515C563B1C7EE50800691220 /* BKRPlayingTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BKRPlayingTestCase.bundle; sourceTree = "<group>"; };
 		515C56611C7FF7FB00691220 /* BKRPlayheadMatcherTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRPlayheadMatcherTestCase.m; sourceTree = "<group>"; };
-		515C56651C7FF82400691220 /* BKRMatcherTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKRMatcherTestCase.h; sourceTree = "<group>"; };
-		515C56661C7FF82400691220 /* BKRMatcherTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKRMatcherTestCase.m; sourceTree = "<group>"; };
 		515C56681C81181D00691220 /* testPlayingTwoSimultaneousGETRequests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = testPlayingTwoSimultaneousGETRequests.plist; sourceTree = "<group>"; };
 		515E35FF1C73B40B00058D74 /* XCTestCase+BKRHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XCTestCase+BKRHelpers.h"; sourceTree = "<group>"; };
 		515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XCTestCase+BKRHelpers.m"; sourceTree = "<group>"; };
@@ -314,8 +309,6 @@
 				515E36001C73B40B00058D74 /* XCTestCase+BKRHelpers.m */,
 				51062E9E1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.h */,
 				51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */,
-				515C56651C7FF82400691220 /* BKRMatcherTestCase.h */,
-				515C56661C7FF82400691220 /* BKRMatcherTestCase.m */,
 				51B9B9741C55F8C9006156C2 /* BKRBaseTestCase.h */,
 				51B9B9751C55F8C9006156C2 /* BKRBaseTestCase.m */,
 			);
@@ -736,7 +729,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51062E451CAF053800656AC5 /* BKRMatcherTestCase.m in Sources */,
 				51062E371CAF052F00656AC5 /* BKRPlayableVCRTestCase.m in Sources */,
 				51062E3E1CAF052F00656AC5 /* BKRRecorderTestCase.m in Sources */,
 				51062E3B1CAF052F00656AC5 /* BKRPlayheadMatcherTestCase.m in Sources */,
@@ -763,7 +755,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51062E151CAEEC8A00656AC5 /* BKRMatcherTestCase.m in Sources */,
 				51062E071CAEEC7F00656AC5 /* BKRPlayableVCRTestCase.m in Sources */,
 				51062E0E1CAEEC7F00656AC5 /* BKRRecorderTestCase.m in Sources */,
 				51062E0B1CAEEC7F00656AC5 /* BKRPlayheadMatcherTestCase.m in Sources */,
@@ -790,7 +781,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				515C56671C7FF82400691220 /* BKRMatcherTestCase.m in Sources */,
 				51B9BA051C59FFE8006156C2 /* BKRCassetteTestCase.m in Sources */,
 				518436C11C6D1A4B006B5A07 /* BKRPlayableVCRTestCase.m in Sources */,
 				51CEB9D31C4EBF000030A02D /* BKRRecordingTestCase.m in Sources */,
