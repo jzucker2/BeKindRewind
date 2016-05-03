@@ -12,7 +12,7 @@
 #import "BKRResponseFrame.h"
 #import "BKRConstants.h"
 
-NSString *kBKRShouldIgnoreQueryItemsOrderOptionsKey = @"BKRShouldIgnoreQueryItemsOrderOptionsKey";
+NSString *kBKRShouldIgnoreQueryItemsOrderOptionsKey = @"BKRShouldIgnoreQueryItemsOrderOptionsKey"; // @YES by default
 NSString *kBKRIgnoreQueryItemNamesOptionsKey = @"BKRIgnoreQueryItemNamesOptionsKey";
 NSString *kBKRIgnoreNSURLComponentsPropertiesOptionsKey = @"BKRIgnoreNSURLComponentsPropertiesOptionsKey";
 NSString *kBKRCompareHTTPBodyOptionsKey = @"BKRCompareHTTPBodyKeyOptionsKey";
@@ -44,60 +44,10 @@ NSString *kBKROverrideNSURLComponentsPropertiesOptionsKey = @"BKROverrideNSURLCo
     BOOL hasMatch = [self BKR_isEquivalentForURLComponents:comparingComponents toOtherRequestURLString:otherRequestURLString withComparisonBlock:^BOOL(NSString *componentName, id requestComponentValue, id otherRequestComponentValue) {
         // handle query items separately
         if ([componentName isEqualToString:@"queryItems"]) {
-            BOOL shouldIgnoreQueryItemsOrder = YES;
-            NSArray<NSString *> *ignoreQueryItemNames = @[];
-            if (options) {
-                if (options[kBKRShouldIgnoreQueryItemsOrderOptionsKey]) {
-                    NSAssert([options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] isKindOfClass:[NSNumber class]], @"Value for kBKRShouldIgnoreQueryItemsOrder is expected to be a BOOL wrapped in an NSNumber");
-                    shouldIgnoreQueryItemsOrder = [options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] boolValue];
-                }
-                if (options[kBKRIgnoreQueryItemNamesOptionsKey]) {
-                    NSAssert([options[kBKRIgnoreQueryItemNamesOptionsKey] isKindOfClass:[NSArray class]], @"Value for kBKRIgnoreQueryItemNames is expected to be an NSArray of NSString query item names");
-                    ignoreQueryItemNames = options[kBKRIgnoreQueryItemNamesOptionsKey];
-                }
-            }
-            
-            NSArray<NSURLQueryItem *> *finalRequestQueryItems = nil;
-            NSArray<NSURLQueryItem *> *finalOtherRequestQueryItems = nil;
-            NSMutableArray<NSURLQueryItem *> *temporaryRequestQueryItems = [requestComponentValue mutableCopy];
-            NSMutableArray<NSURLQueryItem *> *temporaryOtherRequestQueryItems = [otherRequestComponentValue mutableCopy];
-            if (ignoreQueryItemNames.count) {
-                NSPredicate *removeIgnoringQueryItemNamesPredicate = [NSPredicate predicateWithFormat:@"NOT (name IN %@)", ignoreQueryItemNames];
-                finalRequestQueryItems = [temporaryRequestQueryItems filteredArrayUsingPredicate:removeIgnoringQueryItemNamesPredicate];
-                finalOtherRequestQueryItems = [temporaryOtherRequestQueryItems filteredArrayUsingPredicate:removeIgnoringQueryItemNamesPredicate];
-            } else {
-                // if we are not ignoring a specific query item, then assign all query items for comparison
-                finalRequestQueryItems = temporaryRequestQueryItems.copy;
-                finalOtherRequestQueryItems = temporaryOtherRequestQueryItems.copy;
-            }
-            if (!finalOtherRequestQueryItems && !finalOtherRequestQueryItems) {
-                // neither object has query items, return YES to continue comparing other components
-                return YES;
-            }
-            if (
-                (!finalRequestQueryItems && finalOtherRequestQueryItems) ||
-                (finalRequestQueryItems && !finalOtherRequestQueryItems)
-                ) {
-                // if there are no query items for one of the two objects we are comparing, then they cannot be equal
-                return NO;
-            }
-            if (shouldIgnoreQueryItemsOrder) {
-                NSCountedSet *requestQueryItems = [NSCountedSet setWithArray:finalRequestQueryItems];
-                NSCountedSet *otherRequestQueryItems = [NSCountedSet setWithArray:finalOtherRequestQueryItems];
-                if (![requestQueryItems isEqualToSet:otherRequestQueryItems]) {
-                    return NO;
-                }
-            } else {
-                if (![finalRequestQueryItems isEqualToArray:finalOtherRequestQueryItems]) {
-                    return NO;
-                }
-            }
+            return [NSURLComponents BKR_componentQueryItems:requestComponentValue matchesOtherComponentQueryItems:otherRequestComponentValue withOptions:options];
         } else {
-            if (![NSURLComponents BKR_componentString:requestComponentValue matchesOtherComponentString:otherRequestComponentValue]) {
-                return NO;
-            }
+            return [NSURLComponents BKR_componentString:requestComponentValue matchesOtherComponentString:otherRequestComponentValue];
         }
-        return YES;
     }];
     
     return hasMatch;

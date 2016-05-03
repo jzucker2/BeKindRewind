@@ -31,6 +31,7 @@
 
 // Request Matching Protocol
 #import "BKRRequestMatching.h"
+#import "NSObject+BKRRequestMatchingAdditions.h"
 #import "NSURLComponents+BKRAdditions.h"
 #import "NSURLRequest+BKRAdditions.h"
 

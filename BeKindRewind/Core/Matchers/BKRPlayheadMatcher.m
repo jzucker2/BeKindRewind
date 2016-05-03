@@ -8,6 +8,7 @@
 
 #import "BKRPlayheadMatcher.h"
 #import "NSURLComponents+BKRAdditions.h"
+#import "NSObject+BKRRequestMatchingAdditions.h"
 
 @implementation BKRPlayheadMatcher
 
@@ -39,21 +40,35 @@
 //        if (!matchesRequest) {
 //            continue;
 //        }
-        BOOL shouldOverrideMatching = [NSURLComponents BKR_shouldOverrideComparingURLComponentsProperties:options];
         
+        BOOL shouldOverrideMatching = [NSURLComponents BKR_shouldOverrideComparingURLComponentsProperties:options];
         if (shouldOverrideMatching) {
-            if (![self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
-                NSLog(@"You must implement `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
-            } else {
-                NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
-                BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentKey, id requestComponentValue, id otherRequestComponentValue) {
-                    return [self hasMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
-                }];
-                if (!hasOverrideMatch) {
-                    continue;
-                }
+            BOOL hasOverrideMatch = [self BKR_overrideForRequest:request matchesRequestURLString:scene.currentRequest.URLAbsoluteString withOptions:options];
+            if (!hasOverrideMatch) {
+                continue;
             }
         }
+//
+//        if (shouldOverrideMatching) {
+//            if (
+//                (![self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) &&
+//                (![self respondsToSelector:@selector(hasOverrideMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)])
+//                ) {
+//                NSLog(@"You must implement `hasOverrideMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` or the deprecated `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
+//            } else {
+//                NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
+//                BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentKey, id requestComponentValue, id otherRequestComponentValue) {
+//                    if ([self respondsToSelector:@selector(hasOverrideMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
+//                        return [self hasOverrideMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+//                    } else {
+//                        return [self hasMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+//                    }
+//                }];
+//                if (!hasOverrideMatch) {
+//                    continue;
+//                }
+//            }
+//        }
         if (
             matchesRequest &&
             !item.expectsRedirect
@@ -64,23 +79,39 @@
         } else if (item.expectsRedirect) {
             // else match redirects if we still expect some
             BKRRedirectFrame *redirectFrame = [scene redirectFrameForRedirect:item.numberOfRedirectsStubbed];
-            BOOL hasRedirectMatch = [request BKR_isEquivalentToResponseFrame:redirectFrame.responseFrame options:options];
-            if (!hasRedirectMatch) {
-                continue;
-            }
+            NSString *responseURLString = redirectFrame.responseFrame.URLAbsoluteString;
+//            BOOL hasRedirectMatch = [request BKR_isEquivalentToResponseFrame:redirectFrame.responseFrame options:options];
+            BOOL hasRedirectMatch = [request BKR_isEquivalentToRequestURLString:responseURLString options:options];
+//            if (!hasRedirectMatch) {
+//                continue;
+//            }
+//            BOOL shouldOverrideMatching = [NSURLComponents BKR_shouldOverrideComparingURLComponentsProperties:options];
+//            
+//            if (shouldOverrideMatching) {
+//                if (
+//                    (![self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) &&
+//                    (![self respondsToSelector:@selector(hasOverrideMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)])
+//                    ) {
+//                    NSLog(@"You must implement `hasOverrideMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` or the deprecated `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
+//                } else {
+//                    NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
+//                    BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentKey, id requestComponentValue, id otherRequestComponentValue) {
+//                        if ([self respondsToSelector:@selector(hasOverrideMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
+//                            return [self hasOverrideMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+//                        } else {
+//                            return [self hasMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+//                        }
+//                    }];
+//                    if (!hasOverrideMatch) {
+//                        continue;
+//                    }
+//                }
+//            }
             BOOL shouldOverrideMatching = [NSURLComponents BKR_shouldOverrideComparingURLComponentsProperties:options];
-            
             if (shouldOverrideMatching) {
-                if (![self respondsToSelector:@selector(hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
-                    NSLog(@"You must implement `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` from the `BKRRequestMatching` protocol for override execution.");
-                } else {
-                    NSArray<NSString *> *overridingComponents = [NSURLComponents BKR_overridingComparingURLComponentsProperties:options];
-                    BOOL hasOverrideMatch = [request BKR_isEquivalentForURLComponents:overridingComponents toOtherRequestURLString:scene.currentRequest.URLAbsoluteString withComparisonBlock:^BOOL(NSString *componentKey, id requestComponentValue, id otherRequestComponentValue) {
-                        return [self hasMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
-                    }];
-                    if (!hasOverrideMatch) {
-                        continue;
-                    }
+                BOOL hasOverrideMatch = [self BKR_overrideForRequest:request matchesRequestURLString:responseURLString withOptions:options];
+                if (!hasOverrideMatch) {
+                    continue;
                 }
             }
             responseStub = [scene responseStubForRedirectFrame:redirectFrame];
