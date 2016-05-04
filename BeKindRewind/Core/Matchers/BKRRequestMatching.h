@@ -12,6 +12,7 @@
 #import "BKRScene+Playable.h"
 #import "BKRRedirectFrame.h"
 #import "BKRRequestFrame.h"
+#import "BKRResponseFrame.h"
 #import "BKRPlayhead.h"
 #import "NSURLRequest+BKRAdditions.h"
 
@@ -132,6 +133,9 @@
 /**
  *  This can be used to add special matching behavior to a particular component of a URL.
  *
+ *  @note If `hasOverrideMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:`
+ *        is implemented and this is implemented, then this will not be called.
+ *
  *  @see kBKROverrideNSURLComponentsPropertiesOptionsKey
  *
  *  @param URLComponent                name of component property to compare
@@ -143,6 +147,30 @@
  *
  *  @since 2.2.0
  */
-- (BOOL)hasMatchForURLComponent:(NSString *)URLComponent withRequestComponentValue:(id)requestComponentValue possibleMatchComponentValue:(id)possibleMatchComponentValue;
+- (BOOL)hasMatchForURLComponent:(NSString *)URLComponent withRequestComponentValue:(id)requestComponentValue possibleMatchComponentValue:(id)possibleMatchComponentValue DEPRECATED_ATTRIBUTE;
+
+/**
+ *  This can be used to add special matching behavior to a particular component of a URL. This
+ *  replaces `hasMatchForURLComponent: withRequestComponentValue: possibleMatchComponentValue:`
+ *  for a clearer method signature. If the same override property is provided in the options 
+ *  dictionary for kBKROverrideNSURLComponentsPropertiesOptionsKey and for 
+ *  kBKRIgnoreNSURLComponentsPropertiesOptionsKey then the this method will not be called 
+ *  for any interesting properties.
+ *
+ *  @note If `hasMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:` 
+ *        is implemented and this is implemented, then only this will be called.
+ *
+ *  @see kBKROverrideNSURLComponentsPropertiesOptionsKey
+ *
+ *  @param URLComponent                name of component property to compare
+ *  @param requestComponentValue       value of component from request to compare to
+ *  @param possibleMatchComponentValue value of possible request to compare to requestComponentValue
+ *
+ *  @return If `YES` then that means there is a match for requestComponentValue and
+ *          possibleMatchComponentValue and if `NO` then there is no match.
+ *
+ *  @since 2.3.0
+ */
+- (BOOL)hasOverrideMatchForURLComponent:(NSString *)URLComponent withRequestComponentValue:(id)requestComponentValue possibleMatchComponentValue:(id)possibleMatchComponentValue;
 
 @end
