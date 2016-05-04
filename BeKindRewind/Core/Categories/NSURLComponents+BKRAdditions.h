@@ -77,7 +77,7 @@
  *  @see NSURLRequest (BKRAdditions)
  *
  *  @param options This is an NSDictionary of the options for comparing objects. If 
- *                 this is null then an empty array will be returned.
+ *                 this is nil then an empty array will be returned.
  *
  *  @throws If there is a value stored for 
  *          kBKROverrideNSURLComponentsPropertiesOptionsKey and it is not of type 
@@ -100,7 +100,7 @@
  *  @see NSURLRequest (BKRAdditions)
  *
  *  @param options This is an NSDictionary of the options for comparing objects. If
- *                 this is null then an empty array will be returned.
+ *                 this is nil then an empty array will be returned.
  *
  *  @throws If there is a value stored for
  *          kBKRIgnoreNSURLComponentsPropertiesOptionsKey and it is not of type
@@ -126,5 +126,25 @@
  *  @since 2.2.0
  */
 + (BOOL)BKR_componentString:(NSString *)componentString matchesOtherComponentString:(NSString *)otherComponentString;
+
+/**
+ *  This compares two NSURLComponent query item arrays with an options dictionary
+ *
+ *  @see NSURLRequest (BKRAdditions)
+ *
+ *  @param componentQueryItems      This is an NSArray of NSURLQueryItem instances from a NSURL instance
+ *  @param otherComponentQueryItems This is an NSArray of NSURLQueryItem instances from another NSURL instance
+ *  @param options                  This is an NSDictionary of the options for comparing objects. If
+ *                                  this is nil then an empty array will be returned.
+ *  @throws If there is a value stored for
+ *          kBKRIgnoreNSURLComponentsPropertiesOptionsKey and it is not of type
+ *          NSArray then an NSInternalInconsistencyException is thrown
+ *
+ *  @return If `YES` then the two arrays are equal, taking options into account. If `NO` then the 
+ *          two arrays of query items are not equal.
+ *
+ *  @since 2.3.0
+ */
++ (BOOL)BKR_componentQueryItems:(NSArray<NSURLQueryItem *> *)componentQueryItems matchesOtherComponentQueryItems:(NSArray<NSURLQueryItem *> *)otherComponentQueryItems withOptions:(NSDictionary *)options;
 
 @end

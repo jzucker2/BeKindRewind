@@ -99,4 +99,67 @@
     return YES;
 }
 
++ (BOOL)BKR_componentQueryItems:(NSArray<NSURLQueryItem *> *)componentQueryItems matchesOtherComponentQueryItems:(NSArray<NSURLQueryItem *> *)otherComponentQueryItems withOptions:(NSDictionary *)options {
+    // first check if both are nil, if so, then return YES
+    if (
+        !componentQueryItems &&
+        !otherComponentQueryItems
+        ) {
+        return YES;
+    }
+    BOOL shouldIgnoreQueryItemsOrder = YES; // this is YES by default (see docs kBKRShouldIgnoreQueryItemsOrderOptionsKey)
+    NSArray<NSString *> *ignoreQueryItemNames = @[];
+    if (options) {
+        if (options[kBKRShouldIgnoreQueryItemsOrderOptionsKey]) {
+            NSAssert([options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] isKindOfClass:[NSNumber class]], @"Value for kBKRShouldIgnoreQueryItemsOrder is expected to be a BOOL wrapped in an NSNumber");
+            shouldIgnoreQueryItemsOrder = [options[kBKRShouldIgnoreQueryItemsOrderOptionsKey] boolValue];
+        }
+        if (options[kBKRIgnoreQueryItemNamesOptionsKey]) {
+            NSAssert([options[kBKRIgnoreQueryItemNamesOptionsKey] isKindOfClass:[NSArray class]], @"Value for kBKRIgnoreQueryItemNames is expected to be an NSArray of NSString query item names");
+            ignoreQueryItemNames = options[kBKRIgnoreQueryItemNamesOptionsKey];
+        }
+    }
+    
+    NSArray<NSURLQueryItem *> *finalRequestQueryItems = nil;
+    NSArray<NSURLQueryItem *> *finalOtherRequestQueryItems = nil;
+    
+    // we create an empty mutable array and add the comparing query items to it in case
+    // one of these is nil, then we avoid throwing an exception and can compare empty
+    // arrays instead of a possibly nil object
+    NSMutableArray<NSURLQueryItem *> *temporaryRequestQueryItems = [NSMutableArray array];
+    NSMutableArray<NSURLQueryItem *> *temporaryOtherRequestQueryItems = [NSMutableArray array];
+    [temporaryRequestQueryItems addObjectsFromArray:componentQueryItems];
+    [temporaryOtherRequestQueryItems addObjectsFromArray:otherComponentQueryItems];
+    
+    // now we try to remove ignoring query items
+    if (ignoreQueryItemNames.count) {
+        NSPredicate *removeIgnoringQueryItemNamesPredicate = [NSPredicate predicateWithFormat:@"NOT (name IN %@)", ignoreQueryItemNames];
+        finalRequestQueryItems = [temporaryRequestQueryItems filteredArrayUsingPredicate:removeIgnoringQueryItemNamesPredicate];
+        finalOtherRequestQueryItems = [temporaryOtherRequestQueryItems filteredArrayUsingPredicate:removeIgnoringQueryItemNamesPredicate];
+    } else {
+        // if we are not ignoring a specific query item, then assign all query items for comparison
+        finalRequestQueryItems = temporaryRequestQueryItems.copy;
+        finalOtherRequestQueryItems = temporaryOtherRequestQueryItems.copy;
+    }
+    // we can assume both arrays exist because of how we built them above
+    if (!finalOtherRequestQueryItems.count && !finalOtherRequestQueryItems.count) {
+        // neither object has query items, return YES to continue comparing other components
+        return YES;
+    }
+    if (
+        (!finalRequestQueryItems && finalOtherRequestQueryItems) ||
+        (finalRequestQueryItems && !finalOtherRequestQueryItems)
+        ) {
+        // if there are no query items for one of the two objects we are comparing, then they cannot be equal
+        return NO;
+    }
+    if (shouldIgnoreQueryItemsOrder) {
+        NSCountedSet *requestQueryItems = [NSCountedSet setWithArray:finalRequestQueryItems];
+        NSCountedSet *otherRequestQueryItems = [NSCountedSet setWithArray:finalOtherRequestQueryItems];
+        return [requestQueryItems isEqualToSet:otherRequestQueryItems];
+    } else {
+        return [finalRequestQueryItems isEqualToArray:finalOtherRequestQueryItems];
+    }
+}
+
 @end

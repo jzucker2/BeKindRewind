@@ -24,6 +24,11 @@
  */
 @property (nonatomic, copy, readonly) NSURL *URL;
 
+/**
+ *  The NSString associated with URL property
+ *
+ *  @since 2.2.0
+ */
 @property (nonatomic, copy, readonly) NSString *URLAbsoluteString;
 
 /**

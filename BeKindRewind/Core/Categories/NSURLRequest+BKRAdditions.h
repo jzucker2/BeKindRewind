@@ -15,8 +15,8 @@
  *  well as the items. This is ignored if @"queryItems" is included in the NSArray
  *  assigned to kBKRIgnoreNSURLComponentsPropertiesOptionsKey or to
  *  kBKRIgnoreNSURLComponentsPropertiesOptionsKey. By default, query items order will
- *  be ignored unless this is overridden with a @NO (though a @YES can be provided
- *  to ensure desired behavior).
+ *  be ignored (this is `@YES` by default) unless this is overridden with a 
+ *  @NO (though a @YES can be provided to ensure desired behavior).
  *
  *  @since 1.0.0
  */
