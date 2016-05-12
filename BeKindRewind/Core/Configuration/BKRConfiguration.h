@@ -10,6 +10,12 @@
 #import "BKRRequestMatching.h"
 #import "BKRVCRActions.h"
 
+typedef NS_ENUM(NSInteger, BKRMatchingStrictness) {
+    BKRMatchingStrictnessNone = 0,
+    BKRMatchingStrictnessFailForFinished,
+    BKRMatchingStrictnessDefault = BKRMatchingStrictnessNone,
+};
+
 /**
  *  This is a configuration object for creating objects conforming to the BKRVCRActions protocol
  *
@@ -75,5 +81,12 @@
  *  @since 2.1.0
  */
 @property (nonatomic, copy) BKRRequestMatchingFailedBlock requestMatchingFailedBlock;
+
+/**
+ *  This determines how to handle 
+ *
+ *  @since 2.4.0
+ */
+@property (nonatomic, assign) BKRMatchingStrictness matchingStrictness;
 
 @end
