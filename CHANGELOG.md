@@ -1,5 +1,13 @@
 # BeKindRewind — CHANGELOG
 
+## [2.3.1](https://github.com/jzucker2/BeKindRewind/releases/tag/2.3.1)
+
+* Silenced warning for using deprecated matching override method
+
+## [2.3.0](https://github.com/jzucker2/BeKindRewind/releases/tag/2.3.0)
+
+* Refactored matching overrides
+
 ## [2.2.0](https://github.com/jzucker2/BeKindRewind/releases/tag/2.2.0)
 
 * Added ability to override matching for components of a request URL
