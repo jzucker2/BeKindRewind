@@ -96,7 +96,11 @@
             if ([self respondsToSelector:@selector(hasOverrideMatchForURLComponent:withRequestComponentValue:possibleMatchComponentValue:)]) {
                 return [self hasOverrideMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
             } else {
+                // silence deprecated warning until the deprecated method is removed with the next update
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 return [self hasMatchForURLComponent:componentKey withRequestComponentValue:requestComponentValue possibleMatchComponentValue:otherRequestComponentValue];
+#pragma clang diagnostic pop
             }
         }];
     }
