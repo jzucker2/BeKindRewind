@@ -1,5 +1,9 @@
 # BeKindRewind — CHANGELOG
 
+## [2.3.2](https://github.com/jzucker2/BeKindRewind/releases/tag/2.3.2)
+
+* Fixed compilation issue with `XCTest` import reference
+
 ## [2.3.1](https://github.com/jzucker2/BeKindRewind/releases/tag/2.3.1)
 
 * Silenced warning for using deprecated matching override method
@@ -24,7 +28,7 @@
 
 * Added ability to control timing of requests and responses during stubbing.
 * Can set request download speed instead of a time (using a negative value).
-* Added new matcher for request and response timing called BKRPlayheadWithTimingMatcher
+* Added new matcher for request and response timing called `BKRPlayheadWithTimingMatcher`
 * Fixed bug by moving VCR initialization from `XCTestCase` constructor to `setUp` to fix incorrect assumption of `XCTestCase` execution.
 
 ## [1.0.0](https://github.com/jzucker2/BeKindRewind/releases/tag/1.0.0)
