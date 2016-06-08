@@ -1,6 +1,31 @@
 PODS:
   - BeKindRewind (3.0.0):
+    - BeKindRewind/Core (= 3.0.0)
+    - BeKindRewind/FilePathHelper (= 3.0.0)
+    - BeKindRewind/Misc (= 3.0.0)
+    - BeKindRewind/Player (= 3.0.0)
+    - BeKindRewind/Recorder (= 3.0.0)
+    - BeKindRewind/TestCaseFilePathHelper (= 3.0.0)
+    - BeKindRewind/TestCaseVCR (= 3.0.0)
+    - BeKindRewind/VCR (= 3.0.0)
+  - BeKindRewind/Core (3.0.0):
+    - BeKindRewind/Misc
+  - BeKindRewind/FilePathHelper (3.0.0):
+    - BeKindRewind/Misc
+  - BeKindRewind/Misc (3.0.0)
+  - BeKindRewind/Player (3.0.0):
+    - BeKindRewind/Core
     - OHHTTPStubs (~> 5.0.0)
+  - BeKindRewind/Recorder (3.0.0):
+    - BeKindRewind/Core
+  - BeKindRewind/TestCaseFilePathHelper (3.0.0):
+    - BeKindRewind/FilePathHelper
+  - BeKindRewind/TestCaseVCR (3.0.0):
+    - BeKindRewind/TestCaseFilePathHelper
+    - BeKindRewind/VCR
+  - BeKindRewind/VCR (3.0.0):
+    - BeKindRewind/Player
+    - BeKindRewind/Recorder
   - OHHTTPStubs (5.0.0):
     - OHHTTPStubs/Default (= 5.0.0)
   - OHHTTPStubs/Core (5.0.0)
@@ -23,7 +48,7 @@ EXTERNAL SOURCES:
     :path: .
 
 SPEC CHECKSUMS:
-  BeKindRewind: 9c8ecc3c677943f84f7e8f40736071ef8256a5d9
+  BeKindRewind: c5e2a15cbaddb7b69e7292820864611354118e16
   OHHTTPStubs: a5d2e9eea07869d42ec03338325f398bc520e159
 
 PODFILE CHECKSUM: 2e20578b0e753bc1585403aa23d566411a37e7f6

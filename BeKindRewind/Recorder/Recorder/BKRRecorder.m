@@ -9,7 +9,6 @@
 #import "BKRRecordingEditor.h"
 #import "BKRConstants.h"
 #import "BKRRecorder.h"
-#import "BKROHHTTPStubsWrapper.h"
 #import "BKRNSURLSessionSwizzling.h"
 
 @interface BKRRecorder ()
