@@ -13,3 +13,7 @@ end
 target 'BKR-Tests-tvOS-ObjC' do
 	pod "BeKindRewind", :path => '.'
 end
+
+target 'BKR-Tests-iOS-Swift' do
+    pod "BeKindRewind", :path => '.'
+end

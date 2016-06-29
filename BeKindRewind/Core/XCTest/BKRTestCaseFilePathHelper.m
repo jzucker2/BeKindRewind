@@ -17,7 +17,9 @@
 }
 
 + (NSString *)_classStringFromTestCase:(XCTestCase *)testCase {
-    return NSStringFromClass(testCase.class);
+    // path extension for handling swift tests,
+    // shouldn't affect Objective-C environments
+    return [NSStringFromClass(testCase.class) pathExtension];
 }
 
 + (NSBundle *)writingBundleForTestCase:(XCTestCase *)testCase inDirectory:(NSString *)filePath {

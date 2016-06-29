@@ -1,5 +1,9 @@
 # BeKindRewind — CHANGELOG
 
+## [3.0.0](https://github.com/jzucker2/BeKindRewind/releases/tag/3.0.0)
+
+* Added Swift compatibility
+
 ## [2.3.2](https://github.com/jzucker2/BeKindRewind/releases/tag/2.3.2)
 
 * Fixed compilation issue with `XCTest` import reference
