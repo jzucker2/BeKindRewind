@@ -27,30 +27,6 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.9'
   s.requires_arc = true
 
-  s.source_files = "BeKindRewind/BeKindRewind.h"
-  s.public_header_files = "BeKindRewind/BeKindRewind.h"
-  # s.dependency 'OHHTTPStubs', '~> 5.0.0'
-  # s.framework = 'XCTest'
-  # s.source_files = 'BeKindRewind/Core/**/*'
-  # s.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '$(PLATFORM_DIR)/Developer/Library/Frameworks' }
-  # s.private_header_files = [
-  #   'BeKindRewind/Core/OHHTTPStubs/BKRResponseStub+Private.h'
-  #   ]
-  # s.default_subspec = 'Default'
-
-  # Default subspec that includes the most commonly-used components
-  # s.subspec 'Default' do |default|
-  #   # default.dependency 'BeKindRewind/Misc'
-  #   # default.dependency 'BeKindRewind/Core'
-  #   # default.dependency 'BeKindRewind/Recorder'
-  #   # default.dependency 'BeKindRewind/Player'
-  #   # default.dependency 'BeKindRewind/VCR'
-  #   # default.dependency 'BeKindRewind/FilePathHelper'
-  #   # default.dependency 'BeKindRewind/TestCaseFilePathHelper'
-  #   default.dependency 'BeKindRewind/TestCaseVCR'
-  #   default.public_header_files = "BeKindRewind/BeKindRewind.h"
-  # end
-
   # The Core subspec, containing the library core needed in all cases
   s.subspec 'Misc' do |misc|
     misc.source_files = "BeKindRewind/Misc/*.{h,m}"
@@ -69,7 +45,7 @@ Pod::Spec.new do |s|
     # recorder.dependency 'BeKindRewind/Misc'
     recorder.dependency 'BeKindRewind/Core'
     recorder.source_files = "BeKindRewind/Recorder/**/*.{h,m}"
-    recorder.private_header_files = "BeKindRewind/Recorder/**/*.h"
+    recorder.public_header_files = "BeKindRewind/Recorder/**/*.h"
   end
 
   s.subspec 'Player' do |player|
@@ -78,9 +54,6 @@ Pod::Spec.new do |s|
     player.dependency 'BeKindRewind/Core'
     player.source_files = "BeKindRewind/Player/**/*.{h,m}"
     player.public_header_files = "BeKindRewind/Player/**/*.h"
-    player.private_header_files = [
-      'BeKindRewind/Player/OHHTTPStubs/BKRResponseStub+Private.h'
-    ]
   end
 
   s.subspec 'VCR' do |vcr|
@@ -115,5 +88,44 @@ Pod::Spec.new do |s|
     test_case_vcr.source_files = "TestCaseVCR/*.{h,m}"
     test_case_vcr.public_header_files = "TestCaseVCR/*.h"
   end
+
+  # Default subspec that includes the most commonly-used components
+  s.subspec 'Default' do |default|
+    # default.dependency 'BeKindRewind/Misc'
+    # default.dependency 'BeKindRewind/Core'
+    # default.dependency 'BeKindRewind/Recorder'
+    # default.dependency 'BeKindRewind/Player'
+    # default.dependency 'BeKindRewind/VCR'
+    # default.dependency 'BeKindRewind/FilePathHelper'
+    # default.dependency 'BeKindRewind/TestCaseFilePathHelper'
+    default.dependency 'BeKindRewind/TestCaseVCR'
+    default.source_files = [
+      "BeKindRewind/BeKindRewind.h"
+    ]
+    default.public_header_files = [
+      "BeKindRewind/BeKindRewind.h",
+    ]
+    default.private_header_files = [
+      'BeKindRewind/Player/OHHTTPStubs/BKRResponseStub+Private.h'
+    ]
+
+  end
+
+  # s.source_files = [
+  #   'BeKindRewind/BeKindRewind.h',
+  #   'BeKindRewind/**/*.h'
+  #   ]
+  # s.public_header_files = [
+  #   'BeKindRewind/BeKindRewind.h',
+  #   'BeKindRewind/**/*.h'
+  #   ]
+  # s.dependency 'OHHTTPStubs', '~> 5.0.0'
+  # s.framework = 'XCTest'
+  # s.source_files = 'BeKindRewind/Core/**/*'
+  # s.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '$(PLATFORM_DIR)/Developer/Library/Frameworks' }
+  # s.private_header_files = [
+  #   'BeKindRewind/Core/OHHTTPStubs/BKRResponseStub+Private.h'
+  #   ]
+  s.default_subspec = 'Default'
 
 end

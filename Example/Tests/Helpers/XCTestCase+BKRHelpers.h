@@ -7,9 +7,10 @@
 //
 
 #import <XCTest/XCTest.h>
-#import <BeKindRewind/BKRRequestMatching.h>
-#import <BeKindRewind/BKRVCRActions.h>
-#import <BeKindRewind/BKRTestVCRActions.h>
+//#import <BeKindRewind/BKRRequestMatching.h>
+//#import <BeKindRewind/BKRVCRActions.h>
+//#import <BeKindRewind/BKRTestVCRActions.h>
+#import <BeKindRewind/BeKindRewind.h>
 
 @interface BKRTestExpectedResult : NSObject
 @property (nonatomic, copy) NSString *URLString;

@@ -6,26 +6,26 @@
 //  Copyright © 2016 Jordan Zucker. All rights reserved.
 //
 
-#import <BeKindRewind/BKRPlayer.h>
-#import <BeKindRewind/BKRRecorder.h>
-#import <BeKindRewind/BKRPlayableVCR.h>
-#import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
-#import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
-#import <BeKindRewind/BKRPlayheadMatcher.h>
-#import <BeKindRewind/BKRScene.h>
-#import <BeKindRewind/BKRScene+Playable.h>
-#import <BeKindRewind/BKRFrame.h>
-#import <BeKindRewind/BKRCassette.h>
-#import <BeKindRewind/BKRDataFrame.h>
-#import <BeKindRewind/BKRErrorFrame.h>
-#import <BeKindRewind/BKRRequestFrame.h>
-#import <BeKindRewind/BKRRedirectFrame.h>
-#import <BeKindRewind/BKRResponseFrame.h>
-#import <BeKindRewind/BKRConfiguration.h>
-#import <BeKindRewind/BKRTestConfiguration.h>
-#import <BeKindRewind/BKRCassette+Playable.h>
-#import <BeKindRewind/BKRFilePathHelper.h>
-#import <BeKindRewind/BKRVCR.h>
+//#import <BeKindRewind/BKRPlayer.h>
+//#import <BeKindRewind/BKRRecorder.h>
+//#import <BeKindRewind/BKRPlayableVCR.h>
+//#import <BeKindRewind/NSURLSessionTask+BKRAdditions.h>
+//#import <BeKindRewind/NSURLSessionTask+BKRTestAdditions.h>
+//#import <BeKindRewind/BKRPlayheadMatcher.h>
+//#import <BeKindRewind/BKRScene.h>
+//#import <BeKindRewind/BKRScene+Playable.h>
+//#import <BeKindRewind/BKRFrame.h>
+//#import <BeKindRewind/BKRCassette.h>
+//#import <BeKindRewind/BKRDataFrame.h>
+//#import <BeKindRewind/BKRErrorFrame.h>
+//#import <BeKindRewind/BKRRequestFrame.h>
+//#import <BeKindRewind/BKRRedirectFrame.h>
+//#import <BeKindRewind/BKRResponseFrame.h>
+//#import <BeKindRewind/BKRConfiguration.h>
+//#import <BeKindRewind/BKRTestConfiguration.h>
+//#import <BeKindRewind/BKRCassette+Playable.h>
+//#import <BeKindRewind/BKRFilePathHelper.h>
+//#import <BeKindRewind/BKRVCR.h>
 #import "XCTestCase+BKRHelpers.h"
 
 static NSString * const kBKRTestHTTPBinResponseDateStringValue = @"Thu, 18 Feb 2016 18:18:46 GMT";
