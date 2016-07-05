@@ -84,6 +84,7 @@
 		51062EA21CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 51062E9F1CAF567F00656AC5 /* XCTestCase+BKRFilePathHelpers.m */; };
 		5148A10C1D24702900AB5D19 /* BKRPlayingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5148A10B1D24702900AB5D19 /* BKRPlayingTestCase.swift */; };
 		5148A10D1D24768000AB5D19 /* BKRPlayingTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C563B1C7EE50800691220 /* BKRPlayingTestCase.bundle */; };
+		5148A1891D2C63D100AB5D19 /* BKRPlayheadMatcherTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51A36BBD1CD452CC00E6D8E5 /* BKRPlayheadMatcherTestCase.bundle */; };
 		515C56321C7E8B8800691220 /* BKRDefaultTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 515C56311C7E8B8800691220 /* BKRDefaultTestCase.bundle */; };
 		515C56381C7EDE1100691220 /* BKRRecorderTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56371C7EDE1100691220 /* BKRRecorderTestCase.m */; };
 		515C563A1C7EDE1B00691220 /* BKRPlayerTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 515C56391C7EDE1B00691220 /* BKRPlayerTestCase.m */; };
@@ -617,6 +618,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5148A1891D2C63D100AB5D19 /* BKRPlayheadMatcherTestCase.bundle in Resources */,
 				5148A10D1D24768000AB5D19 /* BKRPlayingTestCase.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
