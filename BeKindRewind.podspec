@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "BeKindRewind"
-  s.version          = "2.3.2"
+  s.version          = "3.0.0"
   s.summary          = "A simple way to record and replay network requests for testing and debugging."
   s.description      = <<-DESC
                         Provides an XCTestCase subclass for easily
