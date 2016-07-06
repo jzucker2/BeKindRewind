@@ -1501,8 +1501,8 @@ static double const kBKRTestTimingTolerance = 0.8; // this value is from OHHTTPS
         if (recording.isReceivingChunkedData) {
             // chunked data has numerous extra data frames, don't bother calculating exactly
             // this method builds the expected NSData object and directly compares it to what is expected
-            // we expect there to be at least the expected number of frames if not more
-            XCTAssertGreaterThanOrEqual(frames.count, recording.expectedNumberOfRecordingFrames, @"frames: %@", frames);
+            // let's assert that there is a reasonable amount of chunked frames within a reasonable range
+            XCTAssertEqualWithAccuracy(frames.count, recording.expectedNumberOfRecordingFrames, 5);
         } else if ([recording.HTTPMethod isEqualToString:@"POST"]) {
             // POST sometimes has an extra request
             XCTAssertLessThanOrEqual(recording.expectedNumberOfRecordingFrames, frames.count, @"frames: %@", frames);
