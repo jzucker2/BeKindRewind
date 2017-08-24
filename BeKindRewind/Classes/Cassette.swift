@@ -8,5 +8,7 @@
 import Foundation
 
 public class Cassette: NSObject {
+    
+    var scenes = [Scene]()
 
 }
