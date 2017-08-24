@@ -21,19 +21,24 @@ class BKRPlayingTestCase: BKRTestCase {
     }
     
     func testPlayingOneGETRequest() {
-        let session = NSURLSession(configuration: NSURLSessionConfiguration.ephemeralSessionConfiguration())
-        guard let requestURL = NSURL(string: "https://httpbin.org/get?test=test") else {
+        let session = URLSession(configuration: URLSessionConfiguration.ephemeral)
+//        guard let requestURL = URL(string: "https://httpbin.org/get?test=test") else {
+//            XCTFail("Failed to create requestURL")
+//            return
+//        }
+        
+        guard let requestURL = URL(string: "https://httpbin.org/get?test=test") else {
             XCTFail("Failed to create requestURL")
             return
         }
         
-        let request = NSURLRequest(URL: requestURL)
-        let expectation = self.expectationWithDescription("get request")
-        let task = session.dataTaskWithRequest(request) { (data, rawResponse, error) in
+        let request = URLRequest(url: requestURL)
+        let expectation = self.expectation(description: "get request")
+        let task = session.dataTask(with: request) { (data, rawResponse, error) in
 //            defer {
 //                expectation.fulfill()
 //            }
-            guard let response = rawResponse as? NSHTTPURLResponse else {
+            guard let response = rawResponse as? HTTPURLResponse else {
                 expectation.fulfill()
                 XCTFail("Failed to parse raw response")
                 return
@@ -45,20 +50,22 @@ class BKRPlayingTestCase: BKRTestCase {
 //                return
 //            }
             
+            print("data: \(data.debugDescription), response: \(response.debugDescription)")
+            
             
 //            guard let responseDateString: String = headers["date"] else {
 //                expectation.fulfill()
 //                XCTFail("Failed to find a date")
 //                return
 //            }
-            
-            let playbackDateString = "Thu, 18 Feb 2016 18:18:46 GMT"
-            
+//
+//            let playbackDateString = "Thu, 18 Feb 2016 18:18:46 GMT"
+//
 //            XCTAssertEqual(responseDateString, playbackDateString)
             expectation.fulfill()
         }
         task.resume()
-        self.waitForExpectationsWithTimeout(5) { (error) in
+        self.waitForExpectations(timeout: 5) { (error) in
             XCTAssertNil(error)
         }
     }
